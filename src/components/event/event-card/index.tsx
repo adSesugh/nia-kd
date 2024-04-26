@@ -1,5 +1,6 @@
 import Badge from '@/components/badge'
 import Link from 'next/link'
+import Image from 'next/image'
 import React from 'react'
 
 type EventCardProps = {
@@ -17,7 +18,18 @@ const EventCard: React.FC<EventCardProps> = ({photoUrl, title, registered, meeti
     return (
         <Link href={'/events/383sfj'} className='rounded-2xl overflow-hidden'>
             <figure>
-                <img src={photoUrl} alt={title.replaceAll(' ', '-')} className='rounded-t-2xl w-full' />
+                <Image 
+                    src={photoUrl} 
+                    alt={title.replaceAll(' ', '-')}
+                    sizes="100vw"
+                    width={100}
+                    height={100}
+                    style={{
+                        width: '100%',
+                        height: 'auto',
+                    }} 
+                    className='w-full rounded-t-2xl'
+                />
             </figure>
             <div className='bg-white p-3'>
                 <div className='flex justify-between'>

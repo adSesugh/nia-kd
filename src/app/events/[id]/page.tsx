@@ -6,6 +6,7 @@ import Badge from '@/components/badge'
 import NIAFooter from '@/components/footer'
 import SubmitButton from '@/components/submit-button'
 import { ArrowLeft, Clock, DocumentUpload, Ticket2 } from 'iconsax-react'
+import Image from 'next/image'
 import Link from 'next/link'
 import { redirect, useParams } from 'next/navigation'
 import React from 'react'
@@ -31,7 +32,18 @@ const EventDetail = () => {
                     </button>
                 </div>
                 <div className='py-6 overflow-hidden rounded-2xl shadow-2xl'>
-                    <img src='/assets/events/event-detail.svg' className='w-full rounded-t-2xl' />
+                    <Image 
+                        src={'/assets/events/event-detail.svg'} 
+                        alt='Event detail'
+                        sizes="100vw"
+                        width={100}
+                        height={100}
+                        style={{
+                            width: '100%',
+                            height: 'auto',
+                        }} 
+                        className='w-full rounded-t-2xl'
+                    />
                     <div className='pt-5 px-5'>
                         <div className='flex space-x-2'>
                             <Badge label={'Offline'} className='flex justify-center items-center rounded-2xl bg-[#F3ECE2] px-3' labelStyle='text-[12px]' />

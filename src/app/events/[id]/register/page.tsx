@@ -4,6 +4,9 @@ import SubmitButton from '@/components/submit-button';
 import TextInputWithLabel from '@/components/textinput-with-label';
 import { RegistrationForm } from '@/types/event';
 import { Form, Formik, FormikHelpers } from 'formik'
+import { ArrowLeft } from 'iconsax-react';
+import Link from 'next/link';
+import { useParams } from 'next/navigation';
 import React from 'react'
 import * as Yup from 'yup'
 
@@ -16,9 +19,18 @@ const RegistrationSchema = Yup.object().shape({
 
 const EventRegistration = () => {
 	const initialValues: RegistrationForm = { regId: '', password: '' };
+	const { id } = useParams()
+	console.log(id)
+	
     return (
-      	<div className='flex flex-col justify-center py-7 px-60 mt-32 w-full'>
-			<div className=''>
+      	<div className='flex flex-col justify-center py-7 px-60 my-16 w-full'>
+			<div className='flex justify-between items-center pt-6 w-full'>
+				<Link href={'/events'} className='flex items-center space-x-2 '>
+					<ArrowLeft variant='Outline' size={20} className='rgb(82 71 75 / 0.7)' />
+					<span className='text-[14px] text-[#52474B]/70'>Back to events ({id})</span>
+				</Link>
+			</div>
+			<div className='mt-10'>
 				<h1 className='text-[24px] font-semibold'>Innovate Architecture Conference registration</h1>
 				<span className='text-[#1E1A1C]'>Fill in your details to register for this event</span>
 			</div>
@@ -85,19 +97,19 @@ const EventRegistration = () => {
 										label='State'
 										className='w-full'
 									/>
-								</div>
-								<div className='flex'>
-								<SubmitButton 
-									name='Cancel' 
-									type='reset' 
-									className='wrf text-white item-center rounded-3xl text-sm w-full h-11'
-								/>
-								<SubmitButton 
-									name='Register' 
-									type='submit' 
-									disabled={isSubmitting} 
-									className='bg-black text-white item-center rounded-3xl text-sm w-full h-11'
-								/>
+									<div className='flex float-end space-x-3'>
+										<SubmitButton 
+											name='Cancel' 
+											type='reset' 
+											className='bg-gray-300/60 text-black/70 item-center rounded-3xl text-sm w-28 h-11'
+										/>
+										<SubmitButton 
+											name='Register' 
+											type='submit' 
+											disabled={isSubmitting} 
+											className='bg-black text-white item-center rounded-3xl text-sm w-32 h-11'
+										/>
+									</div>
 								</div>
 							</form>
 						)}

@@ -1,20 +1,23 @@
 import React from 'react'
 import styles from '@/styles/home.module.css'
 import LatestUpdateCard from './LatestUpdateCard'
+import Image13 from '@/assets/image-13.svg'
+import Image14 from '@/assets/image-14.svg'
+import Image15 from '@/assets/image-15.svg'
 
 const updateArr = [
     {
-        photoUrl: 'http://localhost:3000/assets/images/image-13.svg',
+        photoUrl: Image13,
         title: 'Award of excellence and most exceptional contribution.',
         published_date: 'Dec 22, 2023' 
     },
     {
-        photoUrl: 'http://localhost:3000/assets/images/image-14.svg',
+        photoUrl: Image14,
         title: 'The Nigerian Institute of Architects Inducts new fellows in Lagos',
         published_date: 'Dec 22, 2023' 
     },
     {
-        photoUrl: 'http://localhost:3000/assets/images/image-15.svg',
+        photoUrl: Image15,
         title: 'The Nigerian Institute of Architects Inducts new fellows in Lagos',
         published_date: 'Dec 22, 2023' 
     },
