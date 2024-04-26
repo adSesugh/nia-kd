@@ -1,0 +1,7 @@
+.footer {
+    @apply flex flex-col bg-[#1E1A1C] w-full items-center pb-6
+}
+
+.footer > #footer {
+    @apply px-28
+}

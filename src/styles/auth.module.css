@@ -1,0 +1,42 @@
+.authLayout {
+    @apply h-screen w-[100%] bg-[url('/assets/images/auth-bg.svg')];
+    background-repeat: no-repeat;
+    background-attachment: fixed;
+    background-size: cover;
+}
+
+.authWrapper {
+    @apply flex xs:flex-col sm:flex-row flex-row justify-between xs:justify-evenly items-center h-full w-full;
+}
+ 
+.logoPanel {
+    @apply flex sm:w-4/6 xs:w-full sm:h-full sm:justify-start xs:justify-center items-center xs:px-0 sm:px-20
+}
+
+.authPanel {
+    @apply flex sm:w-2/6 md:w-3/6 xs:w-full sm:h-full justify-center items-center
+}
+
+.login {
+    @apply flex flex-col sm:h-3/5 md:h-fit sm:w-4/5 md:w-fit px-16 md:pt-10 xs:pt-6 rounded-xl shadow-inner bg-white xs:mx-3
+}
+
+.login > h1 {
+    @apply mb-2 text-xl font-semibold text-center items-center
+}
+
+.login > h2 {
+    @apply text-sm mb-4 text-center
+}
+
+.register {
+    @apply flex flex-col h-full w-full bg-white px-24 py-10
+}
+
+.register > h1 {
+    @apply mb-2 text-xl font-semibold
+}
+
+.register > h2 {
+    @apply text-sm mb-8
+}

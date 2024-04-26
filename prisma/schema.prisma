@@ -1,0 +1,165 @@
+// This is your Prisma schema file,
+// learn more about it in the docs: https://pris.ly/d/prisma-schema
+
+// Looking for ways to speed up your queries, or scale easily with your serverless or edge functions?
+// Try Prisma Accelerate: https://pris.ly/cli/accelerate-init
+
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "postgres"
+  url      = env("DATABASE_URL")
+}
+
+model User {
+  id              String    @id @default(uuid())
+  regId           String    @unique
+  role            Role      @default(MEMBER)
+  password        String
+  rememberMe      Boolean   @default(false)
+  emailVerifiedAt DateTime?
+  emailVerifToken String?   @db.VarChar(191)
+  createdAt       DateTime  @default(now()) @map(name: "created_at")
+  updatedAt       DateTime  @updatedAt @map(name: "updated_at")
+  member          Member?
+  events          Event[]
+  Blog            Blog[]
+
+  @@map("users")
+}
+
+model Member {
+  id          String     @id @default(uuid())
+  regId       String
+  firstName   String
+  lastName    String
+  email       String
+  phoneNumber String
+  photoURL    String?
+  address     String?    @db.Text
+  userId      String     @unique
+  user        User       @relation(fields: [userId], references: [id])
+  joined      DateTime?
+  memberType  MemberType @default(STUDENT)
+  status      Status     @default(ACTIVE)
+  createdAt   DateTime   @default(now()) @map(name: "created_at")
+  updatedAt   DateTime   @updatedAt @map(name: "updated_at")
+
+  @@unique([regId, email, phoneNumber])
+  @@map("members")
+}
+
+model Event {
+  id           String        @id @default(uuid())
+  title        String
+  description  String        @db.Text
+  locationType EventLocation @default(IN_PERSON)
+  lat          String
+  lng          String
+  eventType    EventType     @default(SINGLE)
+  startAt      DateTime?
+  endAt        DateTime?
+  ticketType   TicketType    @default(FREE)
+  seats        Int?          @default(0)
+  isInfinity   Boolean       @default(false)
+  coverPhoto   String
+  User         User?         @relation(fields: [userId], references: [id])
+  userId       String?
+  formTitle    String
+  instructions String?
+  eventForm    EventForm?
+  mailFormat   String?       @db.Text
+  mailTicket   Boolean       @default(false)
+  ticketCharge Decimal       @default(0.0)
+  status       EventStatus   @default(DRAFT)
+  createdAt    DateTime      @default(now()) @map(name: "created_at")
+  updatedAt    DateTime      @updatedAt @map(name: "updated_at")
+
+  @@unique([title, formTitle])
+  @@map("events")
+}
+
+model EventForm {
+  id String @id @default(uuid())
+
+  eventId String  @unique
+  event   Event?  @relation(fields: [eventId], references: [id])
+  name    String
+  status  Boolean @default(true)
+
+  @@map("event_forms")
+}
+
+model EventRegistration {
+  id         String   @id @default(uuid())
+  registrant Json
+  createdAt  DateTime @default(now()) @map(name: "created_at")
+  updatedAt  DateTime @updatedAt @map(name: "updated_at")
+
+  @@map("event_registrations")
+}
+
+model Tag {
+  id        String   @id @default(uuid())
+  name      String   @unique
+  blogs     Blog[]
+  createdAt DateTime @default(now()) @map(name: "created_at")
+  updatedAt DateTime @updatedAt @map(name: "updated_at")
+
+  @@map("tags")
+}
+
+model Blog {
+  id        String   @id @default(uuid())
+  title     String
+  content   String   @db.Text
+  link      String
+  summary   String   @db.Text
+  image     String
+  tags      Tag[]
+  userId    String?
+  user      User?    @relation(fields: [userId], references: [id])
+  createdAt DateTime @default(now()) @map(name: "created_at")
+  updatedAt DateTime @updatedAt @map(name: "updated_at")
+
+  @@map("blogs")
+}
+
+enum Role {
+  MEMBER
+  ADMIN
+}
+
+enum EventLocation {
+  ONLINE
+  IN_PERSON
+}
+
+enum EventType {
+  SINGLE
+  RECURRING
+}
+
+enum TicketType {
+  FREE
+  PAID
+}
+
+enum MemberType {
+  STUDENT
+  GRADUATE
+  ASSOCIATE
+  PROFESSIONAL
+}
+
+enum Status {
+  ACTIVE
+  INACTIVE
+}
+
+enum EventStatus {
+  DRAFT
+  PUBLISHED
+}

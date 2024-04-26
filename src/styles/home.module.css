@@ -1,0 +1,89 @@
+.slideSection {
+    @apply bg-[url('/assets/images/slide-bg.svg')] h-[703px] w-[100%];
+    background-repeat: no-repeat;
+    background-attachment: fixed;
+    background-size: contain;
+}
+
+.shaddyCover {
+    @apply px-2
+}
+
+.discoverMore {
+    @apply py-4 px-8 bg-[#E08D14] text-[12px] text-white rounded-3xl
+}
+
+.timerSection {
+    @apply flex pt-28 items-center gap-[12px] text-white
+}
+
+.breadcrumb {
+    @apply h-[354px] w-full bg-[#1E1A1C]
+}
+
+.aboutMore {
+    @apply py-4 px-8 bg-[#F3ECE2] text-[12px] text-black rounded-3xl
+}
+
+.missionSection {
+    @apply flex h-[447px] px-28 justify-center items-center
+}
+
+.videoSection {
+    @apply bg-[url("/assets/images/video.svg")] h-[705px] w-full;
+    background-attachment: fixed;
+    background-repeat: no-repeat;
+    background-size: cover;
+}
+
+.teamSection {
+    @apply py-16 px-28
+}
+
+.teamHeader {
+    @apply text-[40px] text-center w-full font-semibold
+}
+
+.teamMember {
+    @apply sm:flex grid grid-cols-4 pt-16 pb-8 gap-16 justify-between
+}
+
+.memberCard {
+    @apply w-[281px] shadow-xl
+}
+
+.teamTitle {
+    @apply flex flex-col pt-2 justify-center items-center
+}
+
+.memberSM {
+    @apply flex py-2 justify-center items-center gap-3
+}
+
+.showcase {
+    @apply pt-24 pb-8 bg-[#1E1A1C]
+}
+
+.showcase > h1 {
+    @apply text-white text-center w-full overflow-x-auto
+}
+
+.showcase > div {
+    @apply flex w-full items-center justify-center py-2
+}
+
+.showcase > div > h2 {
+    @apply text-white text-[32px] font-semibold text-center w-56
+}
+
+.showcaseCard {
+    @apply h-[438px] w-[422px]
+}
+
+.blogUpdate {
+    @apply flex flex-col pt-24 pb-12 px-28 items-center bg-white
+}
+
+.blogUpdateCard {
+    @apply flex flex-col h-[394px] w-[379px] shadow-2xl
+}

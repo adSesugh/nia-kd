@@ -1,0 +1,24 @@
+overwrite: true
+schema:
+  - "http://localhost:3000/api/graphql" 
+documents:
+  - "./src/graphql/**/*.graphql"
+  - "./src/**/*.ts"
+generates:
+  ./src/graphql/__generated__/graphql.ts:
+    config:
+      useIndexSignature: true
+      contextType: "../context/index#GraphQLContext"
+      mapperTypeSuffix: Model
+      mappers:
+        Tag: "@prisma/client#Tag"
+        Blog: "@prisma/client#Blog"
+        User: "@prisma/client#User"
+        Member: "@prisma/client#Member"
+        Event: "@prisma/client#Event"
+        EventForm: "@prisma/client#EventForm"
+    plugins:
+      - typescript
+      - typescript-operations
+      - typescript-react-apollo
+      - typescript-resolvers

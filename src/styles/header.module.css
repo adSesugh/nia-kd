@@ -1,0 +1,31 @@
+.header {
+    @apply h-[75px] w-full bg-[#1E1A1C] fixed top-0 right-0 left-0;
+}
+
+.menubarWrapper {
+    @apply flex sm:px-28 xs:px-6 h-full justify-between items-center
+}
+
+.menubar {
+    @apply flex h-full items-center gap-[29px] text-[#FFFFFF] text-[14px]
+}
+
+.loginRegister {
+    @apply sm:flex h-full sm:items-center sm:space-x-3 xs:hidden sm:block
+}
+
+.loginButton {
+    @apply px-7 py-2 border border-[#F3ECE2] rounded-2xl text-[#F3ECE2] text-[12px]
+}
+
+.joinButton {
+    @apply px-5 py-2 bg-[#F3ECE2] text-[12px] text-[#1E1A1C] rounded-2xl
+}
+
+.menuActive {
+    @apply absolute w-full h-1.5 bg-[#D99A3F] rounded-t-xl -bottom-7
+}
+
+.menuitem {
+    @apply flex flex-col px-2 justify-between items-center relative
+}
