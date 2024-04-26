@@ -101,13 +101,13 @@ const EventRegistration = () => {
 										<SubmitButton 
 											name='Cancel' 
 											type='reset' 
-											className='bg-gray-300/60 text-black/70 item-center rounded-3xl text-sm w-28 h-11'
+											className='border border-gray-400 text-black/70 item-center rounded-xl text-sm w-28 h-11'
 										/>
 										<SubmitButton 
 											name='Register' 
 											type='submit' 
 											disabled={isSubmitting} 
-											className='bg-black text-white item-center rounded-3xl text-sm w-32 h-11'
+											className='bg-black text-white item-center rounded-xl text-sm w-32 h-11'
 										/>
 									</div>
 								</div>
