@@ -7,15 +7,94 @@ import Image from 'next/image';
 import React from 'react'
 import Link from 'next/link'
 import FeaturedImage from '@/assets/blog/feature.svg'
-import { ArrowForward, ArrowLeft3, ArrowRight } from 'iconsax-react';
+import { ArrowRight } from 'iconsax-react';
+import { BlogCardType } from '@/types/blog';
+import Blog1 from '@/assets/blog/archi.svg'
+import Blog2 from '@/assets/blog/nav.svg'
+import BlogCard from '@/components/blog/BlogCard';
+
+const blogs: BlogCardType[] = [
+  {
+    id: 'sfsa',
+    title: "Navigating the architectural maze",
+    photoUrl: Blog2,
+    summary: 'The architectural space can be quite complex and daunting if there is no one to properly guide and...',
+    published: 'Oct 20, 2023',
+    readTime: '5 mins read'
+  },
+  {
+    id: 'sfsayr',
+    title: "Archi’ 101: From Plan to building",
+    photoUrl: Blog1,
+    summary: 'The architectural space can be quite complex and daunting if there is no one to properly guide and...',
+    published: 'Oct 20, 2023',
+    readTime: '5 mins read'
+  },
+  {
+    id: 'sfsahfj',
+    title: "Navigating the architectural maze",
+    photoUrl: Blog2,
+    summary: 'The architectural space can be quite complex and daunting if there is no one to properly guide and...',
+    published: 'Oct 20, 2023',
+    readTime: '5 mins read'
+  },
+  {
+    id: 'sfsssda',
+    title: "Archi’ 101: From Plan to building",
+    photoUrl: Blog1,
+    summary: 'The architectural space can be quite complex and daunting if there is no one to properly guide and...',
+    published: 'Oct 20, 2023',
+    readTime: '5 mins read'
+  },
+  {
+    id: 'sfsaou',
+    title: "Navigating the architectural maze",
+    photoUrl: Blog2,
+    summary: 'The architectural space can be quite complex and daunting if there is no one to properly guide and...',
+    published: 'Oct 20, 2023',
+    readTime: '5 mins read'
+  },
+  {
+    id: 'sfswawa',
+    title: "Archi’ 101: From Plan to building",
+    photoUrl: Blog1,
+    summary: 'The architectural space can be quite complex and daunting if there is no one to properly guide and...',
+    published: 'Oct 20, 2023',
+    readTime: '5 mins read'
+  },
+  {
+    id: 'sfsawda',
+    title: "Navigating the architectural maze",
+    photoUrl: Blog2,
+    summary: 'The architectural space can be quite complex and daunting if there is no one to properly guide and...',
+    published: 'Oct 20, 2023',
+    readTime: '5 mins read'
+  },
+  {
+    id: 'sfspioa',
+    title: "Archi’ 101: From Plan to building",
+    photoUrl: Blog1,
+    summary: 'The architectural space can be quite complex and daunting if there is no one to properly guide and...',
+    published: 'Oct 20, 2023',
+    readTime: '5 mins read'
+  },
+  {
+    id: 'sfsaug',
+    title: "Navigating the architectural maze",
+    photoUrl: Blog2,
+    summary: 'The architectural space can be quite complex and daunting if there is no one to properly guide and...',
+    published: 'Oct 20, 2023',
+    readTime: '5 mins read'
+  }
+]
 
 const Blog: NextPage = () => {
   return (
     <div>
       <SubHeader title='Blog' subtitle={''} />
-      <div className='w-full h-full py-9 px-20'>
+      <div className='w-full h-full py-9 px-28 pb-24'>
         <h1 className='text-[28px] font-bold'>Featured Update</h1> 
-        <div className='flex py-2'>
+        <div className='flex sm:flex-row xs:flex-col py-2'>
           <div className='w-8/12'>
             <Image 
               src={FeaturedImage} 
@@ -35,9 +114,25 @@ const Blog: NextPage = () => {
             <h1 className='text-[28px] font-semibold'>The role of nature in Architecture</h1>
             <p className='leading-2 text-[14px] py-2'>The Nigerian Institute of Architects (NIA) was founded on the 1st of April 1960 as an association of independent professional architects with the aims and objectives of...</p>
             <Link href={'/'} className='flex space-x-2 items-center'>
-              <span>Read more</span>
+              <span className='font-medium text-[14px]'>Read more</span>
               <ArrowRight variant='Outline' size={16} color='black' />
             </Link>
+          </div>
+        </div>
+        <div className='py-3 mt-4'>
+          <h1 className='text-[24px] font-semibold'>Other posts</h1>
+          <div className='grid sm:grid-cols-3 xs:grid-cols-1 gap-8'>
+              {blogs.map((blog: BlogCardType, index: number) => (
+                <BlogCard 
+                  id={blog.id}
+                  photoUrl={blog.photoUrl}
+                  title={blog.title}
+                  published={blog.published}
+                  readTime={blog.readTime}
+                  summary={blog.summary}
+                  key={index}
+                />
+              ))}
           </div>
         </div>
       </div>
