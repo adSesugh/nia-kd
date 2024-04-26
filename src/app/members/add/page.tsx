@@ -68,13 +68,13 @@ const AddMemberPage = () => {
                     console.log(files)
 
                     const reader = new FileReader();
-                    reader.readAsArrayBuffer(files)
-                    reader.onload = (e) => {
-                        const dataURL = `data:${files?.type};base64,${btoa(reader.result)}`;
-                        console.log("dataURL: ", dataURL);
-                        imageURL = dataURL
-                        setImage(dataURL);
-                    };
+                    // reader.readAsArrayBuffer(files)
+                    // reader.onload = (e) => {
+                    //     const dataURL = `data:${files?.type};base64,${btoa(reader.result)}`;
+                    //     console.log("dataURL: ", dataURL);
+                    //     imageURL = dataURL
+                    //     setImage(dataURL);
+                    // };
 
                     // const data = {
                     //     ...values,
@@ -123,7 +123,7 @@ const AddMemberPage = () => {
                     />
                     <div className='my-3'>
                         <input 
-                            onChange={(e) => setFiles(e.target.files[0])}
+                            //onChange={(e) => setFiles(e.target.files[0])}
                             className='pr-10 file-input file-input-bordered w-full max-w-xs'
                             type='file'
                         />

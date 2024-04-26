@@ -1,7 +1,7 @@
-import BlogAPI from "@/app/api/graphql/services/blogAPI";
-import MemberAPI from "@/app/api/graphql/services/memberAPI";
-import TagAPI from "@/app/api/graphql/services/tagAPI";
-import UserAPI from "@/app/api/graphql/services/userAPI";
+import BlogAPI from "@/app/api/v1/services/blogAPI";
+import MemberAPI from "@/app/api/v1/services/memberAPI";
+import TagAPI from "@/app/api/v1/services/tagAPI";
+import UserAPI from "@/app/api/v1/services/userAPI";
 import type { PrismaClient } from "@prisma//client";
 
 export type GraphQLContext = {
@@ -15,11 +15,3 @@ export type GraphQLContext = {
         userAPI: UserAPI
     };
 }
-
-
-// export interface AppContext {
-//     prisma: PrismaClient,
-//     dataSources: {
-//         blogAPI: BlogAPI;
-//     }
-// }
