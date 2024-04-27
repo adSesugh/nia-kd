@@ -58,12 +58,12 @@ const NIAFooter = () => {
                             <span className='text-white text-[15px]'>24, Magaji Muazu Crescent, Katampe Extension, FCT - Abuja Nigeria</span>
                         </div>
                         <div className='flex gap-4'>
-                            <Image src={'/assets/icons/phone.svg'} alt='address' height={24} width={24} />
+                            <Image src={'/assets/icons/phone.svg'} alt='phone' height={24} width={24} />
                             <span className='text-white text-[15px]'>+234 9-2900081 or +234 9-2900082</span>
                         </div>
                         <div className='flex gap-4'>
-                            <Image src={'/assets/icons/mail.svg'} alt='address' height={24} width={24} />
-                            <span className='text-white text-[15px]'>organization@gmail.com</span>
+                            <Image src={'/assets/icons/mail.svg'} alt='mail' height={24} width={24} />
+                            <span className='text-white text-[15px]'><Link href={'mailto://organization@gmail.com'}>organization@gmail.com</Link></span>
                         </div>
                     </div>
                 </div>

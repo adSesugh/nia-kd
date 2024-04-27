@@ -89,17 +89,17 @@ const BlogDetail = () => {
             <div className='mt-12'>
                 <h2 className='text-[18px] font-medium'>More posts like this</h2>
                 <div className='pt-3 grid grid-cols-3 w-full mb-24 gap-8'>
-                {blogs.map((blog: BlogCardType, index: number) => (
-                    <BlogCard 
-                        id={blog.id}
-                        photoUrl={blog.photoUrl}
-                        title={blog.title}
-                        published={blog.published}
-                        readTime={blog.readTime}
-                        summary={blog.summary}
-                        key={index}
-                    />
-                ))}
+                    {blogs.map((blog: BlogCardType, index: number) => (
+                        <BlogCard 
+                            id={blog.id}
+                            photoUrl={blog.photoUrl}
+                            title={blog.title}
+                            published={blog.published}
+                            readTime={blog.readTime}
+                            summary={blog.summary}
+                            key={index}
+                        />
+                    ))}
                 </div>
             </div>
         </div>
