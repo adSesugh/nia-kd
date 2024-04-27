@@ -7,6 +7,7 @@ import TextFieldWithIcon from '@/components/textfield-withicon'
 import { Form, Formik, FormikHelpers } from 'formik'
 import { SearchNormal } from 'iconsax-react'
 import React, { useState } from 'react'
+import EventPicture from '@/assets/event.svg'
 
 import * as Yup from 'yup'
 
@@ -21,7 +22,7 @@ type EventSearchForm = {
 const events = [
   {
     id: 'safafj12',
-    photoUrl: 'http://localhost:3000/assets/events/event.svg',
+    photoUrl: EventPicture,
     title: 'Innovate Architecture Conference',
     registered: 30,
     meeting_mode: 'Offline',
@@ -32,7 +33,7 @@ const events = [
   },
   {
     id: 'safafj12sfdsf',
-    photoUrl: 'http://localhost:3000/assets/events/event.svg',
+    photoUrl: EventPicture,
     title: 'Innovate Architecture Conference',
     registered: 40,
     meeting_mode: 'Offline',
@@ -43,7 +44,7 @@ const events = [
   },
   {
     id: 'safafj12weee',
-    photoUrl: 'http://localhost:3000/assets/events/event.svg',
+    photoUrl: EventPicture,
     title: 'Innovate Architecture Conference',
     registered: 56,
     meeting_mode: 'Offline',
@@ -54,7 +55,7 @@ const events = [
   },
   {
     id: 'safafj12swwd',
-    photoUrl: 'http://localhost:3000/assets/events/event.svg',
+    photoUrl: EventPicture,
     title: 'Innovate Architecture Conference',
     registered: 23,
     meeting_mode: 'Offline',
@@ -65,7 +66,7 @@ const events = [
   },
   {
     id: 'safafj12rtyw',
-    photoUrl: 'http://localhost:3000/assets/events/event.svg',
+    photoUrl: EventPicture,
     title: 'Innovate Architecture Conference',
     registered: 70,
     meeting_mode: 'Offline',
@@ -76,7 +77,7 @@ const events = [
   },
   {
     id: 'safafj12piiiut',
-    photoUrl: 'http://localhost:3000/assets/events/event.svg',
+    photoUrl: EventPicture,
     title: 'Innovate Architecture Conference',
     registered: 80,
     meeting_mode: 'Offline',
