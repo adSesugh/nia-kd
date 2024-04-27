@@ -94,7 +94,7 @@ const Events = () => {
 
   return (
     <React.Fragment>
-      <SubHeader title='Events' subtitle={'Explore our latest events ang programmes'} />
+      <SubHeader title='Events' subtitle={'Explore our latest events and programmes'} />
       <div className='bg-[#F3ECE2] px-28 w-full'>
         <div className='flex py-8 items-center gap-6'>
           <div className='flex bg-white h-12 px-1 items-center'>
