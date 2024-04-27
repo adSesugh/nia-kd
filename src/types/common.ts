@@ -9,3 +9,13 @@ export type TextFieldProps = {
     placeholder: string
     type?: string
 }
+
+export type TeamCardProps = {
+    imageUrl: string
+    name: string
+    designation: string
+    social_media: {
+        twitter: string
+        linkedin: string
+    }
+}

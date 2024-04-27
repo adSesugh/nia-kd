@@ -53,32 +53,32 @@ const RegisterPage: React.FC<{}> = () => {
             <TextField
               name='firstName'
               placeholder='First name' 
-              className={errors.firstName && touched.firstName ? 'ring-red-500 pr-10': 'pr-10'}
+              className={`${errors.firstName && touched.firstName ? 'ring-red-500': ''} pr-10`}
             />
             <TextField
               name='lastName'
               placeholder='Last name' 
-              className={errors.lastName && touched.lastName ? 'ring-red-500 pr-10': 'pr-10'}
+              className={`${errors.firstName && touched.firstName ? 'ring-red-500': ''} pr-10`}
             />
             <TextField
               name='email'
               placeholder='Email Address' 
-              className={errors.email && touched.email ? 'ring-red-500 pr-10': 'pr-10'}
+              className={`${errors.firstName && touched.firstName ? 'ring-red-500': ''} pr-10`}
             />
             <TextField
               name='phoneNumber'
               placeholder='Phone number' 
-              className={errors.phoneNumber && touched.phoneNumber ? 'ring-red-500 pr-10': 'pr-10'}
+              className={`${errors.firstName && touched.firstName ? 'ring-red-500': ''} pr-10`}
             />
             <TextField
               name='regId'
               placeholder='NIA membership ID' 
-              className={errors.regId && touched.regId ? 'ring-red-500 pr-10': 'pr-10'}
+              className={`${errors.firstName && touched.firstName ? 'ring-red-500': ''} pr-10`}
             />
             <TextField
               name='address'
               placeholder='Resident Address'
-              className={errors.address && touched.address ? 'ring-red-500 pr-10': 'pr-10'} 
+              className={`${errors.firstName && touched.firstName ? 'ring-red-500': ''} pr-10`}
             />
             <TextFieldWithIcon 
               name='password' 
