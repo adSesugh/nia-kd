@@ -15,15 +15,18 @@ const AuthLayout: React.FC<LayoutProps> = ({ children }) => {
         <div className={styles.authLayout}>
            <div className={styles.authWrapper}>
                 <div className={styles.logoPanel}>
-                    <Link href={'/'}>
-                        <Image 
-                            src={'/assets/images/logo.svg'} 
-                            alt='NIA-Kd' 
-                            width={304} 
-                            height={100} 
-                            priority 
-                        />
-                    </Link>
+                    <div>
+                        <Link href={'/'}>
+                            <Image 
+                                src={'/assets/images/logo.svg'} 
+                                alt='NIA-Kd' 
+                                width={304} 
+                                height={100} 
+                                priority 
+                            />
+                        </Link>
+                        <h1 className='text-white text-[26px] px-2'>Kaduna State Chapter</h1>
+                    </div>
                 </div>
                 <div className={styles.authPanel}>
                     {children}

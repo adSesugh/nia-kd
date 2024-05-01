@@ -1,0 +1,27 @@
+.header {
+    @apply h-[10%] w-full bg-[#1E1A1C] top-0 right-0 left-0;
+}
+
+.footer {
+    @apply w-full bg-[#1E1A1C] bottom-0;
+}
+
+.menubarWrapper {
+    @apply flex sm:px-12 xs:px-6 h-full justify-between items-center
+}
+
+.footerWrapper {
+    @apply flex sm:px-12 xs:px-6 h-full items-center justify-center gap-x-80 py-1
+}
+
+.menubar {
+    @apply flex h-full items-center gap-[12px] text-[#FFFFFF] text-[14px]
+}
+
+.menuActive {
+    @apply absolute w-full h-1.5 bg-[#D99A3F] rounded-t-xl -bottom-7
+}
+
+.menuitem {
+    @apply flex flex-col px-2 justify-between items-center relative
+}

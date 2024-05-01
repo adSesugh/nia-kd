@@ -10,6 +10,7 @@ import CheckBox from '@/components/checkbox'
 import { Profile, Lock, EyeSlash, Eye } from 'iconsax-react'
 import TextFieldWithIcon from '@/components/textfield-withicon'
 import SubmitButton from '@/components/submit-button'
+import { redirect } from 'next/navigation'
 
 const LoginSchema = Yup.object().shape({
   regId: Yup.string().required('Membership ID is required'),
@@ -31,6 +32,7 @@ const LoginPage: React.FC<{}> = () => {
        onSubmit={(values: LoginForm, { setSubmitting }: FormikHelpers<LoginForm>) => {
          console.log(values);
          setSubmitting(false)
+         return redirect('/member/dashboard')
        }}
      >
        {({ values, errors, touched, handleChange, handleBlur, handleSubmit, isSubmitting, }) => (
@@ -52,7 +54,7 @@ const LoginPage: React.FC<{}> = () => {
             />
             <CheckBox name='rememberMe' label='Remember me' />
            <SubmitButton 
-              name='Login' 
+              name={isSubmitting ? 'Please wait...' : 'Login'} 
               type='submit' 
               disabled={isSubmitting} 
               className='bg-black text-white item-center rounded-3xl text-sm w-full h-11'
