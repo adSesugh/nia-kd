@@ -25,3 +25,7 @@
 .menuitem {
     @apply flex flex-col px-2 justify-between items-center relative
 }
+
+.userProfile {
+    @apply flex h-full space-x-5 items-center
+}

@@ -92,10 +92,10 @@ const Blog: NextPage = () => {
   return (
     <div>
       <SubHeader title='Blog' subtitle={''} />
-      <div className='w-full h-full py-9 px-28 pb-24'>
-        <h1 className='text-[28px] font-bold'>Featured Update</h1> 
+      <div className='w-full h-full py-9 sm:px-28 xs:px-6 pb-24'>
+        <h1 className='sm:text-[28px] xs:text-[20px] font-bold'>Featured Update</h1> 
         <div className='flex sm:flex-row xs:flex-col py-2'>
-          <div className='w-8/12'>
+          <div className='sm:w-8/12 xs:w-full'>
             <Image 
               src={FeaturedImage} 
               alt='Featured'
@@ -109,9 +109,9 @@ const Blog: NextPage = () => {
               }} 
             />
           </div>
-          <div className='w-4/12 px-6'>
-            <p className='text-[14px] space-x-2'><span>Oct 20, 2023</span><span className='bg-[#F3ECE2] rounded-md py-1 px-1.5'>5 mins</span></p>
-            <h1 className='text-[28px] font-semibold'>The role of nature in Architecture</h1>
+          <div className='sm:w-4/12 xs:w-full sm:px-6 xs:px-0'>
+            <p className='text-[14px] sm:space-x-2 xs:space-x-0 xs:pt-3 sm:pt-0'><span>Oct 20, 2023</span><span className='bg-[#F3ECE2] rounded-md py-1 px-1.5'>5 mins</span></p>
+            <h1 className='sm:text-[28px] xs:text-[20px] font-semibold'>The role of nature in Architecture</h1>
             <p className='leading-2 text-[14px] py-2'>The Nigerian Institute of Architects (NIA) was founded on the 1st of April 1960 as an association of independent professional architects with the aims and objectives of...</p>
             <Link href={'/'} className='flex space-x-2 items-center'>
               <span className='font-medium text-[14px]'>Read more</span>
@@ -136,7 +136,6 @@ const Blog: NextPage = () => {
           </div>
         </div>
       </div>
-      <NIAFooter />
     </div>
   )
 }

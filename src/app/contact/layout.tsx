@@ -1,3 +1,4 @@
+import NIAFooter from '@/components/footer';
 import Header from '@/components/header';
 import { LayoutProps } from '@/types/common';
 import { Metadata } from 'next';
@@ -13,6 +14,7 @@ const ContactLayout: React.FC<LayoutProps> = ({ children }) => {
     <div>
         <Header />
         {children}
+        <NIAFooter />
     </div>
   )
 }

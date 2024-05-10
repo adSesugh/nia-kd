@@ -1,5 +1,5 @@
 .header {
-    @apply h-[75px] w-full bg-[#1E1A1C] fixed top-0 right-0 left-0;
+    @apply h-[10%] w-full bg-[#1E1A1C] fixed top-0 right-0 left-0;
 }
 
 .menubarWrapper {

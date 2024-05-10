@@ -1,4 +1,3 @@
-import Footer from '@/components/member/Footer'
 import Header from '@/components/member/Header'
 import { LayoutProps } from '@/types/common'
 import React from 'react'
@@ -8,11 +7,10 @@ const MemberLayout: React.FC<LayoutProps> = ({ children }) => {
     <div className='flex flex-col h-screen w-full'>
         <Header />
         <div className='w-full h-[90%] overflow-hidden'>
-          <div className='flex flex-col justify-between h-full w-full overflow-y-scroll'>
+          <div className='h-full w-full overflow-y-auto'>
             {children}
           </div>
         </div>
-        <Footer />
     </div>
   )
 }

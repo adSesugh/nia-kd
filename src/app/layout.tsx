@@ -1,10 +1,11 @@
 'use client'
 
-import type { Metadata } from "next";
 import { Inter } from "next/font/google";
 import "./globals.css";
 import { ApolloWrapper } from "@/components/apollo-wrapper";
 import { useEffect } from "react";
+import { ThemeModeScript } from "flowbite-react";
+import NextProvider from "@/providers/NextProvider";
 
 const inter = Inter({ subsets: ["latin"] });
 
@@ -25,9 +26,14 @@ export default function RootLayout({
 
   return (
     <html lang="en">
+      <head>
+        <ThemeModeScript />
+      </head>
       <body className={`${inter.className} select-none`}>
         <ApolloWrapper>
-          {children}
+          <NextProvider>
+            {children}
+          </NextProvider>
         </ApolloWrapper>
       </body>
     </html>

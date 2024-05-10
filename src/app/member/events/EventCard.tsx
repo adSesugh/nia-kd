@@ -9,8 +9,8 @@ type EventCardProps = {
 
 const EventCard: React.FC<EventCardProps> = ({ bordered, href='/' }) => {
     return (
-        <Link href={href} className='flex gap-5 cursor-pointer'>
-            <div className='flex gap-6 w-1/3'>
+        <Link href={href} as={'div'} className='flex sm:flex-row xs:flex-col gap-5 cursor-pointer'>
+            <div className='flex gap-6 sm:w-1/3 xs:w-full'>
                 <div>
                     <h1 className='text-[#E08D14]'>{'aug'.toUpperCase()}</h1>
                     <span className='text-2xl font-semibold'>22</span>
@@ -26,12 +26,12 @@ const EventCard: React.FC<EventCardProps> = ({ bordered, href='/' }) => {
                             width: '100%',
                             height: 'auto'
                         }}
-                        className='rounded-2xl max-sm:w-8'
+                        className='sm:rounded-2xl xs:rounded-lg'
                     />
                 </div>
             </div>
-            <div className={`w-2/3 space-y-2 ${bordered}`}>
-                <h1 className='flex flex-wrap text-2xl font-medium truncate'>Digital Architectural Transformation Workshop</h1>
+            <div className={`sm:w-2/3 xs:w-full space-y-2 ${bordered} xs:pb-1 sm:pb-0`}>
+                <h1 className='flex flex-wrap text-md font-medium truncate'>Digital Architectural Transformation Workshop</h1>
                 <div className='text-sm divide-x-[2px] divide-gray-300 space-x-4'>
                     <span className='font-semibold'>Jun 23, 2023</span>
                     <span className='text-[#52474B] pl-4'>09:00 AM</span>

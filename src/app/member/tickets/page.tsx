@@ -9,7 +9,7 @@ export const metadata: Metadata = {
 
 const page = () => {
   return (
-    <div className='h-full w-full'>
+    <div className='h-full w-full pb-8'>
       <div className='py-8'>
         <h1 className='text-4xl font-semibold'>Tickets</h1>
       </div>
@@ -18,13 +18,13 @@ const page = () => {
           <h1 className='font-semibold text-lg'>Upcoming</h1>
           <hr />
         </div>
-        <EventCard href='/member/events/123' />
+        <EventCard href='/member/tickets/123' />
       </div>
       <div className=''>
         <div className='mb-3'>
           <h1 className='font-semibold text-lg'>Past tickets</h1>
           <hr />
-          <div className='space-y-4 pt-3 pb-8'>
+          <div className='space-y-5 pt-3 pb-8'>
             <EventCard bordered='border-b' href='/member/tickets/123' />
             <EventCard bordered='border-b' href='/member/tickets/1234' />
             <EventCard href='/member/tickets/12345' />

@@ -27,7 +27,7 @@ const BlogUpdate = () => {
   return (
     <div className={styles.blogUpdate}>
         <h1 className='text-center w-full font-semibold text-[28px] py-4'>Latest Updates</h1>
-        <div className='flex justify-between pt-3 pb-10 w-full'>
+        <div className='sm:flex sm:justify-between xs:grid xs:grid-cols-1 xs:gap-3 pt-3 pb-10 w-full'>
             {updateArr.map((item, index) => (
                 <LatestUpdateCard {...item} key={index} />
             ))}

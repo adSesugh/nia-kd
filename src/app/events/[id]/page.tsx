@@ -20,7 +20,7 @@ const EventDetail = () => {
     
     return (
         <div>
-            <div className='sm:py-20 sm:px-32 xs:px-6'>
+            <div className='sm:py-20 sm:px-32 xs:px-6 pt-20'>
                 <div className='flex justify-between items-center pt-6 w-full'>
                     <Link href={'/events'} className='flex items-center space-x-2 '>
                         <ArrowLeft variant='Outline' size={20} className='rgb(82 71 75 / 0.7)' />
@@ -57,8 +57,8 @@ const EventDetail = () => {
                 <div className='flex justify-between'>
 
                 </div>
-                <div className='flex w-full py-5'>
-                    <div className='w-9/12 mr-4'>
+                <div className='flex sm:flex-row xs:flex-col w-full py-5'>
+                    <div className='sm:w-9/12 xs:w-full mr-4'>
                        <div className='rounded-[20px] p-5 bg-gray-50 border w-full'>
                             <h1 className='font-semibold text-[18px]'>About Event</h1>
                             <div className='flex gap-5 py-2'>
@@ -116,7 +116,7 @@ const EventDetail = () => {
                             </div>
                         </div>
                     </div>
-                    <div className='w-3/12'>
+                    <div className='sm:w-3/12 xs:w-full'>
                         <div className='border bg-gray-50 rounded-[20px] p-4 w-full'>
                             <div className='mb-3'>
                                 <h4 className='text-[#9A9A9A] font-medium'>Happening</h4>

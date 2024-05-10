@@ -23,7 +23,7 @@ const Home = () => {
       <Header />
       <HomeSlider />
       <Breadcrumb />
-      <div className='px-32 py-6' data-aos="fade-left">
+      <div className='sm:px-32 xs:px-6 py-6' data-aos="fade-left">
         <Mission />
         <NIAVision />
       </div>
@@ -31,21 +31,21 @@ const Home = () => {
 
       </div>
       <NIATeam />
-      <div className='grid grid-cols-4 h-36 bg-[#F3ECE2] py-6 divide divide-x-2'>
+      <div className='grid sm:grid-cols-4 xs:grid-cols-2 sm:h-36 xs:h-44 bg-[#F3ECE2] py-6 divide divide-x-2'>
         <div className='flex flex-col items-center justify-center h-full'>
-          <h1 className='text-[48px] font-semibold'>230</h1>
+          <h1 className='sm:text-[48px] xs:text-[20x] font-semibold'>230</h1>
           <h6>Total members</h6>
         </div>
         <div className='flex flex-col items-center justify-center h-full'>
-          <h1 className='text-[48px] font-semibold'>230</h1>
+          <h1 className='sm:text-[48px] xs:text-[20x] font-semibold'>230</h1>
           <h6>Total members</h6>
         </div>
         <div className='flex flex-col items-center justify-center h-full'>
-          <h1 className='text-[48px] font-semibold'>230</h1>
+          <h1 className='sm:text-[48px] xs:text-[20x] font-semibold'>230</h1>
           <h6>Total members</h6>
         </div>
         <div className='flex flex-col items-center justify-center h-full'>
-          <h1 className='text-[48px] font-semibold'>230</h1>
+          <h1 className='sm:text-[48px] xs:text-[20x] font-semibold'>230</h1>
           <h6>Total members</h6>
         </div>
       </div>

@@ -95,14 +95,14 @@ const Events = () => {
   return (
     <React.Fragment>
       <SubHeader title='Events' subtitle={'Explore our latest events and programmes'} />
-      <div className='bg-[#F3ECE2] px-28 w-full'>
-        <div className='flex py-8 items-center gap-6'>
+      <div className='bg-[#F3ECE2] sm:px-28 xs:px-6 w-full'>
+        <div className='flex sm:flex-row xs:flex-col-reverse py-8 items-center gap-6 xs:-mx-1.5 sm:mx-0'>
           <div className='flex bg-white h-12 px-1 items-center'>
             <button onClick={() => setSelectedSearch('all')} className={`${selectedSearch === 'all' && 'bg-[#1E1A1C] text-white'} h-10 w-[122px] py-1.5 `}>All</button>
             <button onClick={() => setSelectedSearch('upcoming')} className={`${selectedSearch === 'upcoming' && 'bg-[#1E1A1C] text-white'} h-10 w-[122px] py-1.5 `}>Upcoming</button>
             <button onClick={() => setSelectedSearch('past')} className={`${selectedSearch === 'past' && 'bg-[#1E1A1C] text-white'} h-10 w-[122px] py-1.5 `}>Past</button>
           </div>
-          <div className='flex-1 items-center h-full'>
+          <div className='flex-1 items-center h-full w-full'>
             <Formik
               initialValues={initialValues}
               validationSchema={EventSchema}
@@ -112,7 +112,7 @@ const Events = () => {
               }}
             >
               {({ values, errors, touched, handleChange, handleBlur, handleSubmit, isSubmitting, }) => (
-                <Form onSubmit={handleSubmit} autoComplete='off' className='-mt-4 w-3/5 relative'>
+                <Form onSubmit={handleSubmit} autoComplete='off' className='-mt-4 sm:w-3/5 xs:w-full relative'>
                   <TextFieldWithIcon 
                       name='query' 
                       placeholder='Search events' 
@@ -127,9 +127,9 @@ const Events = () => {
         </div>
         <div>
           <h1 className='pb-2'>Showing 6 events</h1>
-          <div className='grid grid-cols-3 gap-12 justify-between pb-6'>
+          <div className='grid sm:grid-cols-3 xs:grid-cols-1 gap-12 justify-between pb-6'>
             {events.map((event, index) => (
-              <EventCard {...event} key={index} />
+              <EventCard event={event} href={`/events/${event.id}`} key={index} />
             ))}
           </div>
         </div>

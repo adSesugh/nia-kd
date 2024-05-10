@@ -8,7 +8,17 @@ import { TeamCardProps } from '@/types/common'
 const TeamCard: React.FC<TeamCardProps> = ({imageUrl, name, designation, social_media }) => {
     return (
         <div className={styles.memberCard}>
-            <Image src={imageUrl || '/assets/images/team.png'} alt={name} width={281} height={330} />
+            <Image 
+                src={imageUrl || '/assets/images/team.png'} 
+                alt={name} 
+                width={281} 
+                height={330}
+                sizes='100vw'
+                style={{
+                    width: '100%',
+                    height: 'auto'
+                }} 
+            />
             <div className={styles.teamTitle}>
                 <h1>{name}</h1>
                 <h6 className='text-[#666666] text-[14px]'>{designation}</h6>

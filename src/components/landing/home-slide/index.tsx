@@ -38,25 +38,12 @@ const HomeSlider = () => {
     }
   }, 50000)
 
-  // setTimeout(() => {
-  //   if(currentIndex >= 0 && currentIndex < (messages.length - 1)) {
-  //     setCurrentIndex(currentIndex + 1)
-  //     setSelectedMessage(messages[currentIndex + 1])
-  //     console.log(currentIndex)
-  //   }
-  //   else {
-  //     setCurrentIndex(0)
-  //     setSelectedMessage(messages[0])
-  //     console.log(currentIndex)
-  //   }
-  // }, 10000);
-
   return (
     <div className={styles.slideSection}>
       <div className='flex justify-between h-full w-full bg-gradient-to-tr from-transparent to-black/60'>
-        <div className='flex pl-28 w-4/6 h-full justify-start items-center'>
-          <div className='sm:w-3/5 xs:w-full pt-20'>
-            <h1 className='sm:text-[48px] xs:text-[18px] font-bold text-white' data-aos="fade-right">{selectedMessage?.title}</h1>
+        <div className='flex sm:pl-28 xs:pl-6 sm:w-4/6 xs:w-full h-full justify-start items-center'>
+          <div className='sm:w-3/5 xs:w-full sm:pt-20 xs:pt-10'>
+            <h1 className='sm:text-[48px] xs:text-[20px] font-bold text-white' data-aos="fade-right">{selectedMessage?.title}</h1>
             <span className='text-white font-normal' data-aos="fade-up">{selectedMessage?.subtitle}</span>
             <div className='pt-10'>
               <Link href={'/events'} className={styles.discoverMore}>Discover more</Link>
@@ -75,7 +62,7 @@ const HomeSlider = () => {
             </div>
           </div>
         </div>
-        <div className='w-2/6 h-full'></div>
+        <div className='sm:w-2/6 xs:w-0 h-full'></div>
       </div>
     </div>
   )

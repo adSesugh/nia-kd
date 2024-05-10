@@ -1,8 +1,6 @@
 'use client'
 
 import EventCard from '@/components/event/event-card'
-import NIAFooter from '@/components/footer'
-import SubHeader from '@/components/sub-header'
 import TextFieldWithIcon from '@/components/textfield-withicon'
 import { Form, Formik, FormikHelpers } from 'formik'
 import { SearchNormal } from 'iconsax-react'
@@ -98,14 +96,14 @@ const MemberEvents = () => {
 
   return (
     <React.Fragment>
-      <div className='bg-[#F3ECE2] px-28 w-full'>
-        <div className='flex py-8 items-center gap-6'>
+      <div className='bg-[#F3ECE2] sm:px-28 xs:px-6 w-full'>
+        <div className='flex sm:flex-row xs:flex-col-reverse py-8 items-center sm:gap-6 xs:gap-5 xs:-mx-1.5 sm:mx-0'>
           <div className='flex bg-white h-12 px-1 items-center'>
             <button onClick={() => setSelectedSearch('all')} className={`${selectedSearch === 'all' && 'bg-[#1E1A1C] text-white'} h-10 w-[122px] py-1.5 `}>All</button>
             <button onClick={() => setSelectedSearch('upcoming')} className={`${selectedSearch === 'upcoming' && 'bg-[#1E1A1C] text-white'} h-10 w-[122px] py-1.5 `}>Upcoming</button>
             <button onClick={() => setSelectedSearch('past')} className={`${selectedSearch === 'past' && 'bg-[#1E1A1C] text-white'} h-10 w-[122px] py-1.5 `}>Past</button>
           </div>
-          <div className='flex-1 items-center h-full'>
+          <div className='flex-1 items-center h-full w-full'>
             <Formik
               initialValues={initialValues}
               validationSchema={EventSchema}
@@ -115,12 +113,12 @@ const MemberEvents = () => {
               }}
             >
               {({ values, errors, touched, handleChange, handleBlur, handleSubmit, isSubmitting, }) => (
-                <Form onSubmit={handleSubmit} autoComplete='off' className='-mt-4 w-3/5 relative'>
+                <Form onSubmit={handleSubmit} autoComplete='off' className='-mt-4 sm:w-3/5 xs:w-full relative'>
                   <TextFieldWithIcon 
                       name='query' 
                       placeholder='Search events' 
                       type='text'
-                      className={errors.query && touched.query ? 'ring-red-500 pr-10 rounded-none h-12 flex': 'pr-10 rounded-none h-12 flex'}
+                      className={errors.query && touched.query ? 'ring-red-500 pr-10 rounded-none h-12 flex xs:w-full': 'pr-10 rounded-none h-12 flex xs:w-full'}
                       LeftIcons={<SearchNormal variant='Outline' size={24} color='gray' />}
                     />
                 </Form>
@@ -130,9 +128,9 @@ const MemberEvents = () => {
         </div>
         <div>
           <h1 className='pb-2'>Showing 6 events</h1>
-          <div className='grid grid-cols-3 gap-12 justify-between pb-6'>
+          <div className='grid sm:grid-cols-3 xs:grid-cols-1 xs:gap-6 sm:gap-12 justify-between pb-6'>
             {events.map((event, index) => (
-              <EventCard {...event} key={index} />
+              <EventCard event={event} key={index} href={`/member/events/${event.id}`} />
             ))}
           </div>
         </div>

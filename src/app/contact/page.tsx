@@ -1,6 +1,5 @@
 import Image from 'next/image'
 import Link from 'next/link'
-import NIAFooter from '@/components/footer'
 import SubHeader from '@/components/sub-header'
 import React from 'react'
 
@@ -8,13 +7,13 @@ const Contact = () => {
   return (
     <div className='w-full'>
       <SubHeader title='Contact Us' subtitle={''} />
-      <div className='flex sm:flex-row xs:flex-col-reverse justify-between px-28 py-16 pb-24'>
+      <div className='flex sm:flex-row xs:flex-col-reverse justify-between sm:px-28 xs:px-6 py-16 pb-24'>
         <div className='sm:w-5/12 xs:w-full'>
           <div className='mb-8'>
-            <h1 className='font-semibold'>Physical address</h1>
+            <h1 className='font-semibold xs:pt-4 sm:pt-0'>Physical address</h1>
             <div className='flex gap-4 pt-3'>
                 <Image src={'/assets/icons/location.svg'} alt='address' height={24} width={24} />
-                <span className='text-[15px] w-8/12'>24, Magaji Muazu Crescent, Katampe Extension, FCT - Abuja Nigeria</span>
+                <span className='text-[15px] sm:w-8/12 xs:w-full'>24, Magaji Muazu Crescent, Katampe Extension, FCT - Abuja Nigeria</span>
             </div>
           </div>
           <div className='mb-8'>
@@ -41,7 +40,6 @@ const Contact = () => {
           </div>
         </div>
       </div>
-      <NIAFooter />
     </div>
   )
 }
