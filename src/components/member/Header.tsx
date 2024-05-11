@@ -6,7 +6,7 @@ import styles from '@/styles/member.module.css'
 import Image from 'next/image'
 import Link from 'next/link'
 import { usePathname } from 'next/navigation'
-import { ArrowDown2, ArrowUp2, Calendar1, HambergerMenu, Home, Notification, Ticket, Ticket2 } from 'iconsax-react'
+import { ArrowDown2, ArrowUp2, Calendar2, HambergerMenu, Home, Notification, Ticket, Ticket2 } from 'iconsax-react'
 import NairaIcon from '../custom-icons/NairaIcon'
 import CertificateIcon from '../custom-icons/CertificateIcon'
 import { Drawer, Sidebar } from 'flowbite-react'
@@ -18,7 +18,7 @@ const Header = () => {
     const handleDrawer = () => setIsOpen(cur => !cur);
 
     const SHomeIcon = () => <Home variant='Outline' size={20} color={`${pathname === '/member/dashboard' ? '#F2F2F2' : '#BFBFBF'}`} />
-    const SCalenderIcon = () => <Calendar1 variant='Outline' size={20} color={`${pathname === '/member/events' ? '#F2F2F2' : '#BFBFBF'}`} />
+    const SCalenderIcon = () => <Calendar2 variant='Outline' size={20} color={`${pathname === '/member/events' ? '#F2F2F2' : '#BFBFBF'}`} />
     const STicketIcon = () => <Ticket variant='Outline' size={20} color={`${pathname === '/member/tickets' ? '#F2F2F2' : '#BFBFBF'}`} />
     const SDuesIcon = () => {
         return (
@@ -61,7 +61,7 @@ const Header = () => {
                         <li>
                             <div className={styles.menuitem}>
                                 <Link href={'/member/events'} className='flex items-center gap-2'>
-                                    <Calendar1 variant='Outline' size={20} color={`${pathname === '/member/events' ? '#F2F2F2' : '#BFBFBF'}`} />
+                                    <Calendar2 variant='Outline' size={20} color={`${pathname === '/member/events' ? '#F2F2F2' : '#BFBFBF'}`} />
                                     <span className={`${pathname === '/member/events' ? 'text-gray-50' : 'text-[#BFBFBF]'}`}>Events</span>
                                 </Link>
                                 {pathname.includes('/member/events') && <div className={styles.menuActive}></div>}

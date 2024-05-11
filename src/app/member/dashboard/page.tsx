@@ -12,27 +12,28 @@ export const metadata: Metadata = {
 };
 
 const Dashboard = () => {
+  const getPercent = getDaysPercentage( getTotalDaysOfYear(new Date()), getTotalDaysInYear(new Date().getFullYear()))
   return (
     <div className='h-full w-full xs:px-6 sm:px-80 bg-gray-100 overflow-y-auto pb-8'>
       <div className='py-6 w-full pt-16'>
         <div className='flex xs:flex-col sm:flex-row xs:justify-center sm:justify-start sm:items-center xs:space-y-3 sm:space-y-0 sm:space-x-3'>
           <h1 className='text-2xl'>Arc. Jimoh Abdulrazak</h1>
-          <Badge className='text-[12px] text-[#0B7A09] rounded-2xl bg-[#E3F1E2] font-normal xs:w-[120px]'>Graduate member</Badge>
+          <Badge className='text-[12px] text-center text-[#0B7A09] rounded-2xl bg-[#E3F1E2] font-normal w-[122px]'>Graduate member</Badge>
         </div>
         <div>
           <h2 className='text-sm'>Membership ID: M3400</h2>
         </div>
       </div>
       <div className='flex xs:flex-col sm:flex-row gap-5 justify-between'>
-        <div className='flex xs:flex-col sm:flex-row sm:space-x-4 xs:space-x-0 border bg-white px-9 py-4 rounded-2xl items-center'>
+        <div className='flex xs:flex-col sm:flex-row sm:space-x-4 xs:space-x-0 border bg-white px-8 py-4 rounded-2xl items-center'>
           <div className='flex justify-center items-center h-full xs:pb-4 sm:pb-0 -ml-2'>
             <CircularProgress
-              value={getDaysPercentage( getTotalDaysOfYear(new Date()), getTotalDaysInYear(new Date().getFullYear()))}
+              value={getPercent}
               showValueLabel={true} 
               strokeWidth={4}
               classNames={{
                 svg: "w-24 h-24 drop-shadow-md",
-                indicator: "stroke-success",
+                indicator: `${getPercent >= 80 ? "stroke-danger" : "stroke-success" }`,
                 track: "#BFBFBF",
                 value: "text-sm font-semibold text-[#1E1A1C]",
               }}
@@ -41,7 +42,7 @@ const Dashboard = () => {
           <div className='flex h-full flex-col gap-4 pb-3'>
             <div>
               <h1 className='text-xl'>Membership Due</h1>
-              <span className='text-[13px] text-gray-500'>You have {28} days left to renew your membership due</span>
+              <span className='text-[13px] text-gray-500'>You have {getTotalDaysInYear(new Date().getFullYear()) - getTotalDaysOfYear(new Date())} days left to renew your membership due</span>
             </div>
             <div className='flex space-x-5 items-center'>
               <button className='px-3 py-1.5 rounded-full text-sm text-white bg-[#241F21]'>Pay now</button>

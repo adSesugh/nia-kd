@@ -11,7 +11,7 @@ const page = () => {
   return (
     <div className='h-full w-full pb-8'>
       <div className='py-8'>
-        <h1 className='text-4xl font-semibold'>Tickets</h1>
+        <h1 className='text-2xl font-semibold'>Tickets</h1>
       </div>
       <div className='mb-6'>
         <div className='mb-3'>

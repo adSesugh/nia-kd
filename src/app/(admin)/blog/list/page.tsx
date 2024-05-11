@@ -1,8 +1,11 @@
 import React from 'react'
+import TitleHeader from '../../TitleHeader'
 
 const Blog = () => {
   return (
-    <div>Blog</div>
+    <div className='sm:px-12 xs:px-4'>
+      <TitleHeader title='Blog' />
+    </div>
   )
 }
 

@@ -11,18 +11,19 @@ export const metadata: Metadata = {
 };
 
 const DueScreen = () => {
+  const getPercent = getDaysPercentage( getTotalDaysOfYear(new Date()), getTotalDaysInYear(new Date().getFullYear()))
   return (
     <div className='h-full w-full sm:px-80 xs:px-6 bg-gray-100 pb-5 pt-16'>
       <div className='flex xs:flex-col sm:flex-row gap-5 justify-between'>
         <div className='flex xs:flex-col sm:flex-row sm:space-x-4 xs:space-x-0 border bg-white px-9 py-4 rounded-2xl items-center w-full'>
           <div className='flex justify-center items-center h-full xs:pb-4 sm:pb-0 -ml-2'>
             <CircularProgress
-              value={getDaysPercentage( getTotalDaysOfYear(new Date()), getTotalDaysInYear(new Date().getFullYear()))}
+              value={getPercent}
               showValueLabel={true} 
               strokeWidth={4}
               classNames={{
                 svg: "w-24 h-24 drop-shadow-md",
-                indicator: "stroke-success",
+                indicator: `${getPercent >= 80 ? "stroke-danger" : "stroke-success" }`,
                 track: "#BFBFBF",
                 value: "text-sm font-semibold text-[#1E1A1C]",
               }}
@@ -40,7 +41,7 @@ const DueScreen = () => {
         </div>
       </div>
       <div className='pt-8 w-full'>
-        <h1 className='text-xl font-semibold'>Payment History</h1>
+        <h1 className='text-lg font-semibold'>Payment History</h1>
         <div className='flex flex-col items-center justify-center w-full pt-20'>
           <Image
             className=''
