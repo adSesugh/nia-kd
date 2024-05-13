@@ -10,12 +10,22 @@ import { ArrowDown2, ArrowUp2, Calendar2, HambergerMenu, Home, Notification, Tic
 import NairaIcon from '../custom-icons/NairaIcon'
 import CertificateIcon from '../custom-icons/CertificateIcon'
 import { Drawer, Sidebar } from 'flowbite-react'
+import { Dropdown, DropdownItem, DropdownMenu, DropdownTrigger, User } from '@nextui-org/react'
+import { useAppDispatch, useAppSelector } from '@/features/hooks'
+import { RootState } from '@/features/store'
+import { logOut } from '@/features/slices/authSlice'
 
 const Header = () => {
     const pathname = usePathname()
     const [isOpen, setIsOpen] = useState(false);
+    const { user } = useAppSelector((state: RootState) => state.auth.userData)
+    const dispatch = useAppDispatch()
 
     const handleDrawer = () => setIsOpen(cur => !cur);
+
+    const getFullname = () => {
+        return `${user?.member?.firstName} ${user?.member?.lastName}`
+    }
 
     const SHomeIcon = () => <Home variant='Outline' size={20} color={`${pathname === '/member/dashboard' ? '#F2F2F2' : '#BFBFBF'}`} />
     const SCalenderIcon = () => <Calendar2 variant='Outline' size={20} color={`${pathname === '/member/events' ? '#F2F2F2' : '#BFBFBF'}`} />
@@ -111,17 +121,36 @@ const Header = () => {
                         <div className='absolute -top-[2px] right-[2px] h-2.5 w-2.5 rounded-full bg-[#F52A2A] border-2 border-[#1E1A1C]' />
                     </div>
                     <div className='flex items-center space-x-3 xs:hidden sm:flex'>
-                        <img 
-                            src={'/assets/images/member.svg'}
-                            sizes='100vw'
-                            alt='Profile'
-                            className='rounded-full h-8 w-8'
-                        />
-                        <div className='flex items-center space-x-2'>
-                            <h1 className='text-white text-[12px]'>Jimoh Abdulrazak</h1>
-                            <ArrowDown2 size={20} variant='Outline' color='#FFFFFF' />
-                            {/* <ArrowUp2 size={20} variant='Outline' color='#FFFFFF' /> */}
-                        </div>
+                        <Dropdown placement="bottom-end">
+                            <DropdownTrigger>
+                                <User
+                                    as="button"
+                                    avatarProps={{
+                                        isBordered: false,
+                                        src: `${user?.photoURL !== undefined ? user.photoURL : '/assets/profile.svg'}`,
+                                    }}
+                                    className="transition-transform text-white"
+                                    name={
+                                    <div className='flex space-x-2 leading-3 -mb-1'>
+                                        <h1 className='text-[12px] text-white leading-3'>{getFullname()}</h1>
+                                        <ArrowDown2 variant='Outline' color='#ffffff' size={16} />
+                                    </div>
+                                    }
+                                />
+                            </DropdownTrigger>
+                            <DropdownMenu aria-label="User Actions" variant="flat">
+                            <DropdownItem key="profile" className="h-14 gap-2">
+                                <p className="font-bold">Signed in as</p>
+                                <p className="font-bold">@{user?.role.toLowerCase()}</p>
+                            </DropdownItem>
+                            <DropdownItem key="settings">
+                                My Settings
+                            </DropdownItem>
+                            <DropdownItem key="logout" onClick={() => dispatch(logOut())}>
+                                Log Out
+                                </DropdownItem>
+                            </DropdownMenu>
+                        </Dropdown>
                     </div>
                     <div className='xs:flex sm:hidden'>
                         <HambergerMenu color='white' size={28} variant='Outline' onClick={handleDrawer} />
@@ -129,46 +158,84 @@ const Header = () => {
                 </div>
             </div>
             <Drawer open={isOpen} onClose={handleDrawer} position="right" className='bg-[#1E1A1C]'>
-                <div className='flex justify-between mb-6'>
-                    <Image alt='NIA-Kd' src={'/assets/newLogo.svg'} width={100} height={30.08} />
-                    <Drawer.Header title="" titleIcon={() => <></>} />
-                </div>
-                <hr />
-                <Drawer.Items>
-                    <Sidebar
-                        aria-label="Sidebar with multi-level dropdown example"
-                        className="[&>div]:bg-transparent [&>div]:p-0"
-                    >
-                        <div className="flex h-full flex-col justify-between py-2 pt-4">
-                            <div>
-                                <Sidebar.Items>
-                                    <Sidebar.ItemGroup>
-                                        <Sidebar.Item href="/member/dashboard" icon={SHomeIcon}>
-                                            <h1 className={`${pathname.includes('member/dashboard') ? 'text-gray-50' : 'text-[#BFBFBF]'}`}>Home</h1>
-                                            {pathname.includes('member/dashboard') && <div className={'w-full h-1.5 bg-[#D99A3F] rounded-t-xl'}></div>}
-                                        </Sidebar.Item>
-                                        <Sidebar.Item href="/member/events" icon={SCalenderIcon}>
-                                            <h1 className={`${pathname.includes('member/events') ? 'text-gray-50' : 'text-[#BFBFBF]'}`}>Events</h1>
-                                            {pathname.includes('member/events') && <div className={'w-full h-1.5 bg-[#D99A3F] rounded-t-xl'}></div>}
-                                        </Sidebar.Item>
-                                        <Sidebar.Item href="/member/dues" icon={SDuesIcon}>
-                                            <h1 className={`${pathname.includes('member/dues') ? 'text-gray-50' : 'text-[#BFBFBF]'}`}>Annual Dues</h1>
-                                            {pathname.includes('member/dues') && <div className={'w-full h-1.5 bg-[#D99A3F] rounded-t-xl'}></div>}
-                                        </Sidebar.Item>
-                                        <Sidebar.Item href="/member/tickets" icon={STicketIcon}>
-                                            <h1 className={`${pathname.includes('member/tickets') ? 'text-gray-50' : 'text-[#BFBFBF]'}`}>Tickets</h1>
-                                            {pathname.includes('member/tickets') && <div className={'w-full h-1.5 bg-[#D99A3F] rounded-t-xl'}></div>}
-                                        </Sidebar.Item>
-                                        <Sidebar.Item href="/member/certificates" icon={SCertificateIcon}>
-                                            <h1 className={`${pathname.includes('member/certificates') ? 'text-gray-50' : 'text-[#BFBFBF]'}`}>Certificates</h1>
-                                            {pathname.includes('member/certificates') && <div className={'w-full h-1.5 bg-[#D99A3F] rounded-t-xl'}></div>}
-                                        </Sidebar.Item>
-                                    </Sidebar.ItemGroup>
-                                </Sidebar.Items>
-                            </div>
+                <div className='flex flex-col justify-between h-full'>
+                    <div>
+                        <div className='flex justify-between mb-6'>
+                            <Image alt='NIA-Kd' src={'/assets/newLogo.svg'} width={100} height={30.08} />
+                            <Drawer.Header title="" titleIcon={() => <></>} />
                         </div>
-                    </Sidebar>
-                </Drawer.Items>
+                        <hr />
+                        <Drawer.Items>
+                            <Sidebar
+                                aria-label="Sidebar with multi-level dropdown example"
+                                className="[&>div]:bg-transparent [&>div]:p-0"
+                            >
+                                <div className="flex h-full flex-col justify-between py-2 pt-4">
+                                    <div>
+                                        <Sidebar.Items>
+                                            <Sidebar.ItemGroup>
+                                                <Sidebar.Item href="/member/dashboard" icon={SHomeIcon}>
+                                                    <h1 className={`${pathname.includes('member/dashboard') ? 'text-gray-50' : 'text-[#BFBFBF]'}`}>Home</h1>
+                                                    {pathname.includes('member/dashboard') && <div className={'w-full h-1.5 bg-[#D99A3F] rounded-t-xl'}></div>}
+                                                </Sidebar.Item>
+                                                <Sidebar.Item href="/member/events" icon={SCalenderIcon}>
+                                                    <h1 className={`${pathname.includes('member/events') ? 'text-gray-50' : 'text-[#BFBFBF]'}`}>Events</h1>
+                                                    {pathname.includes('member/events') && <div className={'w-full h-1.5 bg-[#D99A3F] rounded-t-xl'}></div>}
+                                                </Sidebar.Item>
+                                                <Sidebar.Item href="/member/dues" icon={SDuesIcon}>
+                                                    <h1 className={`${pathname.includes('member/dues') ? 'text-gray-50' : 'text-[#BFBFBF]'}`}>Annual Dues</h1>
+                                                    {pathname.includes('member/dues') && <div className={'w-full h-1.5 bg-[#D99A3F] rounded-t-xl'}></div>}
+                                                </Sidebar.Item>
+                                                <Sidebar.Item href="/member/tickets" icon={STicketIcon}>
+                                                    <h1 className={`${pathname.includes('member/tickets') ? 'text-gray-50' : 'text-[#BFBFBF]'}`}>Tickets</h1>
+                                                    {pathname.includes('member/tickets') && <div className={'w-full h-1.5 bg-[#D99A3F] rounded-t-xl'}></div>}
+                                                </Sidebar.Item>
+                                                <Sidebar.Item href="/member/certificates" icon={SCertificateIcon}>
+                                                    <h1 className={`${pathname.includes('member/certificates') ? 'text-gray-50' : 'text-[#BFBFBF]'}`}>Certificates</h1>
+                                                    {pathname.includes('member/certificates') && <div className={'w-full h-1.5 bg-[#D99A3F] rounded-t-xl'}></div>}
+                                                </Sidebar.Item>
+                                            </Sidebar.ItemGroup>
+                                        </Sidebar.Items>
+                                    </div>
+                                </div>
+                            </Sidebar>
+                        </Drawer.Items>
+                    </div>
+                    <div>
+                        <Dropdown placement="bottom-start">
+                            <DropdownTrigger>
+                                <User
+                                    as="button"
+                                    avatarProps={{
+                                    isBordered: true,
+                                    src: `${user?.photoURL !== undefined ? user.photoURL : '/assets/profile.svg'}`,
+                                    }}
+                                    className="transition-transform text-white"
+                                    description={user?.role}
+                                    name={
+                                    <div className='flex space-x-2 leading-3 -mb-1'>
+                                        <h1 className='text-[12px] text-white leading-3'>{getFullname()}</h1>
+                                        <ArrowUp2 variant='Outline' color='#ffffff' size={16} />
+                                    </div>
+                                    }
+                                />
+                            </DropdownTrigger>
+                            <DropdownMenu aria-label="User Actions" variant="flat">
+                            <DropdownItem key="profile" className="h-14 gap-2">
+                                <p className="font-bold">Signed in as</p>
+                                <p className="font-bold">@{user?.role.toLowerCase()}</p>
+                            </DropdownItem>
+                            <DropdownItem key="settings">
+                                My Settings
+                            </DropdownItem>
+                            <DropdownItem key="logout" onClick={() => dispatch(logOut())}>
+                                Log Out
+                                </DropdownItem>
+                            </DropdownMenu>
+                        </Dropdown>
+                    </div>
+                </div>
+                
             </Drawer>
         </header>
     )

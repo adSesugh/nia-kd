@@ -11,7 +11,7 @@ type TextFieldProps = {
 
 const TextField: React.FC<TextFieldProps> = ({ name, placeholder, type, className, showError}) => {
   return (
-    <div className={`mb-3 text-[14px] ${showError && 'text-red-500'}`}>
+    <div className={`mb-2 text-[14px] ${showError && 'text-red-500'}`}>
       <Field 
         name={name} 
         placeholder={placeholder} 

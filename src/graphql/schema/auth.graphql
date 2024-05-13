@@ -1,0 +1,42 @@
+mutation CreateUser($input: newMember!) {
+  createUser(input: $input) {
+    code
+    success
+    message
+    user {
+      id
+      regId
+      role
+      photoURL
+    }
+  }
+}
+
+mutation UserLogin($input: signInUser!) {
+  login(input: $input) {
+    token
+    user {
+      id
+      regId
+      role
+      member {
+        firstName
+        lastName
+        photoURL
+      }
+    }
+  }
+}
+
+query GetUsers {
+  users {
+    id
+    regId
+    role
+    password
+    rememberMe
+    createdAt
+    updatedAt
+  }
+}
+

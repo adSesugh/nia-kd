@@ -11,3 +11,5 @@ export const getTotalDaysOfYear = (date: any): number => {
 }
 
 export const getDaysPercentage = (days: number, totalDays: number): number => Math.ceil(days / totalDays * 100)
+
+export const generateZerofillID = (counter: number): string => String(counter).padStart(6, '0')

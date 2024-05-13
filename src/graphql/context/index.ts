@@ -1,17 +1,15 @@
-import BlogAPI from "@/app/api/v1/services/blogAPI";
-import MemberAPI from "@/app/api/v1/services/memberAPI";
-import TagAPI from "@/app/api/v1/services/tagAPI";
-import UserAPI from "@/app/api/v1/services/userAPI";
+import MemberAPI from "@/services/memberAPI";
+import UserAPI from "@/services/userAPI";
 import type { PrismaClient } from "@prisma//client";
+import { NextRequest } from "next/server";
 
 export type GraphQLContext = {
     prisma: PrismaClient,
     host: string,
     userId: string,
+    request: NextRequest,
     dataSources: {
-        blogAPI: BlogAPI
-        tagAPI: TagAPI
-        memberAPI: MemberAPI
         userAPI: UserAPI
+        memberAPI: MemberAPI
     };
 }

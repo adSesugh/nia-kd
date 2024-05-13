@@ -4,8 +4,8 @@
 import { LayoutProps } from '@/types/common'
 import Link from 'next/link';
 import Image from 'next/image';
-import { usePathname } from 'next/navigation';
-import React from 'react'
+import { redirect, usePathname } from 'next/navigation';
+import React, { useEffect } from 'react'
 import { Menu, MenuItem, Sidebar, sidebarClasses } from 'react-pro-sidebar';
 import { ArrowDown, ArrowUp2, Blogger, Calendar2, HambergerMenu, Home, MenuBoard, Profile2User, NotificationStatus, NotificationBing, Notification1, Notification } from 'iconsax-react';
 import NairaIcon from '@/components/custom-icons/NairaIcon';
@@ -13,28 +13,30 @@ import AdvertIcon from '@/components/custom-icons/AdvertIcon';
 import CertificateIcon from '@/components/custom-icons/CertificateIcon';
 import { PRIMARY_TWO } from '@/constant/Colors';
 import { Dropdown, DropdownItem, DropdownMenu, DropdownSection, DropdownTrigger, User } from '@nextui-org/react';
+import { useAppDispatch, useAppSelector } from '@/features/hooks';
+import { RootState } from '@/features/store';
+import { logOut } from '@/features/slices/authSlice';
 
 // export const metadata: Metadata = {
 //   title: "Administrator Panel | NIA-Kd",
 //   description: "NIA-Kd Home",
 // };
 
-const MenuIcon = ({url}: {url: string}) => <Image alt='Menu' src={url} width={10} height={10} sizes='20vw' style={{width: '60%', height: 'auto'}} className='h-8 w-8' />
-const ActivePrefix = () => {
-  return (
-    <div className='w-2 h-full py-2 bg-[#AB8144]'>
-      
-    </div>
-  )
-}
-
 const DashboardLayout: React.FC<LayoutProps> = ({ children }) => {
   const [toggled, setToggled] = React.useState(false);
   const [collapsed, setCollapsed] = React.useState(false);
-  //const {jwt_token, user} = useAppSelector((state: RootState) => state.auth)
+  const {token: isLoggedIn, user} = useAppSelector((state: RootState) => state.auth.userData)
+  const dispatch = useAppDispatch()
 
-  //const dispatch = useAppDispatch()
   const pathname = usePathname()
+
+  if(!isLoggedIn) {
+    return redirect('/auth/login')
+  }
+
+  const getFullname = () => {
+    return `${user?.member?.firstName} ${user?.member?.lastName}`
+  }
 
   return (
     <div className='flex h-screen justify-between'>
@@ -172,7 +174,7 @@ const DashboardLayout: React.FC<LayoutProps> = ({ children }) => {
                     description="Admin"
                     name={
                       <div className='flex space-x-2 leading-3 -mb-1'>
-                        <h1 className='text-[12px] text-white leading-3'>Jimoh Abdulrazak</h1>
+                        <h1 className='text-[12px] text-white leading-3'>{getFullname()}</h1>
                         <ArrowUp2 variant='Outline' color='#ffffff' size={16} />
                       </div>
                     }
@@ -181,12 +183,12 @@ const DashboardLayout: React.FC<LayoutProps> = ({ children }) => {
                 <DropdownMenu aria-label="User Actions" variant="flat">
                   <DropdownItem key="profile" className="h-14 gap-2">
                     <p className="font-bold">Signed in as</p>
-                    <p className="font-bold">@admin</p>
+                    <p className="font-bold">@{user?.role.toLowerCase()}</p>
                   </DropdownItem>
                   <DropdownItem key="settings">
                     My Settings
                   </DropdownItem>
-                  <DropdownItem key="logout">
+                  <DropdownItem key="logout" onClick={() => dispatch(logOut())}>
                       Log Out
                     </DropdownItem>
                 </DropdownMenu>

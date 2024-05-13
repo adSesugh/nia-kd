@@ -14,7 +14,7 @@ type TextFieldWithIconProps = {
 const TextFieldWithIcon: React.FC<TextFieldWithIconProps> = ({ name, placeholder, type, LeftIcons, RightIcon, className}) => {
     return (
         <div>
-            <div className="relative mt-4 rounded-md shadow-sm">
+            <div className="relative mt-2 rounded-md shadow-sm">
                 {LeftIcons && (
                     <div className="pointer-events-none absolute inset-y-0 left-0 flex items-center pl-2">
                         {LeftIcons}

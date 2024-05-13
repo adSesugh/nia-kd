@@ -1,0 +1,188 @@
+// export const typeDefs = `#graphql
+//   scalar Time
+//   scalar UUID
+//   scalar Decimal
+//   scalar Upload
+
+//   type Tag {
+//     id: UUID!
+//     name: String!
+//     blogs: [Blog]
+//     createdAt: Time
+//     updatedAt: Time
+//   }
+
+//   type Blog {
+//     id: UUID!
+//     title: String!
+//     content: String!
+//     link: String!
+//     summary: String!
+//     image: String!
+//     tags: [Tag]
+//     userId: String
+//     createdAt: Time
+//     updatedAt: Time
+//   }
+
+//   type User {
+//     id: UUID!
+//     regId: String!
+//     role: String!
+//     password: String!
+//     rememberMe: Boolean
+//     createdAt: Time
+//     updatedAt: Time
+//   }
+
+//   type Member {
+//     id: UUID!
+//     regId: String!
+//     firstName: String!
+//     lastName: String!
+//     email: String!
+//     phoneNumber: String!
+//     photoURL: String
+//     address: String!
+//     userId: UUID!
+//     joined: Time
+//     membershipType: String!
+//     membershipId: String!
+//     status: String
+//     createdAt: Time
+//     updatedAt: Time
+//   }  
+
+//   type Event {
+//     id: UUID!
+//     title: String!
+//     description: String
+//     locationType: String!
+//     lat: Decimal
+//     lng: Decimal
+//     eventType: String!
+//     startAt: Time!
+//     endAt: Time!
+//     ticketType: String!
+//     seats: Int!
+//     isInfinity: Boolean
+//     coverPhoto: String!
+//     userId: UUID!
+//     formTitle: String!
+//     instructions: String!
+//     mailFormat: String!
+//     mailTicket: Boolean
+//     ticketCharge: Decimal!
+//     status: String
+//     createdAt: Time
+//     updatedAt: Time
+//   }
+
+//   type EventForm {
+//     id: UUID
+//     eventId: UUID
+//     name: String
+//     status: Boolean
+//   }
+
+//   input newUser {
+//     regId: String
+//     role: String
+//     password: String
+//     rememberMe: Boolean
+//   }
+
+//   input signInUser {
+//     regId: String!
+//     password: String!
+//     rememberMe: String
+//   }
+
+//   type AuthPayload {
+//     token: String
+//     user: User
+//   }
+
+//   input newMember {
+//     membershipType: String!
+//     membershipId: String
+//     firstName: String!
+//     lastName: String!
+//     email: String!
+//     phoneNumber: String!
+//     photoURL: String
+//     address: String!
+//     userId: UUID
+//     status: String,
+//     password: String!
+//   }
+
+//   input newTag {
+//     name: String!
+//   }
+
+//   input newBlog {
+//     title: String!
+//     content: String!
+//     link: String!
+//     summary: String!
+//     image: String!
+//     tags: [String!]
+//     userId: String
+//   }
+
+//   type UserResponse {
+//     id: UUID
+//     regId: String
+//     role: String
+//     createdAt: Time
+//   }
+
+//   type MemberResponse {
+//     code: Int!
+//     success: Boolean!
+//     message: String!
+//     member: Member
+//   }
+
+//   type BlogResponse {
+//     code: Int!
+//     success: Boolean!
+//     message: String!
+//     blog: Blog
+//   }
+
+//   type BlogResponse {
+//     code: Int!
+//     success: Boolean!
+//     message: String
+//     blog: Blog
+//   }
+
+//   type TagResponse {
+//     id: UUID!,
+//     name: String!,
+//     blog: Blog
+//   }
+
+//   type Mutation {
+//     createTag(input: newTag!): Tag
+//     updateTag(id: String!, name: String!): Tag
+//     createMember(input: newMember!): MemberResponse
+//     createUser(input: newMember!): UserResponse
+//     createBlog(input: newBlog!): BlogResponse
+//     login(input: signInUser!): AuthPayload
+//     logout: Boolean
+//   }
+
+//   type Query {
+//     tags: [Tag]
+//     blogs: [Blog]
+//     members: [Member]
+//     users: [UserResponse]
+//     member(id: UUID!): Member
+//     blog(id: UUID!): Blog
+//     user(id: UUID!): Member
+//     tag(id: UUID!): Tag
+//   }
+// `;

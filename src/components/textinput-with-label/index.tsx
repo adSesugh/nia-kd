@@ -12,7 +12,7 @@ type TextFieldProps = {
 
 const TextInputWithLabel: React.FC<TextFieldProps> = ({ name, placeholder, type, className, showError, label}) => {
     return (
-        <div className={`mb-3 text-[14px] ${showError && 'text-red-500'}`}>
+        <div className={`mb-2 text-[14px] ${showError && 'text-red-500'}`}>
             <div className='py-1'>
                 <h3>{label}</h3>
             </div>

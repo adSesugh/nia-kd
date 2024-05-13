@@ -6,6 +6,9 @@ import { ApolloWrapper } from "@/components/apollo-wrapper";
 import { useEffect } from "react";
 import { ThemeModeScript } from "flowbite-react";
 import NextProvider from "@/providers/NextProvider";
+import ReduxProvider from "@/providers/ReduxProvider";
+import { ToastContainer } from "react-toastify";
+import 'react-toastify/dist/ReactToastify.css';
 
 const inter = Inter({ subsets: ["latin"] });
 
@@ -32,7 +35,10 @@ export default function RootLayout({
       <body className={`${inter.className} select-none`}>
         <ApolloWrapper>
           <NextProvider>
-            {children}
+            <ReduxProvider>
+              {children}
+              <ToastContainer />
+            </ReduxProvider>
           </NextProvider>
         </ApolloWrapper>
       </body>

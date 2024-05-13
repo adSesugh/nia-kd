@@ -8,7 +8,8 @@ export type RegisterForm = {
     lastName: string
     email: string
     phoneNumber: string
-    regId: string
+    membershipType: string
+    membershipId: string
     address: string
     password: string
     confirmPassword: string

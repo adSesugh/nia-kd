@@ -11,6 +11,12 @@ import { Profile, Lock, EyeSlash, Eye } from 'iconsax-react'
 import TextFieldWithIcon from '@/components/textfield-withicon'
 import SubmitButton from '@/components/submit-button'
 import { redirect } from 'next/navigation'
+import { useUserLoginMutation } from '@/graphql/__generated__/graphql'
+import { toast } from 'react-toastify'
+import { Role } from '@/lib/common'
+import { useAppDispatch, useAppSelector } from '@/features/hooks'
+import { setUserData } from '@/features/slices/authSlice'
+import { RootState } from '@/features/store'
 
 const LoginSchema = Yup.object().shape({
   regId: Yup.string().required('Membership ID is required'),
@@ -21,6 +27,13 @@ const LoginSchema = Yup.object().shape({
 const LoginPage: React.FC<{}> = () => {
   const initialValues: LoginForm = { regId: '', password: '' };
   const [show, setShow] = React.useState<boolean>(false)
+  const [login, {loading, error}] = useUserLoginMutation()
+  const dispatch = useAppDispatch()
+  const isLoggedIn = useAppSelector((state:RootState) => state.auth.userData.token)
+
+  if(isLoggedIn) {
+    return redirect('/member/dashboard')
+  }
 
   return (
     <div className={styles.login}>
@@ -29,10 +42,33 @@ const LoginPage: React.FC<{}> = () => {
      <Formik
        initialValues={initialValues}
        validationSchema={LoginSchema}
-       onSubmit={(values: LoginForm, { setSubmitting }: FormikHelpers<LoginForm>) => {
-         console.log(values);
-         setSubmitting(false)
-         return redirect('/member/dashboard')
+       onSubmit={async (values: LoginForm, { setSubmitting }: FormikHelpers<LoginForm>) => {
+        console.log(values);
+        try {
+          const res = await login({
+            variables: {
+              input: {
+                regId: values.regId,
+                password: values.password
+              }
+            }
+          })
+
+          if(res.data?.login) {
+            const userRole = res.data.login.user?.role
+            dispatch(setUserData(res.data.login))
+            setSubmitting(false)
+            if(userRole === Role.MEMBER) {
+              toast.success('Welcome!')
+              redirect('/member/dashboard')
+            } else if(userRole === Role.ADMINISTRATOR){
+              return redirect('/dashboard')
+            }
+          }
+        } catch (error: any) {
+          setSubmitting(false)
+          toast.error(error.message)
+        }
        }}
      >
        {({ values, errors, touched, handleChange, handleBlur, handleSubmit, isSubmitting, }) => (
@@ -54,9 +90,9 @@ const LoginPage: React.FC<{}> = () => {
             />
             <CheckBox name='rememberMe' label='Remember me' />
            <SubmitButton 
-              name={isSubmitting ? 'Please wait...' : 'Login'} 
+              name={isSubmitting || loading ? 'Please wait...' : 'Login'} 
               type='submit' 
-              disabled={isSubmitting} 
+              disabled={isSubmitting || loading } 
               className='bg-black text-white item-center rounded-3xl text-sm w-full h-11'
             />
          </Form>

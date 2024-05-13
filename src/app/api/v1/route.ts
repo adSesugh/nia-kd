@@ -1,38 +1,41 @@
 import { startServerAndCreateNextHandler } from '@as-integrations/next';
 import { ApolloServer } from '@apollo/server';
-import { resolvers } from './resolvers';
-import { typeDefs } from './schema';
+import { resolvers } from '@/graphql/resolvers';
+import { typeDefs } from '@/graphql/schema';
 import { GraphQLContext } from '@/graphql/context';
 import { prisma } from '@/lib/prisma';
-import BlogAPI from './services/blogAPI';
-import TagAPI from './services/tagAPI';
-import MemberAPI from './services/memberAPI';
-import UserAPI from './services/userAPI';
+import MemberAPI from '@/services/memberAPI';
+import UserAPI from '@/services/userAPI';
 import { getUserIdFromToken } from '@/lib/common';
+import { NextRequest } from 'next/server';
 
 const server = new ApolloServer({
     resolvers,
-    typeDefs
+    typeDefs,
+    plugins: [],
+    nodeEnv: process.env.NODE_ENV,
 });
 
-const handler = startServerAndCreateNextHandler(server, {
+server.logger
+
+const handler = startServerAndCreateNextHandler<NextRequest>(server, {
     context: async (req): Promise<GraphQLContext> => {
         const { cache } = server
-        const hostURL: string = req.headers.host ?? 'http://localhost:3000'
-        const token = req.headers.authorization || '';
+        const hostURL: string = req.headers.get('host') || process.env.NEXT_PUBLIC_APP_URL as string
+        const token = req.headers.get('authorization') || '';
         const userId = getUserIdFromToken(token);
         return {
             prisma,
             host: hostURL,
             userId: userId,
+            request: req,
             dataSources: {
-                blogAPI: new BlogAPI({ cache, token }),
-                tagAPI: new TagAPI({ cache }),
+                userAPI: new UserAPI({ cache }),
                 memberAPI: new MemberAPI({ cache }),
-                userAPI: new UserAPI({ cache })
-            }
+
+            },
         }
-    }
+    },
 });
 
 export { handler as GET, handler as POST };

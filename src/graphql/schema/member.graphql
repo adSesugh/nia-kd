@@ -1,19 +1,17 @@
 query GetMembers {
   members {
-    address
-    email
-    firstName
     id
-    joined
+    regId
+    firstName
     lastName
-    memberType
+    email
     phoneNumber
     photoURL
-    regId
-    updatedAt
-    userId
-    createdAt
+    joined
+    membershipType
+    membershipId
     status
+    createdAt
   }
 }
 
@@ -29,70 +27,10 @@ query GetMember($memberId: UUID!) {
     address
     userId
     joined
-    memberType
+    membershipType
+    membershipId
     status
     createdAt
     updatedAt
-  }
-}
-
-query GetUser($userId: UUID!) {
-  user(id: $userId) {
-    id
-    regId
-    firstName
-    lastName
-    email
-    phoneNumber
-    photoURL
-    address
-    userId
-    joined
-    memberType
-    status
-    createdAt
-    updatedAt
-  }
-}
-
-query GetUsers {
-  users {
-    id
-    regId
-    role
-    createdAt
-  }
-}
-
-mutation CreateMember($input: newMember!) {
-  createMember(input: $input) {
-    code
-    success
-    message
-    member {
-      id
-      regId
-      firstName
-      lastName
-      email
-      phoneNumber
-      photoURL
-      address
-      userId
-      joined
-      memberType
-      status
-      createdAt
-      updatedAt
-    }
-  }
-}
-
-mutation CreateUser($input: newMember!) {
-  createUser(input: $input) {
-    id
-    regId
-    role
-    createdAt
   }
 }

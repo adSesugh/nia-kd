@@ -10,31 +10,59 @@ import * as Yup from 'yup'
 import TextField from '@/components/textfield';
 import TextFieldWithIcon from '@/components/textfield-withicon';
 import SubmitButton from '@/components/submit-button';
+import DefaultSelect from '@/components/default-select';
+import { useCreateUserMutation } from '@/graphql/__generated__/graphql';
 
 const LoginSchema = Yup.object().shape({
   firstName: Yup.string().required('First name is required'),
   lastName: Yup.string().required('Last name is required'),
   email: Yup.string().email().required('Email Address is required'),
   phoneNumber: Yup.string().required('Phone number is required'),
-  regId: Yup.string().required('Membership ID is required'),
+  membershipId: Yup.string().nullable(),
+  membershipType: Yup.string().nullable(),
   address: Yup.string().required('Resident Address is required'),
   password: Yup.string().required('Password is required').min(6, 'Password must be 6 or more characters long'),
   confirmPassword: Yup.string()
     .oneOf([Yup.ref('password')], 'Password must match')
 });
 
+const membershipType = [
+  {
+    id: "STUDENT",
+    name: "Student"
+  },
+  {
+    id: "GRADUATE",
+    name: "Graduate/Technologist"
+  },
+  {
+    id: "ASSOCIATE",
+    name: "Associate"
+  },
+  {
+    id: "Full Member",
+    name: "Full Member"
+  },
+  {
+    id: "Fellow",
+    name: "Fellow"
+  }
+]
+
 const RegisterPage: React.FC<{}> = () => {
   const initialValues: RegisterForm = { 
     firstName: '', 
     lastName: '',
     email: '',
-    phoneNumber: '', 
-    regId: '', 
+    phoneNumber: '',
+    membershipType: '', 
+    membershipId: '', 
     address: '',
     password: '',
     confirmPassword: '' 
   };
   const [show, setShow] = React.useState<boolean>(false)
+  const [createUser, {loading, error}] = useCreateUserMutation()
 
   return (
     <div className={styles.register}>
@@ -43,12 +71,33 @@ const RegisterPage: React.FC<{}> = () => {
       <Formik
         initialValues={initialValues}
         validationSchema={LoginSchema}
-        onSubmit={(values: RegisterForm, { setSubmitting }: FormikHelpers<RegisterForm>) => {
-          console.log(values);
-          setSubmitting(false)
+        onSubmit={async(values: RegisterForm, { setSubmitting }: FormikHelpers<RegisterForm>) => {
+      
+          try {
+            const res = await createUser({
+              variables: {
+                input: {
+                  firstName: values.firstName,
+                  lastName: values.lastName,
+                  membershipType: values.membershipType.toUpperCase(),
+                  email: values.email,
+                  phoneNumber: values.phoneNumber,
+                  address: values.address,
+                  password: values.password
+                }
+              }
+            })
+            
+            console.log(res.data)
+            console.log("Error", res.errors)
+            console.log("Extensions", res.extensions)
+          } catch (error: any) {
+            console.log(error.message)
+            setSubmitting(false)
+          }
         }}
       >
-        {({ values, errors, touched, handleSubmit, isSubmitting, }) => (
+        {({ values, errors, touched, handleSubmit, handleChange, isSubmitting, }) => (
           <Form onSubmit={handleSubmit}>
             <TextField
               name='firstName'
@@ -70,9 +119,16 @@ const RegisterPage: React.FC<{}> = () => {
               placeholder='Phone number' 
               className={`${errors.firstName && touched.firstName ? 'ring-red-500': ''} pr-10`}
             />
+            <DefaultSelect
+              data={membershipType}
+              name='membershipType'
+              label='Membership type'
+              error={errors.firstName}
+              onChange={handleChange}
+            />
             <TextField
-              name='regId'
-              placeholder='NIA membership ID' 
+              name='membershipId'
+              placeholder='Membership ID' 
               className={`${errors.firstName && touched.firstName ? 'ring-red-500': ''} pr-10`}
             />
             <TextField
@@ -95,9 +151,9 @@ const RegisterPage: React.FC<{}> = () => {
               className={errors.confirmPassword && touched.confirmPassword ? 'ring-red-500 pr-10 mt-4': 'pr-10 mt-4'}
             />
             <SubmitButton 
-                name='Register' 
+                name={isSubmitting || loading ? "Please wait..." : 'Register'} 
                 type='submit' 
-                disabled={isSubmitting} 
+                disabled={isSubmitting || loading} 
                 className='bg-black text-white item-center rounded-3xl text-sm w-full h-11'
               />
           </Form>
