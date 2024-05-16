@@ -18,7 +18,7 @@
 }
 
 .login {
-    @apply flex flex-col sm:h-3/5 md:h-fit sm:w-4/5 md:w-fit px-16 md:pt-10 xs:pt-6 rounded-xl shadow-inner bg-white xs:mx-3
+    @apply flex flex-col sm:h-3/5 md:h-fit sm:w-4/5 md:w-fit sm:px-16 xs:px-10 md:pt-10 xs:pt-6 xs:-mt-20 sm:mt-0 sm:rounded-xl xs:rounded-3xl shadow-inner bg-white xs:mx-6
 }
 
 .login > h1 {

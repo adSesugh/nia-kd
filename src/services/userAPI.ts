@@ -5,6 +5,7 @@ import { RESTDataSource } from "@apollo/datasource-rest";
 import { PrismaClient } from "@prisma/client";
 import bcrypt from 'bcrypt'
 import { GraphQLError } from "graphql/error";
+import { ApolloServerErrorCode } from "@apollo/server/errors"
 
 class UserAPI extends RESTDataSource {
     async getUsers(prisma: PrismaClient) {
@@ -43,18 +44,24 @@ class UserAPI extends RESTDataSource {
         }))
 
         if (userExists) {
-            const { regId, userId, photoURL } = userExists
-            return {
-                code: 400,
-                success: false,
-                message: "Account already exist",
-                user: {
-                    id: userId,
-                    regId,
-                    role: 'MEMBER',
-                    photoURL
+            throw new GraphQLError("Account already exists", {
+                extensions: {
+                    code: ApolloServerErrorCode.GRAPHQL_PARSE_FAILED,
+                    http: { status: 200 }
                 }
-            }
+            })
+            // const { regId, userId, photoURL } = userExists
+            // return {
+            //     code: 400,
+            //     success: false,
+            //     message: "Account already exist",
+            //     user: {
+            //         id: userId,
+            //         regId,
+            //         role: 'MEMBER',
+            //         photoURL
+            //     }
+            // }
         }
 
         const counter = (await prisma.counter.findFirst({
@@ -134,23 +141,24 @@ class UserAPI extends RESTDataSource {
         if (!user) {
             throw new GraphQLError("Invalid credentials", {
                 extensions: {
-                    code: 'BAD_REQUEST',
-                    http: { status: 400 },
+                    code: ApolloServerErrorCode.BAD_USER_INPUT,
+                    http: { status: 200 },
                 },
             })
         }
 
         const validPassword = bcrypt.compare(password, user.password);
+
         if (!validPassword) {
             throw new GraphQLError("Invalid credentials", {
                 extensions: {
-                    code: 'BAD_REQUEST',
-                    http: { status: 400 },
+                    code: ApolloServerErrorCode.BAD_USER_INPUT,
+                    http: { status: 200 },
                 },
             })
         }
 
-        const token = authenticateUser(user.regId);
+        const token = authenticateUser(user.regId as string);
 
         return { token, user };
     }

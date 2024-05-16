@@ -12,6 +12,8 @@ import TextFieldWithIcon from '@/components/textfield-withicon';
 import SubmitButton from '@/components/submit-button';
 import DefaultSelect from '@/components/default-select';
 import { useCreateUserMutation } from '@/graphql/__generated__/graphql';
+import { useRouter } from 'next/navigation';
+import { toast } from 'react-toastify';
 
 const LoginSchema = Yup.object().shape({
   firstName: Yup.string().required('First name is required'),
@@ -63,6 +65,7 @@ const RegisterPage: React.FC<{}> = () => {
   };
   const [show, setShow] = React.useState<boolean>(false)
   const [createUser, {loading, error}] = useCreateUserMutation()
+  const router = useRouter()
 
   return (
     <div className={styles.register}>
@@ -88,11 +91,13 @@ const RegisterPage: React.FC<{}> = () => {
               }
             })
             
-            console.log(res.data)
-            console.log("Error", res.errors)
-            console.log("Extensions", res.extensions)
+            setSubmitting(false)
+            toast.success("Created successfully")
+            if(res.data?.createUser?.success){
+              return router.push('/auth/login')
+            }
           } catch (error: any) {
-            console.log(error.message)
+            toast.error("Whoops! error occurred")
             setSubmitting(false)
           }
         }}

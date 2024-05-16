@@ -11,9 +11,10 @@ CREATE TABLE `counters` (
 -- CreateTable
 CREATE TABLE `users` (
     `id` VARCHAR(191) NOT NULL,
-    `regId` VARCHAR(191) NOT NULL,
+    `regId` VARCHAR(191) NULL,
     `role` VARCHAR(191) NOT NULL DEFAULT 'MEMBER',
     `password` VARCHAR(191) NOT NULL,
+    `email` VARCHAR(50) NULL,
     `rememberMe` BOOLEAN NOT NULL DEFAULT false,
     `emailVerifiedAt` DATETIME(3) NULL,
     `emailVerifyToken` VARCHAR(191) NULL,
@@ -21,6 +22,7 @@ CREATE TABLE `users` (
     `updated_at` DATETIME(3) NOT NULL,
 
     UNIQUE INDEX `users_regId_key`(`regId`),
+    UNIQUE INDEX `users_email_key`(`email`),
     PRIMARY KEY (`id`)
 ) DEFAULT CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci;
 

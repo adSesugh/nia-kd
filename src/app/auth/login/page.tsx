@@ -10,7 +10,7 @@ import CheckBox from '@/components/checkbox'
 import { Profile, Lock, EyeSlash, Eye } from 'iconsax-react'
 import TextFieldWithIcon from '@/components/textfield-withicon'
 import SubmitButton from '@/components/submit-button'
-import { redirect } from 'next/navigation'
+import { useRouter } from 'next/navigation'
 import { useUserLoginMutation } from '@/graphql/__generated__/graphql'
 import { toast } from 'react-toastify'
 import { Role } from '@/lib/common'
@@ -24,26 +24,32 @@ const LoginSchema = Yup.object().shape({
   email: Yup.string().email()
 });
 
-const LoginPage: React.FC<{}> = () => {
+const LoginPage = () => {
   const initialValues: LoginForm = { regId: '', password: '' };
   const [show, setShow] = React.useState<boolean>(false)
   const [login, {loading, error}] = useUserLoginMutation()
   const dispatch = useAppDispatch()
-  const isLoggedIn = useAppSelector((state:RootState) => state.auth.userData.token)
+  const isLoggedIn = useAppSelector((state:RootState) => state.auth.userData?.token)
+  const user = useAppSelector((state:RootState) => state.auth.userData?.user)
+  const router = useRouter()
 
-  if(isLoggedIn) {
-    return redirect('/member/dashboard')
-  }
+  useEffect(() => {
+    if(isLoggedIn && user?.role === Role.MEMBER) {
+      return router.push('/member/dashboard')
+    } else if (isLoggedIn && user?.role === Role.ADMINISTRATOR){
+      return router.push('/dashboard')
+    }
+  }, [isLoggedIn, router, user])
+
 
   return (
-    <div className={styles.login}>
+    <div className={`${styles.login}`}>
       <h1>Log in</h1>
       <h2>Log in to your NIA Kaduna Chapter account</h2>
      <Formik
        initialValues={initialValues}
        validationSchema={LoginSchema}
        onSubmit={async (values: LoginForm, { setSubmitting }: FormikHelpers<LoginForm>) => {
-        console.log(values);
         try {
           const res = await login({
             variables: {
@@ -55,24 +61,20 @@ const LoginPage: React.FC<{}> = () => {
           })
 
           if(res.data?.login) {
-            const userRole = res.data.login.user?.role
             dispatch(setUserData(res.data.login))
-            setSubmitting(false)
-            if(userRole === Role.MEMBER) {
-              toast.success('Welcome!')
-              redirect('/member/dashboard')
-            } else if(userRole === Role.ADMINISTRATOR){
-              return redirect('/dashboard')
-            }
+           
+            toast.success('Welcome!')
+            //setSubmitting(false)
           }
         } catch (error: any) {
-          setSubmitting(false)
+          //setSubmitting(false)
           toast.error(error.message)
+          return error.message
         }
        }}
      >
        {({ values, errors, touched, handleChange, handleBlur, handleSubmit, isSubmitting, }) => (
-         <Form onSubmit={handleSubmit}>
+         <Form onSubmit={handleSubmit} className='space-y-5'>
            <TextFieldWithIcon 
               name='regId' 
               placeholder='NIA Membership ID' 

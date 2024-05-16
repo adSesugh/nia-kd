@@ -20,9 +20,10 @@ mutation UserLogin($input: signInUser!) {
       regId
       role
       member {
-        firstName
-        lastName
+        #membershipType
         photoURL
+        lastName
+        firstName
       }
     }
   }

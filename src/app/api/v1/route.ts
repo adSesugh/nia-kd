@@ -16,8 +16,6 @@ const server = new ApolloServer({
     nodeEnv: process.env.NODE_ENV,
 });
 
-server.logger
-
 const handler = startServerAndCreateNextHandler<NextRequest>(server, {
     context: async (req): Promise<GraphQLContext> => {
         const { cache } = server

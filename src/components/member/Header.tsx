@@ -201,7 +201,7 @@ const Header = () => {
                             </Sidebar>
                         </Drawer.Items>
                     </div>
-                    <div>
+                    <div className='pb-6 px-4'>
                         <Dropdown placement="bottom-start">
                             <DropdownTrigger>
                                 <User

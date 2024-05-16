@@ -11,7 +11,7 @@ import {
   
 function makeClient() {
     const httpLink = new HttpLink({
-      uri: process.env.NEXT_PUBLIC_GRAPHQL,
+      uri: process.env.NEXT_PUBLIC_GRAPHQL as string,
     });
   
     return new NextSSRApolloClient({

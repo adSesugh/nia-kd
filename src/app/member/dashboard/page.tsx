@@ -5,6 +5,8 @@ import React from 'react'
 import { getDaysPercentage, getTotalDaysInYear, getTotalDaysOfYear } from '@/lib/helpers';
 import { CircularProgress } from '@nextui-org/react';
 import Link from 'next/link';
+import { useAppSelector } from '@/features/hooks';
+import { RootState } from '@/features/store';
 
 export const metadata: Metadata = {
   title: "Dashboard | NIA-Kd",
@@ -12,6 +14,7 @@ export const metadata: Metadata = {
 };
 
 const Dashboard = () => {
+  const user = useAppSelector((state: RootState) => state.auth.userData.user)
   const getPercent = getDaysPercentage( getTotalDaysOfYear(new Date()), getTotalDaysInYear(new Date().getFullYear()))
   return (
     <div className='h-full w-full xs:px-6 sm:px-80 bg-gray-100 overflow-y-auto pb-8'>
@@ -21,7 +24,7 @@ const Dashboard = () => {
           <Badge className='text-[12px] text-center text-[#0B7A09] rounded-2xl bg-[#E3F1E2] font-normal w-[122px]'>Graduate member</Badge>
         </div>
         <div>
-          <h2 className='text-sm'>Membership ID: M3400</h2>
+          <h2 className='text-sm'>Membership ID: {user?.regId}</h2>
         </div>
       </div>
       <div className='flex xs:flex-col sm:flex-row gap-5 justify-between'>

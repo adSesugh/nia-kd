@@ -23,7 +23,7 @@ model Counter {
 
 model User {
   id               String    @id @default(uuid())
-  regId            String    @unique
+  regId            String?   @unique
   role             String    @default("MEMBER") @db.VarChar(191)
   password         String    @db.VarChar(191)
   email            String?   @unique @db.VarChar(50)
