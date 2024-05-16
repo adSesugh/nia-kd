@@ -53,9 +53,9 @@ const options = {
     },
     tooltips: {
         callbacks: {
-          label: function (tooltipItem, data) {
+          label: function (tooltipItem: { datasetIndex: string | number; index: string | number; }, data: { datasets: { [x: string]: any; }; }) {
             const dataset = data.datasets[tooltipItem.datasetIndex];
-            const total = dataset.data.reduce((previousValue, currentValue) => previousValue + currentValue);
+            const total = dataset.data.reduce((previousValue: any, currentValue: any) => previousValue + currentValue);
             const currentValue = dataset.data[tooltipItem.index];
             const percentage = Math.round((currentValue / total) * 100);
             return percentage + '%';

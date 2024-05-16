@@ -9,7 +9,6 @@ import { Formik, FormikHelpers, Form } from 'formik';
 import { Eye, EyeSlash, Link, Lock } from 'iconsax-react';
 import * as Yup from 'yup'
 import styles from '@/styles/auth.module.css'
-import { useCreateMemberMutation } from '@/graphql/__generated__/graphql';
 
 const MemberSchema = Yup.object().shape({
     firstName: Yup.string().required('First name is required'),
@@ -39,7 +38,7 @@ const AddMemberPage = () => {
     const [show, setShow] = React.useState<boolean>(false)
     const [files, setFiles] = React.useState<File>()
     const [image, setImage] = React.useState<string>()
-    const [createMember] = useCreateMemberMutation()
+    //const [createMember] = useCreateMemberMutation()
 
     console.log(files)
     useEffect(() => {}, [image])
