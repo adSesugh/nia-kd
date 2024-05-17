@@ -1,6 +1,6 @@
 'use client'
 
-import React from 'react'
+import React, { useEffect } from 'react'
 import styles from '@/styles/auth.module.css'
 import { Form, Formik, FormikHelpers } from 'formik';
 import { RegisterForm } from '@/types/auth';
@@ -30,15 +30,15 @@ const LoginSchema = Yup.object().shape({
 
 const membershipType = [
   {
-    id: "STUDENT",
+    id: "Student",
     name: "Student"
   },
   {
-    id: "GRADUATE",
+    id: "Graduate/Technologist",
     name: "Graduate/Technologist"
   },
   {
-    id: "ASSOCIATE",
+    id: "Associate",
     name: "Associate"
   },
   {
@@ -67,6 +67,10 @@ const RegisterPage: React.FC<{}> = () => {
   const [createUser, {loading, error}] = useCreateUserMutation()
   const router = useRouter()
 
+  useEffect(()=> {
+    document.title = "Sign up | NIA-kd"
+  }, [])
+
   return (
     <div className={styles.register}>
       <h1>Sign Up</h1>
@@ -75,14 +79,15 @@ const RegisterPage: React.FC<{}> = () => {
         initialValues={initialValues}
         validationSchema={LoginSchema}
         onSubmit={async(values: RegisterForm, { setSubmitting }: FormikHelpers<RegisterForm>) => {
-      
+          
           try {
             const res = await createUser({
               variables: {
                 input: {
                   firstName: values.firstName,
                   lastName: values.lastName,
-                  membershipType: values.membershipType.toUpperCase(),
+                  membershipType: values.membershipType,
+                  membershipId: values.membershipId || null,
                   email: values.email,
                   phoneNumber: values.phoneNumber,
                   address: values.address,
@@ -112,34 +117,34 @@ const RegisterPage: React.FC<{}> = () => {
             <TextField
               name='lastName'
               placeholder='Last name' 
-              className={`${errors.firstName && touched.firstName ? 'ring-red-500': ''} pr-10`}
+              className={`${errors.lastName && touched.lastName ? 'ring-red-500': ''} pr-10`}
             />
             <TextField
               name='email'
               placeholder='Email Address' 
-              className={`${errors.firstName && touched.firstName ? 'ring-red-500': ''} pr-10`}
+              className={`${errors.email && touched.email ? 'ring-red-500': ''} pr-10`}
             />
             <TextField
               name='phoneNumber'
               placeholder='Phone number' 
-              className={`${errors.firstName && touched.firstName ? 'ring-red-500': ''} pr-10`}
+              className={`${errors.phoneNumber && touched.phoneNumber ? 'ring-red-500': ''} pr-10`}
             />
             <DefaultSelect
               data={membershipType}
               name='membershipType'
               label='Membership type'
-              error={errors.firstName}
+              error={errors.membershipType}
               onChange={handleChange}
             />
             <TextField
               name='membershipId'
               placeholder='Membership ID' 
-              className={`${errors.firstName && touched.firstName ? 'ring-red-500': ''} pr-10`}
+              className={`${errors.membershipId && touched.membershipId ? 'ring-red-500': ''} pr-10`}
             />
             <TextField
               name='address'
               placeholder='Resident Address'
-              className={`${errors.firstName && touched.firstName ? 'ring-red-500': ''} pr-10`}
+              className={`${errors.address && touched.address ? 'ring-red-500': ''} pr-10`}
             />
             <TextFieldWithIcon 
               name='password' 

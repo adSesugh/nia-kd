@@ -35,7 +35,7 @@ class UserAPI extends RESTDataSource {
         const newPassword = input.password ? input.password : `new@${currentYear}`
         const hashPassword = bcrypt.hashSync(newPassword, salt)
 
-        const userExists = (await prisma.member.findUnique({
+        const userExists = (await prisma.member.findFirst({
             where: {
                 email: input.email,
                 phoneNumber: input.phoneNumber,
@@ -50,18 +50,6 @@ class UserAPI extends RESTDataSource {
                     http: { status: 200 }
                 }
             })
-            // const { regId, userId, photoURL } = userExists
-            // return {
-            //     code: 400,
-            //     success: false,
-            //     message: "Account already exist",
-            //     user: {
-            //         id: userId,
-            //         regId,
-            //         role: 'MEMBER',
-            //         photoURL
-            //     }
-            // }
         }
 
         const counter = (await prisma.counter.findFirst({
@@ -73,7 +61,7 @@ class UserAPI extends RESTDataSource {
         const newNumber = generateZerofillID(Number(counter))
         const registrationId = `NIA/KD/${currentYear}/${newNumber}`
 
-        const newUser = await prisma.$transaction(async (tx) => {
+        await prisma.$transaction(async (tx) => {
             const user = await tx.user.create({
                 data: {
                     regId: registrationId,
@@ -109,36 +97,25 @@ class UserAPI extends RESTDataSource {
             return { user, nextCounter }
         });
 
-        const UserPayload = {
-            id: newUser.user.id,
-            regId: newUser.user.regId,
-            role: newUser.user.role,
-            photoURL: newUser.user.member?.photoURL
-        }
-
         return {
             code: 201,
             success: true,
-            message: "Account created successfully",
-            user: UserPayload
+            message: "Account created successfully"
         }
     }
 
     async loginUser(prisma: PrismaClient, input: SignInUser) {
         const { regId, password, rememberMe } = input
-        const user = await prisma.$transaction(async (tx) => {
-            const user = tx.user.findFirst({
-                where: {
-                    OR: [
-                        { regId: regId },
-                        { email: regId }
-                    ]
-                }, include: { member: true }
-            })
-            return user
-        });
+        const loggedUser = await prisma.user.findFirst({
+            where: {
+                OR: [
+                    { regId: regId },
+                    { email: regId }
+                ]
+            }, include: { member: true }
+        })
 
-        if (!user) {
+        if (!loggedUser) {
             throw new GraphQLError("Invalid credentials", {
                 extensions: {
                     code: ApolloServerErrorCode.BAD_USER_INPUT,
@@ -147,8 +124,7 @@ class UserAPI extends RESTDataSource {
             })
         }
 
-        const validPassword = bcrypt.compare(password, user.password);
-
+        const validPassword = bcrypt.compare(password, loggedUser.password);
         if (!validPassword) {
             throw new GraphQLError("Invalid credentials", {
                 extensions: {
@@ -158,9 +134,16 @@ class UserAPI extends RESTDataSource {
             })
         }
 
-        const token = authenticateUser(user.regId as string);
+        const user = {
+            id: loggedUser.id,
+            regId: loggedUser.regId as string,
+            role: loggedUser.role,
+            member: loggedUser.member
+        }
 
-        return { token, user };
+        const token = authenticateUser(loggedUser.regId as string);
+
+        return { token, user }
     }
 }
 

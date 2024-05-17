@@ -3,12 +3,6 @@ mutation CreateUser($input: newMember!) {
     code
     success
     message
-    user {
-      id
-      regId
-      role
-      photoURL
-    }
   }
 }
 
@@ -20,7 +14,7 @@ mutation UserLogin($input: signInUser!) {
       regId
       role
       member {
-        #membershipType
+        membershipType
         photoURL
         lastName
         firstName

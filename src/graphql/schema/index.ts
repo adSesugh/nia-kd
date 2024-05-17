@@ -63,7 +63,6 @@ export const typeDefs = `#graphql
     id: UUID!
     regId: String!
     role: String!
-    photoURL: String
     member: Member
   }
 
@@ -76,7 +75,6 @@ export const typeDefs = `#graphql
     code: Int!
     success: Boolean!
     message: String
-    user: UserPayload
   }
 
   type MemberResponse {

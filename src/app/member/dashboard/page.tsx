@@ -1,19 +1,20 @@
+'use client'
+
 import { Badge } from 'flowbite-react';
-import { Metadata } from 'next';
 import Image from 'next/image';
-import React from 'react'
+import React, { useEffect } from 'react'
 import { getDaysPercentage, getTotalDaysInYear, getTotalDaysOfYear } from '@/lib/helpers';
 import { CircularProgress } from '@nextui-org/react';
 import Link from 'next/link';
 import { useAppSelector } from '@/features/hooks';
 import { RootState } from '@/features/store';
 
-export const metadata: Metadata = {
-  title: "Dashboard | NIA-Kd",
-  description: "NIA-Kd Home",
-};
+const MemberDashboard = () => {
+  
+  useEffect(() => {
+    document.title = 'Dashboard | NIA-kd'
+  }, [])
 
-const Dashboard = () => {
   const user = useAppSelector((state: RootState) => state.auth.userData.user)
   const getPercent = getDaysPercentage( getTotalDaysOfYear(new Date()), getTotalDaysInYear(new Date().getFullYear()))
   return (
@@ -112,4 +113,4 @@ const Dashboard = () => {
   )
 }
 
-export default Dashboard
+export default MemberDashboard

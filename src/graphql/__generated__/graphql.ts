@@ -37,7 +37,6 @@ export type CreateUserResponse = {
   code: Scalars['Int']['output'];
   message?: Maybe<Scalars['String']['output']>;
   success: Scalars['Boolean']['output'];
-  user?: Maybe<UserPayload>;
 };
 
 export type Member = {
@@ -112,7 +111,6 @@ export type UserPayload = {
   __typename?: 'UserPayload';
   id: Scalars['UUID']['output'];
   member?: Maybe<Member>;
-  photoURL?: Maybe<Scalars['String']['output']>;
   regId: Scalars['String']['output'];
   role: Scalars['String']['output'];
 };
@@ -139,14 +137,14 @@ export type CreateUserMutationVariables = Exact<{
 }>;
 
 
-export type CreateUserMutation = { __typename?: 'Mutation', createUser?: { __typename?: 'CreateUserResponse', code: number, success: boolean, message?: string | null, user?: { __typename?: 'UserPayload', id: any, regId: string, role: string, photoURL?: string | null } | null } | null };
+export type CreateUserMutation = { __typename?: 'Mutation', createUser?: { __typename?: 'CreateUserResponse', code: number, success: boolean, message?: string | null } | null };
 
 export type UserLoginMutationVariables = Exact<{
   input: SignInUser;
 }>;
 
 
-export type UserLoginMutation = { __typename?: 'Mutation', login?: { __typename?: 'AuthPayload', token?: string | null, user?: { __typename?: 'UserPayload', id: any, regId: string, role: string, member?: { __typename?: 'Member', firstName: string, lastName: string, photoURL?: string | null } | null } | null } | null };
+export type UserLoginMutation = { __typename?: 'Mutation', login?: { __typename?: 'AuthPayload', token?: string | null, user?: { __typename?: 'UserPayload', id: any, regId: string, role: string, member?: { __typename?: 'Member', membershipType: string, photoURL?: string | null, lastName: string, firstName: string } | null } | null } | null };
 
 export type GetUsersQueryVariables = Exact<{ [key: string]: never; }>;
 
@@ -172,12 +170,6 @@ export const CreateUserDocument = gql`
     code
     success
     message
-    user {
-      id
-      regId
-      role
-      photoURL
-    }
   }
 }
     `;
@@ -216,9 +208,10 @@ export const UserLoginDocument = gql`
       regId
       role
       member {
-        firstName
-        lastName
+        membershipType
         photoURL
+        lastName
+        firstName
       }
     }
   }
@@ -473,7 +466,7 @@ export type DirectiveResolverFn<TResult = {}, TParent = {}, TContext = {}, TArgs
 export type ResolversTypes = ResolversObject<{
   AuthPayload: ResolverTypeWrapper<Omit<AuthPayload, 'user'> & { user?: Maybe<ResolversTypes['UserPayload']> }>;
   Boolean: ResolverTypeWrapper<Scalars['Boolean']['output']>;
-  CreateUserResponse: ResolverTypeWrapper<Omit<CreateUserResponse, 'user'> & { user?: Maybe<ResolversTypes['UserPayload']> }>;
+  CreateUserResponse: ResolverTypeWrapper<CreateUserResponse>;
   Decimal: ResolverTypeWrapper<Scalars['Decimal']['output']>;
   Int: ResolverTypeWrapper<Scalars['Int']['output']>;
   Member: ResolverTypeWrapper<MemberModel>;
@@ -494,7 +487,7 @@ export type ResolversTypes = ResolversObject<{
 export type ResolversParentTypes = ResolversObject<{
   AuthPayload: Omit<AuthPayload, 'user'> & { user?: Maybe<ResolversParentTypes['UserPayload']> };
   Boolean: Scalars['Boolean']['output'];
-  CreateUserResponse: Omit<CreateUserResponse, 'user'> & { user?: Maybe<ResolversParentTypes['UserPayload']> };
+  CreateUserResponse: CreateUserResponse;
   Decimal: Scalars['Decimal']['output'];
   Int: Scalars['Int']['output'];
   Member: MemberModel;
@@ -529,7 +522,6 @@ export type CreateUserResponseResolvers<ContextType = GraphQLContext, ParentType
   code?: Resolver<ResolversTypes['Int'], ParentType, ContextType>;
   message?: Resolver<Maybe<ResolversTypes['String']>, ParentType, ContextType>;
   success?: Resolver<ResolversTypes['Boolean'], ParentType, ContextType>;
-  user?: Resolver<Maybe<ResolversTypes['UserPayload']>, ParentType, ContextType>;
   __isTypeOf?: IsTypeOfResolverFn<ParentType, ContextType>;
 }>;
 
@@ -603,7 +595,6 @@ export type UserResolvers<ContextType = GraphQLContext, ParentType extends Resol
 export type UserPayloadResolvers<ContextType = GraphQLContext, ParentType extends ResolversParentTypes['UserPayload'] = ResolversParentTypes['UserPayload']> = ResolversObject<{
   id?: Resolver<ResolversTypes['UUID'], ParentType, ContextType>;
   member?: Resolver<Maybe<ResolversTypes['Member']>, ParentType, ContextType>;
-  photoURL?: Resolver<Maybe<ResolversTypes['String']>, ParentType, ContextType>;
   regId?: Resolver<ResolversTypes['String'], ParentType, ContextType>;
   role?: Resolver<ResolversTypes['String'], ParentType, ContextType>;
   __isTypeOf?: IsTypeOfResolverFn<ParentType, ContextType>;

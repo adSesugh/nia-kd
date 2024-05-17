@@ -127,7 +127,7 @@ const Header = () => {
                                     as="button"
                                     avatarProps={{
                                         isBordered: false,
-                                        src: `${user?.photoURL !== undefined ? user.photoURL : '/assets/profile.svg'}`,
+                                        src: `${user?.member?.photoURL !== undefined ? user.member.photoURL : '/assets/profile.svg'}`,
                                     }}
                                     className="transition-transform text-white"
                                     name={
@@ -208,7 +208,7 @@ const Header = () => {
                                     as="button"
                                     avatarProps={{
                                     isBordered: true,
-                                    src: `${user?.photoURL !== undefined ? user.photoURL : '/assets/profile.svg'}`,
+                                    src: `${user?.member?.photoURL !== undefined ? user.member .photoURL : '/assets/profile.svg'}`,
                                     }}
                                     className="transition-transform text-white"
                                     description={user?.role}

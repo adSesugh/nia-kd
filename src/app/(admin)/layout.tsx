@@ -49,7 +49,8 @@ const DashboardLayout: React.FC<LayoutProps> = ({ children }) => {
           breakPoint='xs'
           transitionDuration={1000}
           collapsed={collapsed}
-          onBackdropClick={() => setToggled(false)} toggled={toggled}
+          onBackdropClick={() => setToggled(false)} 
+          toggled={toggled}
           rootStyles={{
             [`.${sidebarClasses.container}`]: {
               backgroundColor: '#1E1A1C',
@@ -60,7 +61,7 @@ const DashboardLayout: React.FC<LayoutProps> = ({ children }) => {
             <div>
               <div className='flex flex-col pl-7 text-white justify-center w-full h-28'>
                 <Image
-                    alt='NIA-KD'
+                    alt='NIA-Kd'
                     src={'/assets/logo.svg'}
                     sizes='100vw'
                     width={50}
@@ -201,13 +202,13 @@ const DashboardLayout: React.FC<LayoutProps> = ({ children }) => {
         </Sidebar>
       </div>
       <div className={`${toggled ? 'xs:w-full' : collapsed ? 'sm:w-[95%]' : 'xs:w-full sm:w-[83.6%]'} h-full`}>
-        <main className='h-screen w-full bg-[#F5F5F5]'>
+        <main className='h-screen w-full pb-8 bg-[#F5F5F5] overflow-hidden'>
           <div className='flex justify-between xs:px-4 pt-4 sm:pr-12 xs:pb-3 sm:pb-0 w-full'>
             <div className='xs:hidden sm:flex'></div>
             <HambergerMenu className=' sm:py-0 sm:pl-0 xs:flex sm:hidden' size={20} variant='Outline' color={`${PRIMARY_TWO}`} onClick={() => setToggled(!toggled)} />
             <Notification className='xs:float-end' size={24} variant='Bold' color='#150D09' />
           </div>
-          <div className='sm:-mt-12 xs:mt-0 h-full overflow-hidden'>
+          <div className='sm:-mt-12 xs:mt-0 h-full'>
             {children}
           </div>
         </main>
