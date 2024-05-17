@@ -92,7 +92,7 @@ const AdminDashboard = () => {
               <h1 className='text-[16px] font-medium'>Revenue by category</h1>
             </div>
             <div>
-              {/* <Doughnut data={data1} height={230} width={230} options={options} /> */}
+              <Doughnut data={data1} height={230} width={230} options={options} />
             </div>
           </div>
         </div>
@@ -102,7 +102,7 @@ const AdminDashboard = () => {
               <h1 className='text-[16px] font-medium'>Membership category</h1>
             </div>
             <div> 
-              {/* <Doughnut data={data2} height={230} width={230} options={options} /> */}
+              <Doughnut data={data2} height={230} width={230} options={options} />
             </div>
           </div>
           <div className='sm:w-7/12 xs:w-full h-full rounded-2xl bg-white shadow-small p-4'>
