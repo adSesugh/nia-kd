@@ -1,17 +1,34 @@
 'use client'
 
+import { useAppSelector } from "@/features/hooks";
+import { RootState } from "@/features/store";
 import { ApolloLink, HttpLink } from "@apollo/client";
+import { setContext } from '@apollo/client/link/context';
 import {
     ApolloNextAppProvider,
     NextSSRInMemoryCache,
     NextSSRApolloClient,
     SSRMultipartLink,
 } from "@apollo/experimental-nextjs-app-support/ssr";
-// import { createUploadLink } from "apollo-upload-client";
+import { store } from "@/features/store";
+
+function getToken() {
+  return store.getState().auth.userData.token
+}
   
 function makeClient() {
     const httpLink = new HttpLink({
       uri: process.env.NEXT_PUBLIC_GRAPHQL as string,
+    });
+
+    const authLink = setContext((_, { headers }) => {
+      const token = getToken()
+      return {
+        headers: {
+          ...headers,
+          authorization: token ? `Bearer ${token}` : "",
+        }
+      }
     });
   
     return new NextSSRApolloClient({
@@ -22,9 +39,9 @@ function makeClient() {
               new SSRMultipartLink({
                 stripDefer: true,
               }),
-              httpLink,
+              authLink.concat(httpLink),
             ])
-          : httpLink,
+          : authLink.concat(httpLink),
       credentials: 'same-origin',
       headers: {
         'x-apollo-operation-name': 'NIA-Kd',

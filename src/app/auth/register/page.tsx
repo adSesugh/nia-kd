@@ -14,6 +14,7 @@ import DefaultSelect from '@/components/default-select';
 import { useCreateUserMutation } from '@/graphql/__generated__/graphql';
 import { useRouter } from 'next/navigation';
 import { toast } from 'react-toastify';
+import { membershipType } from '@/lib/common';
 
 const LoginSchema = Yup.object().shape({
   firstName: Yup.string().required('First name is required'),
@@ -28,28 +29,6 @@ const LoginSchema = Yup.object().shape({
     .oneOf([Yup.ref('password')], 'Password must match')
 });
 
-const membershipType = [
-  {
-    id: "Student",
-    name: "Student"
-  },
-  {
-    id: "Graduate/Technologist",
-    name: "Graduate/Technologist"
-  },
-  {
-    id: "Associate",
-    name: "Associate"
-  },
-  {
-    id: "Full Member",
-    name: "Full Member"
-  },
-  {
-    id: "Fellow",
-    name: "Fellow"
-  }
-]
 
 const RegisterPage: React.FC<{}> = () => {
   const initialValues: RegisterForm = { 

@@ -1,12 +1,12 @@
 'use client'
 
-import React, { useEffect } from 'react'
+import React, { useEffect, useState } from 'react'
 import { PRIMARY_TWO } from '@/constant/Colors';
 import StatisticsCard from '@/components/admin/StatisticsCard';
-import { Chart as ChartJS, ArcElement, Tooltip, Legend } from 'chart.js';
-import { Doughnut } from 'react-chartjs-2';
+import { Chart as ChartJS, ArcElement, Tooltip, Legend, LineElement, LinearScale, CategoryScale, PointElement, Title, Filler } from 'chart.js';
+import { Doughnut, Line } from 'react-chartjs-2';
 
-ChartJS.register(ArcElement, Tooltip, Legend);
+ChartJS.register(ArcElement, Tooltip, Legend, LineElement, LinearScale, CategoryScale, PointElement, Title, Filler);
 
 const data1: any = {
   labels: ['Dues', 'Events', 'Others'],
@@ -37,37 +37,51 @@ const data2: any = {
 };
 
 const options = {
-    maintainAspectRatio: false, // Prevent the chart from maintaining aspect ratio
-    cutoutPercentage: 50, // Adjust the inner radius to 50% (smaller hole)
-    layout: {
-      padding: {
-        left: 10,
-        right: 10,
-        top: 10,
-        bottom: 10,
+  maintainAspectRatio: false, // Prevent the chart from maintaining aspect ratio
+  cutoutPercentage: 250, // Adjust the inner radius to 50% (smaller hole)
+  layout: {
+    padding: {
+      left: 10,
+      right: 10,
+      top: 10,
+      bottom: 10,
+    },
+  },
+  legend: {
+      display: true,
+      position: 'bottom', // Position the legend at the bottom
+  },
+  tooltips: {
+    callbacks: {
+      label: function (tooltipItem: { datasetIndex: string | number; index: string | number; }, data: { datasets: { [x: string]: any; }; }) {
+        const dataset = data.datasets[tooltipItem.datasetIndex];
+        const total = dataset.data.reduce((previousValue: any, currentValue: any) => previousValue + currentValue);
+        const currentValue = dataset.data[tooltipItem.index];
+        const percentage = Math.round((currentValue / total) * 100);
+        return percentage + '%';
       },
     },
-    legend: {
-        display: true,
-        position: 'bottom', // Position the legend at the bottom
-    },
-    tooltips: {
-        callbacks: {
-          label: function (tooltipItem: { datasetIndex: string | number; index: string | number; }, data: { datasets: { [x: string]: any; }; }) {
-            const dataset = data.datasets[tooltipItem.datasetIndex];
-            const total = dataset.data.reduce((previousValue: any, currentValue: any) => previousValue + currentValue);
-            const currentValue = dataset.data[tooltipItem.index];
-            const percentage = Math.round((currentValue / total) * 100);
-            return percentage + '%';
-          },
-        },
-    },
+  },
 };
 
 const AdminDashboard = () => {
+  const [lineData, setLineData] = useState({
+    labels: [12, 10, 14, 16, 20],
+    datasets: [
+      {
+        label: 'Real-time Data',
+        data: [],
+        borderColor: 'rgba(75, 192, 192, 1)',
+        backgroundColor: 'rgba(75, 192, 192, 0.2)',
+      },
+    ],
+  });
+
   useEffect(() =>{
     document.title = `Dashboard | NIA-kd`
   }, [])
+
+
   return (
     <div className='sm:px-12 xs:px-4 sm:pt-14 xs:pt-2 pb-12 w-full h-full overflow-y-auto'>
       <h1 className={`text-[${PRIMARY_TWO}] sm:text-xl xs:text-lg  font-semibold`}>Good afternoon, Jimoh</h1>
@@ -85,6 +99,9 @@ const AdminDashboard = () => {
               <div>
                 <span>Month</span>
               </div>
+            </div>
+            <div className='h-full'>
+              <Line data={lineData} width={100} height={40} />
             </div>
           </div>
           <div className='sm:w-5/12 xs:w-full h-full rounded-2xl bg-white shadow-small p-4'>
