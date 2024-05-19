@@ -50,12 +50,25 @@ model Member {
   address        String?   @db.VarChar(191)
   joined         DateTime?
   membershipId   String?   @unique
-  membershipType String    @default("STUDENT") @db.VarChar(191)
-  status         String    @default("ACTIVE") @db.VarChar(191)
+  membershipType String    @default("Student") @db.VarChar(191)
+  status         String    @default("Active") @db.VarChar(191)
   createdAt      DateTime  @default(now()) @map(name: "created_at")
   updatedAt      DateTime  @updatedAt @map(name: "updated_at")
 
   @@map("members")
+}
+
+model Dues {
+  id        String   @id @default(uuid())
+  name      String   @unique @db.VarChar(191)
+  amount    Decimal  @default(0.00)
+  startsAt  DateTime @map(name: "starts_at")
+  endsAt    DateTime @map(name: "ends_at")
+  status    String   @default("Active")
+  createdAt DateTime @default(now()) @map(name: "created_at")
+  updatedAt DateTime @updatedAt @map(name: "updated_at")
+
+  @@map("dues")
 }
 
 // model MediaLibrary {

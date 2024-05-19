@@ -206,9 +206,9 @@ const DashboardLayout: React.FC<LayoutProps> = ({ children }) => {
           <div className='flex justify-between xs:px-4 pt-4 sm:pr-12 xs:pb-3 sm:pb-0 w-full'>
             <div className='xs:hidden sm:flex'></div>
             <HambergerMenu className=' sm:py-0 sm:pl-0 xs:flex sm:hidden' size={20} variant='Outline' color={`${PRIMARY_TWO}`} onClick={() => setToggled(!toggled)} />
-            <Notification className='xs:float-end' size={24} variant='Bold' color='#150D09' />
+            {pathname.includes('dashboard') && <Notification className='xs:float-end' size={24} variant='Bold' color='#150D09' />}
           </div>
-          <div className='sm:-mt-12 xs:mt-0 h-full'>
+          <div className={`${pathname.includes('dashboard') ? 'sm:-mt-12' : 'sm:-mt-6'} xs:mt-0 h-full`}>
             {children}
           </div>
         </main>

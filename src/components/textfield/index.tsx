@@ -7,11 +7,17 @@ type TextFieldProps = {
     type?: string
     className?: string
     showError?: boolean
+    label?: string
 }
 
-const TextField: React.FC<TextFieldProps> = ({ name, placeholder, type, className, showError}) => {
+const TextField: React.FC<TextFieldProps> = ({ name, placeholder, type, className, showError, label}) => {
   return (
     <div className={`mb-2 text-[14px] ${showError && 'text-red-500'}`}>
+      {label && (
+        <div className='py-1'>
+            <h3>{label}</h3>
+        </div>
+      )}
       <Field 
         name={name} 
         placeholder={placeholder} 

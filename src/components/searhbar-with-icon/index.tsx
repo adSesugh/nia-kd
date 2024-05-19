@@ -1,3 +1,5 @@
+'use client'
+
 import { ErrorMessage, Field } from 'formik'
 import { SearchNormal1 } from 'iconsax-react'
 import React from 'react'
@@ -12,7 +14,7 @@ type SearchbarProps = {
 
 const SearhbarWithIcon: React.FC<SearchbarProps> = ({name, placeholder, type, className, showError}) => {
     return (
-        <div className={`relative mb-2 text-[14px] ${showError && 'text-red-500'}`}>
+        <div className={`relative text-[14px] ${showError && 'text-red-500'}`}>
             <div className='absolute top-3 left-3'>
                 <SearchNormal1 size="20" color="#1F0E1C" />
             </div>

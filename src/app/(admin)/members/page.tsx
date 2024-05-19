@@ -9,27 +9,47 @@ import { membershipType } from '@/lib/common'
 import { Button, Chip, Dropdown, DropdownItem, DropdownMenu, DropdownTrigger, Spinner, Table, TableBody, TableCell, TableColumn, TableHeader, TableRow } from '@nextui-org/react'
 import { Member, useGetMembersLazyQuery } from '@/graphql/__generated__/graphql'
 import {DotsThreeVertical} from '@phosphor-icons/react'
+import { toast } from 'react-toastify'
+import moment from 'moment'
 
 const MemberList = () => {
     const [members, setMembers] = useState<any>()
+    const [index, setIndex] = useState<number>(0)
     const [getMembers, {loading, fetchMore}] = useGetMembersLazyQuery({fetchPolicy: 'no-cache'})
 
     const loadingState = loading || members === 0 ? "loading" : "idle";
 
-    const renderCell = React.useCallback((member: Member, columnKey: React.Key) => {
+    useEffect(() => {
+        ;(async () => {
+            const res = await getMembers()
+            if(res.error){
+                toast.error(res.error.message)
+            } else{
+                setMembers(res?.data?.members)
+            }
+        })()
+    }, [getMembers])
+
+    const renderCell = React.useCallback((member: Member, columnKey: React.Key, index: number) => {
         const cellValue = member[columnKey as keyof Member];
+        
     
         switch (columnKey) {
             case "id":
-                return <span>{1}</span>;
+                setIndex(cur => cur + 1)
+                return <span>{index}</span>;
             case "name":
                 return (
                     <div>{member.firstName} {member.lastName}</div>
                 )
+            case "joined": 
+                return (
+                    <div>{moment(member.createdAt).format('LL')}</div>
+                )
             case "status":
                 return (
                     <Chip className="capitalize" color={member.status === 'ACTIVE' ? 'success' : 'default'} size="sm" variant="flat">
-                        {cellValue}
+                        <span className='text-[#0A7535]'>{cellValue}</span>
                     </Chip>
                 );
             case "actions":
@@ -38,7 +58,7 @@ const MemberList = () => {
                         <Dropdown>
                         <DropdownTrigger>
                             <Button isIconOnly size="sm" variant="light">
-                            <DotsThreeVertical size={32} className="text-default-300" />
+                            <DotsThreeVertical size={40} className="text-default-300" color='#161314' />
                             </Button>
                         </DropdownTrigger>
                         <DropdownMenu>
@@ -52,14 +72,7 @@ const MemberList = () => {
             default:
                 return cellValue;
         }
-      }, []);
-
-    useEffect(() => {
-        ;(async () => {
-            const res = (await getMembers()).data
-            setMembers(res?.members)
-        })()
-    }, [getMembers])
+    }, []);
 
     return (
         <div className='sm:px-12 xs:px-4'>
@@ -69,43 +82,43 @@ const MemberList = () => {
                     onSubmit={() => console.log('here...')}
                     initialValues={{query: ''}}
                 >
-                    {({values, touched, errors, handleBlur, handleChange, handleSubmit}) => (
+                    {({touched, errors, handleSubmit}) => (
                         <Form onSubmit={handleSubmit} className='flex sm:flex-row xs:flex-col sm:space-x-3 xs:space-x-0 xs:gap-3'>
                             <SearhbarWithIcon 
                                 name='query' 
                                 placeholder='Search members'
                                 className={`flex sm:w-96 xs:w-full ${errors.query && touched.query ? 'ring-red-500': ''} pr-10`}
                             />
-                            <SelectFilter name='membershipType' data={membershipType} className='flex' />
+                            <SelectFilter nullValue='All' name='membershipType' data={membershipType} className='flex' />
                         </Form>
                     )}
                 </Formik>
             </div>
             <div>
-            <Table aria-label="Example empty table">
-                <TableHeader>
-                    <TableColumn key="id">S/N</TableColumn>
-                    <TableColumn key="name">Name</TableColumn>
-                    <TableColumn key="regId">Reg ID</TableColumn>
-                    <TableColumn key="membershipType">Membership type</TableColumn>
-                    <TableColumn key="email">Email</TableColumn>
-                    <TableColumn key="joined">Joined</TableColumn>
-                    <TableColumn key="status">Status</TableColumn>
-                    <TableColumn key={'actions'}>.</TableColumn>
-                </TableHeader>
-                <TableBody
-                    items={members ?? []}
-                    loadingContent={<Spinner />}
-                    loadingState={loadingState}
-                    emptyContent={"No rows to display."}
-                >
-                    {(item: Member) => (
-                        <TableRow key={item?.id}>
-                            {(columnKey) => <TableCell>{renderCell(item, columnKey)}</TableCell>}
-                        </TableRow>
-                    )}
-                </TableBody>
-            </Table>
+                <Table aria-label="">
+                    <TableHeader>
+                        <TableColumn key="id">S/N</TableColumn>
+                        <TableColumn key="name">Name</TableColumn>
+                        <TableColumn key="regId">Reg ID</TableColumn>
+                        <TableColumn key="membershipType">Membership type</TableColumn>
+                        <TableColumn key="email">Email</TableColumn>
+                        <TableColumn key="joined">Joined</TableColumn>
+                        <TableColumn key="status">Status</TableColumn>
+                        <TableColumn key={'actions'}>.</TableColumn>
+                    </TableHeader>
+                    <TableBody
+                        items={members ?? []}
+                        loadingContent={<Spinner />}
+                        loadingState={loadingState}
+                        emptyContent={"No members to display."}
+                    >
+                        {(item: Member) => (
+                            <TableRow key={item?.id}>
+                                {(columnKey) => <TableCell>{renderCell(item, columnKey, index)}</TableCell>}
+                            </TableRow>
+                        )}
+                    </TableBody>
+                </Table>
             </div>
         </div>
     )

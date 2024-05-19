@@ -13,8 +13,12 @@ export const membershipType = [
         name: "Student"
     },
     {
-        id: "Graduate/Technologist",
-        name: "Graduate/Technologist"
+        id: "Graduate",
+        name: "Graduate"
+    },
+    {
+        id: "Technologist",
+        name: "Technologist"
     },
     {
         id: "Associate",
@@ -27,6 +31,17 @@ export const membershipType = [
     {
         id: "Fellow",
         name: "Fellow"
+    }
+]
+
+export const modelStatus = [
+    {
+        id: 'draft',
+        name: "Draft"
+    },
+    {
+        id: 'published',
+        name: 'Published'
     }
 ]
 

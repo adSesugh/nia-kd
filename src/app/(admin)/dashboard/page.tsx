@@ -2,7 +2,7 @@
 
 import React, { useEffect, useState } from 'react'
 import { PRIMARY_TWO } from '@/constant/Colors';
-import StatisticsCard from '@/components/admin/StatisticsCard';
+import StatisticsCard from '@/components/stats/StatisticsCard';
 import { Chart as ChartJS, ArcElement, Tooltip, Legend, LineElement, LinearScale, CategoryScale, PointElement, Title, Filler } from 'chart.js';
 import { Doughnut, Line } from 'react-chartjs-2';
 

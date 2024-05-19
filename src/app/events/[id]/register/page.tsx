@@ -1,7 +1,7 @@
 'use client'
 
 import SubmitButton from '@/components/submit-button';
-import TextInputWithLabel from '@/components/textinput-with-label';
+import TextField from '@/components/textfield';
 import { RegistrationForm } from '@/types/event';
 import { Form, Formik, FormikHelpers } from 'formik'
 import { ArrowLeft } from 'iconsax-react';
@@ -47,25 +47,25 @@ const EventRegistration = () => {
 						{({ values, errors, touched, handleChange, handleBlur, handleSubmit, isSubmitting, }) => (
 							<form className='grid grid-cols-2 gap-4'>
 								<div>
-									<TextInputWithLabel 
+									<TextField
 										type='text'
 										name='first_name'
 										label='First Name'
 										className='w-full'
 									/>
-									<TextInputWithLabel 
+									<TextField 
 										type='email'
 										name='email'
 										label='Email address'
 										className='w-full'
 									/>
-									<TextInputWithLabel 
+									<TextField 
 										type='tel'
 										name='phonenumber'
 										label='Phone number'
 										className='w-full'
 									/>
-									<TextInputWithLabel 
+									<TextField
 										type='text'
 										name='city'
 										label='City'
@@ -73,25 +73,25 @@ const EventRegistration = () => {
 									/>
 								</div>
 								<div>
-									<TextInputWithLabel 
+									<TextField
 										type='text'
 										name='last_name'
 										label='Last Name'
 										className='w-full'
 									/>
-									<TextInputWithLabel 
+									<TextField
 										type='text'
 										name='gender'
 										label='Gender'
 										className='w-full'
 									/>
-									<TextInputWithLabel 
+									<TextField
 										type='text'
 										name='address'
 										label='Address'
 										className='w-full'
 									/>
-									<TextInputWithLabel 
+									<TextField
 										type='text'
 										name='state'
 										label='State'
