@@ -2,7 +2,7 @@ import { RESTDataSource } from "@apollo/datasource-rest";
 import { PrismaClient } from "@prisma/client";
 import { GraphQLError } from "graphql/error";
 import { ApolloServerErrorCode } from "@apollo/server/errors"
-import { DueInput } from "@/graphql/__generated__/graphql";
+import { DueInput, MemberDueResponse } from "@/graphql/__generated__/graphql";
 import moment from "moment";
 
 class DueAPI extends RESTDataSource {
@@ -98,7 +98,6 @@ class DueAPI extends RESTDataSource {
     async getDuePayment(prisma: PrismaClient, memberId: string) {
         const todayDate = new Date(moment().format("Y-MM-D"))
         const endOfYear = new Date(moment().endOf('year').format("Y-MM-D"))
-        let paymentStatus: boolean = false
 
         const checkPayment = await prisma.payment.findFirst({
             where: {
@@ -123,10 +122,11 @@ class DueAPI extends RESTDataSource {
         })
 
         if (checkPayment && duePayment) {
-            return { ...duePayment, paymentStatus: true }
+            const response: MemberDueResponse = { ...duePayment, paymentStatus: true }
+            return response
         }
 
-        return { ...duePayment, paymentStatus }
+        return duePayment
     }
 }
 

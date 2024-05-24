@@ -87,7 +87,7 @@ export type MemberDueResponse = {
   endsAt?: Maybe<Scalars['Time']['output']>;
   id: Scalars['UUID']['output'];
   name?: Maybe<Scalars['String']['output']>;
-  paymentStatus: Scalars['Boolean']['output'];
+  paymentStatus?: Maybe<Scalars['Boolean']['output']>;
   startsAt?: Maybe<Scalars['Time']['output']>;
   status?: Maybe<Scalars['String']['output']>;
   updatedAt?: Maybe<Scalars['Time']['output']>;
@@ -296,7 +296,7 @@ export type GetDuePaymentQueryVariables = Exact<{
 }>;
 
 
-export type GetDuePaymentQuery = { __typename?: 'Query', getDuePayment?: { __typename?: 'MemberDueResponse', id: any, name?: string | null, amount?: any | null, startsAt?: any | null, endsAt?: any | null, status?: string | null, paymentStatus: boolean, userId?: string | null, createdAt?: any | null, updatedAt?: any | null } | null };
+export type GetDuePaymentQuery = { __typename?: 'Query', getDuePayment?: { __typename?: 'MemberDueResponse', id: any, name?: string | null, amount?: any | null, startsAt?: any | null, endsAt?: any | null, status?: string | null, paymentStatus?: boolean | null, userId?: string | null, createdAt?: any | null, updatedAt?: any | null } | null };
 
 export type GetMembersQueryVariables = Exact<{ [key: string]: never; }>;
 
@@ -1249,7 +1249,7 @@ export type MemberDueResponseResolvers<ContextType = GraphQLContext, ParentType 
   endsAt?: Resolver<Maybe<ResolversTypes['Time']>, ParentType, ContextType>;
   id?: Resolver<ResolversTypes['UUID'], ParentType, ContextType>;
   name?: Resolver<Maybe<ResolversTypes['String']>, ParentType, ContextType>;
-  paymentStatus?: Resolver<ResolversTypes['Boolean'], ParentType, ContextType>;
+  paymentStatus?: Resolver<Maybe<ResolversTypes['Boolean']>, ParentType, ContextType>;
   startsAt?: Resolver<Maybe<ResolversTypes['Time']>, ParentType, ContextType>;
   status?: Resolver<Maybe<ResolversTypes['String']>, ParentType, ContextType>;
   updatedAt?: Resolver<Maybe<ResolversTypes['Time']>, ParentType, ContextType>;

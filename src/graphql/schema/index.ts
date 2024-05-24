@@ -141,7 +141,7 @@ export const typeDefs = `#graphql
     startsAt: Time
     endsAt: Time
     status: String
-    paymentStatus: Boolean!
+    paymentStatus: Boolean
     userId: String
     createdAt: Time
     updatedAt: Time
