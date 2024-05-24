@@ -8,11 +8,21 @@ import {Modal, ModalContent, ModalHeader, ModalBody, ModalFooter, useDisclosure}
 import { Form, Formik } from 'formik'
 import DateField from '@/components/date-field'
 import TextField from '@/components/textfield'
+import { useCreateDueMutation, useGetDuesLazyQuery } from '@/graphql/__generated__/graphql'
+import { toast } from 'react-toastify'
+import { getUserIdFromToken } from '@/lib/common'
+import { useAppSelector } from '@/features/hooks'
+import { RootState } from '@/features/store'
 
 
 const DuesPage = () => {
+    const userId = useAppSelector((state: RootState) => state.auth.userData.user?.id)
     const [selectedTab, setSelectedTab] = useState('manage')
-    const {isOpen, onOpen, onOpenChange} = useDisclosure();
+    const [clickBtn, setClickBtn] = useState('save')
+
+    const {isOpen, onOpen, onOpenChange} = useDisclosure()
+
+    const [createDue, {loading, error}] = useCreateDueMutation()
 
     useEffect(() => {
         document.title = `Dues | NIA-Kd`
@@ -49,7 +59,32 @@ const DuesPage = () => {
                             <ModalBody>
                                 <Formik
                                     initialValues={{name: '', starts_at:'', ends_at: '', amount: ''}}
-                                    onSubmit={async(values) => console.log(values)}
+                                    onSubmit={async(values) => {
+                                        try {
+                                            const res = await createDue({
+                                                variables: {
+                                                    input: {
+                                                        name: values.name,
+                                                        amount: values.amount,
+                                                        startsAt: values.starts_at,
+                                                        endsAt: values.ends_at,
+                                                        status: clickBtn === 'Save' ? 'Active' : 'Inactive',
+                                                        userId: userId
+                                                    }
+                                                }
+                                            })
+
+                                            if(res.data?.createDue?.success){
+                                                onClose()
+                                                return toast.success(res.data.createDue.message)
+                                            }
+                                        } catch (error: any) {
+                                            if(error.extensions.code === 'INTERNAL_SERVER_ERROR'){
+                                                toast.error("Whoops! an error occured")
+                                            }
+                                            toast.error(error.message)
+                                        }
+                                    }}
                                 >
                                     {({values, handleBlur, handleChange, handleSubmit}) => (
                                         <Form onSubmit={handleSubmit}>
@@ -60,8 +95,8 @@ const DuesPage = () => {
                                             </div>
                                             <TextField label={`Amount (${'\u20a6'})`} name='amount' type='number' placeholder='Amount' />
                                             <ModalFooter className='float-right w-full pr-0'>
-                                                <button className='border rounded-lg px-4 py-2 text-sm'>Save as draft</button>
-                                                <button className='bg-[#241F21] text-white rounded-lg px-6 py-2 text-sm'>Save</button>
+                                                <button type='submit' disabled={loading} className='border rounded-lg px-4 py-2 text-sm'>{loading ? 'Please wait...' : 'Save as draft'}</button>
+                                                <button type='submit' disabled={loading} className='bg-[#241F21] text-white rounded-lg px-6 py-2 text-sm'>{loading ? 'Please wait...': 'Save'}</button>
                                             </ModalFooter>
                                         </Form>
                                     )}

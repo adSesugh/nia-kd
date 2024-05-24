@@ -1,0 +1,9 @@
+query GetRecentRegistration {
+  getRecentRegistration {
+    id
+    firstName
+    lastName
+    membershipType
+    createdAt
+  }
+}

@@ -37,7 +37,8 @@ const blogs: BlogCardType[] = [
   ]
 
 const BlogDetail = () => {
-    const searchParams = useParams()
+    const {id } = useParams()
+    console.log(id)
    
     return (
         <div className='h-full w-full px-28'>

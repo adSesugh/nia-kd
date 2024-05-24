@@ -1,0 +1,80 @@
+query GetDues {
+  dues {
+    id
+    name
+    amount
+    startsAt
+    endsAt
+    status
+    userId
+    createdAt
+    updatedAt
+  }
+}
+
+query GetSingeDue($dueId: UUID!) {
+  singeDue(dueId: $dueId) {
+    id
+    name
+    amount
+    startsAt
+    endsAt
+    status
+    userId
+    createdAt
+    updatedAt
+  }
+}
+
+mutation CreateDue($input: dueInput!) {
+  createDue(input: $input) {
+    code
+    success
+    message
+    due {
+      id
+      name
+      amount
+      startsAt
+      endsAt
+      status
+      userId
+      createdAt
+      updatedAt
+    }
+  }
+}
+
+mutation UpdateDue($dueId: UUID!, $input: dueInput!) {
+  updateDue(dueId: $dueId, input: $input) {
+    code
+    success
+    message
+    due {
+      id
+      name
+      amount
+      startsAt
+      endsAt
+      status
+      userId
+      createdAt
+      updatedAt
+    }
+  }
+}
+
+query GetDuePayment($memberId: UUID!) {
+  getDuePayment(memberId: $memberId) {
+    id
+    name
+    amount
+    startsAt
+    endsAt
+    status
+    paymentStatus
+    userId
+    createdAt
+    updatedAt
+  }
+}

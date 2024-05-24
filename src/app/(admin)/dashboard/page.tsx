@@ -5,6 +5,9 @@ import { PRIMARY_TWO } from '@/constant/Colors';
 import StatisticsCard from '@/components/stats/StatisticsCard';
 import { Chart as ChartJS, ArcElement, Tooltip, Legend, LineElement, LinearScale, CategoryScale, PointElement, Title, Filler } from 'chart.js';
 import { Doughnut, Line } from 'react-chartjs-2';
+import { useGetRecentRegistrationQuery } from '@/graphql/__generated__/graphql';
+import Link from 'next/link';
+import RecentRegisteredMembers from '@/components/dashboard/RecentRegisteredMembers';
 
 ChartJS.register(ArcElement, Tooltip, Legend, LineElement, LinearScale, CategoryScale, PointElement, Title, Filler);
 
@@ -126,8 +129,11 @@ const AdminDashboard = () => {
             <div className='flex justify-between'>
               <h1 className='text-[16px] font-medium'>Recent registrations</h1>
               <div>
-                <span>see all</span>
+                <Link href={'/members'} className='text-sm'>See all</Link>
               </div>
+            </div>
+            <div className='pt-3'>
+              <RecentRegisteredMembers />
             </div>
           </div>
         </div>

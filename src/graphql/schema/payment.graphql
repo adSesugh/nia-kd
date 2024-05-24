@@ -1,0 +1,73 @@
+query GetPayments {
+  getPayments {
+    id
+    member {
+      membershipType
+      firstName
+      lastName
+    }
+    due {
+      name
+      amount
+      startsAt
+      endsAt
+    }
+    amount
+    status
+    createdAt
+  }
+}
+
+query GetPayment($paymentId: UUID!) {
+  getPayment(paymentId: $paymentId) {
+    id
+    member {
+      firstName
+      lastName
+      membershipType
+      regId
+    }
+    due {
+      name
+      startsAt
+      endsAt
+      amount
+    }
+    paymentRef
+    amount
+    status
+    createdAt
+    updatedAt
+  }
+}
+
+mutation PostPayment($input: paymentInput!) {
+  postPayment(input: $input) {
+    id
+    memberId
+    duesId
+    paymentRef
+    amount
+    status
+    createdAt
+  }
+}
+
+query MemberPayments($memberId: UUID!) {
+  memberPayments(memberId: $memberId) {
+    id
+    duesId
+    due {
+      status
+      startsAt
+      name
+      id
+      endsAt
+      amount
+    }
+    paymentRef
+    amount
+    status
+    createdAt
+  }
+}

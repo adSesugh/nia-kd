@@ -1,17 +1,46 @@
+'use client'
+
+import { useAppSelector } from '@/features/hooks';
+import { RootState } from '@/features/store';
+import { useGetDuePaymentQuery, useMemberPaymentsLazyQuery } from '@/graphql/__generated__/graphql';
 import { getDaysPercentage, getTotalDaysInYear, getTotalDaysOfYear } from '@/lib/helpers';
 import { CircularProgress } from '@nextui-org/react';
 import { Clock, Timer, Timer1 } from 'iconsax-react';
 import { Metadata } from 'next';
 import Image from 'next/image';
-import React from 'react'
+import React, { useEffect, useState } from 'react'
 
-export const metadata: Metadata = {
-  title: "Annual Dues | NIA-Kd",
-  description: "NIA-Kd Home",
-};
+// export const metadata: Metadata = {
+//   title: "Annual Dues Payments | NIA-Kd",
+//   description: "NIA-Kd Home",
+// };
 
 const DueScreen = () => {
+  const [duePayments, setDuePayments] = useState<any>([])
+  const memberId: string = useAppSelector((state: RootState) => state.auth.userData.user?.member?.id)
+
+  const [getMemberPayments, {loading, error}] = useMemberPaymentsLazyQuery({fetchPolicy: "no-cache"})
+  const {data: dueToPay, loading: dueToPayLoader} = useGetDuePaymentQuery({
+    variables: {
+      memberId
+    }
+  })
+
   const getPercent = getDaysPercentage( getTotalDaysOfYear(new Date()), getTotalDaysInYear(new Date().getFullYear()))
+
+  useEffect(() => {
+    document.title = 'Annual Dues Payments | NIA-Kd'
+    ;(async () => {
+      const res = await getMemberPayments({
+        variables: {
+          memberId
+        }
+      })
+
+      setDuePayments(res.data?.memberPayments)
+    })()
+  }, [getMemberPayments, memberId])
+
   return (
     <div className='h-full w-full sm:px-80 xs:px-6 bg-gray-100 pb-5 pt-16'>
       <div className='flex xs:flex-col sm:flex-row gap-5 justify-between'>
@@ -35,7 +64,11 @@ const DueScreen = () => {
               <span className='text-[13px] text-gray-500'>You have {getTotalDaysInYear(new Date().getFullYear()) - getTotalDaysOfYear(new Date())} days left to renew your membership due</span>
             </div>
             <div className='flex space-x-5 items-center'>
-              <button className='px-3 py-1.5 rounded-full text-sm text-white bg-[#241F21]'>Pay now</button>
+              {dueToPay?.getDuePayment?.status === 'Active' && !dueToPay.getDuePayment.paymentStatus ? (
+                <button disabled={dueToPayLoader || dueToPay?.getDuePayment.status !== 'Active' ? true : false} className='px-3 py-1.5 rounded-full text-sm text-white bg-[#241F21]'>Pay now</button>
+              ) : (
+                <button disabled={true} className='px-3 py-1.5 rounded-full text-sm text-white bg-[#241F21]'>Paid</button>
+              )}
             </div>
           </div>
         </div>

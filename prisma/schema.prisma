@@ -31,6 +31,7 @@ model User {
   emailVerifiedAt  DateTime?
   emailVerifyToken String?   @db.VarChar(191)
   member           Member?
+  dues             Dues[]
   createdAt        DateTime  @default(now()) @map(name: "created_at")
   updatedAt        DateTime  @updatedAt @map(name: "updated_at")
 
@@ -54,21 +55,64 @@ model Member {
   status         String    @default("Active") @db.VarChar(191)
   createdAt      DateTime  @default(now()) @map(name: "created_at")
   updatedAt      DateTime  @updatedAt @map(name: "updated_at")
+  payments       Payment[]
 
   @@map("members")
 }
 
 model Dues {
-  id        String   @id @default(uuid())
-  name      String   @unique @db.VarChar(191)
-  amount    Decimal  @default(0.00)
-  startsAt  DateTime @map(name: "starts_at")
-  endsAt    DateTime @map(name: "ends_at")
-  status    String   @default("Active")
+  id        String    @id @default(uuid())
+  name      String    @unique @db.VarChar(191)
+  amount    Decimal   @default(0.00)
+  startsAt  DateTime  @map(name: "starts_at")
+  endsAt    DateTime  @map(name: "ends_at")
+  status    String    @default("Active")
+  userId    String
+  user      User      @relation(fields: [userId], references: [id])
+  createdAt DateTime  @default(now()) @map(name: "created_at")
+  updatedAt DateTime  @updatedAt @map(name: "updated_at")
+  payments  Payment[]
+
+  @@map("dues")
+}
+
+model Payment {
+  id         String   @id @default(uuid())
+  memberId   String
+  member     Member   @relation(fields: [memberId], references: [id])
+  duesId     String
+  due        Dues     @relation(fields: [duesId], references: [id])
+  paymentRef String   @unique
+  amount     Decimal  @default(0.00)
+  status     String   @default("Successful") @db.VarChar(15)
+  createdAt  DateTime @default(now()) @map(name: "created_at")
+  updatedAt  DateTime @updatedAt @map(name: "updated_at")
+
+  @@map("payments")
+}
+
+model Blog {
+  id            String @id @default(cuid())
+  title         String @db.VarChar(150)
+  content       String @db.LongText
+  summary       String @db.VarChar(250)
+  featuredImage String @db.VarChar(191)
+
+  tags      Tag[]
   createdAt DateTime @default(now()) @map(name: "created_at")
   updatedAt DateTime @updatedAt @map(name: "updated_at")
 
-  @@map("dues")
+  @@map("blogs")
+}
+
+model Tag {
+  id        String   @id @default(cuid())
+  name      String   @unique
+  blogs     Blog[]
+  createdAt DateTime @default(now()) @map(name: "created_at")
+  updatedAt DateTime @updatedAt @map(name: "updated_at")
+
+  @@map("tags")
 }
 
 // model MediaLibrary {

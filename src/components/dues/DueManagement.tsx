@@ -1,11 +1,13 @@
 'use client'
 
 import { Form, Formik } from 'formik'
-import React, { useState } from 'react'
+import React, { useEffect, useState } from 'react'
 import SearhbarWithIcon from '../searhbar-with-icon'
 import SelectFilter from '../select-filter'
 import { Button, Chip, Dropdown, DropdownItem, DropdownMenu, DropdownTrigger, Spinner, Table, TableBody, TableCell, TableColumn, TableHeader, TableRow } from '@nextui-org/react'
-import { DotsThreeVertical } from '@phosphor-icons/react'
+import { DotsThreeVertical, PencilSimple, Trash } from '@phosphor-icons/react'
+import { Due, useGetDuesLazyQuery } from '@/graphql/__generated__/graphql'
+import moment from 'moment'
 
 const years = [
     {
@@ -19,12 +21,22 @@ const years = [
 ]
 
 const DueManagement = () => {
-    const [dues, setDues] = useState<any>()
     const [index, setIndex] = useState<number>(0)
+    const [dueList, setDueList] = useState<any>()
 
-    const loadingState = '' || dues === 0 ? "loading" : "idle";
-    const renderCell = React.useCallback((due: any, columnKey: React.Key, index: number) => {
-        const cellValue = due[columnKey as keyof any];
+    const [getDues, {loading: duesLoader, error: dueError}] = useGetDuesLazyQuery({fetchPolicy: 'no-cache'})
+
+    const loadingState = duesLoader || dueList === 0 ? "loading" : "idle";
+
+    useEffect(() => {
+        ;(async () => {
+            const res = await getDues()
+            setDueList(res.data?.dues)
+        })()
+    }, [getDues])
+
+    const renderCell = React.useCallback((due: Due, columnKey: React.Key, index: number) => {
+        const cellValue = due[columnKey as keyof Due];
         
     
         switch (columnKey) {
@@ -33,29 +45,23 @@ const DueManagement = () => {
                 return <span>{index}</span>;
             case "name":
                 return (
-                    <div>{due.firstName} {due.lastName}</div>
+                    <div>{due?.name}</div>
+                )
+            case "year":
+                return (
+                    <div>{moment(due.startsAt).format("Y")}</div>
                 )
             case "status":
                 return (
-                    <Chip className="capitalize" color={due.status === 'ACTIVE' ? 'success' : 'default'} size="sm" variant="flat">
-                        <span className='text-[#0A7535]'>{cellValue}</span>
+                    <Chip className="capitalize" color={due.status === 'Active' ? 'success' : 'warning'} size="sm" variant="flat">
+                        <span className={due.status === 'Active' ? 'text-[#0A7535]': 'text-[#916B09]'}>{cellValue}</span>
                     </Chip>
                 );
             case "actions":
                 return (
-                    <div className="relative flex justify-end items-center gap-2">
-                        <Dropdown>
-                        <DropdownTrigger>
-                            <Button isIconOnly size="sm" variant="light">
-                                <DotsThreeVertical size={40} className="text-default-300" color='#161314' />
-                            </Button>
-                        </DropdownTrigger>
-                        <DropdownMenu>
-                            <DropdownItem>View</DropdownItem>
-                            <DropdownItem>Edit</DropdownItem>
-                            <DropdownItem>Deactivate</DropdownItem>
-                        </DropdownMenu>
-                        </Dropdown>
+                    <div className="relative flex justify-end items-center gap-3">
+                        <PencilSimple size={20} color='#161314' className='cursor-pointer' />
+                        <Trash size={20} color='#C70F0F' className='cursor-pointer' />
                     </div>
                 );
             default:
@@ -92,13 +98,13 @@ const DueManagement = () => {
                     <TableColumn key={'actions'}>.</TableColumn>
                 </TableHeader>
                 <TableBody
-                    items={dues ?? []}
+                    items={dueList ?? []}
                     loadingContent={<Spinner />}
                     loadingState={loadingState}
                     emptyContent={"No dues to display."}
                 >
                     {(item: any) => (
-                        <TableRow key={item?.id}>
+                        <TableRow key={item?.id} className='border-b last:border-b-0'>
                             {(columnKey) => <TableCell>{renderCell(item, columnKey, index)}</TableCell>}
                         </TableRow>
                     )}

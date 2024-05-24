@@ -113,7 +113,7 @@ const MemberList = () => {
                         emptyContent={"No members to display."}
                     >
                         {(item: Member) => (
-                            <TableRow key={item?.id}>
+                            <TableRow key={item?.id} className='border-b last:border-b-0'>
                                 {(columnKey) => <TableCell>{renderCell(item, columnKey, index)}</TableCell>}
                             </TableRow>
                         )}

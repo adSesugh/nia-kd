@@ -47,6 +47,7 @@ const DashboardLayout: React.FC<LayoutProps> = ({ children }) => {
         <Sidebar 
           className='h-full w-full overflow-hidden'
           breakPoint='xs'
+          //customBreakPoint='400'
           transitionDuration={1000}
           collapsed={collapsed}
           onBackdropClick={() => setToggled(false)} 
@@ -135,7 +136,7 @@ const DashboardLayout: React.FC<LayoutProps> = ({ children }) => {
                   <div className={`${pathname.includes('blog') && 'border-l-[5px] border-[#AB8144]'}`}>
                     <MenuItem 
                         icon={<Blogger size="24" color={`${pathname.includes('blog') ? '#ffffff' : '#BFBFBF'}`} variant="Outline" />} 
-                        component={<Link href="/blog/list" />}
+                        component={<Link href="/blogs/list" />}
                         active={pathname.includes('blog') && true}
                         suffix={0}
                     > 
@@ -189,8 +190,8 @@ const DashboardLayout: React.FC<LayoutProps> = ({ children }) => {
                     <p className="font-bold">Signed in as</p>
                     <p className="font-bold">@{user?.role.toLowerCase()}</p>
                   </DropdownItem>
-                  <DropdownItem key="settings">
-                    My Settings
+                  <DropdownItem key="settings" as={Link} href='/profile'>
+                    My Profile
                   </DropdownItem>
                   <DropdownItem key="logout" onClick={() => dispatch(logOut())}>
                       Log Out

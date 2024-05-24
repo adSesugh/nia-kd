@@ -1,11 +1,12 @@
 'use client'
 
 import { Form, Formik } from 'formik'
-import React, { useState } from 'react'
+import React, { useEffect, useState } from 'react'
 import SearhbarWithIcon from '../searhbar-with-icon'
 import SelectFilter from '../select-filter'
-import { Button, Chip, Dropdown, DropdownItem, DropdownMenu, DropdownTrigger, Spinner, Table, TableBody, TableCell, TableColumn, TableHeader, TableRow } from '@nextui-org/react'
-import { DotsThreeVertical } from '@phosphor-icons/react'
+import { Chip, Spinner, Table, TableBody, TableCell, TableColumn, TableHeader, TableRow } from '@nextui-org/react'
+import { Payment, useGetPaymentsLazyQuery } from '@/graphql/__generated__/graphql'
+import moment from 'moment'
 
 const years = [
     {
@@ -21,10 +22,19 @@ const years = [
 const DuePayments = () => {
     const [payments, setPayments] = useState<any>()
     const [index, setIndex] = useState<number>(0)
+    const [getPayments, {loading, error}] = useGetPaymentsLazyQuery({fetchPolicy: 'no-cache'})
 
-    const loadingState = '' || payments === 0 ? "loading" : "idle";
-    const renderCell = React.useCallback((due: any, columnKey: React.Key, index: number) => {
-        const cellValue = due[columnKey as keyof any];
+    const loadingState = loading || payments === 0 ? "loading" : "idle";
+
+    useEffect(()=>{
+        ;(async () => {
+            const res = await getPayments()
+            setPayments(res.data?.getPayments)
+        })()
+    }, [getPayments])
+
+    const renderCell = React.useCallback((payment: Payment, columnKey: React.Key, index: number) => {
+        const cellValue = payment[columnKey as keyof Payment];
         
     
         switch (columnKey) {
@@ -33,35 +43,38 @@ const DuePayments = () => {
                 return <span>{index}</span>;
             case "name":
                 return (
-                    <div>{due.firstName} {due.lastName}</div>
+                    <div>{payment?.member?.firstName} {payment?.member?.lastName}</div>
+                )
+            case "membershipType":
+                return (
+                    <div>{payment?.member?.membershipType}</div>
+                )
+            case "year":
+                return (
+                    <div>{moment(payment.due?.startsAt).format("Y")}</div>
+                )
+            case "paymentDate":
+                return (
+                    <div>{moment(payment.createdAt).format("MMM D | h:ss A")}</div>
                 )
             case "status":
                 return (
-                    <Chip className="capitalize" color={due.status === 'ACTIVE' ? 'success' : 'default'} size="sm" variant="flat">
+                    <Chip className="capitalize" color={payment.status === 'Successful' ? 'success' : 'default'} size="sm" variant="flat">
                         <span className='text-[#0A7535]'>{cellValue}</span>
                     </Chip>
                 );
             case "actions":
                 return (
                     <div className="relative flex justify-end items-center gap-2">
-                        <Dropdown>
-                        <DropdownTrigger>
-                            <Button isIconOnly size="sm" variant="light">
-                                <DotsThreeVertical size={40} className="text-default-300" color='#161314' />
-                            </Button>
-                        </DropdownTrigger>
-                        <DropdownMenu>
-                            <DropdownItem>View</DropdownItem>
-                            <DropdownItem>Edit</DropdownItem>
-                            <DropdownItem>Deactivate</DropdownItem>
-                        </DropdownMenu>
-                        </Dropdown>
+                        <button className='px-4 py-2 rounded-xl border text-center'>Receipt</button>
                     </div>
                 );
             default:
                 return cellValue;
         }
     }, []);
+
+    console.log(payments)
     
     return (
         <div>
@@ -100,7 +113,7 @@ const DuePayments = () => {
                     emptyContent={"No dues to display."}
                 >
                     {(item: any) => (
-                        <TableRow key={item?.id}>
+                        <TableRow key={item?.id} className='border-b last:border-b-0'>
                             {(columnKey) => <TableCell>{renderCell(item, columnKey, index)}</TableCell>}
                         </TableRow>
                     )}

@@ -111,7 +111,6 @@ const RegisterPage: React.FC<{}> = () => {
             <DefaultSelect
               data={membershipType}
               name='membershipType'
-              label='Membership type'
               error={errors.membershipType}
               onChange={handleChange}
             />

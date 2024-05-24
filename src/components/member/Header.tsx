@@ -143,8 +143,8 @@ const Header = () => {
                                 <p className="font-bold">Signed in as</p>
                                 <p className="font-bold">@{user?.role.toLowerCase()}</p>
                             </DropdownItem>
-                            <DropdownItem key="settings">
-                                My Settings
+                            <DropdownItem key="settings" as={Link} href='/member/profile'>
+                                My Profile
                             </DropdownItem>
                             <DropdownItem key="logout" onClick={() => dispatch(logOut())}>
                                 Log Out

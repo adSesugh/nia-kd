@@ -1,6 +1,5 @@
 import S3 from 'aws-sdk/clients/s3';
 import jwt from 'jsonwebtoken'
-//import * as uuid from ''
 
 export enum Role {
     MEMBER = "MEMBER",
