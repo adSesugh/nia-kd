@@ -6,7 +6,8 @@ export const resolvers: Resolvers = {
         login: (_, { input }, { prisma, dataSources }) => dataSources.userAPI.loginUser(prisma, input),
         createDue: (_, { input }, { prisma, dataSources }) => dataSources.dueAPI.createDue(prisma, input),
         updateDue: (_, { dueId, input }, { prisma, dataSources }) => dataSources.dueAPI.updateDue(prisma, dueId, input),
-        postPayment: (_, { input }, { prisma, dataSources }) => dataSources.paymentAPI.postPayment(prisma, input)
+        postPayment: (_, { input }, { prisma, dataSources }) => dataSources.paymentAPI.postPayment(prisma, input),
+        deactivateMember: (_, { memberId, status }, { prisma, dataSources }) => dataSources.memberAPI.deactivate(prisma, memberId, status),
     },
     Query: {
         members: (_, __, { prisma, dataSources, userId }) => dataSources.memberAPI.getMembers(prisma, userId),

@@ -106,6 +106,7 @@ export type Mutation = {
   __typename?: 'Mutation';
   createDue?: Maybe<DueResponse>;
   createUser?: Maybe<CreateUserResponse>;
+  deactivateMember?: Maybe<Member>;
   login?: Maybe<AuthPayload>;
   postPayment: Payment;
   updateDue?: Maybe<DueResponse>;
@@ -119,6 +120,12 @@ export type MutationCreateDueArgs = {
 
 export type MutationCreateUserArgs = {
   input: NewMember;
+};
+
+
+export type MutationDeactivateMemberArgs = {
+  memberId: Scalars['UUID']['input'];
+  status: Scalars['String']['input'];
 };
 
 
@@ -340,6 +347,14 @@ export type GetRecentRegistrationQueryVariables = Exact<{ [key: string]: never; 
 
 
 export type GetRecentRegistrationQuery = { __typename?: 'Query', getRecentRegistration?: Array<{ __typename?: 'Member', id: any, firstName: string, lastName: string, membershipType: string, createdAt?: any | null }> | null };
+
+export type DeactivateMemberMutationVariables = Exact<{
+  memberId: Scalars['UUID']['input'];
+  status: Scalars['String']['input'];
+}>;
+
+
+export type DeactivateMemberMutation = { __typename?: 'Mutation', deactivateMember?: { __typename?: 'Member', id: any, regId: string, firstName: string, lastName: string, email: string, phoneNumber: string, photoURL?: string | null, address: string, userId: any, joined?: any | null, membershipType: string, membershipId?: string | null, status?: string | null, createdAt?: any | null, updatedAt?: any | null } | null };
 
 
 export const CreateUserDocument = gql`
@@ -1053,6 +1068,54 @@ export type GetRecentRegistrationQueryHookResult = ReturnType<typeof useGetRecen
 export type GetRecentRegistrationLazyQueryHookResult = ReturnType<typeof useGetRecentRegistrationLazyQuery>;
 export type GetRecentRegistrationSuspenseQueryHookResult = ReturnType<typeof useGetRecentRegistrationSuspenseQuery>;
 export type GetRecentRegistrationQueryResult = Apollo.QueryResult<GetRecentRegistrationQuery, GetRecentRegistrationQueryVariables>;
+export const DeactivateMemberDocument = gql`
+    mutation DeactivateMember($memberId: UUID!, $status: String!) {
+  deactivateMember(memberId: $memberId, status: $status) {
+    id
+    regId
+    firstName
+    lastName
+    email
+    phoneNumber
+    photoURL
+    address
+    userId
+    joined
+    membershipType
+    membershipId
+    status
+    createdAt
+    updatedAt
+  }
+}
+    `;
+export type DeactivateMemberMutationFn = Apollo.MutationFunction<DeactivateMemberMutation, DeactivateMemberMutationVariables>;
+
+/**
+ * __useDeactivateMemberMutation__
+ *
+ * To run a mutation, you first call `useDeactivateMemberMutation` within a React component and pass it any options that fit your needs.
+ * When your component renders, `useDeactivateMemberMutation` returns a tuple that includes:
+ * - A mutate function that you can call at any time to execute the mutation
+ * - An object with fields that represent the current status of the mutation's execution
+ *
+ * @param baseOptions options that will be passed into the mutation, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options-2;
+ *
+ * @example
+ * const [deactivateMemberMutation, { data, loading, error }] = useDeactivateMemberMutation({
+ *   variables: {
+ *      memberId: // value for 'memberId'
+ *      status: // value for 'status'
+ *   },
+ * });
+ */
+export function useDeactivateMemberMutation(baseOptions?: Apollo.MutationHookOptions<DeactivateMemberMutation, DeactivateMemberMutationVariables>) {
+        const options = {...defaultOptions, ...baseOptions}
+        return Apollo.useMutation<DeactivateMemberMutation, DeactivateMemberMutationVariables>(DeactivateMemberDocument, options);
+      }
+export type DeactivateMemberMutationHookResult = ReturnType<typeof useDeactivateMemberMutation>;
+export type DeactivateMemberMutationResult = Apollo.MutationResult<DeactivateMemberMutation>;
+export type DeactivateMemberMutationOptions = Apollo.BaseMutationOptions<DeactivateMemberMutation, DeactivateMemberMutationVariables>;
 export type WithIndex<TObject> = TObject & Record<string, any>;
 export type ResolversObject<TObject> = WithIndex<TObject>;
 
@@ -1268,6 +1331,7 @@ export type MemberResponseResolvers<ContextType = GraphQLContext, ParentType ext
 export type MutationResolvers<ContextType = GraphQLContext, ParentType extends ResolversParentTypes['Mutation'] = ResolversParentTypes['Mutation']> = ResolversObject<{
   createDue?: Resolver<Maybe<ResolversTypes['DueResponse']>, ParentType, ContextType, RequireFields<MutationCreateDueArgs, 'input'>>;
   createUser?: Resolver<Maybe<ResolversTypes['CreateUserResponse']>, ParentType, ContextType, RequireFields<MutationCreateUserArgs, 'input'>>;
+  deactivateMember?: Resolver<Maybe<ResolversTypes['Member']>, ParentType, ContextType, RequireFields<MutationDeactivateMemberArgs, 'memberId' | 'status'>>;
   login?: Resolver<Maybe<ResolversTypes['AuthPayload']>, ParentType, ContextType, RequireFields<MutationLoginArgs, 'input'>>;
   postPayment?: Resolver<ResolversTypes['Payment'], ParentType, ContextType, RequireFields<MutationPostPaymentArgs, 'input'>>;
   updateDue?: Resolver<Maybe<ResolversTypes['DueResponse']>, ParentType, ContextType, RequireFields<MutationUpdateDueArgs, 'dueId' | 'input'>>;

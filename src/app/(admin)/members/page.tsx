@@ -7,15 +7,16 @@ import { Form, Formik } from 'formik'
 import SelectFilter from '@/components/select-filter'
 import { membershipType } from '@/lib/common'
 import { Button, Chip, Dropdown, DropdownItem, DropdownMenu, DropdownTrigger, Spinner, Table, TableBody, TableCell, TableColumn, TableHeader, TableRow } from '@nextui-org/react'
-import { Member, useGetMembersLazyQuery } from '@/graphql/__generated__/graphql'
+import { Member, useDeactivateMemberMutation, useGetMembersLazyQuery } from '@/graphql/__generated__/graphql'
 import {DotsThreeVertical} from '@phosphor-icons/react'
 import { toast } from 'react-toastify'
 import moment from 'moment'
 
 const MemberList = () => {
-    const [members, setMembers] = useState<any>()
+    const [members, setMembers] = useState<any>([])
     const [index, setIndex] = useState<number>(0)
     const [getMembers, {loading, fetchMore}] = useGetMembersLazyQuery({fetchPolicy: 'no-cache'})
+    const [deactiveMember, {}] = useDeactivateMemberMutation()
 
     const loadingState = loading || members === 0 ? "loading" : "idle";
 
@@ -28,7 +29,26 @@ const MemberList = () => {
                 setMembers(res?.data?.members)
             }
         })()
+        document.title = `Members | NIA-Kd`
     }, [getMembers])
+
+    const switchMemberStatus = async (memberId: string, status: string) => {
+        const member = (await deactiveMember({
+            variables: {
+                memberId,
+                status
+            }
+        })).data
+
+        if(member?.deactivateMember && members.length !== 0){
+            const res = await getMembers()
+            if(res.error){
+                toast.error(res.error.message)
+            } else{
+                setMembers(res?.data?.members)
+            }
+        }
+    }
 
     const renderCell = React.useCallback((member: Member, columnKey: React.Key, index: number) => {
         const cellValue = member[columnKey as keyof Member];
@@ -48,7 +68,7 @@ const MemberList = () => {
                 )
             case "status":
                 return (
-                    <Chip className="capitalize" color={member.status === 'ACTIVE' ? 'success' : 'default'} size="sm" variant="flat">
+                    <Chip className="capitalize" color={(member.status === 'Active' || member.status === 'ACTIVE') ? 'success' : 'default'} size="sm" variant="flat">
                         <span className='text-[#0A7535]'>{cellValue}</span>
                     </Chip>
                 );
@@ -64,7 +84,11 @@ const MemberList = () => {
                         <DropdownMenu>
                             <DropdownItem>View</DropdownItem>
                             <DropdownItem>Edit</DropdownItem>
-                            <DropdownItem>Deactivate</DropdownItem>
+                            {member.status === 'Active' ? (
+                                <DropdownItem onClick={() => switchMemberStatus(member.id, 'Inactive')}>Deactivate</DropdownItem>
+                            ): (
+                                <DropdownItem onClick={() => switchMemberStatus(member.id, 'Active')}>Activate</DropdownItem>
+                            )}
                         </DropdownMenu>
                         </Dropdown>
                     </div>

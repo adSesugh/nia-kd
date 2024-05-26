@@ -32,6 +32,7 @@ model User {
   emailVerifyToken String?   @db.VarChar(191)
   member           Member?
   dues             Dues[]
+  status           String    @default("Active")
   createdAt        DateTime  @default(now()) @map(name: "created_at")
   updatedAt        DateTime  @updatedAt @map(name: "updated_at")
 

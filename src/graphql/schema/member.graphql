@@ -34,3 +34,23 @@ query GetMember($memberId: UUID!) {
     updatedAt
   }
 }
+
+mutation DeactivateMember($memberId: UUID!, $status: String!) {
+  deactivateMember(memberId: $memberId, status: $status) {
+    id
+    regId
+    firstName
+    lastName
+    email
+    phoneNumber
+    photoURL
+    address
+    userId
+    joined
+    membershipType
+    membershipId
+    status
+    createdAt
+    updatedAt
+  }
+}

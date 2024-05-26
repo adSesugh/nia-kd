@@ -62,7 +62,7 @@ const CreateBlog = () => {
                             </div>
                             <div className='sm:w-2/6 xs:w-full'>
                                 <div className='w-full h-ful border-t'>
-                                    <NIAFileInput name='coverImg' label='Feature Image' />
+                                    <NIAFileInput type='file' name='coverImg' label='Feature Image' />
                                     <div className='py-3'>
                                         <h1 className='text-lg font-semibold'>Tags</h1>
                                         <div className='bg-white py-2 px-3'>

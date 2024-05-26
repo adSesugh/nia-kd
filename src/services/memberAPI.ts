@@ -30,6 +30,30 @@ class MemberAPI extends RESTDataSource {
         })
         return member
     }
+
+    async deactivate(prisma: PrismaClient, memberId: string, status: string) {
+        const member = await prisma.member.update({
+            where: {
+                id: memberId
+            },
+            data: {
+                status
+            }
+        })
+
+        if (status === 'Inactive') {
+            await prisma.user.update({
+                where: {
+                    id: member.userId
+                },
+                data: {
+                    status
+                }
+            })
+        }
+
+        return member
+    }
 }
 
 export default MemberAPI

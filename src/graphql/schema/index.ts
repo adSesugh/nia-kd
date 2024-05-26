@@ -155,6 +155,7 @@ export const typeDefs = `#graphql
     createDue(input: dueInput!): DueResponse
     updateDue(dueId: UUID!, input: dueInput!): DueResponse
     postPayment(input: paymentInput!): Payment!
+    deactivateMember(memberId: UUID!, status: String!): Member
   }
 
   ## ------------------------------------- Query ---------------------------------------------------##
