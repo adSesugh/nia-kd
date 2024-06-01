@@ -104,7 +104,7 @@ export type Event = {
   link?: Maybe<Scalars['String']['output']>;
   message: Scalars['String']['output'];
   name: Scalars['String']['output'];
-  paymentMode: Scalars['String']['output'];
+  paymentType: Scalars['String']['output'];
   starts_at: Scalars['Time']['output'];
   status: Scalars['String']['output'];
   tickets?: Maybe<Scalars['Int']['output']>;
@@ -417,7 +417,7 @@ export type EventInput = {
   link?: InputMaybe<Scalars['String']['input']>;
   message: Scalars['String']['input'];
   name: Scalars['String']['input'];
-  paymentMode: Scalars['String']['input'];
+  paymentType: Scalars['String']['input'];
   resources?: InputMaybe<Array<Scalars['String']['input']>>;
   starts_at: Scalars['Time']['input'];
   tickets?: InputMaybe<Scalars['Int']['input']>;
@@ -539,7 +539,7 @@ export type CreateEventMutationVariables = Exact<{
 }>;
 
 
-export type CreateEventMutation = { __typename?: 'Mutation', createEvent?: { __typename?: 'EventResponse', code: number, success: boolean, message: string, event?: { __typename?: 'Event', id: any, name: string, description?: string | null, type: string, link?: string | null, address?: string | null, starts_at: any, ends_at: any, paymentMode: string, amount: any, tickets?: number | null, isInfinity?: boolean | null, coverPhoto: string, userId?: any | null, formTitle: string, instructions: string, message: string, createdAt?: any | null, status: string, user?: { __typename?: 'User', member?: { __typename?: 'Member', firstName: string, lastName: string } | null } | null, eventForm?: Array<{ __typename?: 'EventForm', id: any, name: string, type: string, required?: boolean | null }> | null } | null } | null };
+export type CreateEventMutation = { __typename?: 'Mutation', createEvent?: { __typename?: 'EventResponse', code: number, success: boolean, message: string, event?: { __typename?: 'Event', id: any, name: string, description?: string | null, type: string, link?: string | null, address?: string | null, starts_at: any, ends_at: any, paymentType: string, amount: any, tickets?: number | null, isInfinity?: boolean | null, coverPhoto: string, userId?: any | null, formTitle: string, instructions: string, message: string, createdAt?: any | null, status: string, user?: { __typename?: 'User', member?: { __typename?: 'Member', firstName: string, lastName: string } | null } | null, eventForm?: Array<{ __typename?: 'EventForm', id: any, name: string, type: string, required?: boolean | null }> | null } | null } | null };
 
 export type GetMembersQueryVariables = Exact<{ [key: string]: never; }>;
 
@@ -1189,7 +1189,7 @@ export const CreateEventDocument = gql`
       address
       starts_at
       ends_at
-      paymentMode
+      paymentType
       amount
       tickets
       isInfinity
@@ -1836,7 +1836,7 @@ export type EventResolvers<ContextType = GraphQLContext, ParentType extends Reso
   link?: Resolver<Maybe<ResolversTypes['String']>, ParentType, ContextType>;
   message?: Resolver<ResolversTypes['String'], ParentType, ContextType>;
   name?: Resolver<ResolversTypes['String'], ParentType, ContextType>;
-  paymentMode?: Resolver<ResolversTypes['String'], ParentType, ContextType>;
+  paymentType?: Resolver<ResolversTypes['String'], ParentType, ContextType>;
   starts_at?: Resolver<ResolversTypes['Time'], ParentType, ContextType>;
   status?: Resolver<ResolversTypes['String'], ParentType, ContextType>;
   tickets?: Resolver<Maybe<ResolversTypes['Int']>, ParentType, ContextType>;

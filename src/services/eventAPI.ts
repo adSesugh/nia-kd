@@ -21,7 +21,7 @@ class EventAPI extends RESTDataSource {
                 formTitle: input.formTitle,
                 name: input.name,
                 amount: input.amount,
-                paymentMode: input.paymentMode,
+                paymentType: input.paymentType,
                 link: input.link,
                 isInfinity: input.isInfinity ? input.isInfinity : false,
                 instructions: input.instructions,

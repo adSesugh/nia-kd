@@ -21,7 +21,7 @@ mutation CreateEvent($input: eventInput!) {
       address
       starts_at
       ends_at
-      paymentMode
+      paymentType
       amount
       tickets
       isInfinity

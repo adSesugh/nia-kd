@@ -93,7 +93,7 @@ export const typeDefs = `#graphql
     address: String
     starts_at: Time!
     ends_at: Time!
-    paymentMode: String!
+    paymentType: String!
     amount: Decimal!
     tickets: Int
     isInfinity: Boolean
@@ -221,7 +221,7 @@ export const typeDefs = `#graphql
     address: String
     starts_at: Time!
     ends_at: Time!
-    paymentMode: String!
+    paymentType: String!
     amount: Decimal!
     tickets: Int
     isInfinity: Boolean
