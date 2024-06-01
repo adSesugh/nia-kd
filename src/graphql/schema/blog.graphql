@@ -1,0 +1,49 @@
+mutation CreateBlog($input: blogInput!) {
+  createBlog(input: $input) {
+    code
+    success
+    message
+    blog {
+      id
+      title
+      content
+      summary
+      featuredImage
+      tags {
+        name
+        id
+      }
+      createdAt
+      updatedAt
+    }
+  }
+}
+
+query GetBlogs($status: String) {
+  getBlogs(status: $status) {
+    id
+    title
+    content
+    summary
+    featuredImage
+    status
+    createdAt
+  }
+}
+
+mutation PublishedBlog($blogId: UUID!, $status: String!) {
+  publishedBlog(blogId: $blogId, status: $status) {
+    code
+    success
+    message
+    blog {
+      id
+      title
+      content
+      summary
+      featuredImage
+      status
+      createdAt
+    }
+  }
+}

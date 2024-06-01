@@ -1,4 +1,4 @@
-import S3 from 'aws-sdk/clients/s3';
+
 import jwt from 'jsonwebtoken'
 
 export enum Role {
@@ -68,15 +68,14 @@ export function capitalize(str: string) {
     return str.charAt(0).toUpperCase() + str.slice(1);
 }
 
-// export const convertGuidToInt = (id: any) => {
-//     // parse accountId into Uint8Array[16] variable
-//     let parsedUuid = uuid.parse(id);
+export function combineDateTime(dateString: string, timeString: string) {
+    const date = new Date(dateString);
+    const [hours, minutes] = timeString.split(':').map(Number);
 
-//     // convert to integer - see answers to https://stackoverflow.com/q/39346517/2860309
-//     let buffer = Buffer.from(parsedUuid);
-//     console.log(`parsed uuid converted to buffer`);
-//     let result = buffer.readUInt32BE(0);
-//     console.log(`buffer converted to integer ${result} successfully`);
+    date.setHours(hours);
+    date.setMinutes(minutes);
+    date.setSeconds(0);
+    date.setMilliseconds(0);
 
-//     return result;
-// }
+    return date.toISOString();
+}

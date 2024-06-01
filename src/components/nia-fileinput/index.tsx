@@ -2,8 +2,8 @@
 "use client";
 
 import { FileInput, Label } from "flowbite-react";
-import { ErrorMessage, useField } from "formik";
-import { useEffect } from "react";
+import { ErrorMessage, Field, useField } from "formik";
+import React from "react";
 
 type FileInputProps = {
     name: string
@@ -12,28 +12,18 @@ type FileInputProps = {
     className?: string
     showError?: boolean
     label?: string
+    subtitle?: string
+    base64?: string
+    handleFileChange: (e: React.ChangeEvent<HTMLInputElement>) => void
 }
 
-const NIAFileInput: React.FC<FileInputProps> = ({ name, label, showError}) => {
-    const [field, meta, helpers]  = useField(name)
-    const { value } = meta
-    const { setValue } = helpers
-
-    // useEffect(() => {
-    //     if(value){
-    //         const file = URL?.createObjectURL(value)
-    //         setValue(file)
-    //     }
-        
-    // }, [setValue, value])
-
-    console.log(value)
-
+const NIAFileInput: React.FC<FileInputProps> = ({ name, label, subtitle, showError, base64, handleFileChange}) => {
     return (
         <div className={`mb-2 text-[14px] ${showError && 'text-red-500'} border-t`}>
             {label && (
-                <div className='flex items-center py-3 w-full bg-white'>
-                    <h3 className="px-3">{label}</h3>
+                <div className='flex flex-col justify-center py-3 w-full bg-white'>
+                    <h3 className="font-semibold">{label}</h3>
+                    <span className="text-[#5D5D5D] text-[13px]">{subtitle}</span>
                 </div>
             )}
             <div className="flex w-full items-center justify-center">
@@ -41,8 +31,9 @@ const NIAFileInput: React.FC<FileInputProps> = ({ name, label, showError}) => {
                     htmlFor="dropzone-file"
                     className="flex h-64 w-full cursor-pointer flex-col items-center justify-center rounded-lg border-2 border-dashed border-gray-300 bg-gray-50 hover:bg-gray-100 dark:border-gray-600 dark:bg-gray-700 dark:hover:border-gray-500 dark:hover:bg-gray-600"
                 >
-                    {value ? (
-                        <img src={value} alt="uploaded" />
+                    {base64 ? (
+                        // eslint-disable-next-line @next/next/no-img-element
+                        <img src={base64} alt="uploaded" className="flex h-full w-full" />
                     ): (
                         <div className="flex flex-col items-center justify-center pb-6 pt-5">
                             <svg
@@ -63,10 +54,16 @@ const NIAFileInput: React.FC<FileInputProps> = ({ name, label, showError}) => {
                             <p className="mb-2 text-sm text-gray-500 dark:text-gray-400">
                                 <span className="font-semibold">Click to upload</span> or drag and drop
                             </p>
-                            <p className="text-xs text-gray-500 dark:text-gray-400">SVG, PNG, JPG or GIF (MAX. 800x400px)</p>
+                            <p className="text-xs text-gray-500 dark:text-gray-400">PNG, JPG or GIF (MAX. 800x400px)</p>
                         </div>
                     )}
-                    <FileInput formEncType="multipart/form-data"  {...field} id="dropzone-file" className="hidden" />
+                    <FileInput
+                        name="fileUpload"
+                        id="dropzone-file"
+                        className="hidden"
+                        accept="image/.gif,.png,.jpeg,.jpg"
+                        onChange={handleFileChange} 
+                    />
                 </Label>
             </div>
             <div className="mt-2">

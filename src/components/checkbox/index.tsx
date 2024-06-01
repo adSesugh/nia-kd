@@ -9,8 +9,8 @@ type CheckboxProps = {
 
 const CheckBox: React.FC<CheckboxProps> = ({name, label, defaultChecked}) => {
     return (
-        <div className="form-control pt-1 w-1/3 md:w-36 xs:w-36">
-            <label className="label cursor-pointer text-left">
+        <div className="form-control pt-1 w-1/3 md:w-36] sm:w-full xs:w-36">
+            <label className="flex label cursor-pointer text-left items-center">
                 <Field 
                     type="checkbox" 
                     name={name} 

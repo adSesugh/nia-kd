@@ -1,0 +1,49 @@
+query EventFormFields {
+  eventFormFields {
+    id
+    name
+    type
+    required
+  }
+}
+
+mutation CreateEvent($input: eventInput!) {
+  createEvent(input: $input) {
+    code
+    success
+    message
+    event {
+      id
+      name
+      description
+      type
+      link
+      address
+      starts_at
+      ends_at
+      paymentMode
+      amount
+      tickets
+      isInfinity
+      coverPhoto
+      userId
+      formTitle
+      instructions
+      message
+      user {
+        member {
+          firstName
+          lastName
+        }
+      }
+      eventForm {
+        id
+        name
+        type
+        required
+      }
+      createdAt
+      status
+    }
+  }
+}

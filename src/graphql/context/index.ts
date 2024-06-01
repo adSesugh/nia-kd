@@ -5,6 +5,8 @@ import type { PrismaClient } from "@prisma//client";
 import { NextRequest } from "next/server";
 import PaymentAPI from "@/services/paymentAPI";
 import DashboardAPI from "@/services/dashboardAPI";
+import BlogAPI from "@/services/blogAPI";
+import EventAPI from "@/services/eventAPI";
 
 export type GraphQLContext = {
     prisma: PrismaClient,
@@ -17,5 +19,7 @@ export type GraphQLContext = {
         dueAPI: DuesAPI,
         paymentAPI: PaymentAPI,
         dashboardAPI: DashboardAPI,
+        blogAPI: BlogAPI,
+        eventAPI: EventAPI,
     };
 }

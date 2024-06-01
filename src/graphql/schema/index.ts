@@ -3,6 +3,7 @@ export const typeDefs = `#graphql
   scalar UUID
   scalar Decimal
   scalar Upload
+  scalar JSON
 
   directive @auth on FIELD | FIELD_DEFINITION | OBJECT
   directive @skip on FIELD | FIELD_DEFINITION
@@ -64,6 +65,104 @@ export const typeDefs = `#graphql
     updatedAt:  Time
   }  
 
+  type Blog {
+    id: UUID!
+    title: String!
+    content: String!
+    summary: String!
+    featuredImage: String!
+    tags: [Tag!]
+    userId: String
+    user: User
+    status: String!
+    createdAt: Time
+    updatedAt: Time
+  }
+
+  type Tag {
+    id: UUID!
+    name: String!
+  }
+
+  type Event {
+    id: UUID!
+    name: String!
+    description: String
+    type: String!
+    link: String
+    address: String
+    starts_at: Time!
+    ends_at: Time!
+    paymentMode: String!
+    amount: Decimal!
+    tickets: Int
+    isInfinity: Boolean
+    coverPhoto: String!
+    userId: UUID
+    formTitle: String!
+    instructions: String!
+    message: String!
+    status: String!
+    user: User
+    eventForm: [EventForm!]
+    eventPayments: [EventPayment!]
+    eventRegistrations: [EventRegistration!]
+    eventResources: [EventResource!]
+    createdAt: Time
+    updatedAt: Time
+  }
+
+  type EventForm {
+    id: UUID!
+    name: String!
+    type: String!
+    required: Boolean
+    event: Event
+    eventId: UUID
+  }
+
+  type FormDesign {
+    id: UUID!
+    name: String!
+    type: String!
+    required: Boolean
+    createdAt: Time
+    updatedAt: Time
+  }
+
+  type EventPayment {
+    id: UUID!
+    phoneNumber: String!
+    paymentRef: String!
+    amount: Decimal
+    status: String
+    eventId: UUID
+    createdAt: Time
+    updatedAt: Time
+  }
+
+  type EventResource {
+    id: UUID!
+    resourceUrl: String!
+    eventId: UUID!
+    event: Event
+  }
+  
+  type EventRegistration {
+    id: UUID!
+    memberId: UUID
+    member: Member
+    eventId: UUID!
+    event: Event
+    registrantDetail: JSON
+    amount: Decimal
+    paymentRef: String!
+    status: String
+    checkin: Boolean
+    createdAt: Time
+    updatedAt: Time
+  }
+
   ## ------------------------------------- Type Input ---------------------------------------------------##
 
   input signInUser {
@@ -98,6 +197,40 @@ export const typeDefs = `#graphql
     paymentRef: String
     amount: Decimal!
     status: String!
+  }
+
+  input blogInput {
+    title: String!
+    content: String!
+    summary: String!
+    featuredImage: String!
+    tags: [String!]
+  }
+
+  input EventFormInput {
+    name: String!
+    type: String!
+    required: Boolean
+  }
+
+  input eventInput {
+    name: String!
+    description: String
+    type: String!
+    link: String
+    address: String
+    starts_at: Time!
+    ends_at: Time!
+    paymentMode: String!
+    amount: Decimal!
+    tickets: Int
+    isInfinity: Boolean
+    coverPhoto: String
+    formTitle: String!
+    instructions: String!
+    message: String!
+    form: [EventFormInput]
+    resources: [String!]
   }
 
   ## ------------------------------------- Type Response ---------------------------------------------------##
@@ -147,6 +280,20 @@ export const typeDefs = `#graphql
     updatedAt: Time
   }
 
+  type BlogResponse {
+    code: Int!
+    success: Boolean!
+    message: String!
+    blog: Blog
+  }
+
+  type EventResponse {
+    code: Int!
+    success: Boolean!
+    message: String!
+    event: Event
+  }
+
   ## ------------------------------------- Mutation ---------------------------------------------------##
 
   type Mutation {
@@ -156,6 +303,9 @@ export const typeDefs = `#graphql
     updateDue(dueId: UUID!, input: dueInput!): DueResponse
     postPayment(input: paymentInput!): Payment!
     deactivateMember(memberId: UUID!, status: String!): Member
+    createBlog(input: blogInput!): BlogResponse
+    publishedBlog(blogId: UUID!, status: String!): BlogResponse
+    createEvent(input: eventInput!): EventResponse
   }
 
   ## ------------------------------------- Query ---------------------------------------------------##
@@ -172,5 +322,11 @@ export const typeDefs = `#graphql
     getPayment(paymentId: UUID!): Payment
     getDuePayment(memberId: UUID!): MemberDueResponse
     getRecentRegistration: [Member!]
+    getBlogs(status: String): [Blog!]
+    getBlog(blogId: UUID!): Blog
+    tags: [Tag!]
+    eventFormFields: [FormDesign!] 
+    getEvents: [Event!]
+    getEvent(eventId: UUID): Event
   }
 `;

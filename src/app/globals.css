@@ -18,3 +18,8 @@
   position: relative;
   margin-top: 20px; /* Adjust as needed */
 }
+
+textarea[id^="form-field_"] {
+  text-align: left !important;
+  direction: ltr !important;
+}

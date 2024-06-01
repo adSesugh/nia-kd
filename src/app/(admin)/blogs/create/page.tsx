@@ -2,23 +2,25 @@
 
 import React, { useEffect, useState } from 'react'
 import TitleHeader from '../../TitleHeader'
-import { Field, Form, Formik } from 'formik'
+import { Field, Form, Formik, useFormik } from 'formik'
 import TextField from '@/components/textfield'
 import TinyMCEField from '@/components/tinymce-field'
 import { Editor } from '@tinymce/tinymce-react'
 import NIAFileInput from '@/components/nia-fileinput'
 import { CloseCircle } from 'iconsax-react'
 import Link from 'next/link'
+import { useCreateBlogMutation } from '@/graphql/__generated__/graphql'
 
 
 const CreateBlog = () => {
-    const [tags, setTags] = useState<string[]>([])
+     const [tags, setTags] = useState<string[]>([])
     const [tag, setTag] = useState<string>('')
-    const [loading, setLoading] = useState(false)
+    const [base64, setBase64] = useState<string>()
+    const [createBlog, { loading }] = useCreateBlogMutation() 
 
     useEffect(()=>{
         document.title = 'Create Blog | NIA-Kd'
-    }, [])
+    }, [base64])
 
     const addTags = () => {
         if(tag) {
@@ -39,10 +41,29 @@ const CreateBlog = () => {
         <div className='sm:px-12 xs:px-4 pb-6 h-full overflow-y-auto'>
             <TitleHeader title='New Post' />
             <Formik
-                initialValues={{}}
-                onSubmit={async(values) => console.log(values)}
+                initialValues={{
+                    title: '',
+                    content: '',
+                    summary: '',
+                    featuredImage: '',
+                }}
+                onSubmit={async(values) => {
+                    const res = await createBlog({
+                        variables: {
+                            input: {
+                                title: values.title,
+                                content: values.content,
+                                summary: values.summary,
+                                featuredImage: values.featuredImage,
+                                tags: tags
+                            }
+                        }
+                    })
+
+                    console.log(res)
+                }}
             >
-                {({values, handleSubmit, isSubmitting}) => (
+                {({values, handleSubmit, isSubmitting, setFieldValue}) => (
                     <Form onSubmit={handleSubmit}>
                         <div className='flex sm:flex-row xs:flex-col justify-between pt-5 gap-4'>
                             <div className='sm:w-4/6 xs:w-full'>
@@ -62,7 +83,17 @@ const CreateBlog = () => {
                             </div>
                             <div className='sm:w-2/6 xs:w-full'>
                                 <div className='w-full h-ful border-t'>
-                                    <NIAFileInput type='file' name='coverImg' label='Feature Image' />
+                                    <NIAFileInput name='coverImg' label='Feature Image' handleFileChange={function (e: React.ChangeEvent<HTMLInputElement>): void {
+                                        const file = e.currentTarget.files?.[0];
+                                        if (file) {
+                                            const reader = new FileReader();
+                                            reader.onloadend = () => {
+                                                setFieldValue('featuredImage', reader.result as string);
+                                                setBase64(reader.result as string)
+                                            };
+                                            reader.readAsDataURL(file);
+                                        }
+                                    } } base64={base64} />
                                     <div className='py-3'>
                                         <h1 className='text-lg font-semibold'>Tags</h1>
                                         <div className='bg-white py-2 px-3'>

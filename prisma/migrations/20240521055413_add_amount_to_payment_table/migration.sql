@@ -1,2 +1,0 @@
--- AlterTable
-ALTER TABLE `payments` ADD COLUMN `amount` DECIMAL(65, 30) NOT NULL DEFAULT 0.00;

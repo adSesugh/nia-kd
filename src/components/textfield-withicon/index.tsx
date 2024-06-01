@@ -11,12 +11,18 @@ type TextFieldWithIconProps = {
     RightIcon?: React.ReactNode
     LeftIcons?: React.ReactNode
     className?: string
+    label?: string
 }
 
-const TextFieldWithIcon: React.FC<TextFieldWithIconProps> = ({ name, placeholder, type, LeftIcons, RightIcon, className}) => {
+const TextFieldWithIcon: React.FC<TextFieldWithIconProps> = ({ name, label, placeholder, type, LeftIcons, RightIcon, className}) => {
     return (
-        <div>
-            <div className="relative mt-2 rounded-md shadow-sm">
+        <div className='text-[14px] mb-2'>
+            {label && (
+                <div className='py-1'>
+                    <h3>{label}</h3>
+                </div>
+            )}
+            <div className="relative rounded-md shadow-sm">
                 {LeftIcons && (
                     <div className="pointer-events-none absolute inset-y-0 left-0 flex items-center pl-2">
                         {LeftIcons}

@@ -203,7 +203,7 @@ const DashboardLayout: React.FC<LayoutProps> = ({ children }) => {
         </Sidebar>
       </div>
       <div className={`${toggled ? 'xs:w-full' : collapsed ? 'sm:w-[95%]' : 'xs:w-full sm:w-[83.6%]'} h-full`}>
-        <main className='h-screen w-full pb-8 bg-[#F5F5F5] overflow-hidden'>
+        <main className='h-screen w-full bg-[#F5F5F5] overflow-hidden'>
           <div className='flex justify-between xs:px-4 pt-4 sm:pr-12 xs:pb-3 sm:pb-0 w-full'>
             <div className='xs:hidden sm:flex'></div>
             <HambergerMenu className=' sm:py-0 sm:pl-0 xs:flex sm:hidden' size={20} variant='Outline' color={`${PRIMARY_TWO}`} onClick={() => setToggled(!toggled)} />

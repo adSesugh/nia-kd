@@ -13,6 +13,13 @@ generates:
       mappers:
         User: "@prisma/client#User"
         Member: "@prisma/client#Member"
+        Blog: "@prisma/client#Blog"
+        Tag: "@prisma/client#Tag"
+        Payment: "@prisma/client#Payment"
+        Dues: "@prisma/client#Dues"
+        Event: "@prisma/client#Event"
+        EventResource: "@prisma/client#EventResource"
+        EventRegistration: "@prisma/client#EventRegistration"
     plugins:
       - typescript
       - typescript-operations
