@@ -9,8 +9,8 @@ import TextAreaField from '@/components/textarea-field'
 import TextField from '@/components/textfield'
 import TimeField from '@/components/timefield'
 import TinyMCEField from '@/components/tinymce-field'
-import { Switch } from '@nextui-org/react'
-import { Globe, MapPinSimpleArea, X } from '@phosphor-icons/react'
+import { Switch, Table, TableBody, TableColumn, TableHeader } from '@nextui-org/react'
+import { Globe, MapPinSimpleArea, Plus, X } from '@phosphor-icons/react'
 import { Field, Form, Formik } from 'formik'
 import { Gift, MoneyTick, Video } from 'iconsax-react'
 import moment from 'moment'
@@ -27,6 +27,8 @@ const CreateEvent = () => {
     const [certfiles, setCertFiles] = useState<FileWithPreview[]>([]);
     const [currentIndex, setCurrentIndex] = useState<number>(0)
     const [nextIndex, setNextIndex] = useState<number>(1)
+    const [speakers, setSpeakers] = useState<Record<string, any>>([])
+
     const steps = ['details', 'speakers', 'form', 'resources', 'email']
 
     useEffect(() => {
@@ -245,7 +247,76 @@ const CreateEvent = () => {
                             )}
                             {steps[currentIndex] === 'speakers' && (
                                 <div>
-                                    <h1>Speaker</h1>
+                                    <div className='pb-3'>
+                                        <h1 className='text-lg font-semibold'>Add speakers</h1>
+                                    </div>
+                                    <div className='bg-white'>
+                                        <div className='flex sm:flex-row xs:flex-col p-4 gap-5'>
+                                            <div className='sm:w-1/3 xs:w-full'>
+                                                <div className="flex justify-center items-center border-2 border-dashed p-6 text-center mb-4 cursor-pointer rounded-lg h-72">
+                                                    <input
+                                                        type="file"
+                                                        id="speakerPix"
+                                                        name='speakerPix[]'
+                                                        className="hidden"
+                                                        multiple
+                                                        accept="image/{.gif,.png,.jpg,.jpeg}"
+                                                        onChange={async (event: React.ChangeEvent<HTMLInputElement>) => {
+                                                                if (event.target.files) {
+                                                                const newFiles = Array.from(event.target.files).filter((file) =>
+                                                                    file.type === 'image/{.gif,.png,.jpg,.jpeg}'
+                                                                ).map((file) =>
+                                                                    Object.assign(file, {
+                                                                    preview: URL.createObjectURL(file),
+                                                                    })
+                                                                );
+                                                                const blobUrl = newFiles[0].preview
+                                                                const blob = await fetch(blobUrl).then(r => r.blob());
+                                                                console.log(blob)
+                                                                setFiles((prevFiles) => [...prevFiles, ...newFiles]);
+                                                            }
+                                                        }}
+                                                    />
+                                                    <label htmlFor="speakerPix" className="flex flex-col items-center py-1 px-2 rounded-lg bg-[#F3ECE2] cursor-pointer">
+                                                        <p>Upload image</p>
+                                                    </label>
+                                                </div>
+                                            </div>
+                                            <div className='sm:w-2/3 xs:w-full'>
+                                                <div>
+                                                    <TextField
+                                                        name='name[]'
+                                                        label='Speaker name' 
+                                                    />
+                                                    <TextField
+                                                        name='title[]'
+                                                        label='Speaker title' 
+                                                    />
+                                                    <TextAreaField 
+                                                        name='about[]'
+                                                        label='About speaker (not more than 150 words)'
+                                                    />
+                                                </div>
+                                            </div>
+                                        </div>
+                                        <hr className='h-[1px] bg-[#D9D9D9 w-full' />
+                                        <div className='py-3 px-4'>
+                                            <button className='flex gap-3'>
+                                                <Plus size={20} color='#E08D14' />
+                                                <span className='text-[#E08D14]'>Add speaker</span>
+                                            </button>
+                                        </div>
+                                    </div>
+                                    <div className='w-full bg-white mt-4'>
+                                        <Table>
+                                            <TableHeader>
+                                                <TableColumn>Name</TableColumn>
+                                                <TableColumn>Title</TableColumn>
+                                                <TableColumn>About speaker</TableColumn>
+                                            </TableHeader>
+                                            <TableBody emptyContent={"No rows to display."}>{[]}</TableBody>
+                                        </Table>
+                                    </div>
                                 </div>
                             )}
                             {steps[currentIndex] === 'form' && (
