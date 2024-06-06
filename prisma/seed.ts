@@ -10,7 +10,6 @@ async function seed() {
             number: 1
         }
     })
-    console.log({ counter })
 
     const currentYear = new Date().getFullYear()
     const salt = await bcrypt.genSalt(Number(process.env.NEXT_PUBLIC_HASH_SALT))
@@ -25,6 +24,38 @@ async function seed() {
             role: "ADMINISTRATOR"
         }
     })
+
+    const formFields = await prisma.formDesign.createMany({
+        data: [
+            {
+                name: 'firstName',
+                type: 'text',
+                required: true
+            },
+            {
+                name: 'lastName',
+                type: 'text',
+                required: true
+            },
+            {
+                name: 'phoneNumber',
+                type: 'text',
+                required: true
+            },
+            {
+                name: 'gender',
+                type: 'select',
+                required: true
+            },
+            {
+                name: 'email',
+                type: 'email',
+                required: true
+            },
+        ]
+    })
+
+    console.log({ counter, user, formFields })
 }
 
 // Run the seed function

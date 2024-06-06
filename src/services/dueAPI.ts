@@ -60,7 +60,7 @@ class DueAPI extends RESTDataSource {
                 endsAt: new Date(input.endsAt),
                 name: input.name as string,
                 status: input.status as string,
-                userId: 'c65020b3-390c-4aaa-8e22-66cc959240fb'
+                userId: 'fc73ac67-1a50-4edc-afd9-4b5a1f53acde'
             }
         })
 

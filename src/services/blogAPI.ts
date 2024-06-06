@@ -8,7 +8,7 @@ import s3Client from "@/lib/s3Client";
 
 
 class BlogAPI extends RESTDataSource {
-    async createBlog(prisma: PrismaClient, input: BlogInput) {
+    async createBlog(prisma: PrismaClient, userId: string, input: BlogInput) {
 
         const buffer = Buffer.from(input.featuredImage.split(',')[1], 'base64');
 
@@ -36,6 +36,7 @@ class BlogAPI extends RESTDataSource {
                 content: input.content,
                 summary: input.summary,
                 featuredImage: url,
+                userId: 'fc73ac67-1a50-4edc-afd9-4b5a1f53acde',
                 tags: {
                     create: [...tagList]
                 }

@@ -27,6 +27,16 @@ export type Scalars = {
   Upload: { input: any; output: any; }
 };
 
+export type AdminDashboardStat = {
+  __typename?: 'AdminDashboardStat';
+  avgAttendance?: Maybe<Scalars['Decimal']['output']>;
+  eventHeld?: Maybe<Scalars['Int']['output']>;
+  membership?: Maybe<Array<Scalars['Int']['output']>>;
+  revByCategory?: Maybe<Scalars['JSON']['output']>;
+  revenue?: Maybe<Scalars['Decimal']['output']>;
+  totalMember?: Maybe<Scalars['Decimal']['output']>;
+};
+
 export type AuthPayload = {
   __typename?: 'AuthPayload';
   token?: Maybe<Scalars['String']['output']>;
@@ -304,6 +314,7 @@ export type Query = {
   __typename?: 'Query';
   dues?: Maybe<Array<Maybe<Due>>>;
   eventFormFields?: Maybe<Array<FormDesign>>;
+  getAdminDashboardStat?: Maybe<AdminDashboardStat>;
   getBlog?: Maybe<Blog>;
   getBlogs?: Maybe<Array<Blog>>;
   getDuePayment?: Maybe<MemberDueResponse>;
@@ -494,6 +505,11 @@ export type GetRecentRegistrationQueryVariables = Exact<{ [key: string]: never; 
 
 
 export type GetRecentRegistrationQuery = { __typename?: 'Query', getRecentRegistration?: Array<{ __typename?: 'Member', id: any, firstName: string, lastName: string, membershipType: string, createdAt?: any | null }> | null };
+
+export type GetAdminDashboardStatQueryVariables = Exact<{ [key: string]: never; }>;
+
+
+export type GetAdminDashboardStatQuery = { __typename?: 'Query', getAdminDashboardStat?: { __typename?: 'AdminDashboardStat', totalMember?: any | null, eventHeld?: number | null, membership?: Array<number> | null, avgAttendance?: any | null, revenue?: any | null, revByCategory?: any | null } | null };
 
 export type GetDuesQueryVariables = Exact<{ [key: string]: never; }>;
 
@@ -895,6 +911,50 @@ export type GetRecentRegistrationQueryHookResult = ReturnType<typeof useGetRecen
 export type GetRecentRegistrationLazyQueryHookResult = ReturnType<typeof useGetRecentRegistrationLazyQuery>;
 export type GetRecentRegistrationSuspenseQueryHookResult = ReturnType<typeof useGetRecentRegistrationSuspenseQuery>;
 export type GetRecentRegistrationQueryResult = Apollo.QueryResult<GetRecentRegistrationQuery, GetRecentRegistrationQueryVariables>;
+export const GetAdminDashboardStatDocument = gql`
+    query GetAdminDashboardStat {
+  getAdminDashboardStat {
+    totalMember
+    eventHeld
+    membership
+    avgAttendance
+    revenue
+    revByCategory
+  }
+}
+    `;
+
+/**
+ * __useGetAdminDashboardStatQuery__
+ *
+ * To run a query within a React component, call `useGetAdminDashboardStatQuery` and pass it any options that fit your needs.
+ * When your component renders, `useGetAdminDashboardStatQuery` returns an object from Apollo Client that contains loading, error, and data properties
+ * you can use to render your UI.
+ *
+ * @param baseOptions options that will be passed into the query, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options;
+ *
+ * @example
+ * const { data, loading, error } = useGetAdminDashboardStatQuery({
+ *   variables: {
+ *   },
+ * });
+ */
+export function useGetAdminDashboardStatQuery(baseOptions?: Apollo.QueryHookOptions<GetAdminDashboardStatQuery, GetAdminDashboardStatQueryVariables>) {
+        const options = {...defaultOptions, ...baseOptions}
+        return Apollo.useQuery<GetAdminDashboardStatQuery, GetAdminDashboardStatQueryVariables>(GetAdminDashboardStatDocument, options);
+      }
+export function useGetAdminDashboardStatLazyQuery(baseOptions?: Apollo.LazyQueryHookOptions<GetAdminDashboardStatQuery, GetAdminDashboardStatQueryVariables>) {
+          const options = {...defaultOptions, ...baseOptions}
+          return Apollo.useLazyQuery<GetAdminDashboardStatQuery, GetAdminDashboardStatQueryVariables>(GetAdminDashboardStatDocument, options);
+        }
+export function useGetAdminDashboardStatSuspenseQuery(baseOptions?: Apollo.SuspenseQueryHookOptions<GetAdminDashboardStatQuery, GetAdminDashboardStatQueryVariables>) {
+          const options = {...defaultOptions, ...baseOptions}
+          return Apollo.useSuspenseQuery<GetAdminDashboardStatQuery, GetAdminDashboardStatQueryVariables>(GetAdminDashboardStatDocument, options);
+        }
+export type GetAdminDashboardStatQueryHookResult = ReturnType<typeof useGetAdminDashboardStatQuery>;
+export type GetAdminDashboardStatLazyQueryHookResult = ReturnType<typeof useGetAdminDashboardStatLazyQuery>;
+export type GetAdminDashboardStatSuspenseQueryHookResult = ReturnType<typeof useGetAdminDashboardStatSuspenseQuery>;
+export type GetAdminDashboardStatQueryResult = Apollo.QueryResult<GetAdminDashboardStatQuery, GetAdminDashboardStatQueryVariables>;
 export const GetDuesDocument = gql`
     query GetDues {
   dues {
@@ -1668,6 +1728,7 @@ export type DirectiveResolverFn<TResult = {}, TParent = {}, TContext = {}, TArgs
 
 /** Mapping between all available schema types and the resolvers types */
 export type ResolversTypes = ResolversObject<{
+  AdminDashboardStat: ResolverTypeWrapper<AdminDashboardStat>;
   AuthPayload: ResolverTypeWrapper<Omit<AuthPayload, 'user'> & { user?: Maybe<ResolversTypes['UserPayload']> }>;
   Blog: ResolverTypeWrapper<BlogModel>;
   BlogResponse: ResolverTypeWrapper<Omit<BlogResponse, 'blog'> & { blog?: Maybe<ResolversTypes['Blog']> }>;
@@ -1709,6 +1770,7 @@ export type ResolversTypes = ResolversObject<{
 
 /** Mapping between all available schema types and the resolvers parents */
 export type ResolversParentTypes = ResolversObject<{
+  AdminDashboardStat: AdminDashboardStat;
   AuthPayload: Omit<AuthPayload, 'user'> & { user?: Maybe<ResolversParentTypes['UserPayload']> };
   Blog: BlogModel;
   BlogResponse: Omit<BlogResponse, 'blog'> & { blog?: Maybe<ResolversParentTypes['Blog']> };
@@ -1755,6 +1817,16 @@ export type AuthDirectiveResolver<Result, Parent, ContextType = GraphQLContext, 
 export type UppercaseDirectiveArgs = { };
 
 export type UppercaseDirectiveResolver<Result, Parent, ContextType = GraphQLContext, Args = UppercaseDirectiveArgs> = DirectiveResolverFn<Result, Parent, ContextType, Args>;
+
+export type AdminDashboardStatResolvers<ContextType = GraphQLContext, ParentType extends ResolversParentTypes['AdminDashboardStat'] = ResolversParentTypes['AdminDashboardStat']> = ResolversObject<{
+  avgAttendance?: Resolver<Maybe<ResolversTypes['Decimal']>, ParentType, ContextType>;
+  eventHeld?: Resolver<Maybe<ResolversTypes['Int']>, ParentType, ContextType>;
+  membership?: Resolver<Maybe<Array<ResolversTypes['Int']>>, ParentType, ContextType>;
+  revByCategory?: Resolver<Maybe<ResolversTypes['JSON']>, ParentType, ContextType>;
+  revenue?: Resolver<Maybe<ResolversTypes['Decimal']>, ParentType, ContextType>;
+  totalMember?: Resolver<Maybe<ResolversTypes['Decimal']>, ParentType, ContextType>;
+  __isTypeOf?: IsTypeOfResolverFn<ParentType, ContextType>;
+}>;
 
 export type AuthPayloadResolvers<ContextType = GraphQLContext, ParentType extends ResolversParentTypes['AuthPayload'] = ResolversParentTypes['AuthPayload']> = ResolversObject<{
   token?: Resolver<Maybe<ResolversTypes['String']>, ParentType, ContextType>;
@@ -1985,6 +2057,7 @@ export type PaymentResolvers<ContextType = GraphQLContext, ParentType extends Re
 export type QueryResolvers<ContextType = GraphQLContext, ParentType extends ResolversParentTypes['Query'] = ResolversParentTypes['Query']> = ResolversObject<{
   dues?: Resolver<Maybe<Array<Maybe<ResolversTypes['Due']>>>, ParentType, ContextType>;
   eventFormFields?: Resolver<Maybe<Array<ResolversTypes['FormDesign']>>, ParentType, ContextType>;
+  getAdminDashboardStat?: Resolver<Maybe<ResolversTypes['AdminDashboardStat']>, ParentType, ContextType>;
   getBlog?: Resolver<Maybe<ResolversTypes['Blog']>, ParentType, ContextType, RequireFields<QueryGetBlogArgs, 'blogId'>>;
   getBlogs?: Resolver<Maybe<Array<ResolversTypes['Blog']>>, ParentType, ContextType, Partial<QueryGetBlogsArgs>>;
   getDuePayment?: Resolver<Maybe<ResolversTypes['MemberDueResponse']>, ParentType, ContextType, RequireFields<QueryGetDuePaymentArgs, 'memberId'>>;
@@ -2041,6 +2114,7 @@ export type UserPayloadResolvers<ContextType = GraphQLContext, ParentType extend
 }>;
 
 export type Resolvers<ContextType = GraphQLContext> = ResolversObject<{
+  AdminDashboardStat?: AdminDashboardStatResolvers<ContextType>;
   AuthPayload?: AuthPayloadResolvers<ContextType>;
   Blog?: BlogResolvers<ContextType>;
   BlogResponse?: BlogResponseResolvers<ContextType>;

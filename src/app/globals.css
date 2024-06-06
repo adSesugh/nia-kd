@@ -15,8 +15,8 @@
 }
 
 .chart-container {
-  position: relative;
-  margin-top: 20px; /* Adjust as needed */
+  width: 50%;
+  margin: 0 auto;
 }
 
 textarea[id^="form-field_"] {

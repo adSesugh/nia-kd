@@ -18,7 +18,7 @@ const MemberDashboard = () => {
   const user = useAppSelector((state: RootState) => state.auth.userData.user)
   const getPercent = getDaysPercentage( getTotalDaysOfYear(new Date()), getTotalDaysInYear(new Date().getFullYear()))
   return (
-    <div className='h-full w-full xs:px-6 sm:px-80 bg-gray-100 overflow-y-auto pb-8'>
+    <div className='h-full w-full xs:px-6 sm:px-10 bg-gray-100 overflow-y-auto pb-8'>
       <div className='py-6 w-full pt-16'>
         <div className='flex xs:flex-col sm:flex-row xs:justify-center sm:justify-start sm:items-center xs:space-y-3 sm:space-y-0 sm:space-x-3'>
           <h1 className='text-2xl'>Arc. Jimoh Abdulrazak</h1>
@@ -28,7 +28,7 @@ const MemberDashboard = () => {
           <h2 className='text-sm'>Membership ID: {user?.regId}</h2>
         </div>
       </div>
-      <div className='flex xs:flex-col sm:flex-row gap-5 justify-between'>
+      <div className='flex xs:flex-col sm:flex-row gap-5 justify-between items-center'>
         <div className='flex xs:flex-col sm:flex-row sm:space-x-4 xs:space-x-0 border bg-white px-8 py-4 rounded-2xl items-center'>
           <div className='flex justify-center items-center h-full xs:pb-4 sm:pb-0 -ml-2'>
             <CircularProgress
@@ -87,7 +87,7 @@ const MemberDashboard = () => {
               </div>
             </div>
           </div>
-          <div className='sm:w-1/2 xs:w-full bg-white rounded-2xl p-5'>
+          <div className='sm:w-1/2 xs:w-full bg-white rounded-2xl'>
             <div className='h-60 w-full'>
               <h1 className='text-sm font-semibold'>Recent events</h1>
               <div className='flex flex-col items-center justify-center h-60 w-full pt-10'>

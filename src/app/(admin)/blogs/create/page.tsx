@@ -2,17 +2,19 @@
 
 import React, { useEffect, useState } from 'react'
 import TitleHeader from '../../TitleHeader'
-import { Field, Form, Formik, useFormik } from 'formik'
+import { Field, Form, Formik } from 'formik'
 import TextField from '@/components/textfield'
 import TinyMCEField from '@/components/tinymce-field'
-import { Editor } from '@tinymce/tinymce-react'
 import NIAFileInput from '@/components/nia-fileinput'
 import { CloseCircle } from 'iconsax-react'
 import Link from 'next/link'
 import { useCreateBlogMutation } from '@/graphql/__generated__/graphql'
+import { toast } from 'react-toastify'
+import { useRouter } from 'next/navigation'
 
 
 const CreateBlog = () => {
+    const router = useRouter()
      const [tags, setTags] = useState<string[]>([])
     const [tag, setTag] = useState<string>('')
     const [base64, setBase64] = useState<string>()
@@ -59,8 +61,10 @@ const CreateBlog = () => {
                             }
                         }
                     })
-
-                    console.log(res)
+                    if(res.data?.createBlog?.success){
+                        toast.success("Blog created")
+                        return router.back()
+                    }
                 }}
             >
                 {({values, handleSubmit, isSubmitting, setFieldValue}) => (

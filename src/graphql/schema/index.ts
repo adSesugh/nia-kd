@@ -294,6 +294,15 @@ export const typeDefs = `#graphql
     event: Event
   }
 
+  type AdminDashboardStat {
+    totalMember: Decimal
+    eventHeld: Int
+    membership: [Int!]
+    avgAttendance: Decimal
+    revenue: Decimal
+    revByCategory: JSON
+  }
+
   ## ------------------------------------- Mutation ---------------------------------------------------##
 
   type Mutation {
@@ -328,5 +337,6 @@ export const typeDefs = `#graphql
     eventFormFields: [FormDesign!] 
     getEvents: [Event!]
     getEvent(eventId: UUID): Event
+    getAdminDashboardStat: AdminDashboardStat
   }
 `;

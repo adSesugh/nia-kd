@@ -33,6 +33,8 @@ export const membershipType = [
     }
 ]
 
+export const membershipGroup = ['Associate', 'Fellow', 'Full Member', 'Graduate', 'Student',  'Technologist']
+
 export const modelStatus = [
     {
         id: 'draft',

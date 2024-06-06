@@ -7,3 +7,14 @@ query GetRecentRegistration {
     createdAt
   }
 }
+
+query GetAdminDashboardStat {
+  getAdminDashboardStat {
+    totalMember
+    eventHeld
+    membership
+    avgAttendance
+    revenue
+    revByCategory
+  }
+}

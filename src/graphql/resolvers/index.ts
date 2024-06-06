@@ -10,7 +10,7 @@ export const resolvers: Resolvers = {
         updateDue: (_, { dueId, input }, { prisma, dataSources }) => dataSources.dueAPI.updateDue(prisma, dueId, input),
         postPayment: (_, { input }, { prisma, dataSources }) => dataSources.paymentAPI.postPayment(prisma, input),
         deactivateMember: (_, { memberId, status }, { prisma, dataSources }) => dataSources.memberAPI.deactivate(prisma, memberId, status),
-        createBlog: (_, { input }, { prisma, dataSources }) => dataSources.blogAPI.createBlog(prisma, input),
+        createBlog: (_, { input }, { prisma, dataSources, userId }) => dataSources.blogAPI.createBlog(prisma, userId, input),
         publishedBlog: (_, { blogId, status }, { prisma, dataSources }) => dataSources.blogAPI.publishedBlog(prisma, blogId, status),
         createEvent: (_, { input }, { prisma, dataSources }) => dataSources.eventAPI.createEvent(prisma, input)
     },
@@ -29,6 +29,7 @@ export const resolvers: Resolvers = {
         getBlog: (_, { blogId }, { prisma, dataSources }) => dataSources.blogAPI.getBlog(prisma, blogId),
         getEvents: (_, __, { prisma, dataSources }) => dataSources.eventAPI.getEvents(prisma),
         getEvent: (_, { eventId }, { prisma, dataSources }) => dataSources.eventAPI.getEvent(prisma, eventId),
-        eventFormFields: (_, __, { prisma, dataSources }) => dataSources.eventAPI.getFormFields(prisma)
+        eventFormFields: (_, __, { prisma, dataSources }) => dataSources.eventAPI.getFormFields(prisma),
+        getAdminDashboardStat: (_, __, {prisma, dataSources}) => dataSources.dashboardAPI.getAdminStat(prisma)
     },
 };
