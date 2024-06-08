@@ -13,20 +13,21 @@ class EventAPI extends RESTDataSource {
 
         const event = await prisma.event.create({
             data: {
+                name: input.name,
+                description: input.description as string,
+                cpdp_points: input.cpdpPoint || 0,
+                type: input.type,
                 tickets: input.tickets ? input.tickets : 0,
                 address: input.address,
                 starts_at: input.starts_at,
                 ends_at: input.ends_at,
-                description: input.description as string,
                 formTitle: input.formTitle,
-                name: input.name,
                 amount: input.amount,
                 paymentType: input.paymentType,
                 link: input.link,
                 isInfinity: input.isInfinity ? input.isInfinity : false,
                 instructions: input.instructions,
                 message: input.message,
-                type: input.type,
                 coverPhoto: url,
                 userId: '3315ed4a-f3f6-480e-8c30-06ad44aca84c',
                 eventForms: {
