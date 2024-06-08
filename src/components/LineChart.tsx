@@ -36,13 +36,13 @@ const LineChart: React.FC = () => {
                 label: 'Events',
                 data: [0, 150000, 2000000, 1700000, 1800000, 19000, 2000000, 21000, 150000, 14000, 13000, 1200000],
                 borderColor: '#F8C308',
-                yAxisID: 'y1',
+                yAxisID: 'y',
             },
             {
                 label: 'Revenue',
                 data: [0, 150000, 200000, 170000, 180000, 190000, 200000, 210000, 150000, 140000, 130000, 120000],
                 borderColor: '#25A248',
-                yAxisID: 'y2',
+                yAxisID: 'y',
             }
         ],
     };
@@ -62,25 +62,7 @@ const LineChart: React.FC = () => {
         },
         scales: {
             y: {
-                type: 'linear' as const,
-                display: true,
-                position: 'left' as const,
-            },
-            y1: {
-                type: 'linear' as const,
-                display: false,
-                position: 'right' as const,
-                grid: {
-                    drawOnChartArea: false,
-                }
-            },
-            y2: {
-                type: 'linear' as const,
-                display: false,
-                position: 'right' as const,
-                grid: {
-                    drawOnChartArea: false,
-                }
+                beginAtZero: true,
             }
         },
     };
