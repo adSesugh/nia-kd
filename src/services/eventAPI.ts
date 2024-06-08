@@ -15,24 +15,29 @@ class EventAPI extends RESTDataSource {
             data: {
                 name: input.name,
                 description: input.description as string,
-                cpdp_points: input.cpdpPoint || 0,
+                cpdp_points: Number(input.cpdpPoint),
                 type: input.type,
-                tickets: input.tickets ? input.tickets : 0,
+                link: input.link,
                 address: input.address,
                 starts_at: input.starts_at,
                 ends_at: input.ends_at,
-                formTitle: input.formTitle,
-                amount: input.amount,
                 paymentType: input.paymentType,
-                link: input.link,
-                isInfinity: input.isInfinity ? input.isInfinity : false,
+                amount: input.amount,
+                tickets: input.tickets ? input.tickets : 0,
+                isInfinity: input.isInfinity as boolean,
+                coverPhoto: url,
+                formTitle: input.formTitle,
                 instructions: input.instructions,
                 message: input.message,
-                coverPhoto: url,
-                userId: '3315ed4a-f3f6-480e-8c30-06ad44aca84c',
                 eventForms: {
                     create: [...input.form as any],
-                }
+                },
+                eventResources: {
+                    create: [...input.resources as any]
+                },
+                certificate: input.certificate,
+                hasCertificate: input.hadCertificate as boolean,
+                userId: '3315ed4a-f3f6-480e-8c30-06ad44aca84c',
             }
         })
 

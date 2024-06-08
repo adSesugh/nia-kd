@@ -15,49 +15,8 @@ import { RootState } from '@/features/store';
 
 ChartJS.register(ArcElement, Tooltip, Legend, LineElement, LinearScale, CategoryScale, PointElement, Title, Filler);
 
-// const options = {
-//   maintainAspectRatio: false, // Prevent the chart from maintaining aspect ratio
-//   cutoutPercentage: 250, // Adjust the inner radius to 50% (smaller hole)
-//   layout: {
-//     padding: {
-//       left: 10,
-//       right: 10,
-//       top: 10,
-//       bottom: 10,
-//     },
-//   },
-//   legend: {
-//       position: 'bottom' as const,
-//       labels: {
-//         boxWidth: 10,
-//         boxRadius: 25
-//       },
-//   },
-//   tooltips: {
-//     callbacks: {
-//       label: function (tooltipItem: { datasetIndex: string | number; index: string | number; }, data: { datasets: { [x: string]: any; }; }) {
-//         const dataset = data.datasets[tooltipItem.datasetIndex];
-//         const total = dataset.data.reduce((previousValue: any, currentValue: any) => previousValue + currentValue);
-//         const currentValue = dataset.data[tooltipItem.index];
-//         const percentage = Math.round((currentValue / total) * 100);
-//         return percentage + '%';
-//       },
-//     },
-//   },
-// };
 
 const AdminDashboard = () => {
-  const [lineData, setLineData] = useState({
-    labels: [12, 10, 14, 16, 20],
-    datasets: [
-      {
-        label: 'Real-time Data',
-        data: [],
-        borderColor: 'rgba(75, 192, 192, 1)',
-        backgroundColor: 'rgba(75, 192, 192, 0.2)',
-      },
-    ],
-  });
   const [adminStats, setAdminStats] = useState<AdminDashboardStatResponse|any>()
   const user = useSelector((state: RootState) => state.auth.userData.user)
 
