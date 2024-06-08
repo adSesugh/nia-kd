@@ -124,6 +124,7 @@ export const typeDefs = `#graphql
   type FormDesign {
     id: UUID!
     name: String!
+    label: String
     type: String!
     required: Boolean
     createdAt: Time
@@ -159,6 +160,7 @@ export const typeDefs = `#graphql
     paymentRef: String!
     status: String
     checkin: Boolean
+    checkinDate: Time
     createdAt: Time
     updatedAt: Time
   }
@@ -209,13 +211,22 @@ export const typeDefs = `#graphql
 
   input EventFormInput {
     name: String!
+    label: String
     type: String!
     required: Boolean
+  }
+  
+  input SpeakerFormInput {
+    name: String!
+    title: String
+    about: String!
+    avatar: String!
   }
 
   input eventInput {
     name: String!
     description: String
+    cpdpPoint: Int
     type: String!
     link: String
     address: String
@@ -231,6 +242,9 @@ export const typeDefs = `#graphql
     message: String!
     form: [EventFormInput]
     resources: [String!]
+    certificate: String
+    hadCertificate: Boolean
+    speakers: [SpeakerFormInput!]
   }
 
   ## ------------------------------------- Type Response ---------------------------------------------------##
@@ -294,13 +308,21 @@ export const typeDefs = `#graphql
     event: Event
   }
 
-  type AdminDashboardStat {
+  type AdminDashboardStatResponse {
     totalMember: Decimal
     eventHeld: Int
     membership: [Int!]
     avgAttendance: Decimal
     revenue: Decimal
     revByCategory: JSON
+  }
+
+  type SidebarResponse {
+    members: Int
+    events: Int
+    blogs: Int
+    resources: Int
+    ads: Int
   }
 
   ## ------------------------------------- Mutation ---------------------------------------------------##
@@ -337,6 +359,7 @@ export const typeDefs = `#graphql
     eventFormFields: [FormDesign!] 
     getEvents: [Event!]
     getEvent(eventId: UUID): Event
-    getAdminDashboardStat: AdminDashboardStat
+    getAdminDashboardStat: AdminDashboardStatResponse
+    getSidebarStat: SidebarResponse
   }
 `;

@@ -1,0 +1,87 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Certificate of Attendance</title>
+    <style>
+        body {
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            height: 100vh;
+            background-color: #f7f7f7;
+            margin: 0;
+            font-family: Arial, sans-serif;
+        }
+        .certificate {
+            width: 800px;
+            height: 600px;
+            padding: 20px;
+            border: 5px solid #ccc;
+            background-color: #f7dfb9;
+            position: relative;
+            text-align: center;
+        }
+        .certificate-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+        .certificate-header img {
+            height: 50px;
+        }
+        .certificate-title {
+            font-size: 24px;
+            font-weight: bold;
+            margin: 20px 0;
+        }
+        .certificate-body {
+            font-size: 18px;
+        }
+        .name-placeholder {
+            font-size: 20px;
+            font-weight: bold;
+            margin: 20px 0;
+        }
+        .footer {
+            position: absolute;
+            bottom: 20px;
+            width: 100%;
+            display: flex;
+            justify-content: space-between;
+        }
+        .footer img {
+            height: 50px;
+        }
+    </style>
+</head>
+<body>
+    <div class="certificate">
+        <div class="certificate-header">
+            <img src="path-to-nia-logo.png" alt="NIA Logo">
+            <h1>NIA CPDP</h1>
+        </div>
+        <div class="certificate-title">CERTIFICATE OF ATTENDANCE</div>
+        <div class="certificate-body">
+            <p>CPDP SESSION TOPIC: BGM 2023</p>
+            <p>FACILITATOR: NIA</p>
+            <p>DATE: 22nd NOVEMBER, 2023</p>
+            <p class="name-placeholder">Arc. <span id="person-name">Danjuma Sokolayam Ayeni</span></p>
+            <p>MEMBERSHIP NO.: M3760</p>
+        </div>
+        <div class="footer">
+            <div>
+                <p>Arc. Enyi Ben-Eboh, FNA</p>
+                <p>PRESIDENT</p>
+            </div>
+            <div>
+                <p>Arc. Chike Chamberlain Beanu, FNA</p>
+                <p>HONORARY GENERAL SECRETARY</p>
+            </div>
+        </div>
+        <div class="points">2.5 POINTS</div>
+    </div>
+    <script src="script.js"></script>
+</body>
+</html>

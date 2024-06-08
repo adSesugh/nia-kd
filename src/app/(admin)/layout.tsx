@@ -5,17 +5,18 @@ import { LayoutProps } from '@/types/common'
 import Link from 'next/link';
 import Image from 'next/image';
 import { redirect, usePathname } from 'next/navigation';
-import React, { useEffect } from 'react'
+import React from 'react'
 import { Menu, MenuItem, Sidebar, sidebarClasses } from 'react-pro-sidebar';
-import { ArrowDown, ArrowUp2, Blogger, Calendar2, HambergerMenu, Home, MenuBoard, Profile2User, NotificationStatus, NotificationBing, Notification1, Notification } from 'iconsax-react';
+import { ArrowUp2, Blogger, Calendar2, HambergerMenu, Home, Profile2User, Notification } from 'iconsax-react';
 import NairaIcon from '@/components/custom-icons/NairaIcon';
 import AdvertIcon from '@/components/custom-icons/AdvertIcon';
-import CertificateIcon from '@/components/custom-icons/CertificateIcon';
 import { PRIMARY_TWO } from '@/constant/Colors';
-import { Dropdown, DropdownItem, DropdownMenu, DropdownSection, DropdownTrigger, User } from '@nextui-org/react';
+import { Dropdown, DropdownItem, DropdownMenu, DropdownTrigger, User } from '@nextui-org/react';
 import { useAppDispatch, useAppSelector } from '@/features/hooks';
 import { RootState } from '@/features/store';
 import { logOut } from '@/features/slices/authSlice';
+import { Books } from '@phosphor-icons/react';
+import { useGetSidebarStatQuery } from '@/graphql/__generated__/graphql';
 
 // export const metadata: Metadata = {
 //   title: "Administrator Panel | NIA-Kd",
@@ -27,6 +28,8 @@ const DashboardLayout: React.FC<LayoutProps> = ({ children }) => {
   const [collapsed, setCollapsed] = React.useState(false);
   const {token: isLoggedIn, user} = useAppSelector((state: RootState) => state.auth.userData)
   const dispatch = useAppDispatch()
+
+  const {data} = useGetSidebarStatQuery({fetchPolicy: 'no-cache'})
 
   const pathname = usePathname()
 
@@ -109,7 +112,7 @@ const DashboardLayout: React.FC<LayoutProps> = ({ children }) => {
                     <MenuItem icon={<Calendar2 size="24" color={`${pathname.includes('event') ? '#ffffff' : '#BFBFBF'}`} variant="Outline" />} 
                       component={<Link href="/event/list" />}
                       active={pathname.includes('event') && true}
-                      suffix={0}
+                      suffix={data?.getSidebarStat?.events || 0}
                     > 
                         Events
                     </MenuItem>
@@ -119,7 +122,7 @@ const DashboardLayout: React.FC<LayoutProps> = ({ children }) => {
                         icon={<Profile2User size="24" color={`${pathname.includes('members') ? '#ffffff' : '#BFBFBF'}`} variant="Outline" />} 
                         component={<Link href="/members" />}
                         active={pathname.includes('members') && true}
-                        suffix={0}
+                        suffix={data?.getSidebarStat?.members || 0}
                     > 
                         Members
                     </MenuItem>
@@ -138,7 +141,7 @@ const DashboardLayout: React.FC<LayoutProps> = ({ children }) => {
                         icon={<Blogger size="24" color={`${pathname.includes('blog') ? '#ffffff' : '#BFBFBF'}`} variant="Outline" />} 
                         component={<Link href="/blogs/list" />}
                         active={pathname.includes('blog') && true}
-                        suffix={0}
+                        suffix={data?.getSidebarStat?.blogs || 0}
                     > 
                         Blog
                     </MenuItem>
@@ -148,19 +151,19 @@ const DashboardLayout: React.FC<LayoutProps> = ({ children }) => {
                         icon={<AdvertIcon width={24} height={24} stroke={`${pathname.includes('ads') ? '#ffffff' : '#BFBFBF'}`} />} 
                         component={<Link href="/ads" />}
                         active={pathname.includes('ads') && true}
-                        suffix={0}
+                        suffix={data?.getSidebarStat?.ads || 0}
                     > 
                         Ads
                     </MenuItem>
                   </div>
                   <div className={`${pathname.includes('certificates') && 'border-l-[5px] border-[#AB8144]'}`}>
                     <MenuItem 
-                        icon={<CertificateIcon width={24} height={24} stroke={`${pathname.includes('certificates') ? '#ffffff' : '#BFBFBF'}`} />} 
-                        component={<Link href="/certificates" />}
-                        active={pathname.includes('certificates') && true}
-                        suffix={0}
+                        icon={<Books width={24} height={24} stroke={`${pathname.includes('resources') ? '#ffffff' : '#BFBFBF'}`} />} 
+                        component={<Link href="/resources" />}
+                        active={pathname.includes('resources') && true}
+                        suffix={data?.getSidebarStat?.resources || 0}
                     > 
-                        Certificates
+                        Resources
                     </MenuItem>
                   </div>
                 </Menu>
@@ -209,7 +212,7 @@ const DashboardLayout: React.FC<LayoutProps> = ({ children }) => {
             <HambergerMenu className=' sm:py-0 sm:pl-0 xs:flex sm:hidden' size={20} variant='Outline' color={`${PRIMARY_TWO}`} onClick={() => setToggled(!toggled)} />
             {pathname.includes('dashboard') && <Notification className='xs:float-end' size={24} variant='Bold' color='#150D09' />}
           </div>
-          <div className={`${pathname.includes('dashboard') ? 'sm:-mt-12' : 'sm:-mt-6'} xs:mt-0 h-full`}>
+          <div className={`${pathname.includes('dashboard') ? 'sm:-mt-12' : 'sm:-mt-6'} xs:mt-0 xs:pb-10 h-full`}>
             {children}
           </div>
         </main>

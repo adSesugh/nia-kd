@@ -4,12 +4,15 @@
 import CheckBox from '@/components/checkbox'
 import DateField from '@/components/date-field'
 import GooglePlacesInput from '@/components/google-places-input'
+import InputField from '@/components/input-field'
+import InputTextArea from '@/components/input-textarea'
 import NIAFileInput from '@/components/nia-fileinput'
 import TextAreaField from '@/components/textarea-field'
 import TextField from '@/components/textfield'
 import TimeField from '@/components/timefield'
 import TinyMCEField from '@/components/tinymce-field'
-import { Switch, Table, TableBody, TableColumn, TableHeader } from '@nextui-org/react'
+import { FormDesign, useEventFormFieldsQuery } from '@/graphql/__generated__/graphql'
+import { Avatar, AvatarGroup, Spinner, Switch, Table, TableBody, TableCell, TableColumn, TableHeader, TableRow } from '@nextui-org/react'
 import { Globe, MapPinSimpleArea, Plus, X } from '@phosphor-icons/react'
 import { Field, Form, Formik } from 'formik'
 import { Gift, MoneyTick, Video } from 'iconsax-react'
@@ -27,9 +30,20 @@ const CreateEvent = () => {
     const [certfiles, setCertFiles] = useState<FileWithPreview[]>([]);
     const [currentIndex, setCurrentIndex] = useState<number>(0)
     const [nextIndex, setNextIndex] = useState<number>(1)
-    const [speakers, setSpeakers] = useState<Record<string, any>>([])
+    const [speakers, setSpeakers] = useState<any>([])
+    const [form, setForm] = useState<{title: string, name: string, about: string, avatar: string}>({
+        name: '',
+        title: '',
+        about: '',
+        avatar: ''
+    })
+
+    const { data: formFields, loading} = useEventFormFieldsQuery({fetchPolicy: 'no-cache'})
+    console.log(formFields)
 
     const steps = ['details', 'speakers', 'form', 'resources', 'email']
+    const loadingState = '' || speakers.length === 0 ? "loading" : "idle";
+    const loadingFieldState = '' || formFields?.eventFormFields?.length === 0 ? "loading" : "idle";
 
     useEffect(() => {
         document.title = `Create Event | NIA-Kd`
@@ -38,6 +52,72 @@ const CreateEvent = () => {
     const handleFileRemove = (index: number) => {
         setFiles((prevFiles) => prevFiles.filter((file, i) => i !== index));
     };
+
+    const addSpeaker = () => {
+        if(!form) return
+        setSpeakers([...speakers, form])
+        setForm({
+            name: '',
+            title: '',
+            about: '',
+            avatar: ''
+        })
+        setBase64(undefined)
+    }
+
+    const renderCell = React.useCallback((speaker: {title: string, name: string, avatar: string, about: string}, columnKey: React.Key) => {
+        const cellValue = speaker[columnKey as keyof {title: string, name: string, avatar: string, about: string}];
+        
+    
+        switch (columnKey) {
+            case "name":
+                return (
+                    <div className='flex flex-row space-x-5'>
+                        <AvatarGroup
+                            max={1}
+                            total={1}
+                            renderCount={() => (
+                                <p className="text-small text-foreground font-medium ms-2">{speaker.name}</p>
+                            )}
+                        >
+                            <Avatar 
+                                src={speaker.avatar} className='h-10 w-10' 
+                                name={speaker.name}
+                            />
+                        </AvatarGroup>
+                    </div>
+                )
+            default:
+                return cellValue;
+        }
+    }, []);  
+
+    const renderFormFieldCell = React.useCallback((field: FormDesign, columnKey: React.Key) => {
+        const cellValue = field[columnKey as keyof FormDesign];
+        
+    
+        switch (columnKey) {
+            case "detail":
+                return (
+                    <div className='flex flex-row space-x-5'>
+                        <span>{field.label}</span>
+                    </div>
+                )
+            case 'include': 
+                return (
+                    <Switch size='sm' defaultSelected color={field.required ? 'success' : 'default'} isDisabled={field.required as boolean} />
+                )
+            case 'required':
+                return (
+                    <Switch size='sm' defaultSelected={field.required as boolean} color={field.required ? 'success' : 'default'} isDisabled={field.required as boolean} />
+                )
+            default:
+                return cellValue;
+        }
+    }, []); 
+
+    console.log('form', form)
+    console.log(speakers)
 
     return (
         <div className='pb-5 bg-[#F5F5F5] h-full overflow-y-auto'>
@@ -105,12 +185,19 @@ const CreateEvent = () => {
                                         </div>
                                         <hr />
                                        <div className='pt-5 px-4'>
-                                        <TextField 
+                                            <TextField 
                                                 name='name' 
                                                 label='Event name'
                                                 placeholder='Give your blog post a suitable title' 
                                             />
                                             <Field name="description" label="About event" as={TinyMCEField} />
+                                            <TextField 
+                                                name='cpdp_point' 
+                                                label='CPDP Points'
+                                                type='number'
+                                                min={0}
+                                                placeholder={'0'} 
+                                            />
                                        </div>
                                     </div>
                                     <div className='mt-4 bg-white py-4'>
@@ -147,6 +234,7 @@ const CreateEvent = () => {
                                                         setFieldValue('address', place.formatted_address)
                                                     }}
                                                     LeftIcon={<MapPinSimpleArea size={20} />}
+                                                    className='mt-3'
                                                 />
                                             ):(
                                                 <TextField 
@@ -246,62 +334,70 @@ const CreateEvent = () => {
                                 </>
                             )}
                             {steps[currentIndex] === 'speakers' && (
-                                <div>
+                                <div className='bg-white'>
                                     <div className='pb-3'>
                                         <h1 className='text-lg font-semibold'>Add speakers</h1>
                                     </div>
                                     <div className='bg-white'>
                                         <div className='flex sm:flex-row xs:flex-col p-4 gap-5'>
                                             <div className='sm:w-1/3 xs:w-full'>
-                                                <div className="flex justify-center items-center border-2 border-dashed p-6 text-center mb-4 cursor-pointer rounded-lg h-72">
+                                                <div className="flex justify-center items-center border-2 border-dashed p-6 text-center mb-4 cursor-pointer rounded-lg bg-[#F5F5F5] h-72">
                                                     <input
                                                         type="file"
                                                         id="speakerPix"
-                                                        name='speakerPix[]'
+                                                        name='avatar'
                                                         className="hidden"
                                                         multiple
                                                         accept="image/{.gif,.png,.jpg,.jpeg}"
                                                         onChange={async (event: React.ChangeEvent<HTMLInputElement>) => {
-                                                                if (event.target.files) {
-                                                                const newFiles = Array.from(event.target.files).filter((file) =>
-                                                                    file.type === 'image/{.gif,.png,.jpg,.jpeg}'
-                                                                ).map((file) =>
-                                                                    Object.assign(file, {
-                                                                    preview: URL.createObjectURL(file),
-                                                                    })
-                                                                );
-                                                                const blobUrl = newFiles[0].preview
-                                                                const blob = await fetch(blobUrl).then(r => r.blob());
-                                                                console.log(blob)
-                                                                setFiles((prevFiles) => [...prevFiles, ...newFiles]);
+                                                            if (event.target.files) {
+                                                                const file = event.target.files?.[0];
+                                                                if (file) {
+                                                                    const reader = new FileReader();
+                                                                    reader.onloadend = () => {
+                                                                        setForm({...form, [event.target.name]: reader.result as string})
+                                                                        setBase64(reader.result as string)
+                                                                    };
+                                                                    reader.readAsDataURL(file);
+                                                                }
                                                             }
                                                         }}
                                                     />
                                                     <label htmlFor="speakerPix" className="flex flex-col items-center py-1 px-2 rounded-lg bg-[#F3ECE2] cursor-pointer">
-                                                        <p>Upload image</p>
+                                                        {base64 ? (
+                                                            <img src={base64} />
+                                                        ): (
+                                                            <p>Upload image</p>
+                                                        )}
                                                     </label>
                                                 </div>
                                             </div>
                                             <div className='sm:w-2/3 xs:w-full'>
                                                 <div>
-                                                    <TextField
-                                                        name='name[]'
-                                                        label='Speaker name' 
+                                                    <InputField 
+                                                        name='name'
+                                                        label='Speaker name'
+                                                        value={form.name}
+                                                        onChange={(event: React.ChangeEvent<HTMLInputElement>) => setForm({...form, [event.target.name]: event.target.value})} 
                                                     />
-                                                    <TextField
-                                                        name='title[]'
+                                                    <InputField 
+                                                        name='title'
+                                                        value={form.title}
                                                         label='Speaker title' 
+                                                        onChange={(event: React.ChangeEvent<HTMLInputElement>) => setForm({...form, [event.target.name]: event.target.value})} 
                                                     />
-                                                    <TextAreaField 
-                                                        name='about[]'
+                                                    <InputTextArea 
+                                                        name='about'
                                                         label='About speaker (not more than 150 words)'
+                                                        value={form.about}
+                                                        onChange={(event: React.ChangeEvent<HTMLInputElement>) => setForm({...form, [event.target.name]: event.target.value})} 
                                                     />
                                                 </div>
                                             </div>
                                         </div>
                                         <hr className='h-[1px] bg-[#D9D9D9 w-full' />
                                         <div className='py-3 px-4'>
-                                            <button className='flex gap-3'>
+                                            <button type='button' className='flex gap-3' onClick={addSpeaker}>
                                                 <Plus size={20} color='#E08D14' />
                                                 <span className='text-[#E08D14]'>Add speaker</span>
                                             </button>
@@ -310,11 +406,22 @@ const CreateEvent = () => {
                                     <div className='w-full bg-white mt-4'>
                                         <Table>
                                             <TableHeader>
-                                                <TableColumn>Name</TableColumn>
-                                                <TableColumn>Title</TableColumn>
-                                                <TableColumn>About speaker</TableColumn>
+                                                <TableColumn key={'name'}>Name</TableColumn>
+                                                <TableColumn key={'title'}>Title</TableColumn>
+                                                <TableColumn key={'about'}>About speaker</TableColumn>
                                             </TableHeader>
-                                            <TableBody emptyContent={"No rows to display."}>{[]}</TableBody>
+                                            <TableBody
+                                                items={speakers ?? []}
+                                                loadingContent={<Spinner />}
+                                                loadingState={loadingState}
+                                                emptyContent={"No rows to display."}
+                                            >
+                                                {(speaker: {title: string, name: string, about: string, avatar: string}) => (
+                                                    <TableRow key={speaker.name}>
+                                                        {(columnKey) => <TableCell>{renderCell(speaker, columnKey)}</TableCell>}
+                                                    </TableRow>
+                                                )}
+                                            </TableBody>
                                         </Table>
                                     </div>
                                 </div>
@@ -326,7 +433,7 @@ const CreateEvent = () => {
                                     </div>
                                     <div className='p-4 bg-white'>
                                         <div className='pb-4'>
-                                            <h1 className='text-lg'>Registration Form</h1>
+                                            <h1 className='text-lg font-medium'>Registration Form</h1>
                                             <span className='text-sm'>Create a form to allow users register for your event by providing their details.</span>
                                         </div>
                                         <div>
@@ -338,6 +445,33 @@ const CreateEvent = () => {
                                                 name='instructions' 
                                                 label={'Instructions'}
                                             />
+                                        </div>
+                                    </div>
+                                    <div className='bg-white mt-4 w-full'>
+                                        <div className='p-4'>
+                                            <h1 className='text-lg font-medium'>Questions</h1>
+                                            <span className='text-sm'>What do you want to know about your attendees? First, last name and email are default fields</span>
+                                        </div>
+                                        <div className='py-3 px-4'>
+                                            <Table className='border-none rounded-none'>
+                                                <TableHeader>
+                                                    <TableColumn key={'detail'}>Detail</TableColumn>
+                                                    <TableColumn key={'include'}>Include</TableColumn>
+                                                    <TableColumn key={'required'}>Required</TableColumn>
+                                                </TableHeader>
+                                                <TableBody
+                                                    items={formFields?.eventFormFields ?? []}
+                                                    loadingContent={<Spinner />}
+                                                    loadingState={loadingFieldState}
+                                                    emptyContent={"No rows to display."}
+                                                >
+                                                    {(field: FormDesign) => (
+                                                        <TableRow key={field.id}>
+                                                            {(columnKey) => <TableCell>{renderFormFieldCell(field, columnKey)}</TableCell>}
+                                                        </TableRow>
+                                                    )}
+                                                </TableBody>
+                                            </Table>
                                         </div>
                                     </div>
                                 </div>

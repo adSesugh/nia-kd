@@ -136,6 +136,7 @@ model Event {
   name               String
   description        String              @db.Text
   type               String
+  cpdp_points        Int
   link               String?
   address            String?
   starts_at          DateTime
@@ -150,6 +151,8 @@ model Event {
   instructions       String?             @db.MediumText
   message            String?             @db.MediumText
   status             String              @default("Active")
+  certificate        String?
+  hasCertificate     Boolean             @default(false)
   user               User                @relation(fields: [userId], references: [id])
   eventForms         EventForm[]
   eventPayments      EventPayment[]
@@ -177,6 +180,7 @@ model EventForm {
 model FormDesign {
   id       String  @id @default(uuid())
   name     String  @unique
+  label    String?
   type     String
   required Boolean
 
@@ -220,6 +224,7 @@ model EventRegistration {
   paymentRef       String  @unique
   status           String  @default("Successful") @db.VarChar(15)
   checkin          Boolean @default(false)
+  checkinDate      DateTime @map(name: "checkin_date")
 
   createdAt DateTime @default(now()) @map(name: "created_at")
   updatedAt DateTime @updatedAt @map(name: "updated_at")

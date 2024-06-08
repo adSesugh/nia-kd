@@ -2,6 +2,7 @@ query EventFormFields {
   eventFormFields {
     id
     name
+    label
     type
     required
   }

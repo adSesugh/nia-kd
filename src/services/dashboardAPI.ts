@@ -16,7 +16,7 @@ class DashboardAPI extends RESTDataSource {
 
     async getAdminStat(prisma: PrismaClient) {
         const today = new Date(moment().format("Y-MM-D"))
-        const startOfYear = new Date(moment().format("Y-MM-D"))
+        const startOfYear = new Date(moment().startOf('year').format("Y-MM-D"))
         const endOfYear = new Date(moment().endOf('year').format("Y-MM-D"))
 
         const memberCount = await prisma.member.count()
@@ -46,10 +46,21 @@ class DashboardAPI extends RESTDataSource {
                 createdAt: {
                     gte: startOfYear,
                     lte: endOfYear
+                },
+                status: {
+                    equals: 'Successful'
                 }
             },
             _sum: {
                 amount: true
+            }
+        })
+
+        const attendances = await prisma.eventRegistration.count({
+            where: {
+                checkin: {
+                    equals: true
+                }
             }
         })
 
@@ -67,8 +78,8 @@ class DashboardAPI extends RESTDataSource {
 
         const revenue = Number(eventPayments._sum.amount) + Number(duesPayments._sum.amount)
         const revData = {
-            events: eventPayments._sum.amount,
-            dues: duesPayments._sum.amount,
+            events: eventPayments._sum.amount || 0,
+            dues: duesPayments._sum.amount || 0,
             others: 0
         }
 
@@ -81,7 +92,7 @@ class DashboardAPI extends RESTDataSource {
             groupMembers.find((member) => member.membershipType === 'Technologist')?._count._all || 0,
         ]
 
-        const avgAttendance = 0
+        const avgAttendance = attendances / eventHeld || 0
 
         const dashboardData = {
             totalMember: memberCount,
@@ -93,6 +104,37 @@ class DashboardAPI extends RESTDataSource {
         }
     
         return dashboardData
+    }
+
+    async getSidebarData (prisma: PrismaClient) {
+        const members = await prisma.member.count({
+            where: {
+                status: 'Active'
+            }
+        })
+
+        const events = await prisma.event.aggregate({
+            where: {
+                status: 'Active'
+            },
+            _count: {
+                _all: true
+            }
+        })
+
+        const blogs = await prisma.blog.count({
+            where: {
+                status: 'Published'
+            }
+        })
+
+        return {
+            members: members,
+            events: events._count._all,
+            blogs,
+            resources: 0,
+            ads: 0
+        }
     }
 }
 

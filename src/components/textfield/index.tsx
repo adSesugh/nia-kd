@@ -9,9 +9,10 @@ type TextFieldProps = {
     showError?: boolean
     label?: string,
     disabled?: boolean
+    min?: number
 }
 
-const TextField: React.FC<TextFieldProps> = ({ name, placeholder, type, className, showError, label, disabled}) => {
+const TextField: React.FC<TextFieldProps> = ({ name, placeholder, type, className, showError, label, disabled, min=0}) => {
   return (
     <div className={`mb-2 text-[14px] ${showError && 'text-red-500'}`}>
       {label && (
@@ -24,6 +25,7 @@ const TextField: React.FC<TextFieldProps> = ({ name, placeholder, type, classNam
         placeholder={placeholder} 
         type={type} 
         disabled={disabled}
+        min={min}
         className={`${className} block w-full rounded-md h-11 border-0 py-1.5 pl-3 text-gray-900 ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-gray-200 sm:text-sm sm:leading-6`}
       />
       {showError && (

@@ -18,3 +18,13 @@ query GetAdminDashboardStat {
     revByCategory
   }
 }
+
+query GetSidebarStat {
+  getSidebarStat {
+    members
+    events
+    blogs
+    resources
+    ads
+  }
+}

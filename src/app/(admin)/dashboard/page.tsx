@@ -9,48 +9,11 @@ import Link from 'next/link';
 import RecentRegisteredMembers from '@/components/dashboard/RecentRegisteredMembers';
 import DoughnutChart from '@/components/DoughnutChart';
 import LineChart from '@/components/LineChart';
-import { AdminDashboardStat, useGetAdminDashboardStatLazyQuery } from '@/graphql/__generated__/graphql';
-import { membershipGroup } from '@/lib/common';
+import { AdminDashboardStatResponse, useGetAdminDashboardStatLazyQuery } from '@/graphql/__generated__/graphql';
+import { useSelector } from 'react-redux';
+import { RootState } from '@/features/store';
 
 ChartJS.register(ArcElement, Tooltip, Legend, LineElement, LinearScale, CategoryScale, PointElement, Title, Filler);
-
-const payments = {
-  labels: ['Events', 'Dues', 'Others'],
-  datasets: [
-      {
-          data: [64, 22, 12],
-          backgroundColor: [
-              '#25A248',
-              '#F8C308',
-              '#4E2444',
-          ],
-          hoverBackgroundColor: [
-              '#25A248',
-              '#F8C308',
-              '#4E2444',
-          ],
-      },
-  ],
-};
-
-const membership = {
-    labels: [...membershipGroup],
-    datasets: [
-      {
-        data: [12, 10, 14, 2, 2, 7],
-        backgroundColor: [
-            '#25A248',
-            '#F8C308',
-            '#4E2444',
-        ],
-        hoverBackgroundColor: [
-          '#25A248',
-          '#F8C308',
-          '#4E2444',
-      ],
-      },
-    ],
-};
 
 // const options = {
 //   maintainAspectRatio: false, // Prevent the chart from maintaining aspect ratio
@@ -95,7 +58,8 @@ const AdminDashboard = () => {
       },
     ],
   });
-  const [adminStats, setAdminStats] = useState<AdminDashboardStat|any>()
+  const [adminStats, setAdminStats] = useState<AdminDashboardStatResponse|any>()
+  const user = useSelector((state: RootState) => state.auth.userData.user)
 
   const [getAdminStats, {loading}] = useGetAdminDashboardStatLazyQuery({fetchPolicy: 'no-cache'})
 
@@ -104,9 +68,9 @@ const AdminDashboard = () => {
     datasets: [
         {
             data: [
-              adminStats?.revByCategory?.event || 0,
-              adminStats?.revByCategory?.dues || 0,
-              adminStats?.revByCategory?.others || 0
+              adminStats?.revByCategory?.event,
+              adminStats?.revByCategory?.dues,
+              adminStats?.revByCategory?.others
             ],
             backgroundColor: [
                 '#25A248',
@@ -121,8 +85,6 @@ const AdminDashboard = () => {
         },
     ],
   }
-
-  console.log(adminStats?.membership)
 
   const membershipGroup = {
     labels: ['Associate', 'Fellow', 'Full Member', 'Graduate', 'Student',  'Technologist'],
@@ -161,7 +123,7 @@ const AdminDashboard = () => {
 
   return (
     <div className='sm:px-12 xs:px-4 sm:pt-14 xs:pt-2 pb-12 w-full h-full overflow-y-auto'>
-      <h1 className={`text-[${PRIMARY_TWO}] sm:text-xl xs:text-lg  font-semibold`}>Good afternoon, Jimoh</h1>
+      <h1 className={`text-[${PRIMARY_TWO}] sm:text-xl xs:text-lg  font-semibold`}>Good afternoon, {user?.role}</h1>
       <div className='grid gap-8 sm:grid-cols-4 xs:grid-cols-1 pt-5 items-center'>
         <StatisticsCard title='Members' value={adminStats?.totalMember || 0} />
         <StatisticsCard title='Event held' value={adminStats?.eventHeld || 0} />
@@ -177,7 +139,7 @@ const AdminDashboard = () => {
                 <span>Month</span>
               </div>
             </div>
-            <div className='flex pt-3 h-full w-full'>
+            <div className='pt-3 h-full w-full'>
               <LineChart />
             </div>
           </div>
