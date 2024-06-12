@@ -7,46 +7,82 @@ import { Form, Formik } from 'formik'
 import SearhbarWithIcon from '@/components/searhbar-with-icon'
 import SelectFilter from '@/components/select-filter'
 import { Button, Chip, Dropdown, DropdownItem, DropdownMenu, DropdownTrigger, Spinner, Table, TableBody, TableCell, TableColumn, TableHeader, TableRow } from '@nextui-org/react'
-import { Member, useGetMembersLazyQuery } from '@/graphql/__generated__/graphql'
+import { Member, useGetEventsLazyQuery, useGetMembersLazyQuery, Event, useCancelEventMutation, useDeleteEventMutation } from '@/graphql/__generated__/graphql'
 import { DotsThreeVertical } from '@phosphor-icons/react'
 import { modelStatus } from '@/lib/common'
 import { toast } from 'react-toastify'
 import Image from 'next/image'
+import moment from 'moment'
+import { useRouter } from 'next/navigation'
 
 const Events = () => {
+  const router = useRouter()
   const [events, setEvents] = useState<any>([])
   const [index, setIndex] = useState<number>(0)
+  const [getEventList, {loading}] = useGetEventsLazyQuery({fetchPolicy: 'no-cache'})
+  const [cancelEvent] = useCancelEventMutation({fetchPolicy: 'no-cache'})
+  const [deleteEvent] = useDeleteEventMutation({fetchPolicy: 'no-cache'})
 
-  const loadingState = '' || events === 0 ? "loading" : "idle";
+  const loadingState = loading || events === 0 ? "loading" : "idle";
 
   useEffect(() => {
-    //   ;(async () => {
-    //       const res = await getMembers()
-    //       if(res.error){
-    //           toast.error(res.error.message)
-    //       } else{
-    //           setMembers(res?.data?.members)
-    //       }
-    //   })()
-  
+    document.title = 'Events | NIA-Kd'
+    ;(async () => {
+        const res = await getEventList()
+        if(res.error){
+            toast.error(res.error.message)
+        } else{
+            setEvents(res?.data?.getEvents)
+        }
+    })()
   }, [])
 
-  const renderCell = React.useCallback((member: Member, columnKey: React.Key, index: number) => {
-      const cellValue = member[columnKey as keyof Member];
+  const renderCell = React.useCallback((event: Event, columnKey: React.Key, index: number) => {
+      const cellValue = event[columnKey as keyof Event];
+      const state = event.address?.split(',')[event.address.split(',').length - 2]
+      const country = event.address?.split(',')[event.address.split(',').length - 1]
       
-  
       switch (columnKey) {
           case "id":
               setIndex(cur => cur + 1)
               return <span>{index}</span>;
-          case "name":
+          case "starts_at":
+            return (
+              <div>
+                <h1 className='text-[#E08D14] font-medium'>{moment(event.starts_at).format("MMM")}</h1>
+                <h1>{moment(event.starts_at).format("D, Y")}</h1>
+              </div>
+            )
+          case "event":
               return (
-                  <div>{member.firstName} {member.lastName}</div>
+                  <div className='flex gap-3'>
+                    <img 
+                      src={event.coverPhoto || '/assets/events/event.svg'} 
+                      alt={event.name} 
+                      className='h-16 w-16'
+                    />
+                    <div className='flex flex-col items-start justify-center'>
+                      <h1 className='font-medium text-sm'>{event.name}</h1>
+                      <div className='flex space-x-3 text-sm text-[#52474B]'>
+                        <span>{"9:00 AM"}</span>
+                        {(event.link || event.address) && <span>|</span> }
+                        {event.type === 'Physical' ? (
+                          <span>{state}, {country}</span>
+                        ): (
+                          <span>{event.link}</span>
+                        )}
+                      </div>
+                    </div>
+                  </div>
               )
+          case "tickets":
+            return (
+              <span>{Number(event.eventRegistrations?.length) || 0}/{event.isInfinity || event.tickets === 0 ? '\u221E' : event.tickets}</span>
+            )
           case "status":
               return (
-                  <Chip className="capitalize" color={member.status === 'ACTIVE' ? 'success' : 'default'} size="sm" variant="flat">
-                      <span className='text-[#0A7535]'>{cellValue}</span>
+                  <Chip className="capitalize" color={event.status === 'Published' ? 'success' : 'default'} size="sm" variant="flat">
+                      <span className={`${event.status === 'Published' ? 'text-[#0A7535]' : 'text-[#4D4B4C]'}`}>{cellValue}</span>
                   </Chip>
               );
           case "actions":
@@ -59,9 +95,15 @@ const Events = () => {
                           </Button>
                       </DropdownTrigger>
                       <DropdownMenu>
-                          <DropdownItem>View</DropdownItem>
                           <DropdownItem>Edit</DropdownItem>
-                          <DropdownItem>Deactivate</DropdownItem>
+                          <DropdownItem onClick={() => router.push(`/event/${event.id}`)}>Manage</DropdownItem>
+                          {event.status === 'Published' ? (
+                            <DropdownItem onClick={() => cancelPublishedEvent(event.id, 'Draft')}>Cancel</DropdownItem>
+                          ): (
+                            <DropdownItem onClick={() => cancelPublishedEvent(event.id, 'Published')}>Publish</DropdownItem>
+                          )}
+                          <DropdownItem>Duplicate</DropdownItem>
+                          <DropdownItem className='text-[#C70F0F]' onClick={() => archiveEvent(event.id)}>Delete</DropdownItem>
                       </DropdownMenu>
                       </Dropdown>
                   </div>
@@ -70,9 +112,30 @@ const Events = () => {
               return cellValue;
       }
   }, []);
+
+  const cancelPublishedEvent = async(id: string, status: string) => {
+    (await cancelEvent({
+      variables: {
+        eventId: id,
+        status: status
+      }
+    })).data
+
+    return setEvents((await getEventList()).data?.getEvents)
+  } 
+
+  const archiveEvent = async(eventId: string) => {
+    (await deleteEvent({
+      variables: {
+        eventId
+      }
+    }))
+
+    return setEvents((await getEventList()).data?.getEvents)    
+  }
   
   return (
-    <div className='sm:px-12 xs:px-4'>
+    <div className='sm:px-12 xs:px-4 h-full overflow-y-auto'>
       <div className='flex justify-between items-center'>
           <TitleHeader title='Events' />
           <div className='sm:pt-14 xs:pt-2'>
@@ -139,8 +202,8 @@ const Events = () => {
                     </div>
                   )}
               >
-                  {(item: Member) => (
-                      <TableRow key={item?.id}>
+                  {(item: Event) => (
+                      <TableRow key={item?.id} className='border-b last:border-b-0'>
                           {(columnKey) => <TableCell>{renderCell(item, columnKey, index)}</TableCell>}
                       </TableRow>
                   )}

@@ -12,7 +12,10 @@ export const resolvers: Resolvers = {
         deactivateMember: (_, { memberId, status }, { prisma, dataSources }) => dataSources.memberAPI.deactivate(prisma, memberId, status),
         createBlog: (_, { input }, { prisma, dataSources, userId }) => dataSources.blogAPI.createBlog(prisma, userId, input),
         publishedBlog: (_, { blogId, status }, { prisma, dataSources }) => dataSources.blogAPI.publishedBlog(prisma, blogId, status),
-        createEvent: (_, { input }, { prisma, dataSources }) => dataSources.eventAPI.createEvent(prisma, input)
+        createEvent: (_, { input }, { prisma, dataSources }) => dataSources.eventAPI.createEvent(prisma, input),
+        watchEventViews: (_, {eventId}, {prisma, dataSources}) => dataSources.eventAPI.watchViews(prisma, eventId),
+        cancelEvent: (_, {eventId, status}, {prisma, dataSources}) => dataSources.eventAPI.cancelEvent(prisma, eventId, status),
+        deleteEvent: (_, {eventId}, {prisma, dataSources}) => dataSources.eventAPI.deleteEvent(prisma, eventId)
     },
     Query: {
         members: (_, __, { prisma, dataSources, userId }) => dataSources.memberAPI.getMembers(prisma, userId),
@@ -31,6 +34,8 @@ export const resolvers: Resolvers = {
         getEvent: (_, { eventId }, { prisma, dataSources }) => dataSources.eventAPI.getEvent(prisma, eventId),
         eventFormFields: (_, __, { prisma, dataSources }) => dataSources.eventAPI.getFormFields(prisma),
         getAdminDashboardStat: (_, __, {prisma, dataSources}) => dataSources.dashboardAPI.getAdminStat(prisma),
-        getSidebarStat: (_, __, {prisma, dataSources}) => dataSources.dashboardAPI.getSidebarData(prisma)
+        getSidebarStat: (_, __, {prisma, dataSources}) => dataSources.dashboardAPI.getSidebarData(prisma),
+        getMembersAttendance: (_, {eventId}, {prisma, dataSources}) => dataSources.eventAPI.getMembersAttendance(prisma, eventId),
+        getRegisteredMembers: (_, {eventId}, {prisma, dataSources}) => dataSources.eventAPI.getMembersAttendance(prisma, eventId)
     },
 };

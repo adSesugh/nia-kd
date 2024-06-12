@@ -1,7 +1,6 @@
-import { EventFormInput, EventInput } from "@/graphql/__generated__/graphql";
-import s3Client from "@/lib/s3Client";
+import { EventInput } from "@/graphql/__generated__/graphql";
+import { s3FileUpload, s3FileUploadPdf } from "@/lib/s3Client";
 import { RESTDataSource } from "@apollo/datasource-rest";
-import { PutObjectCommand } from "@aws-sdk/client-s3";
 import { PrismaClient } from "@prisma/client";
 
 class EventAPI extends RESTDataSource {
@@ -9,76 +8,124 @@ class EventAPI extends RESTDataSource {
 
         const buffer = input.coverPhoto ? Buffer.from(input.coverPhoto.split(',')[1], 'base64') : '';
 
-        const url: string = buffer ? `https://${process.env.NEXT_PUBLIC_AWS_BUCKET_NAME}.s3.${process.env.NEXT_PUBLIC_AWS_REGION}.amazonaws.com/events/${input.name.toLowerCase().replaceAll(' ', '-')}` : ''
-
         const event = await prisma.event.create({
             data: {
                 name: input.name,
-                description: input.description as string,
-                cpdp_points: Number(input.cpdpPoint),
+                description: input.description || '',
                 type: input.type,
                 link: input.link,
                 address: input.address,
-                starts_at: input.starts_at,
-                ends_at: input.ends_at,
+                starts_at: new Date(input.starts_at),
+                starts_time: input.starts_time,
+                ends_at: new Date(input.ends_at),
+                ends_time: input.ends_time,
                 paymentType: input.paymentType,
                 amount: input.amount,
-                tickets: input.tickets ? input.tickets : 0,
-                isInfinity: input.isInfinity as boolean,
-                coverPhoto: url,
+                tickets: input.tickets || 0,
+                isInfinity: input.isInfinity || false,
                 formTitle: input.formTitle,
                 instructions: input.instructions,
                 message: input.message,
-                eventForms: {
-                    create: [...input.form as any],
-                },
-                eventResources: {
-                    create: [...input.resources as any]
-                },
-                certificate: input.certificate,
-                hasCertificate: input.hadCertificate as boolean,
-                userId: '3315ed4a-f3f6-480e-8c30-06ad44aca84c',
+                cpdp_points: input.cpdpPoint || 0,
+                hasCertificate: input.hasCertificate || false,
+                sendTag: input.sendTag || false
             }
         })
 
-        await prisma.formDesign.createMany({
-            data: [...input.form as any],
-            skipDuplicates: true
-        })
+        if (input.coverPhoto){
+            const url: string = buffer ? `https://${process.env.NEXT_PUBLIC_AWS_BUCKET_NAME}.s3.${process.env.NEXT_PUBLIC_AWS_REGION}.amazonaws.com/events/${event.id}/${input.name.toLowerCase().replaceAll(' ', '-')}` : ''
 
-        const command = new PutObjectCommand({
-            Bucket: process.env.NEXT_PUBLIC_AWS_BUCKET_NAME as string,
-            Key: `blogs/${event.id}`,
-            Body: buffer,
-            ContentEncoding: 'base64',
-            ContentType: 'image/jpeg'
-        });
-
-        const { $metadata: res } = await s3Client.send(command);
-
-        if (res.httpStatusCode === 200) {
-            return {
-                code: res.httpStatusCode,
-                success: true,
-                message: "Event created",
-                event
+            const res =  await s3FileUpload(`events/${event.id}/${event.name.toLowerCase().replaceAll(' ', '-')}`, 'image/png', buffer)
+            if(res.httpStatusCode === 200){
+                await prisma.event.update({
+                    where: {
+                        id: event.id
+                    },
+                    data: {
+                        coverPhoto: url
+                    }
+                })
             }
         }
 
+        if(input.certificate){
+            const certBuffer = input.certificate ? Buffer.from(input.certificate.split(',')[1], 'base64') : '';
+            const certificateUrl: string = certBuffer ? `https://${process.env.NEXT_PUBLIC_AWS_BUCKET_NAME}.s3.${process.env.NEXT_PUBLIC_AWS_REGION}.amazonaws.com/events/${event.id}/certificate` : ''
+            const certRes =  await s3FileUpload(`events/${event.id}/certificate`, 'image/png', certBuffer)
+            if(certRes) {
+                await prisma.event.update({
+                    where: {
+                        id: event.id
+                    },
+                    data: {
+                        certificate: certificateUrl
+                    }
+                })
+            }
+        }
+
+        if(input.resources && input?.resources?.length > 0){
+            input.resources.forEach(async (resource, index) => {
+                const buffer = resource ? Buffer.from(resource.split(',')[1], 'base64') : '';
+                const url: string = buffer ? `https://${process.env.NEXT_PUBLIC_AWS_BUCKET_NAME}.s3.${process.env.NEXT_PUBLIC_AWS_REGION}.amazonaws.com/events/${event.id}/resources/${index}.pdf` : ''
+                const response =  await s3FileUploadPdf(`events/${event.id}/resources/${index}.pdf`, buffer)
+                if(response.httpStatusCode === 200){
+                    await prisma.eventResource.create({
+                        data: {
+                            eventId: event.id,
+                            resourceUrl: url
+                        }
+                    })
+                }
+            })
+        }
+
+        if(input.speakers && input.speakers.length > 0) {
+            const speakers: any = []
+            input.speakers.forEach(async (speaker, index) => {
+                const buffer = speaker ? Buffer.from(speaker.avatar.split(',')[1], 'base64') : '';
+                const url: string = buffer ? `https://${process.env.NEXT_PUBLIC_AWS_BUCKET_NAME}.s3.${process.env.NEXT_PUBLIC_AWS_REGION}.amazonaws.com/events/${event.id}/speaker/${index}` : ''
+                const response =  await s3FileUpload(`events/${event.id}/speakers/${index}`, 'image/png', buffer)
+                if(response.httpStatusCode === 200){
+                    speakers.push({...speaker, avatar: url, eventId: event.id})
+                    await prisma.speaker.create({
+                        data: {
+                            eventId: event.id,
+                            name: speaker.name,
+                            title: speaker.title || '',
+                            about: speaker.about,
+                            avatar: url
+                        }
+                    })
+                }
+            })
+        }
+
         return {
-            code: 400,
-            success: false,
-            message: "Error occurred",
-            event: null
+            code: 201,
+            success: true,
+            message: "Event created",
+            event: event
         }
     }
 
     async getEvent(prisma: PrismaClient, eventId: string) {
         const event = await prisma.event.findFirst({
             where: {
-                id: eventId
+                id: eventId,
+                deletedAt: null
             },
-            include: { user: { include: { member: true } }, eventForms: true }
+            include: { 
+                user: { 
+                    include: { 
+                        member: true 
+                    } 
+                }, 
+                eventForms: true, 
+                speakers: true, 
+                eventResources: true,
+                eventRegistrations: true
+            },
         })
 
         return event
@@ -86,7 +133,20 @@ class EventAPI extends RESTDataSource {
 
     async getEvents(prisma: PrismaClient) {
         const events = await prisma.event.findMany({
-            include: { user: { include: { member: true } }, eventForms: true }
+            include: { 
+                user: { 
+                    include: { 
+                        member: true 
+                    } 
+                }, 
+                eventForms: true,
+                _count: {
+                    select: { eventRegistrations: true },
+                },
+            },
+            where: {
+                deletedAt: null
+            }
         })
 
         return events
@@ -96,6 +156,69 @@ class EventAPI extends RESTDataSource {
         const formFields = await prisma.formDesign.findMany({})
 
         return formFields
+    }
+
+    async watchViews(prisma: PrismaClient, eventId: string){
+        prisma.event.update({
+            where: {
+                id: eventId
+            },
+            data: {
+                views: {
+                    increment: 1
+                }
+            }
+        })
+
+        return true
+    }
+
+    async getRegisteredMembers(prisma: PrismaClient, eventId: string){
+        const registeredMembers = await prisma.eventRegistration.findMany({
+            where: {
+                eventId
+            }
+        })
+
+        return registeredMembers
+    }
+
+    async getMembersAttendance(prisma: PrismaClient, eventId: string){
+        const membersAttendance = await prisma.eventRegistration.findMany({
+            where: {
+                checkin: true
+            }
+        })
+
+        return membersAttendance
+    }
+
+    async cancelEvent(prisma: PrismaClient, eventId: string, status: string) {
+        await prisma.event.update({
+            where: {
+                id: eventId,
+                deletedAt: null
+            },
+            data: {
+                status
+            }
+        })
+
+        return true
+    }
+
+    async deleteEvent(prisma: PrismaClient, eventId: string) {
+        (await prisma.event.update({
+            where: {
+                id: eventId
+            },
+            data: {
+                deletedAt: new Date(),
+                status: 'Archived'
+            }
+        }))
+
+        return true
     }
 }
 

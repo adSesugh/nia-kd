@@ -115,7 +115,7 @@ class DashboardAPI extends RESTDataSource {
 
         const events = await prisma.event.aggregate({
             where: {
-                status: 'Active'
+                status: 'Published'
             },
             _count: {
                 _all: true

@@ -1,4 +1,5 @@
-// components/DraftEditorField.js
+'use client'
+
 import React from 'react';
 import { Field, ErrorMessage } from 'formik';
 import { EditorState, convertToRaw, convertFromRaw } from 'draft-js';

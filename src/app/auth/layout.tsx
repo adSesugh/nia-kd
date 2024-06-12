@@ -20,9 +20,13 @@ const AuthLayout: React.FC<LayoutProps> = ({ children }) => {
                             <Image 
                                 src={'/assets/images/logo.svg'} 
                                 alt='NIA-Kd' 
-                                width={304} 
-                                height={100} 
-                                priority 
+                                width={30} 
+                                height={10} 
+                                sizes='100vw'
+                                style={{
+                                    width: '100%',
+                                    height: 'auto'
+                                }} 
                             />
                         </Link>
                         <h1 className='text-white text-[26px] px-2'>Kaduna State Chapter</h1>

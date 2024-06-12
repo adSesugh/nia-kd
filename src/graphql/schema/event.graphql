@@ -48,3 +48,67 @@ mutation CreateEvent($input: eventInput!) {
     }
   }
 }
+
+query GetEvents {
+  getEvents {
+    coverPhoto
+    amount
+    tickets
+    address
+    id
+    name
+    type
+    status
+    starts_at
+    eventRegistrations {
+      id
+    }
+  }
+}
+
+query GetEvent($eventId: UUID!) {
+  getEvent(eventId: $eventId) {
+    id
+    name
+    amount
+    tickets
+    isInfinity
+    formTitle
+    message
+    views
+    eventRegistrations {
+      id
+    }
+  }
+}
+
+mutation CancelEvent($eventId: UUID!, $status: String!) {
+  cancelEvent(eventId: $eventId, status: $status)
+}
+
+mutation DeleteEvent($eventId: UUID!) {
+  deleteEvent(eventId: $eventId)
+}
+
+mutation WatchEventViews($eventId: UUID!) {
+  watchEventViews(eventId: $eventId)
+}
+
+query GetRegisteredMembers($eventId: UUID!) {
+  getRegisteredMembers(eventId: $eventId) {
+    id
+    registrantDetail
+    status
+    createdAt
+  }
+}
+
+query GetMembersAttendance($eventId: UUID!) {
+  getMembersAttendance(eventId: $eventId) {
+    id
+    registrantDetail
+    checkin
+    checkinDate
+    createdAt
+  }
+}

@@ -1,0 +1,3 @@
+-- AlterTable
+ALTER TABLE `events` ADD COLUMN `views` INTEGER NOT NULL DEFAULT 0,
+    ALTER COLUMN `updatedAt` DROP DEFAULT;

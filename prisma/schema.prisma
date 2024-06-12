@@ -33,10 +33,11 @@ model User {
   member           Member?
   dues             Dues[]
   status           String    @default("Active")
-  createdAt        DateTime  @default(now()) @map(name: "created_at")
-  updatedAt        DateTime  @updatedAt @map(name: "updated_at")
   Blog             Blog[]
   Event            Event[]
+
+  createdAt        DateTime  @default(now()) @map(name: "created_at")
+  updatedAt        DateTime  @updatedAt @map(name: "updated_at")
 
   @@map("users")
 }
@@ -56,6 +57,7 @@ model Member {
   membershipId      String?             @unique
   membershipType    String              @default("Student") @db.VarChar(191)
   status            String              @default("Active") @db.VarChar(191)
+  cpdpPoints        Int                 @default(0)
   createdAt         DateTime            @default(now()) @map(name: "created_at")
   updatedAt         DateTime            @updatedAt @map(name: "updated_at")
   payments          Payment[]
@@ -136,30 +138,37 @@ model Event {
   name               String
   description        String              @db.Text
   type               String
-  cpdp_points        Int
+  cpdp_points        Int                 @default(0)
   link               String?
   address            String?
   starts_at          DateTime
+  starts_time        String              @default("00:00:00")
   ends_at            DateTime
+  ends_time          String              @default("00:00:00")
   paymentType        String              @default("Free")
   amount             Decimal             @default(0.00)
-  tickets            Int
+  tickets            Int                 @default(0)
   isInfinity         Boolean
-  coverPhoto         String
-  userId             String
+  coverPhoto         String?
   formTitle          String?
   instructions       String?             @db.MediumText
   message            String?             @db.MediumText
-  status             String              @default("Active")
+  status             String              @default("Published")
   certificate        String?
   hasCertificate     Boolean             @default(false)
-  user               User                @relation(fields: [userId], references: [id])
+  views              Int                 @default(0)
+  userId             String?
+  user               User?                @relation(fields: [userId], references: [id])
   eventForms         EventForm[]
   eventPayments      EventPayment[]
-  createdAt          DateTime            @default(now()) @map(name: "created_at")
-  updatedAt          DateTime            @updatedAt @map(name: "updated_at")
   eventRegistrations EventRegistration[]
   eventResources     EventResource[]
+  speakers           Speaker[]
+  sendTag            Boolean             @default(false)
+
+  createdAt          DateTime     @default(now())
+  updatedAt          DateTime     @updatedAt
+  deletedAt          DateTime?
 
   @@map("events")
 }
@@ -196,8 +205,8 @@ model EventPayment {
   paymentRef  String   @unique
   amount      Decimal  @default(0.00)
   status      String   @default("Successful") @db.VarChar(15)
-  eventId     String
-  event       Event    @relation(fields: [eventId], references: [id])
+  eventId     String?
+  event       Event?    @relation(fields: [eventId], references: [id])
   createdAt   DateTime @default(now()) @map(name: "created_at")
   updatedAt   DateTime @updatedAt @map(name: "updated_at")
 
@@ -207,8 +216,8 @@ model EventPayment {
 model EventResource {
   id          String @id @default(uuid())
   resourceUrl String
-  eventId     String
-  event       Event  @relation(fields: [eventId], references: [id])
+  eventId     String?
+  event       Event?  @relation(fields: [eventId], references: [id])
 
   @@map("event_resources")
 }
@@ -217,8 +226,8 @@ model EventRegistration {
   id               String  @id @default(uuid())
   memberId         String?
   member           Member? @relation(fields: [memberId], references: [id])
-  eventId          String
-  event            Event   @relation(fields: [eventId], references: [id])
+  eventId          String?
+  event            Event?   @relation(fields: [eventId], references: [id])
   registrantDetail Json
   amount           Decimal @default(0.00)
   paymentRef       String  @unique
@@ -230,4 +239,14 @@ model EventRegistration {
   updatedAt DateTime @updatedAt @map(name: "updated_at")
 
   @@map("event_registrations")
+}
+
+model Speaker {
+  id      String @id @default(uuid())
+  eventId String?
+  event   Event?  @relation(fields: [eventId], references: [id])
+  name    String
+  title   String
+  about   String
+  avatar  String
 }

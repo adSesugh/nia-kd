@@ -30,6 +30,7 @@ const DashboardLayout: React.FC<LayoutProps> = ({ children }) => {
   const dispatch = useAppDispatch()
 
   const {data} = useGetSidebarStatQuery({fetchPolicy: 'no-cache'})
+  console.log(data)
 
   const pathname = usePathname()
 
@@ -66,12 +67,12 @@ const DashboardLayout: React.FC<LayoutProps> = ({ children }) => {
               <div className='flex flex-col pl-7 text-white justify-center w-full h-28'>
                 <Image
                     alt='NIA-Kd'
-                    src={'/assets/logo.svg'}
+                    src={'/assets/images/logo.svg'}
                     sizes='100vw'
                     width={50}
                     height={60}
                     style={{
-                        width: '60%',
+                        width: '62%',
                         height: 'auto'
                     }} 
                 />

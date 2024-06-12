@@ -35,6 +35,7 @@ export const typeDefs = `#graphql
     membershipType: String! @uppercase
     membershipId: String
     status: String @uppercase
+    cpdpPoints: Int
     createdAt: Time
     updatedAt: Time
   }  
@@ -92,24 +93,33 @@ export const typeDefs = `#graphql
     link: String
     address: String
     starts_at: Time!
+    starts_time: String!
     ends_at: Time!
+    ends_time: String!
     paymentType: String!
     amount: Decimal!
     tickets: Int
     isInfinity: Boolean
-    coverPhoto: String!
+    coverPhoto: String
     userId: UUID
+    user: User
     formTitle: String!
     instructions: String!
     message: String!
     status: String!
-    user: User
-    eventForm: [EventForm!]
-    eventPayments: [EventPayment!]
-    eventRegistrations: [EventRegistration!]
-    eventResources: [EventResource!]
+    cpdp_points: Int
+    hasCertificate: Boolean
+    views: Int
+    certificate: String
+    eventForm: [EventForm]
+    eventPayments: [EventPayment]
+    eventRegistrations: [EventRegistration]
+    eventResources: [EventResource]
+    speackers: [Speaker]
+    sendTag: Boolean
     createdAt: Time
     updatedAt: Time
+    deletedAt: Time
   }
 
   type EventForm {
@@ -163,6 +173,14 @@ export const typeDefs = `#graphql
     checkinDate: Time
     createdAt: Time
     updatedAt: Time
+  }
+  
+  type Speaker {
+    id: UUID!
+    name: String!
+    title: String!
+    about: String!
+    avatar: String!
   }
 
   ## ------------------------------------- Type Input ---------------------------------------------------##
@@ -231,7 +249,9 @@ export const typeDefs = `#graphql
     link: String
     address: String
     starts_at: Time!
+    starts_time: String!
     ends_at: Time!
+    ends_time: String!
     paymentType: String!
     amount: Decimal!
     tickets: Int
@@ -240,11 +260,12 @@ export const typeDefs = `#graphql
     formTitle: String!
     instructions: String!
     message: String!
-    form: [EventFormInput]
+    form: [EventFormInput!]
     resources: [String!]
     certificate: String
-    hadCertificate: Boolean
+    hasCertificate: Boolean
     speakers: [SpeakerFormInput!]
+    sendTag: Boolean
   }
 
   ## ------------------------------------- Type Response ---------------------------------------------------##
@@ -337,6 +358,9 @@ export const typeDefs = `#graphql
     createBlog(input: blogInput!): BlogResponse
     publishedBlog(blogId: UUID!, status: String!): BlogResponse
     createEvent(input: eventInput!): EventResponse
+    watchEventViews(eventId: UUID!): Boolean
+    cancelEvent(eventId: UUID!, status: String!): Boolean
+    deleteEvent(eventId: UUID!): Boolean
   }
 
   ## ------------------------------------- Query ---------------------------------------------------##
@@ -356,10 +380,12 @@ export const typeDefs = `#graphql
     getBlogs(status: String): [Blog!]
     getBlog(blogId: UUID!): Blog
     tags: [Tag!]
-    eventFormFields: [FormDesign!] 
+    eventFormFields: [FormDesign!]! 
     getEvents: [Event!]
-    getEvent(eventId: UUID): Event
+    getEvent(eventId: UUID!): Event
     getAdminDashboardStat: AdminDashboardStatResponse
     getSidebarStat: SidebarResponse
+    getRegisteredMembers(eventId: UUID!): [EventRegistration!]
+    getMembersAttendance(eventId: UUID!): [EventRegistration!]
   }
 `;

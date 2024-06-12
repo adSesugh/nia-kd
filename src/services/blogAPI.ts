@@ -45,7 +45,7 @@ class BlogAPI extends RESTDataSource {
 
         const command = new PutObjectCommand({
             Bucket: process.env.NEXT_PUBLIC_AWS_BUCKET_NAME as string,
-            Key: `blogs/${blog.id}`,
+            Key: `blogs/${blog.title.toLowerCase().replaceAll(' ', '-')}`,
             Body: buffer,
             ContentEncoding: 'base64',
             ContentType: 'image/jpeg'

@@ -99,15 +99,20 @@ export type Event = {
   __typename?: 'Event';
   address?: Maybe<Scalars['String']['output']>;
   amount: Scalars['Decimal']['output'];
-  coverPhoto: Scalars['String']['output'];
+  certificate?: Maybe<Scalars['String']['output']>;
+  coverPhoto?: Maybe<Scalars['String']['output']>;
+  cpdp_points?: Maybe<Scalars['Int']['output']>;
   createdAt?: Maybe<Scalars['Time']['output']>;
+  deletedAt?: Maybe<Scalars['Time']['output']>;
   description?: Maybe<Scalars['String']['output']>;
   ends_at: Scalars['Time']['output'];
-  eventForm?: Maybe<Array<EventForm>>;
-  eventPayments?: Maybe<Array<EventPayment>>;
-  eventRegistrations?: Maybe<Array<EventRegistration>>;
-  eventResources?: Maybe<Array<EventResource>>;
+  ends_time: Scalars['String']['output'];
+  eventForm?: Maybe<Array<Maybe<EventForm>>>;
+  eventPayments?: Maybe<Array<Maybe<EventPayment>>>;
+  eventRegistrations?: Maybe<Array<Maybe<EventRegistration>>>;
+  eventResources?: Maybe<Array<Maybe<EventResource>>>;
   formTitle: Scalars['String']['output'];
+  hasCertificate?: Maybe<Scalars['Boolean']['output']>;
   id: Scalars['UUID']['output'];
   instructions: Scalars['String']['output'];
   isInfinity?: Maybe<Scalars['Boolean']['output']>;
@@ -115,13 +120,17 @@ export type Event = {
   message: Scalars['String']['output'];
   name: Scalars['String']['output'];
   paymentType: Scalars['String']['output'];
+  sendTag?: Maybe<Scalars['Boolean']['output']>;
+  speackers?: Maybe<Array<Maybe<Speaker>>>;
   starts_at: Scalars['Time']['output'];
+  starts_time: Scalars['String']['output'];
   status: Scalars['String']['output'];
   tickets?: Maybe<Scalars['Int']['output']>;
   type: Scalars['String']['output'];
   updatedAt?: Maybe<Scalars['Time']['output']>;
   user?: Maybe<User>;
   userId?: Maybe<Scalars['UUID']['output']>;
+  views?: Maybe<Scalars['Int']['output']>;
 };
 
 export type EventForm = {
@@ -200,6 +209,7 @@ export type FormDesign = {
 export type Member = {
   __typename?: 'Member';
   address: Scalars['String']['output'];
+  cpdpPoints?: Maybe<Scalars['Int']['output']>;
   createdAt?: Maybe<Scalars['Time']['output']>;
   email: Scalars['String']['output'];
   firstName: Scalars['String']['output'];
@@ -240,15 +250,24 @@ export type MemberResponse = {
 
 export type Mutation = {
   __typename?: 'Mutation';
+  cancelEvent?: Maybe<Scalars['Boolean']['output']>;
   createBlog?: Maybe<BlogResponse>;
   createDue?: Maybe<DueResponse>;
   createEvent?: Maybe<EventResponse>;
   createUser?: Maybe<CreateUserResponse>;
   deactivateMember?: Maybe<Member>;
+  deleteEvent?: Maybe<Scalars['Boolean']['output']>;
   login?: Maybe<AuthPayload>;
   postPayment: Payment;
   publishedBlog?: Maybe<BlogResponse>;
   updateDue?: Maybe<DueResponse>;
+  watchEventViews?: Maybe<Scalars['Boolean']['output']>;
+};
+
+
+export type MutationCancelEventArgs = {
+  eventId: Scalars['UUID']['input'];
+  status: Scalars['String']['input'];
 };
 
 
@@ -278,6 +297,11 @@ export type MutationDeactivateMemberArgs = {
 };
 
 
+export type MutationDeleteEventArgs = {
+  eventId: Scalars['UUID']['input'];
+};
+
+
 export type MutationLoginArgs = {
   input: SignInUser;
 };
@@ -299,6 +323,11 @@ export type MutationUpdateDueArgs = {
   input: DueInput;
 };
 
+
+export type MutationWatchEventViewsArgs = {
+  eventId: Scalars['UUID']['input'];
+};
+
 export type Payment = {
   __typename?: 'Payment';
   amount: Scalars['Decimal']['output'];
@@ -316,16 +345,18 @@ export type Payment = {
 export type Query = {
   __typename?: 'Query';
   dues?: Maybe<Array<Maybe<Due>>>;
-  eventFormFields?: Maybe<Array<FormDesign>>;
+  eventFormFields: Array<FormDesign>;
   getAdminDashboardStat?: Maybe<AdminDashboardStatResponse>;
   getBlog?: Maybe<Blog>;
   getBlogs?: Maybe<Array<Blog>>;
   getDuePayment?: Maybe<MemberDueResponse>;
   getEvent?: Maybe<Event>;
   getEvents?: Maybe<Array<Event>>;
+  getMembersAttendance?: Maybe<Array<EventRegistration>>;
   getPayment?: Maybe<Payment>;
   getPayments?: Maybe<Array<Payment>>;
   getRecentRegistration?: Maybe<Array<Member>>;
+  getRegisteredMembers?: Maybe<Array<EventRegistration>>;
   getSidebarStat?: Maybe<SidebarResponse>;
   member?: Maybe<Member>;
   memberPayments?: Maybe<Array<Payment>>;
@@ -352,12 +383,22 @@ export type QueryGetDuePaymentArgs = {
 
 
 export type QueryGetEventArgs = {
-  eventId?: InputMaybe<Scalars['UUID']['input']>;
+  eventId: Scalars['UUID']['input'];
+};
+
+
+export type QueryGetMembersAttendanceArgs = {
+  eventId: Scalars['UUID']['input'];
 };
 
 
 export type QueryGetPaymentArgs = {
   paymentId: Scalars['UUID']['input'];
+};
+
+
+export type QueryGetRegisteredMembersArgs = {
+  eventId: Scalars['UUID']['input'];
 };
 
 
@@ -382,6 +423,15 @@ export type SidebarResponse = {
   events?: Maybe<Scalars['Int']['output']>;
   members?: Maybe<Scalars['Int']['output']>;
   resources?: Maybe<Scalars['Int']['output']>;
+};
+
+export type Speaker = {
+  __typename?: 'Speaker';
+  about: Scalars['String']['output'];
+  avatar: Scalars['String']['output'];
+  id: Scalars['UUID']['output'];
+  name: Scalars['String']['output'];
+  title: Scalars['String']['output'];
 };
 
 export type SpeakerFormInput = {
@@ -443,9 +493,10 @@ export type EventInput = {
   cpdpPoint?: InputMaybe<Scalars['Int']['input']>;
   description?: InputMaybe<Scalars['String']['input']>;
   ends_at: Scalars['Time']['input'];
-  form?: InputMaybe<Array<InputMaybe<EventFormInput>>>;
+  ends_time: Scalars['String']['input'];
+  form?: InputMaybe<Array<EventFormInput>>;
   formTitle: Scalars['String']['input'];
-  hadCertificate?: InputMaybe<Scalars['Boolean']['input']>;
+  hasCertificate?: InputMaybe<Scalars['Boolean']['input']>;
   instructions: Scalars['String']['input'];
   isInfinity?: InputMaybe<Scalars['Boolean']['input']>;
   link?: InputMaybe<Scalars['String']['input']>;
@@ -453,8 +504,10 @@ export type EventInput = {
   name: Scalars['String']['input'];
   paymentType: Scalars['String']['input'];
   resources?: InputMaybe<Array<Scalars['String']['input']>>;
+  sendTag?: InputMaybe<Scalars['Boolean']['input']>;
   speakers?: InputMaybe<Array<SpeakerFormInput>>;
   starts_at: Scalars['Time']['input'];
+  starts_time: Scalars['String']['input'];
   tickets?: InputMaybe<Scalars['Int']['input']>;
   type: Scalars['String']['input'];
 };
@@ -577,14 +630,62 @@ export type GetDuePaymentQuery = { __typename?: 'Query', getDuePayment?: { __typ
 export type EventFormFieldsQueryVariables = Exact<{ [key: string]: never; }>;
 
 
-export type EventFormFieldsQuery = { __typename?: 'Query', eventFormFields?: Array<{ __typename?: 'FormDesign', id: any, name: string, label?: string | null, type: string, required?: boolean | null }> | null };
+export type EventFormFieldsQuery = { __typename?: 'Query', eventFormFields: Array<{ __typename?: 'FormDesign', id: any, name: string, label?: string | null, type: string, required?: boolean | null }> };
 
 export type CreateEventMutationVariables = Exact<{
   input: EventInput;
 }>;
 
 
-export type CreateEventMutation = { __typename?: 'Mutation', createEvent?: { __typename?: 'EventResponse', code: number, success: boolean, message: string, event?: { __typename?: 'Event', id: any, name: string, description?: string | null, type: string, link?: string | null, address?: string | null, starts_at: any, ends_at: any, paymentType: string, amount: any, tickets?: number | null, isInfinity?: boolean | null, coverPhoto: string, userId?: any | null, formTitle: string, instructions: string, message: string, createdAt?: any | null, status: string, user?: { __typename?: 'User', member?: { __typename?: 'Member', firstName: string, lastName: string } | null } | null, eventForm?: Array<{ __typename?: 'EventForm', id: any, name: string, type: string, required?: boolean | null }> | null } | null } | null };
+export type CreateEventMutation = { __typename?: 'Mutation', createEvent?: { __typename?: 'EventResponse', code: number, success: boolean, message: string, event?: { __typename?: 'Event', id: any, name: string, description?: string | null, type: string, link?: string | null, address?: string | null, starts_at: any, ends_at: any, paymentType: string, amount: any, tickets?: number | null, isInfinity?: boolean | null, coverPhoto?: string | null, userId?: any | null, formTitle: string, instructions: string, message: string, createdAt?: any | null, status: string, user?: { __typename?: 'User', member?: { __typename?: 'Member', firstName: string, lastName: string } | null } | null, eventForm?: Array<{ __typename?: 'EventForm', id: any, name: string, type: string, required?: boolean | null } | null> | null } | null } | null };
+
+export type GetEventsQueryVariables = Exact<{ [key: string]: never; }>;
+
+
+export type GetEventsQuery = { __typename?: 'Query', getEvents?: Array<{ __typename?: 'Event', coverPhoto?: string | null, amount: any, tickets?: number | null, address?: string | null, id: any, name: string, type: string, status: string, starts_at: any, eventRegistrations?: Array<{ __typename?: 'EventRegistration', id: any } | null> | null }> | null };
+
+export type GetEventQueryVariables = Exact<{
+  eventId: Scalars['UUID']['input'];
+}>;
+
+
+export type GetEventQuery = { __typename?: 'Query', getEvent?: { __typename?: 'Event', id: any, name: string, amount: any, tickets?: number | null, isInfinity?: boolean | null, formTitle: string, message: string, views?: number | null, eventRegistrations?: Array<{ __typename?: 'EventRegistration', id: any } | null> | null } | null };
+
+export type CancelEventMutationVariables = Exact<{
+  eventId: Scalars['UUID']['input'];
+  status: Scalars['String']['input'];
+}>;
+
+
+export type CancelEventMutation = { __typename?: 'Mutation', cancelEvent?: boolean | null };
+
+export type DeleteEventMutationVariables = Exact<{
+  eventId: Scalars['UUID']['input'];
+}>;
+
+
+export type DeleteEventMutation = { __typename?: 'Mutation', deleteEvent?: boolean | null };
+
+export type WatchEventViewsMutationVariables = Exact<{
+  eventId: Scalars['UUID']['input'];
+}>;
+
+
+export type WatchEventViewsMutation = { __typename?: 'Mutation', watchEventViews?: boolean | null };
+
+export type GetRegisteredMembersQueryVariables = Exact<{
+  eventId: Scalars['UUID']['input'];
+}>;
+
+
+export type GetRegisteredMembersQuery = { __typename?: 'Query', getRegisteredMembers?: Array<{ __typename?: 'EventRegistration', id: any, registrantDetail?: any | null, status?: string | null, createdAt?: any | null }> | null };
+
+export type GetMembersAttendanceQueryVariables = Exact<{
+  eventId: Scalars['UUID']['input'];
+}>;
+
+
+export type GetMembersAttendanceQuery = { __typename?: 'Query', getMembersAttendance?: Array<{ __typename?: 'EventRegistration', id: any, registrantDetail?: any | null, checkin?: boolean | null, checkinDate?: any | null, createdAt?: any | null }> | null };
 
 export type GetMembersQueryVariables = Exact<{ [key: string]: never; }>;
 
@@ -1375,6 +1476,287 @@ export function useCreateEventMutation(baseOptions?: Apollo.MutationHookOptions<
 export type CreateEventMutationHookResult = ReturnType<typeof useCreateEventMutation>;
 export type CreateEventMutationResult = Apollo.MutationResult<CreateEventMutation>;
 export type CreateEventMutationOptions = Apollo.BaseMutationOptions<CreateEventMutation, CreateEventMutationVariables>;
+export const GetEventsDocument = gql`
+    query GetEvents {
+  getEvents {
+    coverPhoto
+    amount
+    tickets
+    address
+    id
+    name
+    type
+    status
+    starts_at
+    eventRegistrations {
+      id
+    }
+  }
+}
+    `;
+
+/**
+ * __useGetEventsQuery__
+ *
+ * To run a query within a React component, call `useGetEventsQuery` and pass it any options that fit your needs.
+ * When your component renders, `useGetEventsQuery` returns an object from Apollo Client that contains loading, error, and data properties
+ * you can use to render your UI.
+ *
+ * @param baseOptions options that will be passed into the query, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options;
+ *
+ * @example
+ * const { data, loading, error } = useGetEventsQuery({
+ *   variables: {
+ *   },
+ * });
+ */
+export function useGetEventsQuery(baseOptions?: Apollo.QueryHookOptions<GetEventsQuery, GetEventsQueryVariables>) {
+        const options = {...defaultOptions, ...baseOptions}
+        return Apollo.useQuery<GetEventsQuery, GetEventsQueryVariables>(GetEventsDocument, options);
+      }
+export function useGetEventsLazyQuery(baseOptions?: Apollo.LazyQueryHookOptions<GetEventsQuery, GetEventsQueryVariables>) {
+          const options = {...defaultOptions, ...baseOptions}
+          return Apollo.useLazyQuery<GetEventsQuery, GetEventsQueryVariables>(GetEventsDocument, options);
+        }
+export function useGetEventsSuspenseQuery(baseOptions?: Apollo.SuspenseQueryHookOptions<GetEventsQuery, GetEventsQueryVariables>) {
+          const options = {...defaultOptions, ...baseOptions}
+          return Apollo.useSuspenseQuery<GetEventsQuery, GetEventsQueryVariables>(GetEventsDocument, options);
+        }
+export type GetEventsQueryHookResult = ReturnType<typeof useGetEventsQuery>;
+export type GetEventsLazyQueryHookResult = ReturnType<typeof useGetEventsLazyQuery>;
+export type GetEventsSuspenseQueryHookResult = ReturnType<typeof useGetEventsSuspenseQuery>;
+export type GetEventsQueryResult = Apollo.QueryResult<GetEventsQuery, GetEventsQueryVariables>;
+export const GetEventDocument = gql`
+    query GetEvent($eventId: UUID!) {
+  getEvent(eventId: $eventId) {
+    id
+    name
+    amount
+    tickets
+    isInfinity
+    formTitle
+    message
+    views
+    eventRegistrations {
+      id
+    }
+  }
+}
+    `;
+
+/**
+ * __useGetEventQuery__
+ *
+ * To run a query within a React component, call `useGetEventQuery` and pass it any options that fit your needs.
+ * When your component renders, `useGetEventQuery` returns an object from Apollo Client that contains loading, error, and data properties
+ * you can use to render your UI.
+ *
+ * @param baseOptions options that will be passed into the query, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options;
+ *
+ * @example
+ * const { data, loading, error } = useGetEventQuery({
+ *   variables: {
+ *      eventId: // value for 'eventId'
+ *   },
+ * });
+ */
+export function useGetEventQuery(baseOptions: Apollo.QueryHookOptions<GetEventQuery, GetEventQueryVariables> & ({ variables: GetEventQueryVariables; skip?: boolean; } | { skip: boolean; }) ) {
+        const options = {...defaultOptions, ...baseOptions}
+        return Apollo.useQuery<GetEventQuery, GetEventQueryVariables>(GetEventDocument, options);
+      }
+export function useGetEventLazyQuery(baseOptions?: Apollo.LazyQueryHookOptions<GetEventQuery, GetEventQueryVariables>) {
+          const options = {...defaultOptions, ...baseOptions}
+          return Apollo.useLazyQuery<GetEventQuery, GetEventQueryVariables>(GetEventDocument, options);
+        }
+export function useGetEventSuspenseQuery(baseOptions?: Apollo.SuspenseQueryHookOptions<GetEventQuery, GetEventQueryVariables>) {
+          const options = {...defaultOptions, ...baseOptions}
+          return Apollo.useSuspenseQuery<GetEventQuery, GetEventQueryVariables>(GetEventDocument, options);
+        }
+export type GetEventQueryHookResult = ReturnType<typeof useGetEventQuery>;
+export type GetEventLazyQueryHookResult = ReturnType<typeof useGetEventLazyQuery>;
+export type GetEventSuspenseQueryHookResult = ReturnType<typeof useGetEventSuspenseQuery>;
+export type GetEventQueryResult = Apollo.QueryResult<GetEventQuery, GetEventQueryVariables>;
+export const CancelEventDocument = gql`
+    mutation CancelEvent($eventId: UUID!, $status: String!) {
+  cancelEvent(eventId: $eventId, status: $status)
+}
+    `;
+export type CancelEventMutationFn = Apollo.MutationFunction<CancelEventMutation, CancelEventMutationVariables>;
+
+/**
+ * __useCancelEventMutation__
+ *
+ * To run a mutation, you first call `useCancelEventMutation` within a React component and pass it any options that fit your needs.
+ * When your component renders, `useCancelEventMutation` returns a tuple that includes:
+ * - A mutate function that you can call at any time to execute the mutation
+ * - An object with fields that represent the current status of the mutation's execution
+ *
+ * @param baseOptions options that will be passed into the mutation, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options-2;
+ *
+ * @example
+ * const [cancelEventMutation, { data, loading, error }] = useCancelEventMutation({
+ *   variables: {
+ *      eventId: // value for 'eventId'
+ *      status: // value for 'status'
+ *   },
+ * });
+ */
+export function useCancelEventMutation(baseOptions?: Apollo.MutationHookOptions<CancelEventMutation, CancelEventMutationVariables>) {
+        const options = {...defaultOptions, ...baseOptions}
+        return Apollo.useMutation<CancelEventMutation, CancelEventMutationVariables>(CancelEventDocument, options);
+      }
+export type CancelEventMutationHookResult = ReturnType<typeof useCancelEventMutation>;
+export type CancelEventMutationResult = Apollo.MutationResult<CancelEventMutation>;
+export type CancelEventMutationOptions = Apollo.BaseMutationOptions<CancelEventMutation, CancelEventMutationVariables>;
+export const DeleteEventDocument = gql`
+    mutation DeleteEvent($eventId: UUID!) {
+  deleteEvent(eventId: $eventId)
+}
+    `;
+export type DeleteEventMutationFn = Apollo.MutationFunction<DeleteEventMutation, DeleteEventMutationVariables>;
+
+/**
+ * __useDeleteEventMutation__
+ *
+ * To run a mutation, you first call `useDeleteEventMutation` within a React component and pass it any options that fit your needs.
+ * When your component renders, `useDeleteEventMutation` returns a tuple that includes:
+ * - A mutate function that you can call at any time to execute the mutation
+ * - An object with fields that represent the current status of the mutation's execution
+ *
+ * @param baseOptions options that will be passed into the mutation, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options-2;
+ *
+ * @example
+ * const [deleteEventMutation, { data, loading, error }] = useDeleteEventMutation({
+ *   variables: {
+ *      eventId: // value for 'eventId'
+ *   },
+ * });
+ */
+export function useDeleteEventMutation(baseOptions?: Apollo.MutationHookOptions<DeleteEventMutation, DeleteEventMutationVariables>) {
+        const options = {...defaultOptions, ...baseOptions}
+        return Apollo.useMutation<DeleteEventMutation, DeleteEventMutationVariables>(DeleteEventDocument, options);
+      }
+export type DeleteEventMutationHookResult = ReturnType<typeof useDeleteEventMutation>;
+export type DeleteEventMutationResult = Apollo.MutationResult<DeleteEventMutation>;
+export type DeleteEventMutationOptions = Apollo.BaseMutationOptions<DeleteEventMutation, DeleteEventMutationVariables>;
+export const WatchEventViewsDocument = gql`
+    mutation WatchEventViews($eventId: UUID!) {
+  watchEventViews(eventId: $eventId)
+}
+    `;
+export type WatchEventViewsMutationFn = Apollo.MutationFunction<WatchEventViewsMutation, WatchEventViewsMutationVariables>;
+
+/**
+ * __useWatchEventViewsMutation__
+ *
+ * To run a mutation, you first call `useWatchEventViewsMutation` within a React component and pass it any options that fit your needs.
+ * When your component renders, `useWatchEventViewsMutation` returns a tuple that includes:
+ * - A mutate function that you can call at any time to execute the mutation
+ * - An object with fields that represent the current status of the mutation's execution
+ *
+ * @param baseOptions options that will be passed into the mutation, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options-2;
+ *
+ * @example
+ * const [watchEventViewsMutation, { data, loading, error }] = useWatchEventViewsMutation({
+ *   variables: {
+ *      eventId: // value for 'eventId'
+ *   },
+ * });
+ */
+export function useWatchEventViewsMutation(baseOptions?: Apollo.MutationHookOptions<WatchEventViewsMutation, WatchEventViewsMutationVariables>) {
+        const options = {...defaultOptions, ...baseOptions}
+        return Apollo.useMutation<WatchEventViewsMutation, WatchEventViewsMutationVariables>(WatchEventViewsDocument, options);
+      }
+export type WatchEventViewsMutationHookResult = ReturnType<typeof useWatchEventViewsMutation>;
+export type WatchEventViewsMutationResult = Apollo.MutationResult<WatchEventViewsMutation>;
+export type WatchEventViewsMutationOptions = Apollo.BaseMutationOptions<WatchEventViewsMutation, WatchEventViewsMutationVariables>;
+export const GetRegisteredMembersDocument = gql`
+    query GetRegisteredMembers($eventId: UUID!) {
+  getRegisteredMembers(eventId: $eventId) {
+    id
+    registrantDetail
+    status
+    createdAt
+  }
+}
+    `;
+
+/**
+ * __useGetRegisteredMembersQuery__
+ *
+ * To run a query within a React component, call `useGetRegisteredMembersQuery` and pass it any options that fit your needs.
+ * When your component renders, `useGetRegisteredMembersQuery` returns an object from Apollo Client that contains loading, error, and data properties
+ * you can use to render your UI.
+ *
+ * @param baseOptions options that will be passed into the query, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options;
+ *
+ * @example
+ * const { data, loading, error } = useGetRegisteredMembersQuery({
+ *   variables: {
+ *      eventId: // value for 'eventId'
+ *   },
+ * });
+ */
+export function useGetRegisteredMembersQuery(baseOptions: Apollo.QueryHookOptions<GetRegisteredMembersQuery, GetRegisteredMembersQueryVariables> & ({ variables: GetRegisteredMembersQueryVariables; skip?: boolean; } | { skip: boolean; }) ) {
+        const options = {...defaultOptions, ...baseOptions}
+        return Apollo.useQuery<GetRegisteredMembersQuery, GetRegisteredMembersQueryVariables>(GetRegisteredMembersDocument, options);
+      }
+export function useGetRegisteredMembersLazyQuery(baseOptions?: Apollo.LazyQueryHookOptions<GetRegisteredMembersQuery, GetRegisteredMembersQueryVariables>) {
+          const options = {...defaultOptions, ...baseOptions}
+          return Apollo.useLazyQuery<GetRegisteredMembersQuery, GetRegisteredMembersQueryVariables>(GetRegisteredMembersDocument, options);
+        }
+export function useGetRegisteredMembersSuspenseQuery(baseOptions?: Apollo.SuspenseQueryHookOptions<GetRegisteredMembersQuery, GetRegisteredMembersQueryVariables>) {
+          const options = {...defaultOptions, ...baseOptions}
+          return Apollo.useSuspenseQuery<GetRegisteredMembersQuery, GetRegisteredMembersQueryVariables>(GetRegisteredMembersDocument, options);
+        }
+export type GetRegisteredMembersQueryHookResult = ReturnType<typeof useGetRegisteredMembersQuery>;
+export type GetRegisteredMembersLazyQueryHookResult = ReturnType<typeof useGetRegisteredMembersLazyQuery>;
+export type GetRegisteredMembersSuspenseQueryHookResult = ReturnType<typeof useGetRegisteredMembersSuspenseQuery>;
+export type GetRegisteredMembersQueryResult = Apollo.QueryResult<GetRegisteredMembersQuery, GetRegisteredMembersQueryVariables>;
+export const GetMembersAttendanceDocument = gql`
+    query GetMembersAttendance($eventId: UUID!) {
+  getMembersAttendance(eventId: $eventId) {
+    id
+    registrantDetail
+    checkin
+    checkinDate
+    createdAt
+  }
+}
+    `;
+
+/**
+ * __useGetMembersAttendanceQuery__
+ *
+ * To run a query within a React component, call `useGetMembersAttendanceQuery` and pass it any options that fit your needs.
+ * When your component renders, `useGetMembersAttendanceQuery` returns an object from Apollo Client that contains loading, error, and data properties
+ * you can use to render your UI.
+ *
+ * @param baseOptions options that will be passed into the query, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options;
+ *
+ * @example
+ * const { data, loading, error } = useGetMembersAttendanceQuery({
+ *   variables: {
+ *      eventId: // value for 'eventId'
+ *   },
+ * });
+ */
+export function useGetMembersAttendanceQuery(baseOptions: Apollo.QueryHookOptions<GetMembersAttendanceQuery, GetMembersAttendanceQueryVariables> & ({ variables: GetMembersAttendanceQueryVariables; skip?: boolean; } | { skip: boolean; }) ) {
+        const options = {...defaultOptions, ...baseOptions}
+        return Apollo.useQuery<GetMembersAttendanceQuery, GetMembersAttendanceQueryVariables>(GetMembersAttendanceDocument, options);
+      }
+export function useGetMembersAttendanceLazyQuery(baseOptions?: Apollo.LazyQueryHookOptions<GetMembersAttendanceQuery, GetMembersAttendanceQueryVariables>) {
+          const options = {...defaultOptions, ...baseOptions}
+          return Apollo.useLazyQuery<GetMembersAttendanceQuery, GetMembersAttendanceQueryVariables>(GetMembersAttendanceDocument, options);
+        }
+export function useGetMembersAttendanceSuspenseQuery(baseOptions?: Apollo.SuspenseQueryHookOptions<GetMembersAttendanceQuery, GetMembersAttendanceQueryVariables>) {
+          const options = {...defaultOptions, ...baseOptions}
+          return Apollo.useSuspenseQuery<GetMembersAttendanceQuery, GetMembersAttendanceQueryVariables>(GetMembersAttendanceDocument, options);
+        }
+export type GetMembersAttendanceQueryHookResult = ReturnType<typeof useGetMembersAttendanceQuery>;
+export type GetMembersAttendanceLazyQueryHookResult = ReturnType<typeof useGetMembersAttendanceLazyQuery>;
+export type GetMembersAttendanceSuspenseQueryHookResult = ReturnType<typeof useGetMembersAttendanceSuspenseQuery>;
+export type GetMembersAttendanceQueryResult = Apollo.QueryResult<GetMembersAttendanceQuery, GetMembersAttendanceQueryVariables>;
 export const GetMembersDocument = gql`
     query GetMembers {
   members {
@@ -1827,6 +2209,7 @@ export type ResolversTypes = ResolversObject<{
   Payment: ResolverTypeWrapper<PaymentModel>;
   Query: ResolverTypeWrapper<{}>;
   SidebarResponse: ResolverTypeWrapper<SidebarResponse>;
+  Speaker: ResolverTypeWrapper<Speaker>;
   SpeakerFormInput: SpeakerFormInput;
   String: ResolverTypeWrapper<Scalars['String']['output']>;
   Tag: ResolverTypeWrapper<TagModel>;
@@ -1871,6 +2254,7 @@ export type ResolversParentTypes = ResolversObject<{
   Payment: PaymentModel;
   Query: {};
   SidebarResponse: SidebarResponse;
+  Speaker: Speaker;
   SpeakerFormInput: SpeakerFormInput;
   String: Scalars['String']['output'];
   Tag: TagModel;
@@ -1970,15 +2354,20 @@ export type DueResponseResolvers<ContextType = GraphQLContext, ParentType extend
 export type EventResolvers<ContextType = GraphQLContext, ParentType extends ResolversParentTypes['Event'] = ResolversParentTypes['Event']> = ResolversObject<{
   address?: Resolver<Maybe<ResolversTypes['String']>, ParentType, ContextType>;
   amount?: Resolver<ResolversTypes['Decimal'], ParentType, ContextType>;
-  coverPhoto?: Resolver<ResolversTypes['String'], ParentType, ContextType>;
+  certificate?: Resolver<Maybe<ResolversTypes['String']>, ParentType, ContextType>;
+  coverPhoto?: Resolver<Maybe<ResolversTypes['String']>, ParentType, ContextType>;
+  cpdp_points?: Resolver<Maybe<ResolversTypes['Int']>, ParentType, ContextType>;
   createdAt?: Resolver<Maybe<ResolversTypes['Time']>, ParentType, ContextType>;
+  deletedAt?: Resolver<Maybe<ResolversTypes['Time']>, ParentType, ContextType>;
   description?: Resolver<Maybe<ResolversTypes['String']>, ParentType, ContextType>;
   ends_at?: Resolver<ResolversTypes['Time'], ParentType, ContextType>;
-  eventForm?: Resolver<Maybe<Array<ResolversTypes['EventForm']>>, ParentType, ContextType>;
-  eventPayments?: Resolver<Maybe<Array<ResolversTypes['EventPayment']>>, ParentType, ContextType>;
-  eventRegistrations?: Resolver<Maybe<Array<ResolversTypes['EventRegistration']>>, ParentType, ContextType>;
-  eventResources?: Resolver<Maybe<Array<ResolversTypes['EventResource']>>, ParentType, ContextType>;
+  ends_time?: Resolver<ResolversTypes['String'], ParentType, ContextType>;
+  eventForm?: Resolver<Maybe<Array<Maybe<ResolversTypes['EventForm']>>>, ParentType, ContextType>;
+  eventPayments?: Resolver<Maybe<Array<Maybe<ResolversTypes['EventPayment']>>>, ParentType, ContextType>;
+  eventRegistrations?: Resolver<Maybe<Array<Maybe<ResolversTypes['EventRegistration']>>>, ParentType, ContextType>;
+  eventResources?: Resolver<Maybe<Array<Maybe<ResolversTypes['EventResource']>>>, ParentType, ContextType>;
   formTitle?: Resolver<ResolversTypes['String'], ParentType, ContextType>;
+  hasCertificate?: Resolver<Maybe<ResolversTypes['Boolean']>, ParentType, ContextType>;
   id?: Resolver<ResolversTypes['UUID'], ParentType, ContextType>;
   instructions?: Resolver<ResolversTypes['String'], ParentType, ContextType>;
   isInfinity?: Resolver<Maybe<ResolversTypes['Boolean']>, ParentType, ContextType>;
@@ -1986,13 +2375,17 @@ export type EventResolvers<ContextType = GraphQLContext, ParentType extends Reso
   message?: Resolver<ResolversTypes['String'], ParentType, ContextType>;
   name?: Resolver<ResolversTypes['String'], ParentType, ContextType>;
   paymentType?: Resolver<ResolversTypes['String'], ParentType, ContextType>;
+  sendTag?: Resolver<Maybe<ResolversTypes['Boolean']>, ParentType, ContextType>;
+  speackers?: Resolver<Maybe<Array<Maybe<ResolversTypes['Speaker']>>>, ParentType, ContextType>;
   starts_at?: Resolver<ResolversTypes['Time'], ParentType, ContextType>;
+  starts_time?: Resolver<ResolversTypes['String'], ParentType, ContextType>;
   status?: Resolver<ResolversTypes['String'], ParentType, ContextType>;
   tickets?: Resolver<Maybe<ResolversTypes['Int']>, ParentType, ContextType>;
   type?: Resolver<ResolversTypes['String'], ParentType, ContextType>;
   updatedAt?: Resolver<Maybe<ResolversTypes['Time']>, ParentType, ContextType>;
   user?: Resolver<Maybe<ResolversTypes['User']>, ParentType, ContextType>;
   userId?: Resolver<Maybe<ResolversTypes['UUID']>, ParentType, ContextType>;
+  views?: Resolver<Maybe<ResolversTypes['Int']>, ParentType, ContextType>;
   __isTypeOf?: IsTypeOfResolverFn<ParentType, ContextType>;
 }>;
 
@@ -2068,6 +2461,7 @@ export interface JsonScalarConfig extends GraphQLScalarTypeConfig<ResolversTypes
 
 export type MemberResolvers<ContextType = GraphQLContext, ParentType extends ResolversParentTypes['Member'] = ResolversParentTypes['Member']> = ResolversObject<{
   address?: Resolver<ResolversTypes['String'], ParentType, ContextType>;
+  cpdpPoints?: Resolver<Maybe<ResolversTypes['Int']>, ParentType, ContextType>;
   createdAt?: Resolver<Maybe<ResolversTypes['Time']>, ParentType, ContextType>;
   email?: Resolver<ResolversTypes['String'], ParentType, ContextType>;
   firstName?: Resolver<ResolversTypes['String'], ParentType, ContextType>;
@@ -2108,15 +2502,18 @@ export type MemberResponseResolvers<ContextType = GraphQLContext, ParentType ext
 }>;
 
 export type MutationResolvers<ContextType = GraphQLContext, ParentType extends ResolversParentTypes['Mutation'] = ResolversParentTypes['Mutation']> = ResolversObject<{
+  cancelEvent?: Resolver<Maybe<ResolversTypes['Boolean']>, ParentType, ContextType, RequireFields<MutationCancelEventArgs, 'eventId' | 'status'>>;
   createBlog?: Resolver<Maybe<ResolversTypes['BlogResponse']>, ParentType, ContextType, RequireFields<MutationCreateBlogArgs, 'input'>>;
   createDue?: Resolver<Maybe<ResolversTypes['DueResponse']>, ParentType, ContextType, RequireFields<MutationCreateDueArgs, 'input'>>;
   createEvent?: Resolver<Maybe<ResolversTypes['EventResponse']>, ParentType, ContextType, RequireFields<MutationCreateEventArgs, 'input'>>;
   createUser?: Resolver<Maybe<ResolversTypes['CreateUserResponse']>, ParentType, ContextType, RequireFields<MutationCreateUserArgs, 'input'>>;
   deactivateMember?: Resolver<Maybe<ResolversTypes['Member']>, ParentType, ContextType, RequireFields<MutationDeactivateMemberArgs, 'memberId' | 'status'>>;
+  deleteEvent?: Resolver<Maybe<ResolversTypes['Boolean']>, ParentType, ContextType, RequireFields<MutationDeleteEventArgs, 'eventId'>>;
   login?: Resolver<Maybe<ResolversTypes['AuthPayload']>, ParentType, ContextType, RequireFields<MutationLoginArgs, 'input'>>;
   postPayment?: Resolver<ResolversTypes['Payment'], ParentType, ContextType, RequireFields<MutationPostPaymentArgs, 'input'>>;
   publishedBlog?: Resolver<Maybe<ResolversTypes['BlogResponse']>, ParentType, ContextType, RequireFields<MutationPublishedBlogArgs, 'blogId' | 'status'>>;
   updateDue?: Resolver<Maybe<ResolversTypes['DueResponse']>, ParentType, ContextType, RequireFields<MutationUpdateDueArgs, 'dueId' | 'input'>>;
+  watchEventViews?: Resolver<Maybe<ResolversTypes['Boolean']>, ParentType, ContextType, RequireFields<MutationWatchEventViewsArgs, 'eventId'>>;
 }>;
 
 export type PaymentResolvers<ContextType = GraphQLContext, ParentType extends ResolversParentTypes['Payment'] = ResolversParentTypes['Payment']> = ResolversObject<{
@@ -2135,16 +2532,18 @@ export type PaymentResolvers<ContextType = GraphQLContext, ParentType extends Re
 
 export type QueryResolvers<ContextType = GraphQLContext, ParentType extends ResolversParentTypes['Query'] = ResolversParentTypes['Query']> = ResolversObject<{
   dues?: Resolver<Maybe<Array<Maybe<ResolversTypes['Due']>>>, ParentType, ContextType>;
-  eventFormFields?: Resolver<Maybe<Array<ResolversTypes['FormDesign']>>, ParentType, ContextType>;
+  eventFormFields?: Resolver<Array<ResolversTypes['FormDesign']>, ParentType, ContextType>;
   getAdminDashboardStat?: Resolver<Maybe<ResolversTypes['AdminDashboardStatResponse']>, ParentType, ContextType>;
   getBlog?: Resolver<Maybe<ResolversTypes['Blog']>, ParentType, ContextType, RequireFields<QueryGetBlogArgs, 'blogId'>>;
   getBlogs?: Resolver<Maybe<Array<ResolversTypes['Blog']>>, ParentType, ContextType, Partial<QueryGetBlogsArgs>>;
   getDuePayment?: Resolver<Maybe<ResolversTypes['MemberDueResponse']>, ParentType, ContextType, RequireFields<QueryGetDuePaymentArgs, 'memberId'>>;
-  getEvent?: Resolver<Maybe<ResolversTypes['Event']>, ParentType, ContextType, Partial<QueryGetEventArgs>>;
+  getEvent?: Resolver<Maybe<ResolversTypes['Event']>, ParentType, ContextType, RequireFields<QueryGetEventArgs, 'eventId'>>;
   getEvents?: Resolver<Maybe<Array<ResolversTypes['Event']>>, ParentType, ContextType>;
+  getMembersAttendance?: Resolver<Maybe<Array<ResolversTypes['EventRegistration']>>, ParentType, ContextType, RequireFields<QueryGetMembersAttendanceArgs, 'eventId'>>;
   getPayment?: Resolver<Maybe<ResolversTypes['Payment']>, ParentType, ContextType, RequireFields<QueryGetPaymentArgs, 'paymentId'>>;
   getPayments?: Resolver<Maybe<Array<ResolversTypes['Payment']>>, ParentType, ContextType>;
   getRecentRegistration?: Resolver<Maybe<Array<ResolversTypes['Member']>>, ParentType, ContextType>;
+  getRegisteredMembers?: Resolver<Maybe<Array<ResolversTypes['EventRegistration']>>, ParentType, ContextType, RequireFields<QueryGetRegisteredMembersArgs, 'eventId'>>;
   getSidebarStat?: Resolver<Maybe<ResolversTypes['SidebarResponse']>, ParentType, ContextType>;
   member?: Resolver<Maybe<ResolversTypes['Member']>, ParentType, ContextType, RequireFields<QueryMemberArgs, 'id'>>;
   memberPayments?: Resolver<Maybe<Array<ResolversTypes['Payment']>>, ParentType, ContextType, RequireFields<QueryMemberPaymentsArgs, 'memberId'>>;
@@ -2160,6 +2559,15 @@ export type SidebarResponseResolvers<ContextType = GraphQLContext, ParentType ex
   events?: Resolver<Maybe<ResolversTypes['Int']>, ParentType, ContextType>;
   members?: Resolver<Maybe<ResolversTypes['Int']>, ParentType, ContextType>;
   resources?: Resolver<Maybe<ResolversTypes['Int']>, ParentType, ContextType>;
+  __isTypeOf?: IsTypeOfResolverFn<ParentType, ContextType>;
+}>;
+
+export type SpeakerResolvers<ContextType = GraphQLContext, ParentType extends ResolversParentTypes['Speaker'] = ResolversParentTypes['Speaker']> = ResolversObject<{
+  about?: Resolver<ResolversTypes['String'], ParentType, ContextType>;
+  avatar?: Resolver<ResolversTypes['String'], ParentType, ContextType>;
+  id?: Resolver<ResolversTypes['UUID'], ParentType, ContextType>;
+  name?: Resolver<ResolversTypes['String'], ParentType, ContextType>;
+  title?: Resolver<ResolversTypes['String'], ParentType, ContextType>;
   __isTypeOf?: IsTypeOfResolverFn<ParentType, ContextType>;
 }>;
 
@@ -2226,6 +2634,7 @@ export type Resolvers<ContextType = GraphQLContext> = ResolversObject<{
   Payment?: PaymentResolvers<ContextType>;
   Query?: QueryResolvers<ContextType>;
   SidebarResponse?: SidebarResponseResolvers<ContextType>;
+  Speaker?: SpeakerResolvers<ContextType>;
   Tag?: TagResolvers<ContextType>;
   Time?: GraphQLScalarType;
   UUID?: GraphQLScalarType;

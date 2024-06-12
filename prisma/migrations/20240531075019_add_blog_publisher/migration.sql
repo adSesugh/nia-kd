@@ -1,5 +1,0 @@
--- AlterTable
-ALTER TABLE `blogs` ADD COLUMN `userId` VARCHAR(191) NOT NULL DEFAULT '34fa0d5e-8549-4385-8cca-0d83ac94bbcd';
-
--- AddForeignKey
-ALTER TABLE `blogs` ADD CONSTRAINT `blogs_userId_fkey` FOREIGN KEY (`userId`) REFERENCES `users`(`id`) ON DELETE RESTRICT ON UPDATE CASCADE;

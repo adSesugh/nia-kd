@@ -1,4 +1,5 @@
-// components/TinyMCEField.tsx
+'use client'
+
 import React from 'react';
 import { useField, useFormikContext } from 'formik';
 import { Editor } from '@tinymce/tinymce-react';
