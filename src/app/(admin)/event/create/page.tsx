@@ -110,9 +110,7 @@ const CreateEvent = () => {
                 setSelectedFields(res.data.eventFormFields)
             }
         })()
-    }, [])
-
-    console.log(formData)
+    }, [getFormDesign])
 
     const handleResourceRemove = (columnKey: number, resources: any) => {
         setFiles((prevFiles) => prevFiles.filter((file, index) =>  index !== columnKey));
@@ -197,7 +195,7 @@ const CreateEvent = () => {
             default:
                 return cellValue;
         }
-    }, []);  
+    }, [removeSpeaker]);  
 
     const renderFormFieldCell = React.useCallback((field: FormDesign, columnKey: React.Key) => {
         const cellValue = field[columnKey as keyof FormDesign];
@@ -220,7 +218,7 @@ const CreateEvent = () => {
             default:
                 return cellValue;
         }
-    }, []); 
+    }, [toggleInclude, toggleRequired]); 
 
     return (
         <div className='pb-5 bg-[#F5F5F5] h-full overflow-y-auto'>

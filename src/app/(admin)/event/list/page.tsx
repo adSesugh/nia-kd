@@ -35,7 +35,7 @@ const Events = () => {
             setEvents(res?.data?.getEvents)
         }
     })()
-  }, [])
+  }, [getEventList])
 
   const renderCell = React.useCallback((event: Event, columnKey: React.Key, index: number) => {
       const cellValue = event[columnKey as keyof Event];

@@ -4,11 +4,9 @@ import { EventRegistration, useGetRegisteredMembersLazyQuery } from '@/graphql/_
 import { Button, Chip, Dropdown, DropdownItem, DropdownMenu, DropdownTrigger, Spinner, Table, TableBody, TableCell, TableColumn, TableHeader, TableRow } from '@nextui-org/react'
 import { DotsThreeVertical } from '@phosphor-icons/react'
 import moment from 'moment'
-import { useParams } from 'next/navigation'
 import React, { useEffect, useState } from 'react'
 
-const EventRegistrations = () => {
-    const {id} = useParams()
+const EventRegistrations = ({ eventId }: {eventId: string}) => {
     const [index, setIndex] = useState<number>(0)
     const [registeredMembers, setRegisteredMembers] = useState<any>()
     const [getRegisteredMembers, {loading}] = useGetRegisteredMembersLazyQuery({fetchPolicy: 'no-cache'})
@@ -19,13 +17,13 @@ const EventRegistrations = () => {
         ;(async() => {
             const res = (await getRegisteredMembers({
                 variables: {
-                    eventId: id
+                    eventId
                 }
             })).data
 
             setRegisteredMembers(res?.getRegisteredMembers)
         })()
-    }, [])
+    }, [getRegisteredMembers, eventId])
 
     const resendMail = async (registrationId: string) => console.log(registrationId)
 
@@ -85,7 +83,7 @@ const EventRegistrations = () => {
                     <TableColumn key="full_name">Full name</TableColumn>
                     <TableColumn key="email">Email</TableColumn>
                     <TableColumn key="registered">Registered</TableColumn>
-                    <TableColumn key="action" children={undefined} />
+                    <TableColumn key="action"><span></span></TableColumn>
                 </TableHeader>
                 <TableBody
                     items={registeredMembers ?? []}

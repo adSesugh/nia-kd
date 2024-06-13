@@ -77,7 +77,7 @@ const AdminDashboard = () => {
       setAdminStats(res.data?.getAdminDashboardStat)
 
     })()
-  }, [])
+  }, [getAdminStats])
 
 
   return (

@@ -96,7 +96,7 @@ const MemberList = () => {
             default:
                 return cellValue;
         }
-    }, []);
+    }, [switchMemberStatus]);
 
     return (
         <div className='sm:px-12 xs:px-4'>

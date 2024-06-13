@@ -4,8 +4,8 @@ import { useGetEventLazyQuery } from '@/graphql/__generated__/graphql'
 import { useParams, useRouter } from 'next/navigation'
 import React, { useEffect, useState } from 'react'
 import { ArrowLeft, Eye, EyeSlash } from '@phosphor-icons/react'
-import EventAttendance from './Attendance'
-import EventRegistrations from './EventRegistrations'
+import EventAttendance from '@/components/event/Attendance'
+import EventRegistrations from '@/components/event/EventRegistrations'
 
 const EventDetail = () => {
     const { id } = useParams()
@@ -13,7 +13,7 @@ const EventDetail = () => {
     const [event, setEvent] = useState<any>()
     const [hide, setShow] = useState<boolean>(true)
     const [selectedTab, setSelectedTab] = useState('registrations')
-    const [getEvent, ] = useGetEventLazyQuery({fetchPolicy: 'no-cache'})
+    const [getEvent ] = useGetEventLazyQuery({fetchPolicy: 'no-cache'})
 
     useEffect(()=> {
         document.title = `Event - ${id} | NIA-Kd`
@@ -25,7 +25,7 @@ const EventDetail = () => {
             })).data
             setEvent(res?.getEvent)
         })()
-    }, [])
+    }, [getEvent, id])
 
     return (
         <div className='h-full overflow-y-auto'>
@@ -83,8 +83,8 @@ const EventDetail = () => {
                     <button className={selectedTab === 'attendance' ? 'text-[#161314] font-medium border-b-[3px] pb-1 border-[#161314] px-1 text-sm' : 'text-sm text-[#909090]'} onClick={() => setSelectedTab('attendance')}>Attendance</button>
                     </div>
                 </div>
-                {selectedTab === 'registrations' && <EventRegistrations />}
-                {selectedTab === 'attendance' && <EventAttendance />}
+                {selectedTab === 'registrations' && <EventRegistrations eventId={id as string} />}
+                {selectedTab === 'attendance' && <EventAttendance eventId={id as string} />}
             </div>
         </div>
     )

@@ -1,14 +1,9 @@
 import { EventRegistration, useGetMembersAttendanceLazyQuery } from '@/graphql/__generated__/graphql'
-import { Button, Chip, Dropdown, DropdownItem, DropdownMenu, DropdownTrigger, Spinner, Table, TableBody, TableCell, TableColumn, TableHeader, TableRow } from '@nextui-org/react'
-import { DotsThreeVertical } from '@phosphor-icons/react'
-import { useParams } from 'next/navigation'
+import { Chip, Spinner, Table, TableBody, TableCell, TableColumn, TableHeader, TableRow } from '@nextui-org/react'
 import React, { useEffect, useState } from 'react'
-import Image from 'next/image'
-import Link from 'next/link'
 import moment from 'moment'
 
-const EventAttendance = () => {
-  const {id} = useParams()
+const EventAttendance = ({ eventId }: {eventId: string}) => {
     const [attendance, setAttendance] = useState<any>([])
     const [index, setIndex] = useState<number>(0)
     const [getAttendance, {loading}] = useGetMembersAttendanceLazyQuery({fetchPolicy: 'no-cache'})
@@ -16,16 +11,16 @@ const EventAttendance = () => {
     const loadingState = loading || attendance === 0 ? "loading" : "idle";
 
     useEffect(() => {
-        ;(async() => {
-            const res = (await getAttendance({
-                variables: {
-                    eventId: id
-                }
-            })).data
+      ;(async() => {
+          const res = (await getAttendance({
+              variables: {
+                  eventId
+              }
+          })).data
 
-            setAttendance(res?.getMembersAttendance)
-        })()
-    }, [])
+          setAttendance(res?.getMembersAttendance)
+      })()
+    }, [getAttendance, eventId])
 
   const renderCell = React.useCallback((registeredMember: EventRegistration, columnKey: React.Key, index: number) => {
       const cellValue = registeredMember[columnKey as keyof EventRegistration];
@@ -74,7 +69,7 @@ const EventAttendance = () => {
             <TableColumn key="full_name">Full name</TableColumn>
             <TableColumn key="email">Email</TableColumn>
             <TableColumn key="registered">Registered</TableColumn>
-            <TableColumn key="checkin" children={undefined} />
+            <TableColumn key="checkin"><span></span></TableColumn>
         </TableHeader>
         <TableBody
             items={attendance ?? []}
