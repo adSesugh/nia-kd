@@ -12,21 +12,6 @@ import { Chart as ChartJS, ArcElement, Tooltip as ToolkitChart, Legend } from 'c
 import { Pie } from 'react-chartjs-2';
 
 ChartJS.register(ArcElement, ToolkitChart, Legend);
-const daysGone = 365 - 197
-
-export const data = {
-  datasets: [
-    {
-      label: 'Due date count',
-      data: [197, daysGone],
-      backgroundColor: [
-        '#C70F0F',
-        '#F0EAEA',
-      ],
-      borderWidth: 0.5,
-    },
-  ],
-};
 
 const MemberDashboard = () => {
   
@@ -35,11 +20,22 @@ const MemberDashboard = () => {
   }, [])
 
   const user = useAppSelector((state: RootState) => state.auth.userData.user)
-  const options = {
-      responsive: true,
-      maintainAspectRatio: false,
-      
+  const daysGone = 365 - 197
+
+  const data = {
+    datasets: [
+      {
+        label: 'Due date count',
+        data: [197, daysGone],
+        backgroundColor: [
+          '#C70F0F',
+          '#F0EAEA',
+        ],
+        borderWidth: 0.5,
+      },
+    ],
   };
+  
   //const getPercent = getDaysPercentage( getTotalDaysOfYear(new Date()), getTotalDaysInYear(new Date().getFullYear()))
 
   return (
