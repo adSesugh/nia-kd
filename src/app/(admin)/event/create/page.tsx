@@ -12,6 +12,7 @@ import TextField from '@/components/textfield'
 import TimeField from '@/components/timefield'
 import TinyMCEField from '@/components/tinymce-field'
 import { FormDesign, useCreateEventMutation, useEventFormFieldsLazyQuery, useEventFormFieldsQuery } from '@/graphql/__generated__/graphql'
+import { combineDateTime } from '@/lib/common'
 import { Avatar, AvatarGroup, Spinner, Switch, Table, TableBody, TableCell, TableColumn, TableHeader, TableRow } from '@nextui-org/react'
 import { Globe, MapPinSimpleArea, Plus, X } from '@phosphor-icons/react'
 import { Field, Form, Formik } from 'formik'
@@ -44,7 +45,8 @@ interface EventType {
     resources: any,
     certificate: string,
     hasCertificate: boolean,
-    speakers: any
+    speakers: any,
+    sponsors: any
     sendTag: boolean,
     starts_at_time: string,
     ends_at_time: string
@@ -65,12 +67,10 @@ const CreateEvent = () => {
         avatar: ''
     })
 
-    const {data } = useEventFormFieldsQuery({fetchPolicy: 'no-cache'})
     const [getFormDesign] = useEventFormFieldsLazyQuery({fetchPolicy: 'no-cache'})
 
-    const formData = data?.eventFormFields
-    const [formFields, setFormFields] = useState<any>(formData)
-    const [selectedFields, setSelectedFields] = useState<FormDesign[]|any>([])
+    const [formFields, setFormFields] = useState<any>()
+    const [selectedFields, setSelectedFields] = useState<any>([])
     const [registerEvent, {loading, error}] = useCreateEventMutation()
 
 
@@ -96,25 +96,30 @@ const CreateEvent = () => {
         certificate: '',
         hasCertificate: false,
         speakers: speakers,
+        sponsors: [],
         sendTag: false,
         starts_at_time: '',
         ends_at_time: ''
     }
 
     useEffect(() => {
-        document.title = `Create Event | NIA-Kd`
-        ;(async() => {
-            const res = await getFormDesign()
-            if(res.data?.eventFormFields) {
-                setFormFields(res.data.eventFormFields)
-                setSelectedFields(res.data.eventFormFields)
-            }
-        })()
-    }, [getFormDesign])
+        document.title = `Create Event | NIA-Kd`;
+        getFormFields()
+    }, [])
 
-    const handleResourceRemove = (columnKey: number, resources: any) => {
+    const getFormFields = async () => {
+        const res = await getFormDesign()
+        if(res.data?.eventFormFields) {
+            setFormFields(res.data.eventFormFields)
+        }
+    }
+
+    console.log(selectedFields)
+
+    const handleResourceRemove = (columnKey: number, resources: any, setFieldValue: any) => {
         setFiles((prevFiles) => prevFiles.filter((file, index) =>  index !== columnKey));
-        resources.filter((resource: any, index: number) => index !== columnKey)
+        const newResources = resources.filter((resource: any, index: number) => index !== columnKey)
+        setFieldValue(newResources)
     };
 
     const handleCertificateRemove = (columnKey: number, certificate: any) => {
@@ -122,19 +127,12 @@ const CreateEvent = () => {
         certificate.filter((cert: any, index: number) => index !== columnKey)
     };
 
-    const toggleInclude = (e: boolean, id: string) => {
-        if (e) {
-            const selectedItems = formData?.find((item: FormDesign) => item.id === id)
-            setSelectedFields((prev: any) => [...prev, selectedItems])
-        }
-        else {
-            const selectedItems = formData?.filter((item: FormDesign) => item.id !== id)
-            setSelectedFields(selectedItems)
-        }
-    }
+    const handleSponsorRemove = (columnKey: number, sponsors: any, setFieldValue: any) => {
+        const newSponsor = sponsors.filter((sponsor: any, index: number) => index !== columnKey)
+        setFieldValue('sponsors', newSponsor)
+    };
 
     const toggleRequired = (e: boolean, id: string) => {
-        console.log(e, id)
         if (e) {
             const selectedItems = { ...formFields?.find((item: FormDesign) => item.id === id), required: true }
             setSelectedFields([...selectedFields, selectedItems])
@@ -209,16 +207,32 @@ const CreateEvent = () => {
                 )
             case 'include': 
                 return (
-                    <Switch size='sm' defaultSelected color={field.required ? 'success' : 'default'} onValueChange={(e) => toggleInclude(e, field.id)} />
+                    <Switch size='sm' color={field.required ? 'success' : 'default'} onValueChange={(e: boolean) => {
+                        if (e) {
+                            const selectedItems = formFields?.find((item: { id: any }) => item.id === field.id)
+                            setSelectedFields((prev: any) => [...prev, selectedItems])
+                        }
+                        else {
+                            const curr = selectedFields[columnKey]
+
+                            const filtered = selectedFields.filter((item: { id: any }) => {
+                                return item.id = curr.id
+                            })
+
+                            console.log(curr)
+                            setSelectedFields(filtered)
+                            console.log(selectedFields)
+                        }
+                    }} />
                 )
             case 'required':
                 return (
-                    <Switch size='sm' defaultSelected={field.required as boolean} color={field.required ? 'success' : 'default'} onValueChange={(e) => toggleRequired(e, field.id)} />
+                    <Switch size='sm' defaultSelected={field.required as boolean} color={field.required ? 'success' : 'default'} onValueChange={(e: boolean) => toggleRequired(e, field.id as string)} />
                 )
             default:
                 return cellValue;
         }
-    }, [toggleInclude, toggleRequired]); 
+    }, []); 
 
     return (
         <div className='pb-5 bg-[#F5F5F5] h-full overflow-y-auto'>
@@ -251,7 +265,6 @@ const CreateEvent = () => {
                 <Formik
                     initialValues={EventProps}
                     onSubmit={async(values) => {
-
                         try {
                             const res = await registerEvent({
                                 variables: {
@@ -262,9 +275,9 @@ const CreateEvent = () => {
                                         type: values.meetingType,
                                         link: values.link,
                                         address: values.address,
-                                        starts_at: values.starts_at,
+                                        starts_at: combineDateTime(values.starts_at, values.starts_at_time),
                                         starts_time: values.starts_at_time,
-                                        ends_at: values.ends_at,
+                                        ends_at: combineDateTime(values.ends_at, values.ends_at_time),
                                         ends_time: values.ends_at_time,
                                         paymentType: values.paymentType,
                                         amount: values.amount,
@@ -274,11 +287,12 @@ const CreateEvent = () => {
                                         formTitle: values.formTitle,
                                         instructions: values.instructions,
                                         message: values.message,
-                                        form: [],
+                                        form: selectedFields,
                                         resources: values.resources,
                                         certificate: values.certificate,
                                         hasCertificate: values.hasCertificate,
                                         speakers: speakers,
+                                        sponsors: values.sponsors,
                                         sendTag: values.sendTag
                                     }
                                 }
@@ -319,6 +333,7 @@ const CreateEvent = () => {
                                                 label='Event name'
                                                 placeholder='Give your blog post a suitable title' 
                                             />
+                                            {/* <Field name='description' label="About event" as={CKEditorField} /> */}
                                             <Field name="description" label="About event" as={TinyMCEField} />
                                             <TextField 
                                                 name='cpdpPoint' 
@@ -353,7 +368,7 @@ const CreateEvent = () => {
                                                     <span className={`text-sm ${values.meetingType === 'Online' ? 'text-[#161314]' : 'text-[#636363]'}`}>Online</span>
                                                 </button>
                                             </div>
-                                            {values.meetingType === 'physical' ? (
+                                            {values.meetingType === 'Physical' ? (
                                                 <GooglePlacesInput 
                                                     name='address' 
                                                     label='Event address'
@@ -592,13 +607,13 @@ const CreateEvent = () => {
                                                     <TableColumn key={'required'}>Required</TableColumn>
                                                 </TableHeader>
                                                 <TableBody
-                                                    items={formData ?? []}
+                                                    items={formFields ?? []}
                                                     loadingContent={<Spinner />}
                                                     loadingState={'idle'}
                                                     emptyContent={"No rows to display."}
                                                 >
                                                     {(field: FormDesign) => (
-                                                        <TableRow key={field.label}>
+                                                        <TableRow key={field.id}>
                                                             {(columnKey) => <TableCell>{renderFormFieldCell(field, columnKey)}</TableCell>}
                                                         </TableRow>
                                                     )}
@@ -626,21 +641,23 @@ const CreateEvent = () => {
                                                 accept="application/pdf"
                                                 onChange={async (event: React.ChangeEvent<HTMLInputElement>) => {
                                                     if (event.target.files) {
-                                                    const newFiles = Array.from(event.target.files).filter((file) =>
-                                                        file.type === 'application/pdf'
-                                                    ).map((file) =>
-                                                        Object.assign(file, {
-                                                        preview: URL.createObjectURL(file),
-                                                        })
-                                                    );
-                                                        const blobUrl = newFiles[0].preview
-                                                        const blob = await fetch(blobUrl).then(r => r.blob());
-                                                        console.log(blob)
+                                                        const newFiles = Array.from(event.target.files).filter((file) =>
+                                                            file.type === 'application/pdf'
+                                                        ).map((file) =>
+                                                            Object.assign(file, {
+                                                            preview: URL.createObjectURL(file),
+                                                            })
+                                                        );
+                                                        // const blobUrl = newFiles[0].preview
+                                                        // const blob = await fetch(blobUrl).then(r => r.blob());
+                                                        // console.log(blob)
                                                         const reader = new FileReader();
-                                                        reader.onloadend = () => {
-                                                            setFieldValue('resources', [...values.resources, reader.result as string]);
-                                                        };
-                                                        reader.readAsDataURL(event.target.files[0]);
+                                                        newFiles.forEach((resr: File, index: number) => {
+                                                            reader.onloadend = () => {
+                                                                setFieldValue('resources', [...values.resources, {resourceUrl: reader.result as string, name: resr.name}]);
+                                                            }
+                                                            reader.readAsDataURL(resr)
+                                                        })
                                                         setFiles((prevFiles) => [...prevFiles, ...newFiles]);
                                                     }
                                                 }}
@@ -660,12 +677,61 @@ const CreateEvent = () => {
                                                     </div>
                                                     <button
                                                         className="text-red-500 ml-4"
-                                                        onClick={() => handleResourceRemove(index, values.resources)}
+                                                        onClick={() => handleResourceRemove(index, values.resources, setFieldValue)}
                                                     >
                                                         <X size={12} />
                                                     </button>
                                                 </div>
                                             ))}
+                                        </div>
+                                        <div className='pt-6'>
+                                            <div>
+                                                <h1 className='pb-3 font-medium'>Partners</h1>
+                                            </div>
+                                            <div className="border-2 border-dashed p-6 text-center mb-4 cursor-pointer rounded-lg">
+                                                <input
+                                                    type="file"
+                                                    id="sponsor-upload"
+                                                    className="hidden"
+                                                    accept="image/png"
+                                                    multiple
+                                                    onChange={async (event: React.ChangeEvent<HTMLInputElement>) => {
+                                                        if (event.target.files) {
+                                                            const newFiles = Array.from(event.target.files).filter((file) =>
+                                                                file.type === 'image/png'
+                                                            ).map((file) => Object.assign(file, {
+                                                                    preview: URL.createObjectURL(file)
+                                                                })
+                                                            );
+                                                        
+                                                            newFiles.map((spr, index: number) => {
+                                                                const reader = new FileReader();
+                                                                reader.onloadend = () => {
+                                                                    setFieldValue('sponsors', [...values.sponsors, reader.result as string])
+                                                                };
+                                                                reader.readAsDataURL(spr);
+                                                            })
+                                                        }
+                                                    }}
+                                                />
+                                                <label htmlFor="sponsor-upload" className="flex flex-col items-center">
+                                                    <p>Drag and drop files here or <u>browse</u></p>
+                                                </label>
+                                            </div>
+                                            <div className="grid sm:grid-cols-4 gap-3 mt-4">
+                                                {values.sponsors.map((file: any, index: number) => (
+                                                    // eslint-disable-next-line react/jsx-no-comment-textnodes
+                                                    <div className="items-center mb-2" key={index}>
+                                                        <img src={file} alt="PDF Icon" className="w-16 h-16 mr-2" />
+                                                        <button
+                                                            className="flex space-x-2 text-red-500 items-center"
+                                                            onClick={() => handleSponsorRemove(index, values.sponsors, setFieldValue)}
+                                                        >
+                                                            <X size={12} /> Remove
+                                                        </button>
+                                                    </div>
+                                                ))}
+                                            </div>
                                         </div>
                                         <div className='pt-6'>
                                             <div>
@@ -676,7 +742,7 @@ const CreateEvent = () => {
                                                     type="file"
                                                     id="certificate-upload"
                                                     className="hidden"
-                                                    accept="image/png"
+                                                    accept="image/png, image/jpeg, image/jpg"
                                                     onChange={async (event: React.ChangeEvent<HTMLInputElement>) => {
                                                         if (event.target.files) {
                                                             const newFiles = Array.from(event.target.files).filter((file) =>
@@ -735,7 +801,7 @@ const CreateEvent = () => {
                                 </div>
                             )}
                             {steps[currentIndex] === 'email' && (
-                                <>
+                                <div className='w-full'>
                                    <div className='flex justify-between mb-5'>
                                         <h1 className='text-lg font-semibold'>Registration message</h1>
                                         <Link href={''} className='px-5 py-2 border border-[#161314] rounded-xl items-center'>Preview</Link>
@@ -749,10 +815,10 @@ const CreateEvent = () => {
                                             subtitle='Message (Will be emailed to guest after registration)'
                                         />
                                     </div>
-                                    <div>
+                                    <div className='w-full'>
                                         <CheckBox name='sendTag' label='Include link to ticket in the email.' />
                                     </div>
-                                </>
+                                </div>
                             )}
                             <div className='flex pt-5 gap-4 float-end mb-8'>
                                 {(currentIndex === 0 && nextIndex === 0) ? (
@@ -761,7 +827,7 @@ const CreateEvent = () => {
                                     </Link>
  
                                 ): (
-                                    <button className='px-8 py-2 border border-[#161314] rounded-xl' onClick={() => {
+                                    <button type='button' className='px-8 py-2 border border-[#161314] rounded-xl' onClick={() => {
                                         if (currentIndex !== 0) {
                                             setCurrentIndex(prev => prev - 1)
                                         }
@@ -775,7 +841,7 @@ const CreateEvent = () => {
                                         <span className='text-white'>{loading? 'Please wait...' : 'Publish event'}</span>
                                     </button>
                                 ): (
-                                    <button className='px-8 py-2 border bg-[#161314] rounded-xl' onClick={() => {
+                                    <button type='button' className='px-8 py-2 border bg-[#161314] rounded-xl' onClick={() => {
                                         if(currentIndex === 0 && nextIndex === 0) {
                                             setCurrentIndex(0)
                                             return
@@ -798,3 +864,7 @@ const CreateEvent = () => {
 }
 
 export default CreateEvent
+
+function setFieldValue(arg0: string, newSponsor: any) {
+    throw new Error('Function not implemented.')
+}

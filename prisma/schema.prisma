@@ -164,6 +164,7 @@ model Event {
   eventRegistrations EventRegistration[]
   eventResources     EventResource[]
   speakers           Speaker[]
+  sponsors           Sponsor[]
   sendTag            Boolean             @default(false)
 
   createdAt          DateTime     @default(now())
@@ -216,6 +217,7 @@ model EventPayment {
 model EventResource {
   id          String @id @default(uuid())
   resourceUrl String
+  name        String @default("Outline")
   eventId     String?
   event       Event?  @relation(fields: [eventId], references: [id])
 
@@ -249,4 +251,11 @@ model Speaker {
   title   String
   about   String
   avatar  String
+}
+
+model Sponsor {
+  id      String @id @default(uuid())
+  eventId String?
+  event   Event?  @relation(fields: [eventId], references: [id])
+  logo    String
 }

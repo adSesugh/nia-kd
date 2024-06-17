@@ -9,8 +9,8 @@ type EventCardProps = {
 
 const EventCard: React.FC<EventCardProps> = ({ bordered, href='/' }) => {
     return (
-        <Link href={href} as={'div'} className='flex sm:flex-row xs:flex-col gap-5 cursor-pointer'>
-            <div className='flex gap-6 sm:w-1/3 xs:w-full'>
+        <Link href={href} as={'div'} className='flex sm:flex-row xs:flex-col gap-y-5 gap-x-2 cursor-pointer'>
+            <div className='flex gap-6 sm:w-2/6 xs:w-full'>
                 <div>
                     <h1 className='text-[#E08D14]'>{'aug'.toUpperCase()}</h1>
                     <span className='text-2xl font-semibold'>22</span>
@@ -30,7 +30,7 @@ const EventCard: React.FC<EventCardProps> = ({ bordered, href='/' }) => {
                     />
                 </div>
             </div>
-            <div className={`sm:w-2/3 xs:w-full space-y-2 ${bordered} xs:pb-1 sm:pb-0`}>
+            <div className={`sm:w-4/6 xs:w-full space-y-2 ${bordered} -ml-16 xs:pb-1 sm:pb-0`}>
                 <h1 className='flex flex-wrap text-md font-medium truncate'>Digital Architectural Transformation Workshop</h1>
                 <div className='text-sm divide-x-[2px] divide-gray-300 space-x-4'>
                     <span className='font-semibold'>Jun 23, 2023</span>

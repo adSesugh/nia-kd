@@ -15,7 +15,7 @@ import { Dropdown, DropdownItem, DropdownMenu, DropdownTrigger, User } from '@ne
 import { useAppDispatch, useAppSelector } from '@/features/hooks';
 import { RootState } from '@/features/store';
 import { logOut } from '@/features/slices/authSlice';
-import { Books } from '@phosphor-icons/react';
+import { Books, Receipt } from '@phosphor-icons/react';
 import { useGetSidebarStatQuery } from '@/graphql/__generated__/graphql';
 
 // export const metadata: Metadata = {
@@ -30,7 +30,6 @@ const DashboardLayout: React.FC<LayoutProps> = ({ children }) => {
   const dispatch = useAppDispatch()
 
   const {data} = useGetSidebarStatQuery({fetchPolicy: 'no-cache'})
-  console.log(data)
 
   const pathname = usePathname()
 
@@ -137,6 +136,15 @@ const DashboardLayout: React.FC<LayoutProps> = ({ children }) => {
                         Dues
                     </MenuItem>
                   </div>
+                  <div className={`${pathname.includes('transactions') && 'border-l-[5px] border-[#AB8144]'}`}>
+                    <MenuItem 
+                        icon={<Receipt size="24" color={`${pathname.includes('blog') ? '#ffffff' : '#BFBFBF'}`} />} 
+                        component={<Link href="/transactions" />}
+                        active={pathname.includes('transactions') && true}
+                    > 
+                        Transactions
+                    </MenuItem>
+                  </div>
                   <div className={`${pathname.includes('blog') && 'border-l-[5px] border-[#AB8144]'}`}>
                     <MenuItem 
                         icon={<Blogger size="24" color={`${pathname.includes('blog') ? '#ffffff' : '#BFBFBF'}`} variant="Outline" />} 
@@ -178,6 +186,7 @@ const DashboardLayout: React.FC<LayoutProps> = ({ children }) => {
                     avatarProps={{
                       isBordered: true,
                       src: "/assets/profile.svg",
+                      size: 'sm',
                     }}
                     className="transition-transform text-white"
                     description="Admin"

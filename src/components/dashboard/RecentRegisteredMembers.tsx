@@ -10,7 +10,7 @@ const RecentRegisteredMembers = () => {
         error 
       } = useGetRecentRegistrationQuery({fetchPolicy: 'no-cache'})
 
-    const loadingState = loading || recentMembers?.getRecentRegistration?.length === 0 ? "loading" : "idle";
+    const loadingState = loading ? "loading" : "idle";
     
     const renderCell = React.useCallback((member: Member, columnKey: React.Key) => {
         const cellValue = member[columnKey as keyof Member];

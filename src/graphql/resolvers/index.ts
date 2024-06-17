@@ -36,6 +36,7 @@ export const resolvers: Resolvers = {
         getAdminDashboardStat: (_, __, {prisma, dataSources}) => dataSources.dashboardAPI.getAdminStat(prisma),
         getSidebarStat: (_, __, {prisma, dataSources}) => dataSources.dashboardAPI.getSidebarData(prisma),
         getMembersAttendance: (_, {eventId}, {prisma, dataSources}) => dataSources.eventAPI.getMembersAttendance(prisma, eventId),
-        getRegisteredMembers: (_, {eventId}, {prisma, dataSources}) => dataSources.eventAPI.getMembersAttendance(prisma, eventId)
+        getRegisteredMembers: (_, {eventId}, {prisma, dataSources}) => dataSources.eventAPI.getMembersAttendance(prisma, eventId),
+        getEventsForPublic: (_, __, { prisma, dataSources }) => dataSources.eventAPI.getEventsForPublic(prisma),
     },
 };

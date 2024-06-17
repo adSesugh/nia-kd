@@ -29,26 +29,31 @@ async function seed() {
         data: [
             {
                 name: 'firstName',
+                label: 'First name',
                 type: 'text',
                 required: true
             },
             {
                 name: 'lastName',
+                label: 'Last name',
                 type: 'text',
                 required: true
             },
             {
                 name: 'phoneNumber',
+                label: 'Phone number',
                 type: 'text',
                 required: true
             },
             {
                 name: 'gender',
+                label: 'Gender',
                 type: 'select',
                 required: true
             },
             {
                 name: 'email',
+                label: 'Email address',
                 type: 'email',
                 required: true
             },

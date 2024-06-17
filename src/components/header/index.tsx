@@ -7,12 +7,16 @@ import Link from 'next/link'
 import { usePathname } from 'next/navigation'
 import { HambergerMenu } from 'iconsax-react'
 import { Drawer, Sidebar } from 'flowbite-react'
+import { useSelector } from 'react-redux'
+import { RootState } from '@/features/store'
+import { Role } from '@/lib/common'
 
 const Header = () => {
- const pathname = usePathname()
- const [isOpen, setIsOpen] = useState(false);
+  const pathname = usePathname()
+  const [isOpen, setIsOpen] = useState(false);
+  const user = useSelector((state: RootState) => state.auth.userData.user)
 
-    const handleDrawer = () => setIsOpen(cur => !cur);
+  const handleDrawer = () => setIsOpen(cur => !cur);
 
   return (
     <header className={styles.header}>
@@ -55,8 +59,14 @@ const Header = () => {
           </ul>
         </div>
         <div className={styles.loginRegister}>
-          <Link href={'/auth/login'} className={styles.loginButton}>Login</Link>
-          <Link href={'/auth/register'} className={styles.joinButton}>Join NIAKD</Link>
+          {user?.id ? (
+            <Link href={user.role === Role.ADMINISTRATOR ? '/dashboard' : '/member/dashboard'} className={styles.joinButton}>Go Dashboard</Link>
+          ): (
+            <>
+              <Link href={'/auth/login'} className={styles.loginButton}>Login</Link>
+              <Link href={'/auth/register'} className={styles.joinButton}>Join NIAKD</Link>
+            </>
+          )}
         </div>
         <div className='xs:flex sm:hidden'>
             <HambergerMenu color='white' size={28} variant='Outline' onClick={handleDrawer} />
@@ -102,8 +112,14 @@ const Header = () => {
                 </div>
                 <div className='pt-12 w-full px-4'>
                   <div className={'flex space-x-4'}>
-                    <Link href={'/auth/login'} className={styles.loginButton}>Login</Link>
-                    <Link href={'/auth/register'} className={styles.joinButton}>Join NIAKD</Link>
+                    {user?.id ? (
+                      <Link href={user.role === Role.ADMINISTRATOR ? '/dashboard' : '/member/dashboard'} className={styles.joinButton}>Go Dashboard</Link>
+                    ): (
+                      <>
+                        <Link href={'/auth/login'} className={styles.loginButton}>Login</Link>
+                        <Link href={'/auth/register'} className={styles.joinButton}>Join NIAKD</Link>
+                      </>
+                    )}
                   </div>
                 </div>
               </div>

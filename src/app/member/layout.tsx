@@ -14,7 +14,7 @@ import { Dropdown, DropdownItem, DropdownMenu, DropdownTrigger, User } from '@ne
 import { useAppDispatch, useAppSelector } from '@/features/hooks';
 import { RootState } from '@/features/store';
 import { logOut } from '@/features/slices/authSlice';
-import { BellSimple, Books, Ticket } from '@phosphor-icons/react';
+import { BellSimple, Books, Receipt, Ticket } from '@phosphor-icons/react';
 
 
 const MemberLayout: React.FC<LayoutProps> = ({ children }) => {
@@ -42,7 +42,6 @@ const MemberLayout: React.FC<LayoutProps> = ({ children }) => {
         <Sidebar 
           className='h-full w-full overflow-hidden'
           breakPoint='xs'
-          //customBreakPoint='400'
           transitionDuration={1000}
           collapsed={collapsed}
           onBackdropClick={() => setToggled(false)} 
@@ -50,10 +49,11 @@ const MemberLayout: React.FC<LayoutProps> = ({ children }) => {
           rootStyles={{
             [`.${sidebarClasses.container}`]: {
               backgroundColor: '#1E0D26',
+              width: '100%'
             },
           }}
         >
-          <div className='flex flex-col justify-between h-full'>
+          <div className='flex flex-col justify-between h-full w-[100%]'>
             <div>
               <div className='flex flex-col pl-7 text-white justify-center w-full h-28'>
                 <Image
@@ -69,7 +69,7 @@ const MemberLayout: React.FC<LayoutProps> = ({ children }) => {
                 />
                 <span className='text-[12px]'>Kaduna State Chapter</span>
               </div>
-              <div className='py-3'>
+              <div className='py-3 w-full'>
                 <Menu
                   menuItemStyles={{
                     button: ({ level, active, disabled }) => {
@@ -81,6 +81,7 @@ const MemberLayout: React.FC<LayoutProps> = ({ children }) => {
                             backgroundColor: '#301F47',
                           },
                           fontSize: 14,
+                          width: '100%'
                       };
                     },
                     icon: ({active}) => {
@@ -112,7 +113,7 @@ const MemberLayout: React.FC<LayoutProps> = ({ children }) => {
                       Dues
                   </MenuItem>
                   <MenuItem 
-                      icon={<Books size="24" color={`${pathname.includes('transactions') ? '#ffffff' : '#BFBFBF'}`} />} 
+                      icon={<Receipt size="24" color={`${pathname.includes('transactions') ? '#ffffff' : '#BFBFBF'}`} />} 
                       component={<Link href="/member/transactions" />}
                       active={pathname.includes('transactions') && true}
                   > 
@@ -127,7 +128,7 @@ const MemberLayout: React.FC<LayoutProps> = ({ children }) => {
                   </MenuItem>
                   <MenuItem 
                       icon={<Books width={24} height={24} stroke={`${pathname.includes('resources') ? '#ffffff' : '#BFBFBF'}`} />} 
-                      component={<Link href="/resources" />}
+                      component={<Link href="/member/resources" />}
                       active={pathname.includes('resources') && true}
                   > 
                       Resources
@@ -138,9 +139,9 @@ const MemberLayout: React.FC<LayoutProps> = ({ children }) => {
           </div>
         </Sidebar>
       </div>
-      <div className={`${toggled ? 'xs:w-full' : collapsed ? 'sm:w-[95%]' : 'xs:w-full sm:w-[83.6%]'} h-full`}>
+      <div className={`${toggled ? 'xs:w-full' : collapsed ? 'sm:w-[95%]' : 'xs:w-full sm:w-[84.6%]'} h-full`}>
         <main className='h-screen w-full bg-[#F5F5F5] overflow-hidden'>
-          <div className='flex justify-between xs:px-4 pt-4 sm:pr-6 xs:pb-3 sm:pb-0 w-full'>
+          <div className='flex justify-between xs:px-4 sm:px-0 pt-4 sm:pb-4 sm:pr-6 xs:pb-3 w-full'>
             <div className='xs:hidden sm:flex'></div>
             <HambergerMenu className=' sm:py-0 sm:pl-0 xs:flex sm:hidden' size={20} variant='Outline' color={`${PRIMARY_TWO}`} onClick={() => setToggled(!toggled)} />
             <div className='flex items-center float-end xs:-mr-7 sm:mr-0 sm:gap-4'>
@@ -152,6 +153,7 @@ const MemberLayout: React.FC<LayoutProps> = ({ children }) => {
                     avatarProps={{
                       isBordered: true,
                       src: "/assets/profile.svg",
+                      size: 'sm'
                     }}
                     className="transition-transform w-full"
                     name={
@@ -163,9 +165,8 @@ const MemberLayout: React.FC<LayoutProps> = ({ children }) => {
                   />
                 </DropdownTrigger>
                 <DropdownMenu aria-label="User Actions" variant="flat">
-                  <DropdownItem key="profile" className="h-14 gap-2">
-                    <p className="font-bold">Signed in as</p>
-                    <p className="font-bold">@{user?.role.toLowerCase()}</p>
+                  <DropdownItem key="profile" className="h-10 gap-2">
+                    <p className="font-bold">Signed in as {user?.role.toLowerCase()}</p>
                   </DropdownItem>
                   <DropdownItem key="settings" as={Link} href='/profile'>
                     My Profile
@@ -177,7 +178,7 @@ const MemberLayout: React.FC<LayoutProps> = ({ children }) => {
               </Dropdown>
             </div>
           </div>
-          <div className={`sm:-mt-6 xs:mt-0 h-full w-full`}>
+          <div className={`flex h-full w-full`}>
             {children}
           </div>
         </main>

@@ -7,99 +7,117 @@ class EventAPI extends RESTDataSource {
     async createEvent(prisma: PrismaClient, input: EventInput) {
 
         const buffer = input.coverPhoto ? Buffer.from(input.coverPhoto.split(',')[1], 'base64') : '';
+        console.log(input.sponsors)
 
-        const event = await prisma.event.create({
-            data: {
-                name: input.name,
-                description: input.description || '',
-                type: input.type,
-                link: input.link,
-                address: input.address,
-                starts_at: new Date(input.starts_at),
-                starts_time: input.starts_time,
-                ends_at: new Date(input.ends_at),
-                ends_time: input.ends_time,
-                paymentType: input.paymentType,
-                amount: input.amount,
-                tickets: input.tickets || 0,
-                isInfinity: input.isInfinity || false,
-                formTitle: input.formTitle,
-                instructions: input.instructions,
-                message: input.message,
-                cpdp_points: input.cpdpPoint || 0,
-                hasCertificate: input.hasCertificate || false,
-                sendTag: input.sendTag || false
-            }
-        })
+        // const event = await prisma.event.create({
+        //     data: {
+        //         name: input.name,
+        //         description: input.description || '',
+        //         type: input.type,
+        //         link: input.link,
+        //         address: input.address,
+        //         starts_at: new Date(input.starts_at),
+        //         starts_time: input.starts_time,
+        //         ends_at: new Date(input.ends_at),
+        //         ends_time: input.ends_time,
+        //         paymentType: input.paymentType,
+        //         amount: input.amount,
+        //         tickets: input.tickets || 0,
+        //         isInfinity: input.isInfinity || false,
+        //         formTitle: input.formTitle,
+        //         instructions: input.instructions,
+        //         message: input.message,
+        //         cpdp_points: input.cpdpPoint || 0,
+        //         hasCertificate: input.hasCertificate || false,
+        //         sendTag: input.sendTag || false
+        //     }
+        // })
 
-        if (input.coverPhoto){
-            const url: string = buffer ? `https://${process.env.NEXT_PUBLIC_AWS_BUCKET_NAME}.s3.${process.env.NEXT_PUBLIC_AWS_REGION}.amazonaws.com/events/${event.id}/${input.name.toLowerCase().replaceAll(' ', '-')}` : ''
+        // if (input.coverPhoto){
+        //     const url: string = buffer ? `https://${process.env.NEXT_PUBLIC_AWS_BUCKET_NAME}.s3.${process.env.NEXT_PUBLIC_AWS_REGION}.amazonaws.com/events/${event.id}/${input.name.toLowerCase().replaceAll(' ', '-')}` : ''
 
-            const res =  await s3FileUpload(`events/${event.id}/${event.name.toLowerCase().replaceAll(' ', '-')}`, 'image/png', buffer)
-            if(res.httpStatusCode === 200){
-                await prisma.event.update({
-                    where: {
-                        id: event.id
-                    },
-                    data: {
-                        coverPhoto: url
-                    }
-                })
-            }
-        }
+        //     const res =  await s3FileUpload(`events/${event.id}/${event.name.toLowerCase().replaceAll(' ', '-')}`, 'image/png', buffer)
+        //     if(res.httpStatusCode === 200){
+        //         await prisma.event.update({
+        //             where: {
+        //                 id: event.id
+        //             },
+        //             data: {
+        //                 coverPhoto: url
+        //             }
+        //         })
+        //     }
+        // }
 
-        if(input.certificate){
-            const certBuffer = input.certificate ? Buffer.from(input.certificate.split(',')[1], 'base64') : '';
-            const certificateUrl: string = certBuffer ? `https://${process.env.NEXT_PUBLIC_AWS_BUCKET_NAME}.s3.${process.env.NEXT_PUBLIC_AWS_REGION}.amazonaws.com/events/${event.id}/certificate` : ''
-            const certRes =  await s3FileUpload(`events/${event.id}/certificate`, 'image/png', certBuffer)
-            if(certRes) {
-                await prisma.event.update({
-                    where: {
-                        id: event.id
-                    },
-                    data: {
-                        certificate: certificateUrl
-                    }
-                })
-            }
-        }
+        // if(input.certificate){
+        //     const certBuffer = input.certificate ? Buffer.from(input.certificate.split(',')[1], 'base64') : '';
+        //     const certificateUrl: string = certBuffer ? `https://${process.env.NEXT_PUBLIC_AWS_BUCKET_NAME}.s3.${process.env.NEXT_PUBLIC_AWS_REGION}.amazonaws.com/events/${event.id}/certificate` : ''
+        //     const certRes =  await s3FileUpload(`events/${event.id}/certificate`, 'image/png', certBuffer)
+        //     if(certRes) {
+        //         await prisma.event.update({
+        //             where: {
+        //                 id: event.id
+        //             },
+        //             data: {
+        //                 certificate: certificateUrl
+        //             }
+        //         })
+        //     }
+        // }
 
-        if(input.resources && input?.resources?.length > 0){
-            input.resources.forEach(async (resource, index) => {
-                const buffer = resource ? Buffer.from(resource.split(',')[1], 'base64') : '';
-                const url: string = buffer ? `https://${process.env.NEXT_PUBLIC_AWS_BUCKET_NAME}.s3.${process.env.NEXT_PUBLIC_AWS_REGION}.amazonaws.com/events/${event.id}/resources/${index}.pdf` : ''
-                const response =  await s3FileUploadPdf(`events/${event.id}/resources/${index}.pdf`, buffer)
-                if(response.httpStatusCode === 200){
-                    await prisma.eventResource.create({
-                        data: {
-                            eventId: event.id,
-                            resourceUrl: url
-                        }
-                    })
-                }
-            })
-        }
+        // if(input.resources && input?.resources?.length > 0){
+        //     input.resources.forEach(async (resource, index) => {
+        //         const buffer = resource ? Buffer.from(resource.resourceUrl.split(',')[1], 'base64') : '';
+        //         const url: string = buffer ? `https://${process.env.NEXT_PUBLIC_AWS_BUCKET_NAME}.s3.${process.env.NEXT_PUBLIC_AWS_REGION}.amazonaws.com/events/${event.id}/resources/${index}.pdf` : ''
+        //         const response =  await s3FileUploadPdf(`events/${event.id}/resources/${index}.pdf`, buffer)
+        //         if(response.httpStatusCode === 200){
+        //             await prisma.eventResource.create({
+        //                 data: {
+        //                     eventId: event.id,
+        //                     resourceUrl: url,
+        //                     name: resource.name
+        //                 }
+        //             })
+        //         }
+        //     })
+        // }
 
-        if(input.speakers && input.speakers.length > 0) {
-            const speakers: any = []
-            input.speakers.forEach(async (speaker, index) => {
-                const buffer = speaker ? Buffer.from(speaker.avatar.split(',')[1], 'base64') : '';
-                const url: string = buffer ? `https://${process.env.NEXT_PUBLIC_AWS_BUCKET_NAME}.s3.${process.env.NEXT_PUBLIC_AWS_REGION}.amazonaws.com/events/${event.id}/speaker/${index}` : ''
-                const response =  await s3FileUpload(`events/${event.id}/speakers/${index}`, 'image/png', buffer)
-                if(response.httpStatusCode === 200){
-                    speakers.push({...speaker, avatar: url, eventId: event.id})
-                    await prisma.speaker.create({
-                        data: {
-                            eventId: event.id,
-                            name: speaker.name,
-                            title: speaker.title || '',
-                            about: speaker.about,
-                            avatar: url
-                        }
-                    })
-                }
-            })
-        }
+        // if(input.sponsors && input?.sponsors?.length > 0){
+        //     input.sponsors.forEach(async (sponsor, index) => {
+        //         const buffer = sponsor ? Buffer.from(sponsor.split(',')[1], 'base64') : '';
+        //         const url: string = buffer ? `https://${process.env.NEXT_PUBLIC_AWS_BUCKET_NAME}.s3.${process.env.NEXT_PUBLIC_AWS_REGION}.amazonaws.com/events/${event.id}/sponsors/${index}` : ''
+        //         const response =  await s3FileUpload(`events/${event.id}/sponsors/${index}`, 'image/png', buffer)
+        //         if(response.httpStatusCode === 200){
+        //             await prisma.sponsor.create({
+        //                 data: {
+        //                     eventId: event.id,
+        //                     logo: url
+        //                 }
+        //             })
+        //         }
+        //     })
+        // }
+
+        // if(input.speakers && input.speakers.length > 0) {
+        //     const speakers: any = []
+        //     input.speakers.forEach(async (speaker, index) => {
+        //         const buffer = speaker ? Buffer.from(speaker.avatar.split(',')[1], 'base64') : '';
+        //         const url: string = buffer ? `https://${process.env.NEXT_PUBLIC_AWS_BUCKET_NAME}.s3.${process.env.NEXT_PUBLIC_AWS_REGION}.amazonaws.com/events/${event.id}/speakers/${index}` : ''
+        //         const response =  await s3FileUpload(`events/${event.id}/speakers/${index}`, 'image/png', buffer)
+        //         if(response.httpStatusCode === 200){
+        //             speakers.push({...speaker, avatar: url, eventId: event.id})
+        //             await prisma.speaker.create({
+        //                 data: {
+        //                     eventId: event.id,
+        //                     name: speaker.name,
+        //                     title: speaker.title || '',
+        //                     about: speaker.about,
+        //                     avatar: url
+        //                 }
+        //             })
+        //         }
+        //     })
+        // }
 
         return {
             code: 201,
@@ -146,6 +164,9 @@ class EventAPI extends RESTDataSource {
             },
             where: {
                 deletedAt: null
+            },
+            orderBy: {
+                createdAt: 'desc'
             }
         })
 
@@ -159,7 +180,7 @@ class EventAPI extends RESTDataSource {
     }
 
     async watchViews(prisma: PrismaClient, eventId: string){
-        prisma.event.update({
+        await prisma.event.update({
             where: {
                 id: eventId
             },
@@ -219,6 +240,33 @@ class EventAPI extends RESTDataSource {
         }))
 
         return true
+    }
+
+    async getEventsForPublic(prisma: PrismaClient) {
+        const events = await prisma.event.findMany({
+            include: { 
+                user: { 
+                    include: { 
+                        member: true 
+                    } 
+                }, 
+                eventForms: true,
+                _count: {
+                    select: { eventRegistrations: true },
+                },
+            },
+            where: {
+                deletedAt: null,
+                status: {
+                    in: ['Published', 'Ended']
+                }
+            },
+            orderBy: {
+                createdAt: 'desc'
+            }
+        })
+
+        return events
     }
 }
 

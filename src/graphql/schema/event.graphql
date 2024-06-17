@@ -112,3 +112,52 @@ query GetMembersAttendance($eventId: UUID!) {
     createdAt
   }
 }
+
+query GetEventsForPublic {
+  getEventsForPublic {
+    id
+    type
+    status
+    starts_at
+    starts_time
+    paymentType
+    name
+    eventRegistrations {
+      id
+    }
+    coverPhoto
+    createdAt
+    amount
+    tickets
+  }
+}
+
+query GetEventForPublic($eventId: UUID!) {
+  getEvent(eventId: $eventId) {
+    address
+    amount
+    coverPhoto
+    description
+    id
+    name
+    paymentType
+    starts_at
+    starts_time
+    sponsors {
+      logo
+    }
+    eventResources {
+      id
+      resourceUrl
+    }
+    speakers {
+      about
+      avatar
+      id
+      name
+      title
+    }
+    status
+    type
+  }
+}

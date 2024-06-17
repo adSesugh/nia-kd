@@ -115,7 +115,8 @@ export const typeDefs = `#graphql
     eventPayments: [EventPayment]
     eventRegistrations: [EventRegistration]
     eventResources: [EventResource]
-    speackers: [Speaker]
+    speakers: [Speaker]
+    sponsors: [Sponsor]
     sendTag: Boolean
     createdAt: Time
     updatedAt: Time
@@ -155,6 +156,7 @@ export const typeDefs = `#graphql
   type EventResource {
     id: UUID!
     resourceUrl: String!
+    name: String!
     eventId: UUID!
     event: Event
   }
@@ -181,6 +183,11 @@ export const typeDefs = `#graphql
     title: String!
     about: String!
     avatar: String!
+  }
+
+  type Sponsor {
+    id: UUID!
+    logo: String!
   }
 
   ## ------------------------------------- Type Input ---------------------------------------------------##
@@ -240,6 +247,11 @@ export const typeDefs = `#graphql
     about: String!
     avatar: String!
   }
+  
+  input ResourceInput {
+    name: String!
+    resourceUrl: String!
+  }
 
   input eventInput {
     name: String!
@@ -261,10 +273,11 @@ export const typeDefs = `#graphql
     instructions: String!
     message: String!
     form: [EventFormInput!]
-    resources: [String!]
+    resources: [ResourceInput!]
     certificate: String
     hasCertificate: Boolean
     speakers: [SpeakerFormInput!]
+    sponsors: [String!]
     sendTag: Boolean
   }
 
@@ -387,5 +400,6 @@ export const typeDefs = `#graphql
     getSidebarStat: SidebarResponse
     getRegisteredMembers(eventId: UUID!): [EventRegistration!]
     getMembersAttendance(eventId: UUID!): [EventRegistration!]
+    getEventsForPublic: [Event!]
   }
 `;

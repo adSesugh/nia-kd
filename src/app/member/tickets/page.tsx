@@ -9,11 +9,11 @@ export const metadata: Metadata = {
 
 const page = () => {
   return (
-    <div className='h-full w-full pb-8'>
-      <div className='py-8'>
+    <div className='w-full'>
+      <div className='pb-8 pt-2'>
         <h1 className='text-2xl font-semibold'>Tickets</h1>
       </div>
-      <div className='mb-6'>
+      <div className='mb-10'>
         <div className='mb-3'>
           <h1 className='font-semibold text-lg'>Upcoming</h1>
           <hr />

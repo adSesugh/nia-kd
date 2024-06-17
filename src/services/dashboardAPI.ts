@@ -22,7 +22,7 @@ class DashboardAPI extends RESTDataSource {
         const memberCount = await prisma.member.count()
         const eventHeld = await prisma.event.count({
             where: {
-                status: 'Published',
+                status: 'Ended',
                 ends_at: {
                     lt: today
                 },
