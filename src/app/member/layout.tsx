@@ -144,8 +144,8 @@ const MemberLayout: React.FC<LayoutProps> = ({ children }) => {
           <div className='flex justify-between xs:px-4 sm:px-0 pt-4 sm:pb-4 sm:pr-6 xs:pb-3 w-full'>
             <div className='xs:hidden sm:flex'></div>
             <HambergerMenu className=' sm:py-0 sm:pl-0 xs:flex sm:hidden' size={20} variant='Outline' color={`${PRIMARY_TWO}`} onClick={() => setToggled(!toggled)} />
-            <div className='flex items-center float-end xs:-mr-7 sm:mr-0 sm:gap-4'>
-              <BellSimple className='float-start' size={24} color='#150D09' />
+            <div className='flex items-center float-end xs:-mr-2 sm:mr-0 sm:gap-4'>
+              <BellSimple className='float-start mr-3' size={24} color='#150D09' />
               <Dropdown placement="bottom-start">
                 <DropdownTrigger>
                   <User

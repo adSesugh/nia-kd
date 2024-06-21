@@ -31,7 +31,7 @@ class DueAPI extends RESTDataSource {
         return due
     }
 
-    async createDue(prisma: PrismaClient, input: DueInput) {
+    async createDue(prisma: PrismaClient, input: DueInput, userId: string) {
 
         const dueExists = (await prisma.dues.findFirst({
             where: {
@@ -60,7 +60,7 @@ class DueAPI extends RESTDataSource {
                 endsAt: new Date(input.endsAt),
                 name: input.name as string,
                 status: input.status as string,
-                userId: 'b230d3e0-e423-48ae-a212-c994b3046179'
+                userId: userId
             }
         })
 

@@ -6,7 +6,7 @@ export const resolvers: Resolvers = {
     Mutation: {
         createUser: (_, { input }, { prisma, dataSources }) => dataSources.userAPI.addUser(prisma, input),
         login: (_, { input }, { prisma, dataSources }) => dataSources.userAPI.loginUser(prisma, input),
-        createDue: (_, { input }, { prisma, dataSources }) => dataSources.dueAPI.createDue(prisma, input),
+        createDue: (_, { input }, { prisma, dataSources, userId }) => dataSources.dueAPI.createDue(prisma, input, userId),
         updateDue: (_, { dueId, input }, { prisma, dataSources }) => dataSources.dueAPI.updateDue(prisma, dueId, input),
         postPayment: (_, { input }, { prisma, dataSources }) => dataSources.paymentAPI.postPayment(prisma, input),
         deactivateMember: (_, { memberId, status }, { prisma, dataSources }) => dataSources.memberAPI.deactivate(prisma, memberId, status),
@@ -38,5 +38,7 @@ export const resolvers: Resolvers = {
         getMembersAttendance: (_, {eventId}, {prisma, dataSources}) => dataSources.eventAPI.getMembersAttendance(prisma, eventId),
         getRegisteredMembers: (_, {eventId}, {prisma, dataSources}) => dataSources.eventAPI.getMembersAttendance(prisma, eventId),
         getEventsForPublic: (_, __, { prisma, dataSources }) => dataSources.eventAPI.getEventsForPublic(prisma),
+        getUpComingEvents: (_, {memberId}, {prisma, dataSources}) => dataSources.eventAPI.upComingEvents(prisma, memberId),
+        getPastEvents: (_, __, {prisma, dataSources}) => dataSources.eventAPI.passedEvents(prisma)
     },
 };

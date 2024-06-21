@@ -356,11 +356,13 @@ export type Query = {
   getEvents?: Maybe<Array<Event>>;
   getEventsForPublic?: Maybe<Array<Event>>;
   getMembersAttendance?: Maybe<Array<EventRegistration>>;
+  getPastEvents?: Maybe<Array<Event>>;
   getPayment?: Maybe<Payment>;
   getPayments?: Maybe<Array<Payment>>;
   getRecentRegistration?: Maybe<Array<Member>>;
   getRegisteredMembers?: Maybe<Array<EventRegistration>>;
   getSidebarStat?: Maybe<SidebarResponse>;
+  getUpComingEvents?: Maybe<Array<EventRegistration>>;
   member?: Maybe<Member>;
   memberPayments?: Maybe<Array<Payment>>;
   members?: Maybe<Array<Maybe<Member>>>;
@@ -402,6 +404,11 @@ export type QueryGetPaymentArgs = {
 
 export type QueryGetRegisteredMembersArgs = {
   eventId: Scalars['UUID']['input'];
+};
+
+
+export type QueryGetUpComingEventsArgs = {
+  memberId: Scalars['UUID']['input'];
 };
 
 
@@ -713,6 +720,18 @@ export type GetEventForPublicQueryVariables = Exact<{
 
 
 export type GetEventForPublicQuery = { __typename?: 'Query', getEvent?: { __typename?: 'Event', address?: string | null, amount: any, coverPhoto?: string | null, description?: string | null, id: any, name: string, paymentType: string, starts_at: any, starts_time: string, status: string, type: string, sponsors?: Array<{ __typename?: 'Sponsor', logo: string } | null> | null, eventResources?: Array<{ __typename?: 'EventResource', id: any, resourceUrl: string } | null> | null, speakers?: Array<{ __typename?: 'Speaker', about: string, avatar: string, id: any, name: string, title: string } | null> | null } | null };
+
+export type GetUpComingEventsQueryVariables = Exact<{
+  memberId: Scalars['UUID']['input'];
+}>;
+
+
+export type GetUpComingEventsQuery = { __typename?: 'Query', getUpComingEvents?: Array<{ __typename?: 'EventRegistration', id: any, createdAt?: any | null, event?: { __typename?: 'Event', id: any, starts_at: any, starts_time: string, name: string, coverPhoto?: string | null } | null }> | null };
+
+export type GetPastEventsQueryVariables = Exact<{ [key: string]: never; }>;
+
+
+export type GetPastEventsQuery = { __typename?: 'Query', getPastEvents?: Array<{ __typename?: 'Event', id: any, starts_at: any, starts_time: string, name: string, coverPhoto?: string | null, eventRegistrations?: Array<{ __typename?: 'EventRegistration', createdAt?: any | null, id: any } | null> | null }> | null };
 
 export type GetMembersQueryVariables = Exact<{ [key: string]: never; }>;
 
@@ -1900,6 +1919,101 @@ export type GetEventForPublicQueryHookResult = ReturnType<typeof useGetEventForP
 export type GetEventForPublicLazyQueryHookResult = ReturnType<typeof useGetEventForPublicLazyQuery>;
 export type GetEventForPublicSuspenseQueryHookResult = ReturnType<typeof useGetEventForPublicSuspenseQuery>;
 export type GetEventForPublicQueryResult = Apollo.QueryResult<GetEventForPublicQuery, GetEventForPublicQueryVariables>;
+export const GetUpComingEventsDocument = gql`
+    query GetUpComingEvents($memberId: UUID!) {
+  getUpComingEvents(memberId: $memberId) {
+    id
+    createdAt
+    event {
+      id
+      starts_at
+      starts_time
+      name
+      coverPhoto
+    }
+  }
+}
+    `;
+
+/**
+ * __useGetUpComingEventsQuery__
+ *
+ * To run a query within a React component, call `useGetUpComingEventsQuery` and pass it any options that fit your needs.
+ * When your component renders, `useGetUpComingEventsQuery` returns an object from Apollo Client that contains loading, error, and data properties
+ * you can use to render your UI.
+ *
+ * @param baseOptions options that will be passed into the query, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options;
+ *
+ * @example
+ * const { data, loading, error } = useGetUpComingEventsQuery({
+ *   variables: {
+ *      memberId: // value for 'memberId'
+ *   },
+ * });
+ */
+export function useGetUpComingEventsQuery(baseOptions: Apollo.QueryHookOptions<GetUpComingEventsQuery, GetUpComingEventsQueryVariables> & ({ variables: GetUpComingEventsQueryVariables; skip?: boolean; } | { skip: boolean; }) ) {
+        const options = {...defaultOptions, ...baseOptions}
+        return Apollo.useQuery<GetUpComingEventsQuery, GetUpComingEventsQueryVariables>(GetUpComingEventsDocument, options);
+      }
+export function useGetUpComingEventsLazyQuery(baseOptions?: Apollo.LazyQueryHookOptions<GetUpComingEventsQuery, GetUpComingEventsQueryVariables>) {
+          const options = {...defaultOptions, ...baseOptions}
+          return Apollo.useLazyQuery<GetUpComingEventsQuery, GetUpComingEventsQueryVariables>(GetUpComingEventsDocument, options);
+        }
+export function useGetUpComingEventsSuspenseQuery(baseOptions?: Apollo.SuspenseQueryHookOptions<GetUpComingEventsQuery, GetUpComingEventsQueryVariables>) {
+          const options = {...defaultOptions, ...baseOptions}
+          return Apollo.useSuspenseQuery<GetUpComingEventsQuery, GetUpComingEventsQueryVariables>(GetUpComingEventsDocument, options);
+        }
+export type GetUpComingEventsQueryHookResult = ReturnType<typeof useGetUpComingEventsQuery>;
+export type GetUpComingEventsLazyQueryHookResult = ReturnType<typeof useGetUpComingEventsLazyQuery>;
+export type GetUpComingEventsSuspenseQueryHookResult = ReturnType<typeof useGetUpComingEventsSuspenseQuery>;
+export type GetUpComingEventsQueryResult = Apollo.QueryResult<GetUpComingEventsQuery, GetUpComingEventsQueryVariables>;
+export const GetPastEventsDocument = gql`
+    query GetPastEvents {
+  getPastEvents {
+    id
+    starts_at
+    starts_time
+    name
+    coverPhoto
+    eventRegistrations {
+      createdAt
+      id
+    }
+  }
+}
+    `;
+
+/**
+ * __useGetPastEventsQuery__
+ *
+ * To run a query within a React component, call `useGetPastEventsQuery` and pass it any options that fit your needs.
+ * When your component renders, `useGetPastEventsQuery` returns an object from Apollo Client that contains loading, error, and data properties
+ * you can use to render your UI.
+ *
+ * @param baseOptions options that will be passed into the query, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options;
+ *
+ * @example
+ * const { data, loading, error } = useGetPastEventsQuery({
+ *   variables: {
+ *   },
+ * });
+ */
+export function useGetPastEventsQuery(baseOptions?: Apollo.QueryHookOptions<GetPastEventsQuery, GetPastEventsQueryVariables>) {
+        const options = {...defaultOptions, ...baseOptions}
+        return Apollo.useQuery<GetPastEventsQuery, GetPastEventsQueryVariables>(GetPastEventsDocument, options);
+      }
+export function useGetPastEventsLazyQuery(baseOptions?: Apollo.LazyQueryHookOptions<GetPastEventsQuery, GetPastEventsQueryVariables>) {
+          const options = {...defaultOptions, ...baseOptions}
+          return Apollo.useLazyQuery<GetPastEventsQuery, GetPastEventsQueryVariables>(GetPastEventsDocument, options);
+        }
+export function useGetPastEventsSuspenseQuery(baseOptions?: Apollo.SuspenseQueryHookOptions<GetPastEventsQuery, GetPastEventsQueryVariables>) {
+          const options = {...defaultOptions, ...baseOptions}
+          return Apollo.useSuspenseQuery<GetPastEventsQuery, GetPastEventsQueryVariables>(GetPastEventsDocument, options);
+        }
+export type GetPastEventsQueryHookResult = ReturnType<typeof useGetPastEventsQuery>;
+export type GetPastEventsLazyQueryHookResult = ReturnType<typeof useGetPastEventsLazyQuery>;
+export type GetPastEventsSuspenseQueryHookResult = ReturnType<typeof useGetPastEventsSuspenseQuery>;
+export type GetPastEventsQueryResult = Apollo.QueryResult<GetPastEventsQuery, GetPastEventsQueryVariables>;
 export const GetMembersDocument = gql`
     query GetMembers {
   members {
@@ -2690,11 +2804,13 @@ export type QueryResolvers<ContextType = GraphQLContext, ParentType extends Reso
   getEvents?: Resolver<Maybe<Array<ResolversTypes['Event']>>, ParentType, ContextType>;
   getEventsForPublic?: Resolver<Maybe<Array<ResolversTypes['Event']>>, ParentType, ContextType>;
   getMembersAttendance?: Resolver<Maybe<Array<ResolversTypes['EventRegistration']>>, ParentType, ContextType, RequireFields<QueryGetMembersAttendanceArgs, 'eventId'>>;
+  getPastEvents?: Resolver<Maybe<Array<ResolversTypes['Event']>>, ParentType, ContextType>;
   getPayment?: Resolver<Maybe<ResolversTypes['Payment']>, ParentType, ContextType, RequireFields<QueryGetPaymentArgs, 'paymentId'>>;
   getPayments?: Resolver<Maybe<Array<ResolversTypes['Payment']>>, ParentType, ContextType>;
   getRecentRegistration?: Resolver<Maybe<Array<ResolversTypes['Member']>>, ParentType, ContextType>;
   getRegisteredMembers?: Resolver<Maybe<Array<ResolversTypes['EventRegistration']>>, ParentType, ContextType, RequireFields<QueryGetRegisteredMembersArgs, 'eventId'>>;
   getSidebarStat?: Resolver<Maybe<ResolversTypes['SidebarResponse']>, ParentType, ContextType>;
+  getUpComingEvents?: Resolver<Maybe<Array<ResolversTypes['EventRegistration']>>, ParentType, ContextType, RequireFields<QueryGetUpComingEventsArgs, 'memberId'>>;
   member?: Resolver<Maybe<ResolversTypes['Member']>, ParentType, ContextType, RequireFields<QueryMemberArgs, 'id'>>;
   memberPayments?: Resolver<Maybe<Array<ResolversTypes['Payment']>>, ParentType, ContextType, RequireFields<QueryMemberPaymentsArgs, 'memberId'>>;
   members?: Resolver<Maybe<Array<Maybe<ResolversTypes['Member']>>>, ParentType, ContextType>;

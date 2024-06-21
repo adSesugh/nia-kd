@@ -401,5 +401,7 @@ export const typeDefs = `#graphql
     getRegisteredMembers(eventId: UUID!): [EventRegistration!]
     getMembersAttendance(eventId: UUID!): [EventRegistration!]
     getEventsForPublic: [Event!]
+    getUpComingEvents(memberId: UUID!): [EventRegistration!]
+    getPastEvents: [Event!]
   }
 `;

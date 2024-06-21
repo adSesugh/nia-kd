@@ -2,12 +2,13 @@ import { EventInput } from "@/graphql/__generated__/graphql";
 import { s3FileUpload, s3FileUploadPdf } from "@/lib/s3Client";
 import { RESTDataSource } from "@apollo/datasource-rest";
 import { PrismaClient } from "@prisma/client";
+import moment from "moment";
 
 class EventAPI extends RESTDataSource {
+
     async createEvent(prisma: PrismaClient, input: EventInput) {
 
         const buffer = input.coverPhoto ? Buffer.from(input.coverPhoto.split(',')[1], 'base64') : '';
-        console.log(input.sponsors)
 
         const event = await prisma.event.create({
             data: {
@@ -264,6 +265,51 @@ class EventAPI extends RESTDataSource {
             orderBy: {
                 createdAt: 'desc'
             }
+        })
+
+        return events
+    }
+
+    async upComingEvents(prisma: PrismaClient, memberId: string) {
+        const todayDate = new Date(moment().format('Y-MM-DD'))
+
+        const upComingEvents = prisma.eventRegistration.findMany({
+            where: {
+                memberId,
+                event: {
+                    starts_at: {
+                        gt: todayDate
+                    },
+                    ends_at: {
+                        lte: todayDate
+                    },
+                    status: {
+                        notIn: ['Ended', 'Archived', 'Draft']
+                    }
+                }
+            },
+
+        })
+
+        return upComingEvents
+    }
+
+    async passedEvents(prisma: PrismaClient) {
+        const todayDate = new Date(moment().format('Y-MM-DD'))
+        const events = prisma.event.findMany({
+            where: {
+                OR: [
+                    {
+                        ends_at: {
+                            gt: todayDate
+                        }
+                    },
+                    {
+                        status: 'Ended'
+                    }
+                ]
+            },
+            include: {eventRegistrations: true}
         })
 
         return events

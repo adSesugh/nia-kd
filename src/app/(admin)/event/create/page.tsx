@@ -161,7 +161,6 @@ const CreateEvent = () => {
     
     const renderCell = React.useCallback((speaker: {title: string, name: string, avatar: string, about: string}, columnKey: React.Key) => {
         const cellValue = speaker[columnKey as keyof {title: string, name: string, avatar: string, about: string}];
-        
     
         switch (columnKey) {
             case "name":

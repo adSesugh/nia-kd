@@ -161,3 +161,32 @@ query GetEventForPublic($eventId: UUID!) {
     type
   }
 }
+
+query GetUpComingEvents($memberId: UUID!) {
+  getUpComingEvents(memberId: $memberId) {
+    id
+    createdAt
+    event {
+      id
+      starts_at
+      starts_time
+      name
+      coverPhoto
+    }
+  }
+}
+
+query GetPastEvents {
+  getPastEvents {
+    id
+    starts_at
+    starts_time
+    name
+    coverPhoto
+    eventRegistrations {
+      createdAt
+      memberId
+      id
+    }
+  }
+}
