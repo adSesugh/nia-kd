@@ -34,6 +34,9 @@ const EventCard: React.FC<EventCardProps> = ({ bordered, href='/', data, type, i
                         layout='fixed'
                         objectFit='contain'
                         onLoadingComplete={({ naturalWidth, naturalHeight }) =>  setRatio(naturalWidth / naturalHeight)}
+                        style={{
+                            width: '100%',
+                        }}
                     />
                 </div>
             </div>

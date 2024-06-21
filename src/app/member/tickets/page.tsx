@@ -41,7 +41,11 @@ const TicketList = () => {
                 <h1 className='font-semibold text-lg mb-3'>Upcoming</h1>
               </div>
               {data?.getUpComingEvents?.map((event, index: number) => (
-                <EventCard indexData={index} type='upcoming' key={event.id} href={`/events/${event?.event?.id}`} data={event} />
+                <EventCard 
+                  indexData={index} 
+                  type='upcoming' key={event.id} href={`/events/${event?.event?.id}`} 
+                  data={event} 
+                />
               ))}
             </div>
           )}
@@ -52,8 +56,9 @@ const TicketList = () => {
                 <div className='space-y-5 pt-3 pb-8'>
                   {past.getPastEvents.map((item, index: number) => (
                     <EventCard 
+                      key={index}
                       indexData={index}
-                      bordered={index === 0 || index === (Number(past?.getPastEvents?.length) - 1) ? 'border-none': 'border-b'} 
+                      bordered={index === (Number(past?.getPastEvents?.length) - 1) ? 'border-none': 'border-b-2'} 
                       href={`/events/${item.id}`} 
                       data={item}
                       type='past'
