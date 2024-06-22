@@ -35,7 +35,7 @@ export const typeDefs = `#graphql
     membershipType: String! @uppercase
     membershipId: String
     status: String @uppercase
-    cpdpPoints: Int
+    cpdpPoints: CpdpPoint
     createdAt: Time
     updatedAt: Time
   }  
@@ -52,19 +52,6 @@ export const typeDefs = `#graphql
     updatedAt: Time
     user: User
   }
-
-  type Payment {
-    id: UUID!
-    memberId: String!
-    member: Member
-    duesId: String!
-    due: Due
-    paymentRef: String
-    amount: Decimal!
-    status: String!
-    createdAt:  Time
-    updatedAt:  Time
-  }  
 
   type Blog {
     id: UUID!
@@ -112,7 +99,7 @@ export const typeDefs = `#graphql
     views: Int
     certificate: String
     eventForm: [EventForm]
-    eventPayments: [EventPayment]
+    eventPayments: [Payment]
     eventRegistrations: [EventRegistration]
     eventResources: [EventResource]
     speakers: [Speaker]
@@ -142,16 +129,23 @@ export const typeDefs = `#graphql
     updatedAt: Time
   }
 
-  type EventPayment {
+  type Payment {
     id: UUID!
-    phoneNumber: String!
-    paymentRef: String!
-    amount: Decimal
-    status: String
+    paymentType: String!
+    memberId: UUID
+    member: Member
+    duesId: UUID
+    due: Due
     eventId: UUID
-    createdAt: Time
-    updatedAt: Time
-  }
+    event: Event
+    description: String!
+    phoneNumber: String!
+    paymentRef: String
+    amount: Decimal!
+    status: String!
+    createdAt:  Time
+    updatedAt:  Time
+  }  
 
   type EventResource {
     id: UUID!
@@ -189,6 +183,14 @@ export const typeDefs = `#graphql
     id: UUID!
     logo: String!
   }
+  
+  type CpdpPoint {
+    id: UUID!
+    eventId: UUID!
+    memberId: UUID!
+    member: Member
+    points: Int!
+  } 
 
   ## ------------------------------------- Type Input ---------------------------------------------------##
 
@@ -358,6 +360,13 @@ export const typeDefs = `#graphql
     resources: Int
     ads: Int
   }
+  
+  type memberStat {
+    totalEventPoints: Int!,
+    pointsEarned: Int!,
+    eventAttended: Int!
+    fin_status: Boolean
+  }
 
   ## ------------------------------------- Mutation ---------------------------------------------------##
 
@@ -385,7 +394,7 @@ export const typeDefs = `#graphql
     member(id: UUID!): Member
     dues: [Due] @auth
     singeDue(dueId: UUID!): Due
-    getPayments: [Payment!]
+    getPayments(memberId: UUID): [Payment!]
     memberPayments(memberId: UUID!): [Payment!]
     getPayment(paymentId: UUID!): Payment
     getDuePayment(memberId: UUID!): MemberDueResponse
@@ -403,5 +412,7 @@ export const typeDefs = `#graphql
     getEventsForPublic: [Event!]
     getUpComingEvents(memberId: UUID!): [EventRegistration!]
     getPastEvents: [Event!]
+    getMemberStat(memberId: UUID!): memberStat
+    getMemberUnpaidDues(memberId: UUID!): [Due]
   }
 `;

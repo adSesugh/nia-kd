@@ -41,7 +41,7 @@ class DashboardAPI extends RESTDataSource {
             }
         })
 
-        const duesPayments = await prisma.payment.aggregate({
+        const payments = await prisma.payment.aggregate({
             where: {
                 createdAt: {
                     gte: startOfYear,
@@ -56,6 +56,38 @@ class DashboardAPI extends RESTDataSource {
             }
         })
 
+        const eventPayments = await prisma.payment.aggregate({
+            where: {
+                createdAt: {
+                    gte: startOfYear,
+                    lte: endOfYear
+                },
+                status: {
+                    equals: 'Successful'
+                },
+                paymentType: 'event'
+            },
+            _sum: {
+                amount: true
+            }
+        })
+
+        const duesPayments = await prisma.payment.aggregate({
+            where: {
+                createdAt: {
+                    gte: startOfYear,
+                    lte: endOfYear
+                },
+                status: {
+                    equals: 'Successful'
+                },
+                paymentType: 'dues'
+            },
+            _sum: {
+                amount: true
+            }
+        })
+
         const attendances = await prisma.eventRegistration.count({
             where: {
                 checkin: {
@@ -64,19 +96,7 @@ class DashboardAPI extends RESTDataSource {
             }
         })
 
-        const eventPayments = await prisma.eventPayment.aggregate({
-            where: {
-                createdAt: {
-                    gte: startOfYear,
-                    lte: endOfYear
-                }
-            },
-            _sum: {
-                amount: true
-            }
-        })
-
-        const revenue = Number(eventPayments._sum.amount) + Number(duesPayments._sum.amount)
+        const revenue = Number(payments._sum.amount)
         const revData = {
             events: eventPayments._sum.amount || 0,
             dues: duesPayments._sum.amount || 0,
@@ -136,6 +156,54 @@ class DashboardAPI extends RESTDataSource {
             ads: 0
         }
     }
+
+    async getMemberStat(prisma: PrismaClient, memberId: string) {
+        
+        const totalEventPoints = await prisma.event.count({
+            select: {
+                cpdp_points: true
+            }
+        })
+
+        const totalPointsEarned = await prisma.cpdpPoint.count({
+            where: {
+                memberId
+            },
+            select: {
+                points: true
+            }
+        })
+
+        const eventAttended = await prisma.eventRegistration.count({
+            where: {
+                checkin: true,
+                memberId
+            }
+        })
+
+        const checkYearlyDuePayment = await prisma.payment.count({
+            where: {
+                due: {
+                    startsAt: {equals: new Date(moment().startOf('year').format('Y-MM-D'))},
+                    endsAt: {lte: new Date(moment().endOf('year').format('Y-MM-D'))}
+                },
+                createdAt: {
+                    equals: new Date(moment().startOf('year').format('Y-MM-D')),
+                    lte: new Date(moment().endOf('year').format('Y-MM-D'))
+                }
+            }
+        })
+
+        const response = {
+            'totalEventPoints': totalEventPoints.cpdp_points,
+            'pointsEarned': totalPointsEarned.points,
+            'eventAttended': eventAttended,
+            'fin_status': checkYearlyDuePayment > 0 ? true : false
+        }
+
+        return response
+    }
+      
 }
 
 export default DashboardAPI

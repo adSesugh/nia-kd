@@ -57,11 +57,13 @@ model Member {
   membershipId      String?             @unique
   membershipType    String              @default("Student") @db.VarChar(191)
   status            String              @default("Active") @db.VarChar(191)
-  cpdpPoints        Int                 @default(0)
+  //cpdpPoints        Int                 @default(0)
   createdAt         DateTime            @default(now()) @map(name: "created_at")
   updatedAt         DateTime            @updatedAt @map(name: "updated_at")
   payments          Payment[]
   EventRegistration EventRegistration[]
+
+  cpdpPoints         CpdpPoint[]
 
   @@map("members")
 }
@@ -82,21 +84,6 @@ model Dues {
   @@map("dues")
 }
 
-model Payment {
-  id         String   @id @default(uuid())
-  memberId   String
-  member     Member   @relation(fields: [memberId], references: [id])
-  duesId     String
-  due        Dues     @relation(fields: [duesId], references: [id])
-  paymentRef String   @unique
-  amount     Decimal  @default(0.00)
-  status     String   @default("Successful") @db.VarChar(15)
-  createdAt  DateTime @default(now()) @map(name: "created_at")
-  updatedAt  DateTime @updatedAt @map(name: "updated_at")
-
-  @@map("payments")
-}
-
 model Blog {
   id            String @id @default(uuid())
   title         String @db.VarChar(150)
@@ -104,8 +91,8 @@ model Blog {
   summary       String @db.VarChar(250)
   featuredImage String @db.VarChar(191)
   status        String @default("Draft")
-  userId        String @default("34fa0d5e-8549-4385-8cca-0d83ac94bbcd")
-  user          User   @relation(fields: [userId], references: [id])
+  userId        String?
+  user          User?   @relation(fields: [userId], references: [id])
 
   tags      TagOnPosts[]
   createdAt DateTime     @default(now()) @map(name: "created_at")
@@ -160,7 +147,7 @@ model Event {
   userId             String?
   user               User?                @relation(fields: [userId], references: [id])
   eventForms         EventForm[]
-  eventPayments      EventPayment[]
+  eventPayments      Payment[]
   eventRegistrations EventRegistration[]
   eventResources     EventResource[]
   speakers           Speaker[]
@@ -198,20 +185,6 @@ model FormDesign {
   updatedAt DateTime @updatedAt @map(name: "updated_at")
 
   @@map("form_designs")
-}
-
-model EventPayment {
-  id          String   @id @default(uuid())
-  phoneNumber String
-  paymentRef  String   @unique
-  amount      Decimal  @default(0.00)
-  status      String   @default("Successful") @db.VarChar(15)
-  eventId     String?
-  event       Event?    @relation(fields: [eventId], references: [id])
-  createdAt   DateTime @default(now()) @map(name: "created_at")
-  updatedAt   DateTime @updatedAt @map(name: "updated_at")
-
-  @@map("event_payments")
 }
 
 model EventResource {
@@ -258,4 +231,32 @@ model Sponsor {
   eventId String?
   event   Event?  @relation(fields: [eventId], references: [id])
   logo    String
+}
+
+model CpdpPoint {
+  id        String @id @default(uuid())
+  eventId   String?
+  memberId  String?
+  member    Member? @relation(fields: [memberId], references: [id])
+  points    Int
+}
+
+model Payment {
+  id          String   @id @default(uuid())
+  paymentType String
+  memberId    String
+  member      Member   @relation(fields: [memberId], references: [id])
+  duesId      String
+  due         Dues     @relation(fields: [duesId], references: [id])
+  eventId     String?
+  event       Event?   @relation(fields: [eventId], references: [id])
+  phoneNumber String
+  description String   @db.Text
+  paymentRef  String   @unique
+  amount      Decimal  @default(0.00)
+  status      String   @default("Successful") @db.VarChar(15)
+  createdAt   DateTime @default(now()) @map(name: "created_at")
+  updatedAt   DateTime @updatedAt @map(name: "updated_at")
+
+  @@map("payments")
 }

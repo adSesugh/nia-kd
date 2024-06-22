@@ -151,7 +151,7 @@ const MemberLayout: React.FC<LayoutProps> = ({ children }) => {
                   <User
                     as="button"
                     avatarProps={{
-                      isBordered: true,
+                      isBordered: false,
                       src: "/assets/profile.svg",
                       size: 'sm'
                     }}

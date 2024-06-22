@@ -11,11 +11,12 @@ type EventCardProps = {
     data?: any
     type?: string,
     indexData?: number | 0
+    registered?: boolean
 }
 
-const EventCard: React.FC<EventCardProps> = ({ bordered, href='/', data, type, indexData }) => {
+const EventCard: React.FC<EventCardProps> = ({ bordered, href='/', data, type, indexData, registered=false }) => {
     const [ratio, setRatio] = useState(16/9)
-    console.log(data)
+    
     return (
         <Link href={href} as={'div'} className='flex sm:flex-row xs:flex-col gap-y-5 gap-x-5 cursor-pointer'>
             <div className='flex gap-6 sm:w-3/12 xs:w-full'>
@@ -32,15 +33,17 @@ const EventCard: React.FC<EventCardProps> = ({ bordered, href='/', data, type, i
                         src={(type === 'upcoming' ? data.event.coverPhoto : data.coverPhoto) || '/assets/events/upcoming-event.svg'} 
                         sizes='100vw'
                         layout='fixed'
-                        objectFit='contain'
+                        objectFit='cover'
                         onLoadingComplete={({ naturalWidth, naturalHeight }) =>  setRatio(naturalWidth / naturalHeight)}
                         style={{
                             width: '100%',
+                            height: 'auto'
                         }}
                     />
                 </div>
             </div>
             <div className={`sm:w-9/12 xs:w-full space-y-2 ${bordered} xs:pb-1 sm:pb-0`}>
+                {registered && <h1 className='text-sm text-green-500'>Registered</h1>}
                 <h1 className='flex flex-wrap text-md font-medium truncate'>{type === 'upcoming' ? data.event.name : data.name}</h1>
                 <div className='text-sm divide-x-[2px] divide-gray-300 space-x-4'>
                     <span className='font-semibold'>{moment(type === 'upcoming' ? data.event.starts_at : data.starts_at).format('MMM DD, Y')}</span>

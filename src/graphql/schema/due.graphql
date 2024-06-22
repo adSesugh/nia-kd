@@ -78,3 +78,14 @@ query GetDuePayment($memberId: UUID!) {
     updatedAt
   }
 }
+
+query GetMemberUnpaidDues($memberId: UUID!) {
+  getMemberUnpaidDues(memberId: $memberId) {
+    amount
+    name
+    startsAt
+    status
+    id
+    endsAt
+  }
+}

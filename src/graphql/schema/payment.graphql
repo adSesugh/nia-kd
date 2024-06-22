@@ -71,3 +71,15 @@ query MemberPayments($memberId: UUID!) {
     createdAt
   }
 }
+
+query GetMemberPayments($memberId: UUID) {
+  getPayments(memberId: $memberId) {
+    id
+    amount
+    createdAt
+    description
+    paymentRef
+    paymentType
+    status
+  }
+}

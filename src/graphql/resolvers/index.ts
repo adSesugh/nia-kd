@@ -23,7 +23,7 @@ export const resolvers: Resolvers = {
         users: (_, __, { prisma, dataSources }) => dataSources.userAPI.getUsers(prisma),
         dues: (_, __, { prisma, dataSources }) => dataSources.dueAPI.getDues(prisma),
         singeDue: (_, { dueId }, { prisma, dataSources }) => dataSources.dueAPI.getDue(prisma, dueId),
-        getPayments: (_, __, { prisma, dataSources }) => dataSources.paymentAPI.getPayments(prisma),
+        getPayments: (_, { memberId }, { prisma, dataSources }) => dataSources.paymentAPI.getPayments(prisma, memberId),
         getPayment: (_, { paymentId }, { prisma, dataSources }) => dataSources.paymentAPI.getPayment(prisma, paymentId),
         memberPayments: (_, { memberId }, { prisma, dataSources }) => dataSources.paymentAPI.memberPayments(prisma, memberId),
         getDuePayment: (_, { memberId }, { prisma, dataSources }) => dataSources.dueAPI.getDuePayment(prisma, memberId),
@@ -39,6 +39,8 @@ export const resolvers: Resolvers = {
         getRegisteredMembers: (_, {eventId}, {prisma, dataSources}) => dataSources.eventAPI.getMembersAttendance(prisma, eventId),
         getEventsForPublic: (_, __, { prisma, dataSources }) => dataSources.eventAPI.getEventsForPublic(prisma),
         getUpComingEvents: (_, {memberId}, {prisma, dataSources}) => dataSources.eventAPI.upComingEvents(prisma, memberId),
-        getPastEvents: (_, __, {prisma, dataSources}) => dataSources.eventAPI.passedEvents(prisma)
+        getPastEvents: (_, __, {prisma, dataSources}) => dataSources.eventAPI.passedEvents(prisma),
+        getMemberStat: (_, {memberId}, {prisma, dataSources}) => dataSources.dashboardAPI.getMemberStat(prisma, memberId),
+        getMemberUnpaidDues: (_, {memberId}, {prisma, dataSources}) => dataSources.dueAPI.getUnpaidDues(prisma, memberId)
     },
 };

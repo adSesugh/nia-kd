@@ -28,3 +28,12 @@ query GetSidebarStat {
     ads
   }
 }
+
+query GetMemberStat($memberId: UUID!) {
+  getMemberStat(memberId: $memberId) {
+    eventAttended
+    totalEventPoints
+    pointsEarned
+    fin_status
+  }
+}

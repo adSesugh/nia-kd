@@ -39,7 +39,7 @@ const MemberEvents = () => {
     if(query.length === 0) {
       setEvents(eventsHolder)
     } else {
-      const filteredEvents = events.filter((event: Event) => {
+      const filteredEvents = events?.filter((event: Event) => {
         return event.name.toLowerCase().includes(query)
       })
       setEvents(filteredEvents)
@@ -69,9 +69,9 @@ const MemberEvents = () => {
             }} className={`${selectedSearch === 'past' && 'bg-[#1E1A1C] text-white'} h-10 w-[122px] py-1.5 `}>Past</button>
           </div>
           <div className='flex-1 items-center h-full w-full mt-1'>
-            <div className='relative rounded-md shadow-sm'>
+            <div className='relative rounded-md shadow-sm sm:w-2/3 xs:w-full'>
               <div className="pointer-events-none absolute inset-y-0 left-0 flex items-center pl-2">
-                <SearchNormal variant='Outline' size={24} color='gray' />
+                <SearchNormal variant='Outline' size={20} color='gray' />
               </div>
               <input 
                 name='query'

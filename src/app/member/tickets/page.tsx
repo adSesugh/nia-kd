@@ -33,7 +33,7 @@ const TicketList = () => {
       <div className='pb-8 pt-2'>
         <h1 className='text-2xl font-semibold'>Tickets</h1>
       </div>
-      {data?.getUpComingEvents || past?.getPastEvents?.length ? (
+      {Number(data?.getUpComingEvents?.length) > 0 || Number(past?.getPastEvents?.length) > 0 ? (
         <Fragment>
           {Number(data?.getUpComingEvents?.length) > 0 && (
             <div className='mb-10'>
@@ -49,12 +49,12 @@ const TicketList = () => {
               ))}
             </div>
           )}
-          {past?.getPastEvents?.length && (
+          {Number(past?.getPastEvents?.length) > 0 && (
             <div className=''>
               <div className='pb-5'>
                 <h1 className='font-semibold text-lg mb-3'>Past tickets</h1>
                 <div className='space-y-5 pt-3 pb-8'>
-                  {past.getPastEvents.map((item, index: number) => (
+                  {past?.getPastEvents?.map((item, index: number) => (
                     <EventCard 
                       key={index}
                       indexData={index}
@@ -78,7 +78,7 @@ const TicketList = () => {
       ): (
         <div className='h-60'>
           <div className='flex justify-center items-center h-full w-full'>
-            <span className='text-3xl'>No record found</span>
+            <span className='text-2xl text-slate-blue-100'>No record found</span>
           </div>
         </div>
       )}

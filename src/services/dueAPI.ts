@@ -95,6 +95,25 @@ class DueAPI extends RESTDataSource {
         }
     }
 
+    async getUnpaidDues(prisma: PrismaClient, memberId: string) {
+
+        const allDues = await prisma.dues.findMany({
+          include: {
+            payments: true
+          },
+        });
+      
+        const unpaidDues = allDues.filter(due => {
+          const totalPaidByMember = due.payments
+            .filter(payment => payment.memberId === memberId)
+            .reduce((sum, payment) => sum + Number(payment.amount), 0);
+      
+          return totalPaidByMember < Number(due.amount);
+        });
+      
+        return unpaidDues;
+    }
+
     async getDuePayment(prisma: PrismaClient, memberId: string) {
         const todayDate = new Date(moment().format("Y-MM-D"))
         const endOfYear = new Date(moment().endOf('year').format("Y-MM-D"))

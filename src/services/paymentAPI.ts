@@ -3,12 +3,18 @@ import { RESTDataSource } from "@apollo/datasource-rest";
 import { Member, PrismaClient } from "@prisma/client";
 
 class PaymentAPI extends RESTDataSource {
-    async getPayments(prisma: PrismaClient) {
+
+    async getPayments(prisma: PrismaClient, memberId?: string) {
         const payments = await prisma.payment.findMany({
             orderBy: {
                 createdAt: 'desc'
             },
-            include: { due: true, member: true }
+            include: { due: true, member: true },
+            where: {
+                OR: [
+                    {memberId}
+                ]
+            }
         })
 
         return payments
@@ -42,6 +48,10 @@ class PaymentAPI extends RESTDataSource {
     async postPayment(prisma: PrismaClient, input: PaymentInput) {
         const payment = await prisma.payment.create({
             data: {
+                paymentType: '',
+                description: '',
+                eventId: '',
+                phoneNumber: '',
                 amount: input.amount,
                 memberId: input.memberId as string,
                 duesId: input.duesId as string,
