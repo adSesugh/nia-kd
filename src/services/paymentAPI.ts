@@ -91,9 +91,9 @@ class PaymentAPI extends RESTDataSource {
             data: formattedData as any
         })
 
-        console.log('pay', payment)
+        if (payment) return true
         
-        return payment
+        return false
     }
 }
 

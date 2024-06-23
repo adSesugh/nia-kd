@@ -250,11 +250,11 @@ export const typeDefs = `#graphql
   }
   
   input multiPaymentInput {
-    memberId: UUID
+    memberId: UUID!
     duesId: [UUID!]
     eventId: UUID
     phoneNumber: String!
-    paymentRef: String
+    paymentRef: String!
     status: String!
   } 
 
@@ -414,7 +414,7 @@ export const typeDefs = `#graphql
     cancelEvent(eventId: UUID!, status: String!): Boolean
     deleteEvent(eventId: UUID!): Boolean
     archiveDue(dueId: UUID!): Boolean
-    postMultiPayment(input: multiPaymentInput): Payment!
+    postMultiPayment(input: multiPaymentInput!): Boolean
   }
 
   ## ------------------------------------- Query ---------------------------------------------------##

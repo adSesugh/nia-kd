@@ -270,7 +270,7 @@ export type Mutation = {
   deactivateMember?: Maybe<Member>;
   deleteEvent?: Maybe<Scalars['Boolean']['output']>;
   login?: Maybe<AuthPayload>;
-  postMultiPayment: Payment;
+  postMultiPayment?: Maybe<Scalars['Boolean']['output']>;
   postPayment: Payment;
   publishedBlog?: Maybe<BlogResponse>;
   updateDue?: Maybe<DueResponse>;
@@ -326,7 +326,7 @@ export type MutationLoginArgs = {
 
 
 export type MutationPostMultiPaymentArgs = {
-  input?: InputMaybe<MultiPaymentInput>;
+  input: MultiPaymentInput;
 };
 
 
@@ -596,8 +596,8 @@ export type MemberStat = {
 export type MultiPaymentInput = {
   duesId?: InputMaybe<Array<Scalars['UUID']['input']>>;
   eventId?: InputMaybe<Scalars['UUID']['input']>;
-  memberId?: InputMaybe<Scalars['UUID']['input']>;
-  paymentRef?: InputMaybe<Scalars['String']['input']>;
+  memberId: Scalars['UUID']['input'];
+  paymentRef: Scalars['String']['input'];
   phoneNumber: Scalars['String']['input'];
   status: Scalars['String']['input'];
 };
@@ -865,11 +865,11 @@ export type PostPaymentMutationVariables = Exact<{
 export type PostPaymentMutation = { __typename?: 'Mutation', postPayment: { __typename?: 'Payment', id: any, memberId?: any | null, duesId?: any | null, paymentRef?: string | null, amount: any, status: string, createdAt?: any | null } };
 
 export type PostMultiPaymentMutationVariables = Exact<{
-  input?: InputMaybe<MultiPaymentInput>;
+  input: MultiPaymentInput;
 }>;
 
 
-export type PostMultiPaymentMutation = { __typename?: 'Mutation', postMultiPayment: { __typename?: 'Payment', id: any, memberId?: any | null, duesId?: any | null, paymentRef?: string | null, amount: any, status: string, createdAt?: any | null } };
+export type PostMultiPaymentMutation = { __typename?: 'Mutation', postMultiPayment?: boolean | null };
 
 export type MemberPaymentsQueryVariables = Exact<{
   memberId: Scalars['UUID']['input'];
@@ -2575,16 +2575,8 @@ export type PostPaymentMutationHookResult = ReturnType<typeof usePostPaymentMuta
 export type PostPaymentMutationResult = Apollo.MutationResult<PostPaymentMutation>;
 export type PostPaymentMutationOptions = Apollo.BaseMutationOptions<PostPaymentMutation, PostPaymentMutationVariables>;
 export const PostMultiPaymentDocument = gql`
-    mutation PostMultiPayment($input: multiPaymentInput) {
-  postMultiPayment(input: $input) {
-    id
-    memberId
-    duesId
-    paymentRef
-    amount
-    status
-    createdAt
-  }
+    mutation PostMultiPayment($input: multiPaymentInput!) {
+  postMultiPayment(input: $input)
 }
     `;
 export type PostMultiPaymentMutationFn = Apollo.MutationFunction<PostMultiPaymentMutation, PostMultiPaymentMutationVariables>;
@@ -3135,7 +3127,7 @@ export type MutationResolvers<ContextType = GraphQLContext, ParentType extends R
   deactivateMember?: Resolver<Maybe<ResolversTypes['Member']>, ParentType, ContextType, RequireFields<MutationDeactivateMemberArgs, 'memberId' | 'status'>>;
   deleteEvent?: Resolver<Maybe<ResolversTypes['Boolean']>, ParentType, ContextType, RequireFields<MutationDeleteEventArgs, 'eventId'>>;
   login?: Resolver<Maybe<ResolversTypes['AuthPayload']>, ParentType, ContextType, RequireFields<MutationLoginArgs, 'input'>>;
-  postMultiPayment?: Resolver<ResolversTypes['Payment'], ParentType, ContextType, Partial<MutationPostMultiPaymentArgs>>;
+  postMultiPayment?: Resolver<Maybe<ResolversTypes['Boolean']>, ParentType, ContextType, RequireFields<MutationPostMultiPaymentArgs, 'input'>>;
   postPayment?: Resolver<ResolversTypes['Payment'], ParentType, ContextType, RequireFields<MutationPostPaymentArgs, 'input'>>;
   publishedBlog?: Resolver<Maybe<ResolversTypes['BlogResponse']>, ParentType, ContextType, RequireFields<MutationPublishedBlogArgs, 'blogId' | 'status'>>;
   updateDue?: Resolver<Maybe<ResolversTypes['DueResponse']>, ParentType, ContextType, RequireFields<MutationUpdateDueArgs, 'dueId' | 'input'>>;

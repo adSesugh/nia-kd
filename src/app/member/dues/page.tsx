@@ -219,7 +219,7 @@ const DueScreen = () => {
           }
         }
       })
-      if(res.data?.postMultiPayment?.status === 'Successful'){
+      if(res.data?.postMultiPayment){
         const resDue = await dueToPay({
           variables: {
             memberId: user?.member?.id,
