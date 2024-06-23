@@ -63,7 +63,7 @@ const TransactionList = () => {
               )
           case "description":
               return (
-                  <div className='flex flex-wrap'>{payment.description}</div>
+                  <div className='flex flex-wrap'>{payment?.description}</div>
               )
           case "paymentDate":
               return (
@@ -71,11 +71,11 @@ const TransactionList = () => {
               )
           case "amount":
               return (
-                  <div>{'\u20a6'}{Intl.NumberFormat().format(payment.amount)}</div>
+                  <div>{'\u20a6'}{Intl.NumberFormat().format(payment?.amount)}</div>
               )
           case "status":
               return (
-                  <Chip className="capitalize" color={payment.status === 'Successful' ? 'success' : 'default'} size="sm" variant="flat">
+                  <Chip className="capitalize" color={payment?.status === 'Successful' ? 'success' : 'default'} size="sm" variant="flat">
                       <span className='text-[#0A7535]'>{cellValue}</span>
                   </Chip>
               );
@@ -95,7 +95,7 @@ const TransactionList = () => {
       setPayments(paymentsHolder)
     } else {
       const filteredEvents = payments?.filter((payment: Payment) => {
-        return payment.description.toLowerCase().includes(query) || payment.paymentRef.toLowerCase().includes(query)
+        return payment?.description?.toLowerCase().includes(query) || payment?.paymentRef?.toLowerCase().includes(query)
       }) 
       setPayments(filteredEvents)
     }
