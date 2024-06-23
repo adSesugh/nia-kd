@@ -4,7 +4,7 @@ import { GraphQLError } from "graphql/error";
 import { ApolloServerErrorCode } from "@apollo/server/errors"
 import { DueInput, DueUpdateInput, MemberDueResponse } from "@/graphql/__generated__/graphql";
 import moment from "moment";
-import { getNumberOfDaysInYear, isDateRangeMoreThanOneYear } from "@/lib/helpers";
+import { isDateRangeMoreThanOneYear } from "@/lib/helpers";
 
 class DueAPI extends RESTDataSource {
 
@@ -39,6 +39,8 @@ class DueAPI extends RESTDataSource {
 
     async createDue(prisma: PrismaClient, input: DueInput, userId: string) {
 
+        console.log(userId)
+
         if (userId === null) {
             throw new GraphQLError('Unauthenticated', {
                 extensions: {
@@ -48,17 +50,17 @@ class DueAPI extends RESTDataSource {
             });
         }
 
-        const isTrue = await isDateRangeMoreThanOneYear(input.startsAt, input.endsAt)
+        const isTrue = isDateRangeMoreThanOneYear(input.startsAt, input.endsAt)
         console.log(isTrue)
 
-        // if(isTrue) {
-        //     throw new GraphQLError("Date out of bound", {
-        //         extensions: {
-        //             code: ApolloServerErrorCode.GRAPHQL_PARSE_FAILED,
-        //             http: { status: 200 }
-        //         }
-        //     })
-        // }
+        if(isTrue) {
+            throw new GraphQLError("Date out of bound", {
+                extensions: {
+                    code: ApolloServerErrorCode.GRAPHQL_PARSE_FAILED,
+                    http: { status: 200 }
+                }
+            })
+        }
 
         const dueExists = (await prisma.dues.findFirst({
             where: {
@@ -80,7 +82,9 @@ class DueAPI extends RESTDataSource {
             })
         }
 
-        const formattedData = input.membership?.map((membership) => {
+        console.log(userId)
+
+        const formattedData = input.membership?.map((membership: { id: any; amount: any; }) => {
             return {
                 membershipTypeId: membership.id,
                 amount: membership.amount,
@@ -88,7 +92,7 @@ class DueAPI extends RESTDataSource {
                 startsAt: new Date(input.startsAt),
                 endsAt: new Date(input.endsAt),
                 status: input.status as string,
-                userId: userId
+                userId
             }
         })
 

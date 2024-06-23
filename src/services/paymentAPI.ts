@@ -1,4 +1,4 @@
-import { PaymentInput } from "@/graphql/__generated__/graphql";
+import { Due, MultiPaymentInput, PaymentInput } from "@/graphql/__generated__/graphql";
 import { RESTDataSource } from "@apollo/datasource-rest";
 import { Member, PrismaClient } from "@prisma/client";
 
@@ -52,7 +52,7 @@ class PaymentAPI extends RESTDataSource {
                 description: input.description,
                 eventId: input.eventId,
                 phoneNumber: input.phoneNumber,
-                amount: input.amount,
+                amount: parseFloat(input.amount),
                 memberId: input.memberId as string,
                 duesId: input.duesId as string,
                 paymentRef: input.paymentRef as string,
@@ -60,6 +60,39 @@ class PaymentAPI extends RESTDataSource {
             }
         })
 
+        return payment
+    }
+
+    async postMultiPayment(prisma: PrismaClient, input: MultiPaymentInput) {
+
+        const dues = await prisma.dues.findMany({
+            where: {
+                id: {
+                    in: [...input.duesId as any]
+                }
+            }
+        })
+
+        const formattedData = dues.map((due: Due) => {
+            return {
+                paymentType: "Dues",
+                description: due.name,
+                eventId: input.eventId,
+                phoneNumber: input.phoneNumber,
+                amount: parseFloat(due.amount),
+                memberId: input.memberId as string,
+                duesId: due.id as string,
+                paymentRef: input.paymentRef as string,
+                status: input.status as string
+            }
+        })
+
+        const payment = await prisma.payment.createMany({
+            data: formattedData as any
+        })
+
+        console.log('pay', payment)
+        
         return payment
     }
 }

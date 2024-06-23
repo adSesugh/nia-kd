@@ -248,6 +248,15 @@ export const typeDefs = `#graphql
     amount: Decimal
     status: String!
   }
+  
+  input multiPaymentInput {
+    memberId: UUID
+    duesId: [UUID!]
+    eventId: UUID
+    phoneNumber: String!
+    paymentRef: String
+    status: String!
+  } 
 
   input blogInput {
     title: String!
@@ -405,6 +414,7 @@ export const typeDefs = `#graphql
     cancelEvent(eventId: UUID!, status: String!): Boolean
     deleteEvent(eventId: UUID!): Boolean
     archiveDue(dueId: UUID!): Boolean
+    postMultiPayment(input: multiPaymentInput): Payment!
   }
 
   ## ------------------------------------- Query ---------------------------------------------------##

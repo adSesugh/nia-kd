@@ -14,6 +14,9 @@ import moment from 'moment';
 import CustomSearch from '@/components/custom-select';
 import { PaystackButton } from 'react-paystack';
 import { HookConfig } from 'react-paystack/dist/types';
+import { toast } from 'react-toastify';
+import { Dues } from '.prisma/client';
+import { usePostMultiPaymentMutation } from '@/graphql/__generated__/graphql';
 
 ChartJS.register(ArcElement, ToolkitChart, Legend);
 
@@ -33,7 +36,18 @@ const DueScreen = () => {
   const [dueList, setDueList] = useState<any>([])
   const [dueListHolder, setDueListHolder] = useState<any>([])
   const [selectValue, setSelectValue] = useState<string>('')
+  const [cummDues, setCummDues] = useState<number>(0)
+  const [pendingDues, setPendingDues] = useState<any>([])
+  const [selectedPayments, setSelectedPayments] = useState<any>([])
   const user = useAppSelector((state: RootState) => state.auth.userData.user)
+  const [config, setConfig] = useState<HookConfig>(
+    {
+      reference: (new Date()).getTime().toString(),
+      amount: cummDues,
+      email: user?.member?.email,
+      publicKey: process.env.NEXT_PUBLIC_PAYSTACK_PUBLIC_KEY as string,
+    }
+  )
 
   const daysGone = getTotalDaysInYear(new Date().getFullYear()) - getTotalDaysOfYear(new Date())
   const daysOfYear = getTotalDaysOfYear(new Date())
@@ -60,6 +74,7 @@ const DueScreen = () => {
 
   const [dueToPay, {loading }] = useGetMemberUnpaidDuesLazyQuery({fetchPolicy: 'no-cache'})
   const [postPayment] = usePostPaymentMutation()
+  const [postMultiPayment] = usePostMultiPaymentMutation()
   const loadingState = loading || dueList === 0 ? "loading" : "idle";
 
   useEffect(() => {
@@ -73,8 +88,25 @@ const DueScreen = () => {
         })
         setDueList(res.data?.getMemberUnpaidDues)
         setDueListHolder(res.data?.getMemberUnpaidDues)
+        setPendingDues(res.data?.getMemberUnpaidDues?.map(due => {
+          return {
+            key: due?.id,
+            label: `${due?.name} - ${'\u20a6'}${Intl.NumberFormat().format(Number(due?.amount))}`
+          }
+        }))
     })()
   }, [dueToPay])
+
+  const handlePaystackCloseAction = () => {
+    console.log('closed')
+  }
+
+  const componentProps = {
+    ...config,
+    text: 'Pay Now',
+    onSuccess: (reference: any) => handleMultiPaystackSuccessAction(reference),
+    onClose: handlePaystackCloseAction,
+  };
 
   const renderCell = React.useCallback((due: Due, columnKey: React.Key, index: number) => {
       const cellValue = due[columnKey as keyof Due];
@@ -136,6 +168,7 @@ const DueScreen = () => {
   }, []);
 
   const handlePaystackSuccessAction = async (reference: any, dues: any) => {
+    try {
       const res = await postPayment({
         variables: {
           input: {
@@ -146,26 +179,84 @@ const DueScreen = () => {
             status: reference.status === 'success' ? 'Successful' : 'Unsuccessful',
             phoneNumber: user?.member?.phoneNumber as string,
             paymentRef: reference.trxref,
-            amount: parseFloat(reference.amount)
+            amount: parseFloat(dues.amount)
           }
         }
       })
+      if(res.data?.postPayment.status === 'Successful'){
+        const resDue = await dueToPay({
+          variables: {
+            memberId: user?.member?.id,
+            membershipTypeId: user?.member?.membershipType?.id
+          }
+        })
+        setDueList(resDue.data?.getMemberUnpaidDues)
+        setDueListHolder(resDue.data?.getMemberUnpaidDues)
+        setPendingDues(resDue.data?.getMemberUnpaidDues?.map(due => {
+          return {
+            key: due?.id,
+            label: `${due?.name} - ${'\u20a6'}${Intl.NumberFormat().format(Number(due?.amount))}`
+          }
+        }))
+        toast.success('Dues paid successfully')
+      }
+    } catch (error: any) {
+      toast.error(error.messge)
+    }
   };
 
-  // you can call this function anything
-  const handlePaystackCloseAction = () => {
-    // implementation for  whatever you want to do when the Paystack dialog closed.
-    console.log('closed')
-  }
 
-  const handleMultiSelectPayment = (e: ChangeEvent<HTMLSelectElement>) => {
+  const handleMultiPaystackSuccessAction = async (reference: any) => {
+    try {
+      const res = await postMultiPayment({
+        variables: {
+          input: {
+            memberId: user?.member?.id,
+            duesId: selectedPayments,
+            status: reference.status === 'success' ? 'Successful' : 'Unsuccessful',
+            phoneNumber: user?.member?.phoneNumber as string,
+            paymentRef: reference.trxref,
+          }
+        }
+      })
+      if(res.data?.postMultiPayment?.status === 'Successful'){
+        const resDue = await dueToPay({
+          variables: {
+            memberId: user?.member?.id,
+            membershipTypeId: user?.member?.membershipType?.id
+          }
+        })
+        setDueList(resDue.data?.getMemberUnpaidDues)
+        setDueListHolder(resDue.data?.getMemberUnpaidDues)
+        setPendingDues(resDue.data?.getMemberUnpaidDues?.map(due => {
+          return {
+            key: due?.id,
+            label: `${due?.name} - ${'\u20a6'}${Intl.NumberFormat().format(Number(due?.amount))}`
+          }
+        }))
+        setCummDues(0)
+        toast.success('Dues paid successfully')
+      }
+    } catch (error: any) {
+      toast.error(error.messge)
+    }
+  };
+
+  const handleMultiSelectForPayment = (e: ChangeEvent<HTMLSelectElement>) => {
     const valueArr = e.target.value.split(',')
-    console.log(valueArr)
-  }
+    let sum: number = 0
+    valueArr.forEach(item => {
+      const amount: number = dueList.find((due: Due) => due.id === item)?.amount
+      sum += Number(amount)
+    })
 
-  const handleMultiPayment = () => {
-    //const initializePayment = usePaystackPayment(config);
-    //console.log(e)
+    const totalAmount = sum * 100 
+    config['amount'] = totalAmount
+    config['phone'] = user?.member?.phoneNumber
+
+    setConfig(config)
+
+    setSelectedPayments(valueArr)
   }
 
   const searchDues = (query: string) => {
@@ -239,24 +330,28 @@ const DueScreen = () => {
                 </div>
                 <div className='flex sm:flex-row xs:flex-col sm:items-center xs:items-start sm:justify-start space-x-2'>
                   <Select
-                    items={dueList}
+                    items={pendingDues}
                     placeholder='Select the year to update to pay'
                     selectionMode='multiple'
                     className='max-w-xs mt-4'
                     isRequired
                     name='dues'
-                    onChange={handleMultiSelectPayment}
+                    onChange={handleMultiSelectForPayment}
                   >
-                    {(due: Due) => (
-                      <SelectItem key={due.id}>{due.name} - {'\u20a6'}{Intl.NumberFormat().format(due.amount)}</SelectItem>
+                    {(due: any) => (
+                      <SelectItem key={due.key}>{due.label}</SelectItem>
                     )}
                   </Select>
-                    <button
-                      className='flex mt-4 px-4 rounded-lg py-2 items-center justify-center xs:justify-start bg-black text-white'
-                      onClick={handleMultiPayment}
-                    >
-                      Pay now
-                    </button>
+                  <button
+                    className='flex mt-4 px-4 rounded-lg py-2 items-center justify-center xs:justify-start bg-black text-white'
+                  >
+                    <PaystackButton 
+                      amount={4000 * 100} 
+                      email={user?.member?.email as string} 
+                      reference={(new Date()).getTime().toString()}
+                      {...componentProps} 
+                    />
+                  </button>
                 </div>
               </div>
             </div>

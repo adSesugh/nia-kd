@@ -3,6 +3,11 @@ import { PrismaClient } from "@prisma/client";
 import moment from "moment";
 
 class DashboardAPI extends RESTDataSource {
+
+    todayDate = new Date(moment().format("Y-MM-D"))
+    startOfYear = new Date(moment().startOf('year').format("Y-MM-D"))
+    endOfYear = new Date(moment().endOf('year').format("Y-MM-D"))
+
     async getRecentRegistrations(prisma: PrismaClient) {
         const newMembers = await prisma.member.findMany({
             orderBy: {
@@ -15,16 +20,13 @@ class DashboardAPI extends RESTDataSource {
     }
 
     async getAdminStat(prisma: PrismaClient) {
-        const today = new Date(moment().format("Y-MM-D"))
-        const startOfYear = new Date(moment().startOf('year').format("Y-MM-D"))
-        const endOfYear = new Date(moment().endOf('year').format("Y-MM-D"))
 
         const memberCount = await prisma.member.count()
         const eventHeld = await prisma.event.count({
             where: {
                 status: 'Ended',
                 ends_at: {
-                    lt: today
+                    lt: this.todayDate
                 },
             }
         })
@@ -44,8 +46,8 @@ class DashboardAPI extends RESTDataSource {
         const payments = await prisma.payment.aggregate({
             where: {
                 createdAt: {
-                    gte: startOfYear,
-                    lte: endOfYear
+                    gte: this.startOfYear,
+                    lte: this.endOfYear
                 },
                 status: {
                     equals: 'Successful'
@@ -59,8 +61,8 @@ class DashboardAPI extends RESTDataSource {
         const eventPayments = await prisma.payment.aggregate({
             where: {
                 createdAt: {
-                    gte: startOfYear,
-                    lte: endOfYear
+                    gte: this.startOfYear,
+                    lte: this.endOfYear
                 },
                 status: {
                     equals: 'Successful'
@@ -75,8 +77,8 @@ class DashboardAPI extends RESTDataSource {
         const duesPayments = await prisma.payment.aggregate({
             where: {
                 createdAt: {
-                    gte: startOfYear,
-                    lte: endOfYear
+                    gte: this.startOfYear,
+                    lte: this.endOfYear
                 },
                 status: {
                     equals: 'Successful'
@@ -183,13 +185,14 @@ class DashboardAPI extends RESTDataSource {
 
         const checkYearlyDuePayment = await prisma.payment.count({
             where: {
+                memberId,
                 due: {
-                    startsAt: {equals: new Date(moment().startOf('year').format('Y-MM-D'))},
-                    endsAt: {lte: new Date(moment().endOf('year').format('Y-MM-D'))}
+                    startsAt: {gt: this.startOfYear},
+                    endsAt: {lte: this.endOfYear}
                 },
                 createdAt: {
-                    equals: new Date(moment().startOf('year').format('Y-MM-D')),
-                    lte: new Date(moment().endOf('year').format('Y-MM-D'))
+                    gt: this.startOfYear,
+                    lte: this.endOfYear
                 }
             }
         })

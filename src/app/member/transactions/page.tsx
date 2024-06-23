@@ -69,6 +69,10 @@ const TransactionList = () => {
               return (
                   <div>{moment(payment.createdAt).format("MMM D @ h:mm A")}</div>
               )
+          case "amount":
+              return (
+                  <div>{'\u20a6'}{Intl.NumberFormat().format(payment.amount)}</div>
+              )
           case "status":
               return (
                   <Chip className="capitalize" color={payment.status === 'Successful' ? 'success' : 'default'} size="sm" variant="flat">
@@ -91,8 +95,8 @@ const TransactionList = () => {
       setPayments(paymentsHolder)
     } else {
       const filteredEvents = payments?.filter((payment: Payment) => {
-        return payment.description.toLowerCase().includes(query)
-      })
+        return payment.description.toLowerCase().includes(query) || payment.paymentRef.toLowerCase().includes(query)
+      }) 
       setPayments(filteredEvents)
     }
   }

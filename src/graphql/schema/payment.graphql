@@ -59,6 +59,18 @@ mutation PostPayment($input: paymentInput!) {
   }
 }
 
+mutation PostMultiPayment($input: multiPaymentInput) {
+  postMultiPayment(input: $input) {
+    id
+    memberId
+    duesId
+    paymentRef
+    amount
+    status
+    createdAt
+  }
+}
+
 query MemberPayments($memberId: UUID!) {
   memberPayments(memberId: $memberId) {
     id

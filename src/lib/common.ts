@@ -62,7 +62,7 @@ export const getUserIdFromToken = (token: string) => {
 };
 
 export const authenticateUser = (userId: string) => {
-    const token = jwt.sign({ userId }, 'secret', { expiresIn: '30m' });
+    const token = jwt.sign({ userId }, 'secret', { expiresIn: '120m' });
     return token;
 };
 

@@ -6,6 +6,7 @@ import { useGetPastEventsQuery, useGetUpComingEventsQuery } from '@/graphql/__ge
 import { useSelector } from 'react-redux';
 import { RootState } from '@/features/store';
 import { Spinner } from '@nextui-org/react';
+import Image from 'next/image';
 
 // export const metadata: Metadata = {
 //   title: "Tickets | NIA-Kd",
@@ -78,7 +79,20 @@ const TicketList = () => {
       ): (
         <div className='h-60'>
           <div className='flex justify-center items-center h-full w-full'>
-            <span className='text-2xl text-slate-blue-100'>No record found</span>
+            <div className='flex flex-col items-center justify-center gap-3'>
+              <Image 
+                src={'/assets/event-empty.png'} 
+                alt='empty state' 
+                width={10} 
+                height={10} 
+                sizes='100vw'
+                style={{
+                  width: '35%',
+                  height: 'auto'
+                }}
+              />
+              <span className='text-xl text-slate-blue-100'>No record found</span>
+            </div>
           </div>
         </div>
       )}

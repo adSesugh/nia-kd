@@ -145,7 +145,7 @@ class UserAPI extends RESTDataSource {
             member: loggedUser.member
         }
 
-        const token = authenticateUser(loggedUser.regId as string);
+        const token = authenticateUser(loggedUser.id as string);
 
         return { token, user }
     }

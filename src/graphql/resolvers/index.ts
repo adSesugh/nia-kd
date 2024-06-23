@@ -16,7 +16,8 @@ export const resolvers: Resolvers = {
         watchEventViews: (_, {eventId}, {prisma, dataSources}) => dataSources.eventAPI.watchViews(prisma, eventId),
         cancelEvent: (_, {eventId, status}, {prisma, dataSources}) => dataSources.eventAPI.cancelEvent(prisma, eventId, status),
         deleteEvent: (_, {eventId}, {prisma, dataSources}) => dataSources.eventAPI.deleteEvent(prisma, eventId),
-        archiveDue: (_, {dueId}, {prisma, dataSources}) => dataSources.eventAPI.deleteEvent(prisma, dueId)
+        archiveDue: (_, {dueId}, {prisma, dataSources}) => dataSources.eventAPI.deleteEvent(prisma, dueId),
+        postMultiPayment: (_, {input}, {prisma, dataSources}) => dataSources.paymentAPI.postMultiPayment(prisma, input)
     },
     Query: {
         members: (_, __, { prisma, dataSources, userId }) => dataSources.memberAPI.getMembers(prisma, userId),

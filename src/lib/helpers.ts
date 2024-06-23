@@ -15,7 +15,7 @@ export const getDaysPercentage = (days: number, totalDays: number): number => Ma
 export const generateZerofillID = (counter: number): string => String(counter).padStart(6, '0')
 
 
-export async function isDateRangeMoreThanOneYear(startDate: string, endDate: string): Promise<boolean> {
+export const isDateRangeMoreThanOneYear = (startDate: string, endDate: string): boolean => {
     const start = new Date(startDate);
     const end = new Date(endDate);
   
@@ -26,13 +26,13 @@ export async function isDateRangeMoreThanOneYear(startDate: string, endDate: str
     const differenceInDays = differenceInMilliseconds / (1000 * 60 * 60 * 24);
   
     // Check if the difference is more than 365 days
-    return differenceInDays > getTotalDaysOfYear(new Date());
+    return differenceInDays > getNumberOfDaysInYear(new Date().getFullYear());
 }
 
 function isLeapYear(year: number): boolean {
     return (year % 4 === 0 && year % 100 !== 0) || (year % 400 === 0);
 }
 
-export function getNumberOfDaysInYear(year: number): number {
+function getNumberOfDaysInYear(year: number): number {
     return isLeapYear(year) ? 366 : 365;
 }
