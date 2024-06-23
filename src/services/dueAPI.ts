@@ -37,9 +37,17 @@ class DueAPI extends RESTDataSource {
         return due
     }
 
-    async createDue(prisma: PrismaClient, input: DueInput) {
+    async createDue(prisma: PrismaClient, input: DueInput, userId: string) {
 
-        console.log(input.userId)
+        if (userId === null) {
+            throw new GraphQLError('Unauthenticated', {
+                extensions: {
+                    code: 'UNAUTHENTICATED',
+                    http: { status: 401 },
+                },
+            });
+        }
+
         const isTrue = await isDateRangeMoreThanOneYear(input.startsAt, input.endsAt)
         console.log(isTrue)
 
@@ -80,7 +88,7 @@ class DueAPI extends RESTDataSource {
                 startsAt: new Date(input.startsAt),
                 endsAt: new Date(input.endsAt),
                 status: input.status as string,
-                userId: input.userId as string
+                userId: userId
             }
         })
 
@@ -95,7 +103,17 @@ class DueAPI extends RESTDataSource {
         }
     }
 
-    async updateDue(prisma: PrismaClient, dueId: string, input: DueUpdateInput) {
+    async updateDue(prisma: PrismaClient, dueId: string, input: DueUpdateInput, userId: string) {
+
+        if (userId === null) {
+            throw new GraphQLError('Unauthenticated', {
+                extensions: {
+                    code: 'UNAUTHENTICATED',
+                    http: { status: 401 },
+                },
+            });
+        }
+        
         const due = await prisma.dues.update({
             where: {
                 id: dueId
@@ -105,7 +123,7 @@ class DueAPI extends RESTDataSource {
                 startsAt: input.startsAt,
                 endsAt: input.endsAt,
                 name: input.name as string,
-                userId: input.userId as string
+                userId: userId
             }
         })
 

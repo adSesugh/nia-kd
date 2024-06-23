@@ -30,7 +30,7 @@ class DashboardAPI extends RESTDataSource {
         })
 
         const groupMembers = await prisma.member.groupBy({
-            by: ['membershipType'],
+            by: ['membershipTypeId'],
             where: {
               status: {
                 equals: 'Active',
@@ -104,12 +104,12 @@ class DashboardAPI extends RESTDataSource {
         }
 
         const membership = [
-            groupMembers.find((member) => member.membershipType === 'Assoicate')?._count._all || 0,
-            groupMembers.find((member) => member.membershipType === 'Fellow')?._count._all || 0,
-            groupMembers.find((member) => member.membershipType === 'Full Member')?._count._all || 0,
-            groupMembers.find((member) => member.membershipType === 'Graduate')?._count._all || 0,
-            groupMembers.find((member) => member.membershipType === 'Student')?._count._all || 0,
-            groupMembers.find((member) => member.membershipType === 'Technologist')?._count._all || 0,
+            groupMembers.find((member) => member.membershipTypeId === 'Assoicate')?._count._all || 0,
+            groupMembers.find((member) => member.membershipTypeId === 'Fellow')?._count._all || 0,
+            groupMembers.find((member) => member.membershipTypeId === 'Full Member')?._count._all || 0,
+            groupMembers.find((member) => member.membershipTypeId === 'Graduate')?._count._all || 0,
+            groupMembers.find((member) => member.membershipTypeId === 'Student')?._count._all || 0,
+            groupMembers.find((member) => member.membershipTypeId === 'Technologist')?._count._all || 0,
         ]
 
         const avgAttendance = attendances / eventHeld || 0

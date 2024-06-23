@@ -542,7 +542,6 @@ export type DueInput = {
   name: Scalars['String']['input'];
   startsAt: Scalars['Time']['input'];
   status: Scalars['String']['input'];
-  userId?: InputMaybe<Scalars['String']['input']>;
 };
 
 export type DueUpdateInput = {
@@ -550,7 +549,6 @@ export type DueUpdateInput = {
   endsAt?: InputMaybe<Scalars['Time']['input']>;
   name?: InputMaybe<Scalars['String']['input']>;
   startsAt?: InputMaybe<Scalars['Time']['input']>;
-  userId?: InputMaybe<Scalars['String']['input']>;
 };
 
 export type EventInput = {

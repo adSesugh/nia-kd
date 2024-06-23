@@ -15,7 +15,6 @@ import moment from 'moment'
 
 
 const DuesPage = () => {
-    const userId = useAppSelector((state: RootState) => state.auth.userData.user?.id)
     const [clickBtn, setClickBtn] = useState('save')
 
     const {isOpen, onOpen, onOpenChange} = useDisclosure()
@@ -73,8 +72,7 @@ const DuesPage = () => {
                                                         membership: membersType,
                                                         startsAt: values.starts_at,
                                                         endsAt: values.ends_at,
-                                                        status: clickBtn === 'Save' ? 'Active' : 'Inactive',
-                                                        userId: userId
+                                                        status: clickBtn === 'Save' ? 'Active' : 'Inactive'
                                                     }
                                                 }
                                             })
@@ -99,7 +97,6 @@ const DuesPage = () => {
                                                 <DateField name='starts_at' label='Start at' className='sm:w-48 xs:w-full' minDate={`${moment().startOf('year').toISOString().split('T')[0]}`} />
                                                 <DateField name='ends_at' label='End at' className='sm:w-48 xs:w-full' minDate={values.starts_at} />
                                             </div>
-                                            {userId}
                                             <div className='grid sm:grid-cols-2 xs:grid-cols-1 gap-3'>
                                                 {membershipType?.getMembershipTypes?.map((membership) => (
                                                     <TextField key={membership.id} label={`Amount (${membership.name})`} name={membership.name.replaceAll(' ', '_').toLowerCase()} type='number' placeholder={`Amount (${'\u20a6'})`} />

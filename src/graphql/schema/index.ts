@@ -228,7 +228,6 @@ export const typeDefs = `#graphql
     startsAt: Time!
     endsAt: Time!
     status: String!
-    userId: String
   }
   
   input dueUpdateInput {
@@ -236,7 +235,6 @@ export const typeDefs = `#graphql
     amount: Decimal
     startsAt: Time
     endsAt: Time
-    userId: String
   }
 
   input paymentInput {

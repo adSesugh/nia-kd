@@ -6,8 +6,8 @@ export const resolvers: Resolvers = {
     Mutation: {
         createUser: (_, { input }, { prisma, dataSources }) => dataSources.userAPI.addUser(prisma, input),
         login: (_, { input }, { prisma, dataSources }) => dataSources.userAPI.loginUser(prisma, input),
-        createDue: (_, { input }, { prisma, dataSources }) => dataSources.dueAPI.createDue(prisma, input),
-        updateDue: (_, { dueId, input }, { prisma, dataSources }) => dataSources.dueAPI.updateDue(prisma, dueId, input),
+        createDue: (_, { input }, { prisma, dataSources, userId }) => dataSources.dueAPI.createDue(prisma, input, userId),
+        updateDue: (_, { dueId, input }, { prisma, dataSources, userId }) => dataSources.dueAPI.updateDue(prisma, dueId, input, userId),
         postPayment: (_, { input }, { prisma, dataSources }) => dataSources.paymentAPI.postPayment(prisma, input),
         deactivateMember: (_, { memberId, status }, { prisma, dataSources }) => dataSources.memberAPI.deactivate(prisma, memberId, status),
         createBlog: (_, { input }, { prisma, dataSources, userId }) => dataSources.blogAPI.createBlog(prisma, userId, input),

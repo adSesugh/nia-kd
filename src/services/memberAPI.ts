@@ -5,7 +5,7 @@ import { GraphQLError } from "graphql/error";
 class MemberAPI extends RESTDataSource {
 
     async getMembers(prisma: PrismaClient, userId: string) {
-        console.log(userId)
+
         if (userId === null) {
             throw new GraphQLError('Unauthenticated', {
                 extensions: {
