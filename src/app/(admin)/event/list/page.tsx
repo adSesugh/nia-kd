@@ -180,7 +180,7 @@ const Events = () => {
   }
   
   return (
-    <div className='sm:px-12 xs:px-4 h-full overflow-y-auto'>
+    <div className='sm:px-12 xs:px-4 h-full overflow-y-auto pb-12'>
       <div className='flex justify-between items-center'>
           <TitleHeader title='Events' />
           <div className='sm:pt-14 xs:pt-2'>

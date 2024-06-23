@@ -13,13 +13,16 @@ import TimeField from '@/components/timefield'
 import TinyMCEField from '@/components/tinymce-field'
 import { FormDesign, useCreateEventMutation, useEventFormFieldsLazyQuery, useEventFormFieldsQuery } from '@/graphql/__generated__/graphql'
 import { combineDateTime } from '@/lib/common'
-import { Avatar, AvatarGroup, Spinner, Switch, Table, TableBody, TableCell, TableColumn, TableHeader, TableRow } from '@nextui-org/react'
+import { EventSchema } from '@/lib/validations'
+import { Avatar, AvatarGroup, Button, ButtonGroup, Spinner, Switch, Table, TableBody, TableCell, TableColumn, TableHeader, TableRow } from '@nextui-org/react'
 import { Globe, MapPinSimpleArea, Plus, X } from '@phosphor-icons/react'
 import { Field, Form, Formik } from 'formik'
 import { Gift, MoneyTick, Video } from 'iconsax-react'
 import moment from 'moment'
 import Link from 'next/link'
+import { useRouter } from 'next/navigation'
 import React, { useEffect, useState } from 'react'
+import { toast } from 'react-toastify'
 
 interface FileWithPreview extends File {
     preview?: string;
@@ -53,6 +56,7 @@ interface EventType {
 }
 
 const CreateEvent = () => {
+    const router = useRouter()
     const [base64, setBase64] = useState<string>()
     const [speakerImg, setSpeakerImg] = useState<string>()
     const [files, setFiles] = useState<FileWithPreview[]>([]);
@@ -263,8 +267,21 @@ const CreateEvent = () => {
             <div className='pt-6 pb-6 mb-12 sm:px-52 xs:px-4'>
                 <Formik
                     initialValues={EventProps}
+                    //validationSchema={EventSchema}
                     onSubmit={async(values) => {
                         try {
+                            const regForm = formFields.map((item: FormDesign) => {
+                                return {
+                                    name: item?.name,
+                                    label: item?.label,
+                                    type: item?.type,
+                                    required: item?.required
+                                }
+                            })
+
+                            console.log(regForm)
+
+                            console.log(selectedFields)
                             const res = await registerEvent({
                                 variables: {
                                     input: {
@@ -286,7 +303,7 @@ const CreateEvent = () => {
                                         formTitle: values.formTitle,
                                         instructions: values.instructions,
                                         message: values.message,
-                                        form: selectedFields,
+                                        form: regForm,
                                         resources: values.resources,
                                         certificate: values.certificate,
                                         hasCertificate: values.hasCertificate,
@@ -297,9 +314,13 @@ const CreateEvent = () => {
                                 }
                             })
 
-                            console.log(res.data)
-                        } catch (error) {
+                            if(res.data?.createEvent?.success) {
+                                toast.success(res.data.createEvent.message)
+                                return router.back()
+                            }
+                        } catch (error: any) {
                             console.log(error)
+                            toast.error(error.message)
                         }
                     }}
                 >
@@ -352,7 +373,34 @@ const CreateEvent = () => {
                                         <div className='flex flex-col px-4 pt-5'>
                                             <h1 className='text-sm pb-1'>Where is the event taking place?</h1>
                                             <div className='flex shadow-sm bg-[#ECECEE] p-[2px] sm:w-60 xs:w-full mb-3'>
-                                                <button onClick={() => {
+                                                <ButtonGroup
+                                                    className='rounded-none w-full'
+                                                    variant='flat'
+                                                >
+                                                    <Button
+                                                        onClick={() => {
+                                                            setFieldValue('meetingType', 'Physical')
+                                                            setFieldValue('link', '')
+                                                        }}
+                                                        type='button'
+                                                        className={`flex w-1/2 p-2 rounded-none space-x-2 items-center justify-center ${values.meetingType === 'Physical' && 'bg-white shadow-lg'}`}
+                                                    >
+                                                        <Globe size={20} color={`${values.meetingType === 'Physical' ? '#161314': '#636363'}`} />
+                                                        <span className={`text-sm ${values.meetingType === 'Physical' ? 'text-[#161314]' : 'text-[#636363]'}`}>In person</span>
+                                                    </Button>
+                                                    <Button
+                                                        onClick={() => {
+                                                            setFieldValue('meetingType', 'Online')
+                                                            setFieldValue('address', '')
+                                                        }}
+                                                        type='button'
+                                                        className={`flex w-1/2 p-2 h-full space-x-2 items-center justify-center ${values.meetingType === 'Online' && 'bg-white shadow-lg'}`}
+                                                    >
+                                                        <Video size={20} color={`${values.meetingType === 'Online' ? '#161314': '#636363'}`} />
+                                                        <span className={`text-sm ${values.meetingType === 'Online' ? 'text-[#161314]' : 'text-[#636363]'}`}>Online</span>
+                                                    </Button>
+                                                </ButtonGroup>
+                                                {/* <button onClick={() => {
                                                     setFieldValue('meetingType', 'Physical')
                                                     setFieldValue('link', '')
                                                 }} className={`flex w-1/2 p-2 space-x-2 items-center justify-center ${values.meetingType === 'Physical' && 'bg-white shadow-lg'}`}>
@@ -365,7 +413,7 @@ const CreateEvent = () => {
                                                 }} className={`flex w-1/2 p-2 h-full space-x-2 items-center justify-center ${values.meetingType === 'Online' && 'bg-white shadow-lg'}`}>
                                                     <Video size={20} color={`${values.meetingType === 'Online' ? '#161314': '#636363'}`} />
                                                     <span className={`text-sm ${values.meetingType === 'Online' ? 'text-[#161314]' : 'text-[#636363]'}`}>Online</span>
-                                                </button>
+                                                </button> */}
                                             </div>
                                             {values.meetingType === 'Physical' ? (
                                                 <GooglePlacesInput 
@@ -438,7 +486,34 @@ const CreateEvent = () => {
                                             <div className='flex flex-col'>
                                                 <h1 className='text-sm pb-1'>How do you plan on hosting this event?</h1>
                                                 <div className='flex shadow-sm bg-[#ECECEE] p-[2px] sm:w-60 xs:w-full mb-3'>
-                                                    <button onClick={() => {
+                                                    <ButtonGroup
+                                                        className='rounded-none w-full'
+                                                        variant='flat'
+                                                    >
+                                                        <Button
+                                                            onClick={() => {
+                                                                setFieldValue('paymentType', 'Free')
+                                                                setFieldValue('isInfinity', false)
+                                                            }}
+                                                            type='button'
+                                                            className={`flex w-1/2 p-2 space-x-2 items-center justify-center ${values.paymentType === 'Free' && 'bg-white shadow-lg'}`}
+                                                        >
+                                                            <Gift size={20} color={`${values.paymentType === 'Free' ? '#161314': '#636363'}`} />
+                                                            <span className={`text-sm ${values.paymentType === 'Free' ? 'text-[#161314]' : 'text-[#636363]'}`}>Free</span>
+                                                        </Button>
+                                                        <Button
+                                                            onClick={() => {
+                                                                setFieldValue('paymentType', 'Paid')
+                                                                setFieldValue('isInfinity', false)
+                                                            }}
+                                                            type='button'
+                                                            className={`flex w-1/2 p-2 h-full space-x-2 items-center justify-center ${values.paymentType === 'Paid' && 'bg-white shadow-lg'}`}
+                                                        >
+                                                            <MoneyTick size={20} color={`${values.paymentType === 'Paid' ? '#161314': '#636363'}`} />
+                                                            <span className={`text-sm ${values.paymentType === 'Paid' ? 'text-[#161314]' : 'text-[#636363]'}`}>Paid</span>
+                                                        </Button>
+                                                    </ButtonGroup>
+                                                    {/* <button onClick={() => {
                                                         setFieldValue('paymentType', 'Free')
                                                         setFieldValue('isInfinity', false)
                                                     }} className={`flex w-1/2 p-2 space-x-2 items-center justify-center ${values.paymentType === 'Free' && 'bg-white shadow-lg'}`}>
@@ -451,7 +526,7 @@ const CreateEvent = () => {
                                                     }} className={`flex w-1/2 p-2 h-full space-x-2 items-center justify-center ${values.paymentType === 'Paid' && 'bg-white shadow-lg'}`}>
                                                         <MoneyTick size={20} color={`${values.paymentType === 'Paid' ? '#161314': '#636363'}`} />
                                                         <span className={`text-sm ${values.paymentType === 'Paid' ? 'text-[#161314]' : 'text-[#636363]'}`}>Paid</span>
-                                                    </button>
+                                                    </button> */}
                                                 </div>
                                             </div>
                                             <div className='flex sm:flex-row xs:flex-col gap-4'>
@@ -507,7 +582,7 @@ const CreateEvent = () => {
                                                             }
                                                         }}
                                                     />
-                                                    <label htmlFor="speakerPix" className="flex flex-col items-center py-1 px-2 rounded-lg bg-[#F3ECE2] cursor-pointer">
+                                                    <label aria-label='speakerPix' htmlFor="speakerPix" className="flex flex-col items-center py-1 px-2 rounded-lg bg-[#F3ECE2] cursor-pointer">
                                                         {speakerImg ? (
                                                             <img src={speakerImg} className='flex w-full h-full overflow-hidden' />
                                                         ): (
@@ -541,10 +616,10 @@ const CreateEvent = () => {
                                         </div>
                                         <hr className='h-[1px] bg-[#D9D9D9 w-full' />
                                         <div className='py-3 px-4'>
-                                            <button type='button' className='flex gap-3' onClick={addSpeaker}>
+                                            <Button type='button' className='flex gap-3' onClick={addSpeaker}>
                                                 <Plus size={20} color='#E08D14' />
                                                 <span className='text-[#E08D14]'>Add speaker</span>
-                                            </button>
+                                            </Button>
                                         </div>
                                     </div>
                                     <div className='w-full bg-white mt-4'>
@@ -607,7 +682,7 @@ const CreateEvent = () => {
                                                 </TableHeader>
                                                 <TableBody
                                                     items={formFields ?? []}
-                                                    loadingContent={<Spinner />}
+                                                    loadingContent={<Spinner color='default' />}
                                                     loadingState={'idle'}
                                                     emptyContent={"No rows to display."}
                                                 >
@@ -647,9 +722,6 @@ const CreateEvent = () => {
                                                             preview: URL.createObjectURL(file),
                                                             })
                                                         );
-                                                        // const blobUrl = newFiles[0].preview
-                                                        // const blob = await fetch(blobUrl).then(r => r.blob());
-                                                        // console.log(blob)
                                                         const reader = new FileReader();
                                                         newFiles.forEach((resr: File, index: number) => {
                                                             reader.onloadend = () => {
@@ -661,7 +733,7 @@ const CreateEvent = () => {
                                                     }
                                                 }}
                                             />
-                                            <label htmlFor="file-upload" className="flex flex-col items-center">
+                                            <label aria-label='file-upload' htmlFor="file-upload" className="flex flex-col items-center">
                                                 <p>Drag and drop files here or <u>browse</u></p>
                                             </label>
                                         </div>
@@ -713,7 +785,7 @@ const CreateEvent = () => {
                                                         }
                                                     }}
                                                 />
-                                                <label htmlFor="sponsor-upload" className="flex flex-col items-center">
+                                                <label aria-label='sponsor-upload' htmlFor="sponsor-upload" className="flex flex-col items-center">
                                                     <p>Drag and drop files here or <u>browse</u></p>
                                                 </label>
                                             </div>
@@ -723,6 +795,7 @@ const CreateEvent = () => {
                                                     <div className="items-center mb-2" key={index}>
                                                         <img src={file} alt="PDF Icon" className="w-16 h-16 mr-2" />
                                                         <button
+                                                            type='button'
                                                             className="flex space-x-2 text-red-500 items-center"
                                                             onClick={() => handleSponsorRemove(index, values.sponsors, setFieldValue)}
                                                         >
@@ -764,7 +837,7 @@ const CreateEvent = () => {
                                                         }
                                                     }}
                                                 />
-                                                <label htmlFor="certificate-upload" className="flex flex-col items-center">
+                                                <label aria-label='certificate-upload' htmlFor="certificate-upload" className="flex flex-col items-center">
                                                     <p>Drag and drop files here or <u>browse</u></p>
                                                 </label>
                                             </div>
@@ -778,6 +851,7 @@ const CreateEvent = () => {
                                                             <p className="text-gray-600 text-[12px]">{(file.size / 1024).toFixed(2)} KB</p>
                                                         </div>
                                                         <button
+                                                            type='button'
                                                             className="text-red-500 ml-4"
                                                             onClick={() => handleCertificateRemove(index, values.certificate)}
                                                         >
@@ -826,32 +900,31 @@ const CreateEvent = () => {
                                     </Link>
  
                                 ): (
-                                    <button type='button' className='px-8 py-2 border border-[#161314] rounded-xl' onClick={() => {
+                                    <Button type='button' className='px-8 py-2 border border-[#161314] rounded-xl' onClick={() => {
                                         if (currentIndex !== 0) {
                                             setCurrentIndex(prev => prev - 1)
                                         }
                                         return setNextIndex(prev => prev - 1)
                                     }}>
                                         <span className='text-[#161314] text-sm'>Back</span>
-                                    </button>
+                                    </Button>
                                 )}
-                                {steps.length === nextIndex ? (
-                                    <button type='submit' className='px-8 py-2 border bg-[#161314] rounded-xl' disabled={loading}>
+                                {Number(steps.indexOf('email')) === currentIndex && (
+                                     <Button type='submit' className='px-8 py-2 border bg-[#161314] rounded-xl' disabled={loading}>
                                         <span className='text-white'>{loading? 'Please wait...' : 'Publish event'}</span>
-                                    </button>
-                                ): (
-                                    <button type='button' className='px-8 py-2 border bg-[#161314] rounded-xl' onClick={() => {
+                                    </Button>
+                                )}
+                                {Number(steps.indexOf('email')) !== currentIndex && (
+                                    <Button type='button' className='px-8 py-2 border bg-[#161314] rounded-xl' onClick={() => {
                                         if(currentIndex === 0 && nextIndex === 0) {
                                             setCurrentIndex(0)
-                                            return
                                         } else if (nextIndex < steps.length) {
                                             setNextIndex(prev => prev + 1)
                                             setCurrentIndex(prev => prev + 1)
-                                            return
                                         }
                                     }}>
                                         <span className='text-white'>Next</span>
-                                    </button>
+                                    </Button>
                                 )}
                             </div>
                         </Form>

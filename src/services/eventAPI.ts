@@ -1,4 +1,4 @@
-import { EventInput } from "@/graphql/__generated__/graphql";
+import { EventForm, EventInput } from "@/graphql/__generated__/graphql";
 import { s3FileUpload, s3FileUploadPdf } from "@/lib/s3Client";
 import { RESTDataSource } from "@apollo/datasource-rest";
 import { PrismaClient } from "@prisma/client";
@@ -7,6 +7,8 @@ import moment from "moment";
 class EventAPI extends RESTDataSource {
 
     async createEvent(prisma: PrismaClient, input: EventInput) {
+
+        console.log(input)
 
         const buffer = input.coverPhoto ? Buffer.from(input.coverPhoto.split(',')[1], 'base64') : '';
 
@@ -30,9 +32,24 @@ class EventAPI extends RESTDataSource {
                 message: input.message,
                 cpdp_points: input.cpdpPoint || 0,
                 hasCertificate: input.hasCertificate || false,
-                sendTag: input.sendTag || false
+                sendTag: input.sendTag || false,
             }
         })
+
+        if(input.form) {
+            const formFields = input.form.map((field) => {
+                return {
+                    name: field.name,
+                    label: field.label,
+                    required: field.required,
+                    type: field.type,
+                    eventId: event.id
+                }
+            })
+            await prisma.eventForm.createMany({
+                data: [...formFields as any]
+            })
+        }
 
         if (input.coverPhoto){
             const url: string = buffer ? `https://${process.env.NEXT_PUBLIC_AWS_BUCKET_NAME}.s3.${process.env.NEXT_PUBLIC_AWS_REGION}.amazonaws.com/events/${event.id}/${input.name.toLowerCase().replaceAll(' ', '-')}` : ''

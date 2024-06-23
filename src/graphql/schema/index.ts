@@ -124,6 +124,7 @@ export const typeDefs = `#graphql
   type EventForm {
     id: UUID!
     name: String!
+    label: String!
     type: String!
     required: Boolean
     event: Event

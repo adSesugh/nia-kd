@@ -175,6 +175,7 @@ model Event {
 model EventForm {
   id        String   @id @default(uuid())
   name      String   @unique
+  label     String
   type      String
   required  Boolean
   event     Event?   @relation(fields: [eventId], references: [id])

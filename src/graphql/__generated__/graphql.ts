@@ -151,6 +151,7 @@ export type EventForm = {
   event?: Maybe<Event>;
   eventId?: Maybe<Scalars['UUID']['output']>;
   id: Scalars['UUID']['output'];
+  label: Scalars['String']['output'];
   name: Scalars['String']['output'];
   required?: Maybe<Scalars['Boolean']['output']>;
   type: Scalars['String']['output'];
@@ -3011,6 +3012,7 @@ export type EventFormResolvers<ContextType = GraphQLContext, ParentType extends 
   event?: Resolver<Maybe<ResolversTypes['Event']>, ParentType, ContextType>;
   eventId?: Resolver<Maybe<ResolversTypes['UUID']>, ParentType, ContextType>;
   id?: Resolver<ResolversTypes['UUID'], ParentType, ContextType>;
+  label?: Resolver<ResolversTypes['String'], ParentType, ContextType>;
   name?: Resolver<ResolversTypes['String'], ParentType, ContextType>;
   required?: Resolver<Maybe<ResolversTypes['Boolean']>, ParentType, ContextType>;
   type?: Resolver<ResolversTypes['String'], ParentType, ContextType>;
