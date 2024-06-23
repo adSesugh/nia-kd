@@ -8,8 +8,6 @@ class EventAPI extends RESTDataSource {
 
     async createEvent(prisma: PrismaClient, input: EventInput) {
 
-        console.log(input)
-
         const buffer = input.coverPhoto ? Buffer.from(input.coverPhoto.split(',')[1], 'base64') : '';
 
         const event = await prisma.event.create({
