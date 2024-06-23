@@ -39,7 +39,9 @@ class UserAPI extends RESTDataSource {
             where: {
                 email: input.email,
                 phoneNumber: input.phoneNumber,
-                membershipType: input.membershipType
+                membershipType: {
+                    name: input.membershipType
+                }
             }
         }))
 
@@ -70,7 +72,7 @@ class UserAPI extends RESTDataSource {
                     member: {
                         create: {
                             regId: registrationId,
-                            membershipType: input.membershipType,
+                            membershipTypeId: input.membershipType,
                             membershipId: input.membershipId,
                             firstName: input.firstName,
                             lastName: input.lastName,
@@ -112,7 +114,9 @@ class UserAPI extends RESTDataSource {
                     { regId: regId },
                     { email: regId }
                 ]
-            }, include: { member: true }
+            }, include: { member: {
+                include: {membershipType: true}
+            }}
         })
 
         if (!loggedUser) {
@@ -144,6 +148,16 @@ class UserAPI extends RESTDataSource {
         const token = authenticateUser(loggedUser.regId as string);
 
         return { token, user }
+    }
+
+    async getMembershipTypes(prisma: PrismaClient) {
+        const allMembershipTypes = await prisma.membershipType.findMany({
+            orderBy: {
+                name: 'asc'
+            }
+        })
+
+        return allMembershipTypes
     }
 }
 

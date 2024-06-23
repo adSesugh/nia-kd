@@ -1,6 +1,6 @@
 'use client'
 
-import React, { useEffect, useState } from 'react'
+import React, { ChangeEvent, useEffect, useState } from 'react'
 import { PRIMARY_TWO } from '@/constant/Colors';
 import StatisticsCard from '@/components/stats/StatisticsCard';
 import { Chart as ChartJS, ArcElement, Tooltip, Legend, LineElement, LinearScale, CategoryScale, PointElement, Title, Filler } from 'chart.js';
@@ -12,13 +12,17 @@ import LineChart from '@/components/LineChart';
 import { AdminDashboardStatResponse, useGetAdminDashboardStatLazyQuery } from '@/graphql/__generated__/graphql';
 import { useSelector } from 'react-redux';
 import { RootState } from '@/features/store';
+import CustomSearch from '@/components/custom-select';
+import { Select, SelectItem } from '@nextui-org/react';
 
 ChartJS.register(ArcElement, Tooltip, Legend, LineElement, LinearScale, CategoryScale, PointElement, Title, Filler);
 
 
 const AdminDashboard = () => {
+  const [value, setValue] = React.useState(new Set([]));
   const [adminStats, setAdminStats] = useState<AdminDashboardStatResponse|any>()
   const user = useSelector((state: RootState) => state.auth.userData.user)
+  const [selectValue, setSelectValue] = useState<string>()
 
   const [getAdminStats, {loading}] = useGetAdminDashboardStatLazyQuery({fetchPolicy: 'no-cache'})
 
@@ -79,6 +83,12 @@ const AdminDashboard = () => {
     })()
   }, [getAdminStats])
 
+  const handleDurationChange = (e: ChangeEvent<HTMLSelectElement>) => {
+    const value = e.target.value
+    setSelectValue(value)
+    console.log(value)
+  }
+
 
   return (
     <div className='sm:px-12 xs:px-4 sm:pt-14 xs:pt-2 pb-12 w-full h-full overflow-y-auto'>
@@ -90,19 +100,29 @@ const AdminDashboard = () => {
         <StatisticsCard title='Total Revenue' value={`${'\u20a6'}${Intl.NumberFormat().format(adminStats?.revenue || 0)}`} />
       </div>
       <div className='w-full'>
-        <div className='flex sm:flex-row xs:flex-col py-3 sm:h-80 xs:h-full gap-6'>
+        <div className='flex sm:flex-row xs:flex-col py-3 sm:h-84 xs:h-full gap-6'>
           <div className='sm:w-7/12 xs:w-full h-full rounded-2xl bg-white shadow-small p-4'>
             <div className='flex justify-between'>
               <h1 className='text-[16px] font-medium'>Revenue</h1>
               <div>
-                <span>Month</span>
+                <Select
+                  size='sm'
+                  className='w-28'
+                  defaultSelectedKeys={['month']}
+                  items={[{id: 'month', label: 'Monthly'}, {id: 'year', label: 'Yearly'}]}
+                  onChange={handleDurationChange}
+                >
+                  {(item) => (
+                    <SelectItem key={item.id} value={item.id}>{item.label}</SelectItem>
+                  )}
+                </Select>
               </div>
             </div>
             <div className='pt-3 h-full w-full'>
               <LineChart />
             </div>
           </div>
-          <div className='sm:w-5/12 xs:w-full h-full rounded-2xl bg-white shadow-small p-4 pb-16'>
+          <div className='sm:w-5/12 xs:w-full h-full rounded-2xl bg-white shadow-small p-4 pb-12'>
             <div className='flex justify-between'>
               <h1 className='text-[16px] font-medium'>Revenue by category</h1>
             </div>

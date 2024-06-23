@@ -48,10 +48,10 @@ class PaymentAPI extends RESTDataSource {
     async postPayment(prisma: PrismaClient, input: PaymentInput) {
         const payment = await prisma.payment.create({
             data: {
-                paymentType: '',
-                description: '',
-                eventId: '',
-                phoneNumber: '',
+                paymentType: input.paymentType,
+                description: input.description,
+                eventId: input.eventId,
+                phoneNumber: input.phoneNumber,
                 amount: input.amount,
                 memberId: input.memberId as string,
                 duesId: input.duesId as string,

@@ -14,10 +14,15 @@ mutation UserLogin($input: signInUser!) {
       regId
       role
       member {
-        membershipType
+        membershipType {
+          id
+          name
+        }
+        email
         photoURL
         lastName
         firstName
+        phoneNumber
         id
       }
     }
@@ -33,6 +38,13 @@ query GetUsers {
     rememberMe
     createdAt
     updatedAt
+  }
+}
+
+query GetMembershipTypes {
+  getMembershipTypes {
+    id
+    name
   }
 }
 

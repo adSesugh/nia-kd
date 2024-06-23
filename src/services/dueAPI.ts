@@ -2,18 +2,23 @@ import { RESTDataSource } from "@apollo/datasource-rest";
 import { PrismaClient } from "@prisma/client";
 import { GraphQLError } from "graphql/error";
 import { ApolloServerErrorCode } from "@apollo/server/errors"
-import { DueInput, MemberDueResponse } from "@/graphql/__generated__/graphql";
+import { DueInput, DueUpdateInput, MemberDueResponse } from "@/graphql/__generated__/graphql";
 import moment from "moment";
+import { getNumberOfDaysInYear, isDateRangeMoreThanOneYear } from "@/lib/helpers";
 
 class DueAPI extends RESTDataSource {
+
     async getDues(prisma: PrismaClient) {
         const dues = await prisma.dues.findMany({
+            where: {
+                deletedAt: null
+            },
             include: {
                 user: {
                     include: {
-                        member: true
+                        member: true,
                     }
-                }
+                },
             },
             orderBy: {
                 startsAt: 'desc'
@@ -25,13 +30,27 @@ class DueAPI extends RESTDataSource {
     async getDue(prisma: PrismaClient, id: string) {
         const due = await prisma.dues.findFirst({
             where: {
-                id
+                id,
+                deletedAt: null
             }
         })
         return due
     }
 
-    async createDue(prisma: PrismaClient, input: DueInput, userId: string) {
+    async createDue(prisma: PrismaClient, input: DueInput) {
+
+        console.log(input.userId)
+        const isTrue = await isDateRangeMoreThanOneYear(input.startsAt, input.endsAt)
+        console.log(isTrue)
+
+        // if(isTrue) {
+        //     throw new GraphQLError("Date out of bound", {
+        //         extensions: {
+        //             code: ApolloServerErrorCode.GRAPHQL_PARSE_FAILED,
+        //             http: { status: 200 }
+        //         }
+        //     })
+        // }
 
         const dueExists = (await prisma.dues.findFirst({
             where: {
@@ -53,26 +72,30 @@ class DueAPI extends RESTDataSource {
             })
         }
 
-        const due = await prisma.dues.create({
-            data: {
-                amount: input.amount,
+        const formattedData = input.membership?.map((membership) => {
+            return {
+                membershipTypeId: membership.id,
+                amount: membership.amount,
+                name: input.name,
                 startsAt: new Date(input.startsAt),
                 endsAt: new Date(input.endsAt),
-                name: input.name as string,
                 status: input.status as string,
-                userId: userId
+                userId: input.userId as string
             }
+        })
+
+        await prisma.dues.createMany({
+            data: [...formattedData as any]
         })
 
         return {
             code: 201,
             success: true,
-            message: "Due created",
-            due
+            message: "Due created"
         }
     }
 
-    async updateDue(prisma: PrismaClient, dueId: string, input: DueInput) {
+    async updateDue(prisma: PrismaClient, dueId: string, input: DueUpdateInput) {
         const due = await prisma.dues.update({
             where: {
                 id: dueId
@@ -82,25 +105,42 @@ class DueAPI extends RESTDataSource {
                 startsAt: input.startsAt,
                 endsAt: input.endsAt,
                 name: input.name as string,
-                status: input.status as string,
-                userId: ''
+                userId: input.userId as string
             }
         })
 
         return {
-            code: 201,
+            code: 200,
             success: true,
             message: "Due updated",
             due
         }
     }
 
-    async getUnpaidDues(prisma: PrismaClient, memberId: string) {
+    async archiveDue(prisma: PrismaClient, dueId: string) {
+        (await prisma.dues.update({
+            where: {
+                id: dueId
+            },
+            data: {
+                deletedAt: new Date(),
+                status: 'Archived'
+            }
+        }))
+
+        return true
+    }
+
+    async getUnpaidDues(prisma: PrismaClient, memberId: string, membershipTypeId: string) {
 
         const allDues = await prisma.dues.findMany({
-          include: {
-            payments: true
-          },
+            where: {
+                deletedAt: null,
+                membershipTypeId
+            },
+            include: {
+                payments: true,
+            },
         });
       
         const unpaidDues = allDues.filter(due => {

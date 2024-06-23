@@ -3,7 +3,10 @@ query GetRecentRegistration {
     id
     firstName
     lastName
-    membershipType
+    membershipType {
+      id
+      name
+    }
     createdAt
   }
 }

@@ -60,7 +60,30 @@ async function seed() {
         ]
     })
 
-    console.log({ counter, user, formFields })
+    const membershipType = await prisma.membershipType.createMany({
+        data: [
+            {
+                name: "Student"
+            },
+            {
+                name: "Graduate"
+            },
+            {
+                name: "Technologist"
+            },
+            {
+                name: "Associate"
+            },
+            {
+                name: "Full Member"
+            },
+            {
+                name: "Fellow"
+            }
+        ]
+    })
+
+    console.log({ counter, user, formFields, membershipType })
 }
 
 // Run the seed function

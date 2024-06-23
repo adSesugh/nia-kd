@@ -79,8 +79,8 @@ query GetDuePayment($memberId: UUID!) {
   }
 }
 
-query GetMemberUnpaidDues($memberId: UUID!) {
-  getMemberUnpaidDues(memberId: $memberId) {
+query GetMemberUnpaidDues($memberId: UUID!, $membershipTypeId: UUID!) {
+  getMemberUnpaidDues(memberId: $memberId, membershipTypeId: $membershipTypeId) {
     amount
     name
     startsAt

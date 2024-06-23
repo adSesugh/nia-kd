@@ -6,7 +6,7 @@ export const resolvers: Resolvers = {
     Mutation: {
         createUser: (_, { input }, { prisma, dataSources }) => dataSources.userAPI.addUser(prisma, input),
         login: (_, { input }, { prisma, dataSources }) => dataSources.userAPI.loginUser(prisma, input),
-        createDue: (_, { input }, { prisma, dataSources, userId }) => dataSources.dueAPI.createDue(prisma, input, userId),
+        createDue: (_, { input }, { prisma, dataSources }) => dataSources.dueAPI.createDue(prisma, input),
         updateDue: (_, { dueId, input }, { prisma, dataSources }) => dataSources.dueAPI.updateDue(prisma, dueId, input),
         postPayment: (_, { input }, { prisma, dataSources }) => dataSources.paymentAPI.postPayment(prisma, input),
         deactivateMember: (_, { memberId, status }, { prisma, dataSources }) => dataSources.memberAPI.deactivate(prisma, memberId, status),
@@ -15,7 +15,8 @@ export const resolvers: Resolvers = {
         createEvent: (_, { input }, { prisma, dataSources }) => dataSources.eventAPI.createEvent(prisma, input),
         watchEventViews: (_, {eventId}, {prisma, dataSources}) => dataSources.eventAPI.watchViews(prisma, eventId),
         cancelEvent: (_, {eventId, status}, {prisma, dataSources}) => dataSources.eventAPI.cancelEvent(prisma, eventId, status),
-        deleteEvent: (_, {eventId}, {prisma, dataSources}) => dataSources.eventAPI.deleteEvent(prisma, eventId)
+        deleteEvent: (_, {eventId}, {prisma, dataSources}) => dataSources.eventAPI.deleteEvent(prisma, eventId),
+        archiveDue: (_, {dueId}, {prisma, dataSources}) => dataSources.eventAPI.deleteEvent(prisma, dueId)
     },
     Query: {
         members: (_, __, { prisma, dataSources, userId }) => dataSources.memberAPI.getMembers(prisma, userId),
@@ -41,6 +42,7 @@ export const resolvers: Resolvers = {
         getUpComingEvents: (_, {memberId}, {prisma, dataSources}) => dataSources.eventAPI.upComingEvents(prisma, memberId),
         getPastEvents: (_, __, {prisma, dataSources}) => dataSources.eventAPI.passedEvents(prisma),
         getMemberStat: (_, {memberId}, {prisma, dataSources}) => dataSources.dashboardAPI.getMemberStat(prisma, memberId),
-        getMemberUnpaidDues: (_, {memberId}, {prisma, dataSources}) => dataSources.dueAPI.getUnpaidDues(prisma, memberId)
+        getMemberUnpaidDues: (_, {memberId, membershipTypeId}, {prisma, dataSources}) => dataSources.dueAPI.getUnpaidDues(prisma, memberId, membershipTypeId),
+        getMembershipTypes: (_, __, {prisma, dataSources}) => dataSources.userAPI.getMembershipTypes(prisma)
     },
 };

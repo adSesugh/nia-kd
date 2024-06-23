@@ -15,7 +15,7 @@ import { Dropdown, DropdownItem, DropdownMenu, DropdownTrigger, User } from '@ne
 import { useAppDispatch, useAppSelector } from '@/features/hooks';
 import { RootState } from '@/features/store';
 import { logOut } from '@/features/slices/authSlice';
-import { Books, Receipt } from '@phosphor-icons/react';
+import { BellSimple, Books, Receipt } from '@phosphor-icons/react';
 import { useGetSidebarStatQuery } from '@/graphql/__generated__/graphql';
 
 // export const metadata: Metadata = {
@@ -217,12 +217,12 @@ const DashboardLayout: React.FC<LayoutProps> = ({ children }) => {
       </div>
       <div className={`${toggled ? 'xs:w-full' : collapsed ? 'sm:w-[95%]' : 'xs:w-full sm:w-[83.6%]'} h-full`}>
         <main className='h-screen w-full bg-[#F5F5F5] overflow-hidden'>
-          <div className='flex justify-between xs:px-4 pt-4 sm:pr-12 xs:pb-3 sm:pb-0 w-full'>
+          <div className='flex justify-between xs:px-4 pt-4 sm:pr-12 xs:pb-3 sm:pb-0 w-full -mb-4'>
             <div className='xs:hidden sm:flex'></div>
             <HambergerMenu className=' sm:py-0 sm:pl-0 xs:flex sm:hidden' size={20} variant='Outline' color={`${PRIMARY_TWO}`} onClick={() => setToggled(!toggled)} />
-            {pathname.includes('dashboard') && <Notification className='xs:float-end' size={24} variant='Bold' color='#150D09' />}
+            <BellSimple className='float-start mr-3' size={24} color='#150D09' />
           </div>
-          <div className={`${pathname.includes('dashboard') ? 'sm:-mt-12' : 'sm:-mt-6'} xs:mt-0 xs:pb-10 h-full`}>
+          <div className={`pb-6 h-full`}>
             {children}
           </div>
         </main>

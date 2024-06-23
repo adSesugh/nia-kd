@@ -42,26 +42,34 @@ model User {
   @@map("users")
 }
 
+model MembershipType {
+  id        String @id @default(uuid())
+  name      String @unique @db.VarChar(30) 
+  members   Member[]
+  dues      Dues[]
+}
+
 model Member {
-  id                String              @id @default(uuid())
-  userId            String              @unique
-  user              User                @relation(fields: [userId], references: [id])
-  regId             String              @unique
-  firstName         String
-  lastName          String
-  email             String              @unique
-  phoneNumber       String              @unique
-  photoURL          String?
-  address           String?             @db.VarChar(191)
-  joined            DateTime?
-  membershipId      String?             @unique
-  membershipType    String              @default("Student") @db.VarChar(191)
-  status            String              @default("Active") @db.VarChar(191)
+  id                  String              @id @default(uuid())
+  userId              String              @unique
+  user                User                @relation(fields: [userId], references: [id])
+  regId               String              @unique
+  firstName           String
+  lastName            String
+  email               String              @unique
+  phoneNumber         String              @unique
+  photoURL            String?
+  address             String?             @db.VarChar(191)
+  joined              DateTime?
+  membershipId        String?             @unique
+  membershipTypeId    String
+  membershipType      MembershipType     @relation(fields: [membershipTypeId], references: [id])
+  status              String              @default("Active") @db.VarChar(191)
   //cpdpPoints        Int                 @default(0)
-  createdAt         DateTime            @default(now()) @map(name: "created_at")
-  updatedAt         DateTime            @updatedAt @map(name: "updated_at")
-  payments          Payment[]
-  EventRegistration EventRegistration[]
+  createdAt           DateTime            @default(now()) @map(name: "created_at")
+  updatedAt           DateTime            @updatedAt @map(name: "updated_at")
+  payments            Payment[]
+  EventRegistration   EventRegistration[]
 
   cpdpPoints         CpdpPoint[]
 
@@ -69,17 +77,20 @@ model Member {
 }
 
 model Dues {
-  id        String    @id @default(uuid())
-  name      String    @unique @db.VarChar(191)
-  amount    Decimal   @default(0.00)
-  startsAt  DateTime  @map(name: "starts_at")
-  endsAt    DateTime  @map(name: "ends_at")
-  status    String    @default("Active")
-  userId    String
-  user      User      @relation(fields: [userId], references: [id])
-  createdAt DateTime  @default(now()) @map(name: "created_at")
-  updatedAt DateTime  @updatedAt @map(name: "updated_at")
-  payments  Payment[]
+  id                String          @id @default(uuid())
+  name              String          @db.VarChar(191)
+  amount            Decimal         @default(0.00)
+  startsAt          DateTime        @map(name: "starts_at")
+  endsAt            DateTime        @map(name: "ends_at")
+  status            String          @default("Active")
+  userId            String
+  user              User            @relation(fields: [userId], references: [id])
+  membershipTypeId  String
+  membershipType    MembershipType @relation(fields: [membershipTypeId], references: [id])
+  createdAt         DateTime        @default(now()) @map(name: "created_at")
+  updatedAt         DateTime        @updatedAt @map(name: "updated_at")
+  deletedAt         DateTime?
+  payments          Payment[]
 
   @@map("dues")
 }
@@ -239,13 +250,15 @@ model CpdpPoint {
   memberId  String?
   member    Member? @relation(fields: [memberId], references: [id])
   points    Int
+
+  @@map("cpdp_points")
 }
 
 model Payment {
   id          String   @id @default(uuid())
   paymentType String
-  memberId    String
-  member      Member   @relation(fields: [memberId], references: [id])
+  memberId    String?
+  member      Member?   @relation(fields: [memberId], references: [id])
   duesId      String
   due         Dues     @relation(fields: [duesId], references: [id])
   eventId     String?

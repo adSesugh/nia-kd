@@ -5,6 +5,7 @@ import SelectFilter from '@/components/select-filter'
 import { RootState } from '@/features/store'
 import { Payment, useGetMemberPaymentsLazyQuery, useGetPaymentsLazyQuery } from '@/graphql/__generated__/graphql'
 import { Chip, Spinner, Table, TableBody, TableCell, TableColumn, TableHeader, TableRow } from '@nextui-org/react'
+import { DotsThree } from '@phosphor-icons/react'
 import { Form, Formik } from 'formik'
 import { SearchNormal } from 'iconsax-react'
 import moment from 'moment'
@@ -76,9 +77,9 @@ const TransactionList = () => {
               );
           case "actions":
               return (
-                  <div className="relative flex justify-end items-center gap-2">
-                      <button className='px-4 py-2 rounded-xl border text-center'>Receipt</button>
-                  </div>
+                <div className="flex justify-end items-center gap-2">
+                  <DotsThree size={24} color='#5C4D58' />
+                </div>
               );
           default:
               return cellValue;

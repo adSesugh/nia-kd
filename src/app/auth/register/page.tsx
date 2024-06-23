@@ -11,10 +11,9 @@ import TextField from '@/components/textfield';
 import TextFieldWithIcon from '@/components/textfield-withicon';
 import SubmitButton from '@/components/submit-button';
 import DefaultSelect from '@/components/default-select';
-import { useCreateUserMutation } from '@/graphql/__generated__/graphql';
+import { useCreateUserMutation, useGetMembershipTypesQuery } from '@/graphql/__generated__/graphql';
 import { useRouter } from 'next/navigation';
 import { toast } from 'react-toastify';
-import { membershipType } from '@/lib/common';
 
 const LoginSchema = Yup.object().shape({
   firstName: Yup.string().required('First name is required'),
@@ -45,6 +44,8 @@ const RegisterPage: React.FC<{}> = () => {
   const [show, setShow] = React.useState<boolean>(false)
   const [createUser, {loading, error}] = useCreateUserMutation()
   const router = useRouter()
+
+  const {data: membershipType, loading: membershipLoader} = useGetMembershipTypesQuery({fetchPolicy: 'no-cache'})
 
   useEffect(()=> {
     document.title = "Sign up | NIA-kd"
@@ -109,10 +110,11 @@ const RegisterPage: React.FC<{}> = () => {
               className={`${errors.phoneNumber && touched.phoneNumber ? 'ring-red-500': ''} pr-10`}
             />
             <DefaultSelect
-              data={membershipType}
+              data={membershipType?.getMembershipTypes || []}
               name='membershipType'
               error={errors.membershipType}
               onChange={handleChange}
+              placeholder='Select membership type'
             />
             <TextField
               name='membershipId'

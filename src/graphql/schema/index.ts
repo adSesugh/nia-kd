@@ -20,6 +20,13 @@ export const typeDefs = `#graphql
     createdAt: Time  
     updatedAt: Time @skip
   }
+  
+  type MembershipType {
+    id: UUID!
+    name: String!
+    members: [Member]
+    dues: [Due]
+  }
 
   type Member {
     id: UUID!
@@ -32,7 +39,8 @@ export const typeDefs = `#graphql
     address: String!
     userId: UUID!
     joined: Time
-    membershipType: String! @uppercase
+    membershipTypeId: UUID!
+    membershipType: MembershipType
     membershipId: String
     status: String @uppercase
     cpdpPoints: CpdpPoint
@@ -47,10 +55,13 @@ export const typeDefs = `#graphql
     startsAt: Time
     endsAt: Time
     status: String
-    userId: String
+    userId: UUID
+    membershipTypeId: UUID!
     createdAt: Time
     updatedAt: Time
+    deletedAt: Time
     user: User
+    membershipType: MembershipType
   }
 
   type Blog {
@@ -201,7 +212,7 @@ export const typeDefs = `#graphql
   }
 
   input newMember {
-    membershipType: String!
+    membershipType: UUID!
     membershipId: String
     firstName: String!
     lastName: String!
@@ -212,19 +223,31 @@ export const typeDefs = `#graphql
   }
 
   input dueInput {
+    name: String!
+    membership: [JSON!]
+    startsAt: Time!
+    endsAt: Time!
+    status: String!
+    userId: String
+  }
+  
+  input dueUpdateInput {
     name: String
     amount: Decimal
     startsAt: Time
     endsAt: Time
-    status: String
     userId: String
   }
 
   input paymentInput {
-    memberId: String!
-    duesId: String!
+    paymentType: String!
+    memberId: UUID
+    duesId: UUID
+    eventId: UUID
+    description: String!
+    phoneNumber: String!
     paymentRef: String
-    amount: Decimal!
+    amount: Decimal
     status: String!
   }
 
@@ -383,6 +406,7 @@ export const typeDefs = `#graphql
     watchEventViews(eventId: UUID!): Boolean
     cancelEvent(eventId: UUID!, status: String!): Boolean
     deleteEvent(eventId: UUID!): Boolean
+    archiveDue(dueId: UUID!): Boolean
   }
 
   ## ------------------------------------- Query ---------------------------------------------------##
@@ -413,6 +437,7 @@ export const typeDefs = `#graphql
     getUpComingEvents(memberId: UUID!): [EventRegistration!]
     getPastEvents: [Event!]
     getMemberStat(memberId: UUID!): memberStat
-    getMemberUnpaidDues(memberId: UUID!): [Due]
+    getMemberUnpaidDues(memberId: UUID!, membershipTypeId: UUID!): [Due]
+    getMembershipTypes: [MembershipType!]
   }
 `;

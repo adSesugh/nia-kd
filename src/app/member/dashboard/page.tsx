@@ -61,35 +61,12 @@ const MemberDashboard = () => {
       <div className='py-6 w-full pt-6'>
         <div className='flex flex-col space-y-2'>
           <h1 className='text-2xl'>{user?.member?.firstName} {user?.member?.lastName}</h1>
-          <Badge className='text-[12px] text-center text-white rounded-md bg-[#40AD36] font-normal w-[122px]'>{user?.member?.membershipType} member</Badge>
+          <div className='flex'>
+            <Badge className='text-[12px] text-center text-white rounded-md bg-[#40AD36] font-normal'>{user?.member?.membershipType?.name} member</Badge>
+          </div>
         </div>
       </div>
       <div className='flex xs:flex-col sm:flex-row gap-5 justify-between items-center'>
-        {/* <div className='flex xs:flex-col sm:w-1/3 xs:w-full sm:flex-row sm:space-x-4 xs:space-x-0 border bg-white px-8 py-4 rounded-2xl items-center'>
-          <div className='flex justify-center items-center h-full xs:pb-4 sm:pb-0 -ml-2'>
-            <CircularProgress
-              value={getPercent}
-              showValueLabel={true} 
-              strokeWidth={4}
-              classNames={{
-                svg: "w-24 h-24 drop-shadow-md",
-                indicator: `${getPercent >= 80 ? "stroke-danger" : "stroke-success" }`,
-                track: "#BFBFBF",
-                value: "text-sm font-semibold text-[#1E1A1C]",
-              }}
-            />
-          </div>
-          <div className='flex h-full flex-col gap-4 pb-3'>
-            <div>
-              <h1 className='text-xl'>Membership Due</h1>
-              <span className='text-[13px] text-gray-500'>You have {getTotalDaysInYear(new Date().getFullYear()) - getTotalDaysOfYear(new Date())} days left to renew your membership due</span>
-            </div>
-            <div className='flex space-x-5 items-center'>
-              <button className='px-3 py-1.5 rounded-full text-sm text-white bg-[#241F21]'>Pay now</button>
-              <Link href={'/member/tickets'} className='text-sm text-[#1E1A1C]'>View all Invoices</Link>
-            </div>
-          </div>
-        </div> */}
         <div className='flex flex-col sm:w-4/8 xs:w-full border bg-white rounded-2xl overflow-hidden'>
           <div className='flex space-x-2 items-center p-4 '>
             <div className='flex space-x-2 py-1'>
@@ -99,7 +76,7 @@ const MemberDashboard = () => {
               <div className='flex flex-col'>
                 <h1 className='text-lg font-medium'>Financial Status</h1>
                 <div className='flex items-center justify-start'>
-                  <span className={`text-white ${memberStat?.getMemberStat?.fin_status ? 'bg-[#40AD36]' : 'bg-[#C70F0F]'} py-[1px] px-2 rounded-md text-sm`}>Financial</span>
+                  <span className={`text-white ${memberStat?.getMemberStat?.fin_status ? 'bg-[#40AD36]' : 'bg-[#C70F0F]'} py-[1px] px-2 rounded-md text-[12px]`}>Financial</span>
                 </div>
               </div>
             </div>
@@ -124,21 +101,21 @@ const MemberDashboard = () => {
           </div>
           <div className='flex flex-row divide-x divide-gray-300 justify-center items-center'>
             <div className='pr-16'>
-              <span className='text-[30px] font-semibold text-[#1E1A1C]'>
+              <span className='text-[25px] font-semibold text-[#1E1A1C]'>
                 {loading ? (
                   <Spinner color='default' size='sm' />
                 ): (
-                  <>{memberStat?.getMemberStat?.totalEventPoints}</>
+                  <>{memberStat?.getMemberStat?.totalEventPoints || 0}</>
                 )}
               </span>
               <h1 className='text-[#545454] text-sm'>Available</h1>
             </div>
             <div className='pl-16'>
-              <span className='text-[30px] font-semibold text-[#1E1A1C]'>
+              <span className='text-[25px] font-semibold text-[#1E1A1C]'>
               {loading ? (
                   <Spinner color='default' size='sm' />
                 ): (
-                  <>{memberStat?.getMemberStat?.pointsEarned}</>
+                  <>{memberStat?.getMemberStat?.pointsEarned || 0}</>
                 )}
               </span>
               <h1 className='text-[#545454] text-sm'>Earned</h1>
@@ -151,17 +128,17 @@ const MemberDashboard = () => {
           </div>
           <div className='flex flex-row divide-x divide-gray-300 justify-center items-center'>
             <div className='pr-16'>
-              <span className='text-[30px] font-semibold text-[#1E1A1C]'>
+              <span className='text-[25px] font-semibold text-[#1E1A1C]'>
                 {loading ? (
                   <Spinner color='default' size='sm' />
                 ): (
-                  <>{memberStat?.getMemberStat?.eventAttended}</>
+                  <>{memberStat?.getMemberStat?.eventAttended || 0}</>
                 )}
               </span>
               <h1 className='text-[#545454] text-sm'>Attended</h1>
             </div>
             <div className='pl-16'>
-              <span className='text-[30px] font-semibold text-[#1E1A1C]'>
+              <span className='text-[25px] font-semibold text-[#1E1A1C]'>
                 {loading ? (
                   <Spinner color='default' size='sm' />
                 ): (

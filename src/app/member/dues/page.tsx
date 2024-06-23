@@ -2,22 +2,18 @@
 
 import { useAppSelector } from '@/features/hooks';
 import { RootState } from '@/features/store';
-import { Due, useGetDuePaymentLazyQuery, useGetDuePaymentQuery, useGetDuesLazyQuery, useGetMemberStatQuery, useGetMemberUnpaidDuesLazyQuery, useMemberPaymentsLazyQuery } from '@/graphql/__generated__/graphql';
-import { getDaysPercentage, getTotalDaysInYear, getTotalDaysOfYear } from '@/lib/helpers';
-import { Chip, CircularProgress, Select, SelectItem, Spinner, Table, TableBody, TableCell, TableColumn, TableHeader, TableRow } from '@nextui-org/react';
-import { CurrencyNgn, PencilSimple, Trash } from '@phosphor-icons/react';
-import { Clock, SearchNormal, Timer, Timer1 } from 'iconsax-react';
-import { Metadata } from 'next';
-import Image from 'next/image';
+import { Due, useGetMemberStatQuery, useGetMemberUnpaidDuesLazyQuery, usePostPaymentMutation } from '@/graphql/__generated__/graphql';
+import { getTotalDaysInYear, getTotalDaysOfYear } from '@/lib/helpers';
+import { Chip, Select, SelectItem, Spinner, Table, TableBody, TableCell, TableColumn, TableHeader, TableRow } from '@nextui-org/react';
+import { CurrencyNgn } from '@phosphor-icons/react';
+import { SearchNormal } from 'iconsax-react';
 import React, { ChangeEvent, useEffect, useState } from 'react'
 import { Chart as ChartJS, ArcElement, Tooltip as ToolkitChart, Legend } from 'chart.js';
 import { Pie } from 'react-chartjs-2';
-import { Form, Formik } from 'formik';
-import SearhbarWithIcon from '@/components/searhbar-with-icon';
-import SelectFilter from '@/components/select-filter';
 import moment from 'moment';
 import CustomSearch from '@/components/custom-select';
-
+import { PaystackButton } from 'react-paystack';
+import { HookConfig } from 'react-paystack/dist/types';
 
 ChartJS.register(ArcElement, ToolkitChart, Legend);
 
@@ -32,40 +28,12 @@ const dueStatuses = [
   }
 ]
 
-const dummyDues = [
-  {
-    amount: 50000,
-    name: '2024 Dues',
-    startsAt: '2024-01-01',
-    status: 'Active',
-    id: 1,
-    endsAt: '2024-12-31'
-  },
-  {
-    amount: 50000,
-    name: '2024 Dues',
-    startsAt: '2024-01-01',
-    status: 'Active',
-    id: 2,
-    endsAt: '2024-12-31'
-  },
-  {
-    amount: 50000,
-    name: '2024 Dues',
-    startsAt: '2024-01-01',
-    status: 'Active',
-    id: 3,
-    endsAt: '2024-12-31'
-  }
-]
-
 const DueScreen = () => {
   const [index, setIndex] = useState<number>(0)
   const [dueList, setDueList] = useState<any>([])
   const [dueListHolder, setDueListHolder] = useState<any>([])
   const [selectValue, setSelectValue] = useState<string>('')
   const user = useAppSelector((state: RootState) => state.auth.userData.user)
-  const memberId: string = useAppSelector((state: RootState) => state.auth.userData.user?.member?.id)
 
   const daysGone = getTotalDaysInYear(new Date().getFullYear()) - getTotalDaysOfYear(new Date())
   const daysOfYear = getTotalDaysOfYear(new Date())
@@ -91,6 +59,7 @@ const DueScreen = () => {
   })
 
   const [dueToPay, {loading }] = useGetMemberUnpaidDuesLazyQuery({fetchPolicy: 'no-cache'})
+  const [postPayment] = usePostPaymentMutation()
   const loadingState = loading || dueList === 0 ? "loading" : "idle";
 
   useEffect(() => {
@@ -98,7 +67,8 @@ const DueScreen = () => {
     ;(async () => {
         const res = await dueToPay({
           variables: {
-            memberId
+            memberId: user?.member?.id,
+            membershipTypeId: user?.member?.membershipType?.id
           }
         })
         setDueList(res.data?.getMemberUnpaidDues)
@@ -121,21 +91,43 @@ const DueScreen = () => {
               return (
                   <div>{moment(due.startsAt).format("Y")}</div>
               )
+          case "amount":
+              return (
+                  <div>{'\u20a6'}{Intl.NumberFormat().format(due.amount)}</div>
+              )
           case "status":
               return (
                   <Chip className="capitalize" color={due.status === 'Active' ? 'success' : 'warning'} size="sm" variant="flat">
-                      <span className={due.status === 'Active' ? 'text-[#0A7535]': 'text-[#916B09]'}>{cellValue}</span>
+                      <span className={due.status === 'Active' ? 'text-[#0A7535]': 'text-[#916B09]'}>{cellValue === 'Active' ? 'Pending' : 'Overdue'}</span>
                   </Chip>
               );
           case "actions":
+              const config: HookConfig = {
+                reference: (new Date()).getTime().toString(),
+                amount: Number(due?.amount) * 100,
+                email: user?.member?.email,
+                publicKey: process.env.NEXT_PUBLIC_PAYSTACK_PUBLIC_KEY as string,
+              }
+
+              const componentProps = {
+                ...config,
+                text: 'Pay Now',
+                onSuccess: (reference: any) => handlePaystackSuccessAction(reference, due),
+                onClose: handlePaystackCloseAction,
+              };
+
               return (
                   <div className="relative flex justify-end items-center gap-3">
-                      <button
-                        className='flex px-4 rounded-lg py-2 items-center justify-center bg-black text-white'
-                        onClick={() => handlePayment(due.id)}
-                      >
-                        Pay now
-                      </button>
+                    <button
+                      className='flex mt-4 px-4 rounded-lg py-2 items-center justify-center xs:justify-start bg-black text-white'
+                    >
+                      <PaystackButton 
+                        amount={Number(due?.amount) * 100} 
+                        email={user?.member?.email as string} 
+                        reference={(new Date()).getTime().toString()}
+                        {...componentProps} 
+                      />
+                    </button>
                   </div>
               );
           default:
@@ -143,12 +135,36 @@ const DueScreen = () => {
       }
   }, []);
 
-  const handlePayment = (dueId: string) => {
-    const selectedDue = dueList.find((due: Due) => due.id === dueId)
-    console.log(selectedDue)
+  const handlePaystackSuccessAction = async (reference: any, dues: any) => {
+      const res = await postPayment({
+        variables: {
+          input: {
+            memberId: user?.member?.id,
+            duesId: dues.id as string,
+            paymentType: 'Dues',
+            description: dues.name,
+            status: reference.status === 'success' ? 'Successful' : 'Unsuccessful',
+            phoneNumber: user?.member?.phoneNumber as string,
+            paymentRef: reference.trxref,
+            amount: parseFloat(reference.amount)
+          }
+        }
+      })
+  };
+
+  // you can call this function anything
+  const handlePaystackCloseAction = () => {
+    // implementation for  whatever you want to do when the Paystack dialog closed.
+    console.log('closed')
+  }
+
+  const handleMultiSelectPayment = (e: ChangeEvent<HTMLSelectElement>) => {
+    const valueArr = e.target.value.split(',')
+    console.log(valueArr)
   }
 
   const handleMultiPayment = () => {
+    //const initializePayment = usePaystackPayment(config);
     //console.log(e)
   }
 
@@ -169,15 +185,22 @@ const DueScreen = () => {
     if(value.length === 0 || value === 'All') {
       setDueList(dueListHolder)
     } else {
-      const filteredEvents = dueList?.filter((due: Due) => {
-        return due?.status?.toLowerCase().includes(value)
-      })
-      setDueList(filteredEvents)
+      if (dueList.length === 0){
+        const filteredEvents = dueListHolder?.filter((due: Due) => {
+          return due?.status?.toLowerCase().includes(value === 'Pending' ? 'active' : 'inactive')
+        })
+        setDueList(filteredEvents)
+      } else {
+        const filteredEvents = dueList?.filter((due: Due) => {
+          return due?.status?.toLowerCase().includes(value === 'Pending' ? 'active' : 'inactive')
+        })
+        setDueList(filteredEvents)
+      }
     }
   }
 
   return (
-    <div className='h-full w-full sm:px-12 xs:px-6 bg-gray-100 pb-5'>
+    <div className='h-full w-full sm:px-12 xs:px-6 bg-gray-100 overflow-y-auto'>
       <div className='mb-6'>
         <h1 className='text-2xl font-semibold'>Dues</h1>
       </div>
@@ -191,7 +214,7 @@ const DueScreen = () => {
               <div className='flex flex-col'>
                 <h1 className='text-lg font-medium'>Financial Status</h1>
                 <div className='flex items-center justify-start'>
-                  <span className={`text-white ${memberStat?.getMemberStat?.fin_status ? 'bg-[#40AD36]' : 'bg-[#C70F0F]'} py-[1px] px-2 rounded-md text-sm`}>Financial</span>
+                  <span className={`text-white ${memberStat?.getMemberStat?.fin_status ? 'bg-[#40AD36]' : 'bg-[#C70F0F]'} py-[1px] px-2 rounded-md text-[12px]`}>Financial</span>
                 </div>
               </div>
             </div>
@@ -203,9 +226,9 @@ const DueScreen = () => {
             </div>
           </div>
         </div>
-        <div className='w-7/12 bg-white rounded-2xl overflow-hidden p-4'>
+        <div className='sm:w-7/12 xs:w-full bg-white rounded-2xl overflow-hidden p-4'>
           <div className='flex items-center w-full'>
-            <div className='flex space-x-2 py-1'>
+            <div className='flex sm:flex-row xs:flex-col space-x-2 py-1'>
               <div className='flex h-12 w-12 justify-center items-center bg-[#F2F2F2] rounded-full'>
                 <CurrencyNgn size={24} color='#333030' />
               </div>
@@ -214,23 +237,23 @@ const DueScreen = () => {
                   <h1 className='text-lg font-medium'>Pay Additional Years</h1>
                   <span className=' text-[#5C5C5C]'>Be financial up to the selected year by paying the associated dues</span>
                 </div>
-                <div className='flex flex-row items-center justify-start space-x-2'>
+                <div className='flex sm:flex-row xs:flex-col sm:items-center xs:items-start sm:justify-start space-x-2'>
                   <Select
+                    items={dueList}
                     placeholder='Select the year to update to pay'
                     selectionMode='multiple'
                     className='max-w-xs mt-4'
-                    //onChange={(e) => handleMultiPayment(e.target.value)}
-                    
+                    isRequired
+                    name='dues'
+                    onChange={handleMultiSelectPayment}
                   >
-                    {dummyDues.map((due: Due) => (
-                      <SelectItem key={due.id}>
-                        <span>{due.name} - {Intl.NumberFormat().format(due.amount)}</span>
-                      </SelectItem>
-                    ))}
+                    {(due: Due) => (
+                      <SelectItem key={due.id}>{due.name} - {'\u20a6'}{Intl.NumberFormat().format(due.amount)}</SelectItem>
+                    )}
                   </Select>
                     <button
-                      className='flex mt-4 px-4 rounded-lg py-2 items-center justify-center bg-black text-white'
-                      onClick={() => handleMultiPayment()}
+                      className='flex mt-4 px-4 rounded-lg py-2 items-center justify-center xs:justify-start bg-black text-white'
+                      onClick={handleMultiPayment}
                     >
                       Pay now
                     </button>

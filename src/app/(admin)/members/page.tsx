@@ -1,20 +1,21 @@
 'use client'
 
-import React, { useEffect, useState } from 'react'
+import React, { ChangeEvent, useEffect, useState } from 'react'
 import TitleHeader from '../TitleHeader'
-import SearhbarWithIcon from '@/components/searhbar-with-icon'
-import { Form, Formik } from 'formik'
-import SelectFilter from '@/components/select-filter'
 import { membershipType } from '@/lib/common'
 import { Button, Chip, Dropdown, DropdownItem, DropdownMenu, DropdownTrigger, Spinner, Table, TableBody, TableCell, TableColumn, TableHeader, TableRow } from '@nextui-org/react'
 import { Member, useDeactivateMemberMutation, useGetMembersLazyQuery } from '@/graphql/__generated__/graphql'
 import {DotsThreeVertical} from '@phosphor-icons/react'
 import { toast } from 'react-toastify'
 import moment from 'moment'
+import { SearchNormal } from 'iconsax-react'
+import CustomSearch from '@/components/custom-select'
 
 const MemberList = () => {
     const [members, setMembers] = useState<any>([])
+    const [membersHolder, setMembersHolder] = useState<any>([])
     const [index, setIndex] = useState<number>(0)
+    const [selectValue, setSelectValue] = useState<string>('')
     const [getMembers, {loading, fetchMore}] = useGetMembersLazyQuery({fetchPolicy: 'no-cache'})
     const [deactiveMember, {}] = useDeactivateMemberMutation()
 
@@ -27,6 +28,7 @@ const MemberList = () => {
                 toast.error(res.error.message)
             } else{
                 setMembers(res?.data?.members)
+                setMembersHolder(res?.data?.members)
             }
         })()
         document.title = `Members | NIA-Kd`
@@ -98,25 +100,60 @@ const MemberList = () => {
         }
     }, [switchMemberStatus]);
 
+    const searchMembers = (query: string) => {
+        if(query === '') {
+          setMembers(membersHolder)
+        } else {
+          const filteredEvents = members?.filter((member: Member) => {
+            return member?.firstName?.toLowerCase().includes(query) 
+                || member?.lastName?.toLowerCase().includes(query) 
+                || member?.membershipType?.name?.toLowerCase().includes(query) 
+                || member?.phoneNumber?.toLowerCase().includes(query)
+          })
+          setMembers(filteredEvents)
+        }
+    }
+
+    const handleStatusChange = (e: ChangeEvent<HTMLInputElement>) => {
+        const value = e.target.value
+        setSelectValue(value)
+        if(value.length === 0 || value === 'All') {
+          setMembers(membersHolder)
+        } else {
+          const filteredEvents = members?.filter((member: Member) => {
+            return member?.firstName?.toLowerCase().includes(value) 
+                || member?.lastName?.toLowerCase().includes(value) 
+                || member?.membershipType?.name?.toLowerCase().includes(value) 
+                || member?.phoneNumber?.toLowerCase().includes(value)
+          })
+          setMembers(filteredEvents)
+        }
+    }
+
     return (
         <div className='sm:px-12 xs:px-4'>
             <TitleHeader title='Members' />
-            <div className='pt-6 pb-4'>
-                <Formik
-                    onSubmit={() => console.log('here...')}
-                    initialValues={{query: ''}}
-                >
-                    {({touched, errors, handleSubmit}) => (
-                        <Form onSubmit={handleSubmit} className='flex sm:flex-row xs:flex-col sm:space-x-3 xs:space-x-0 xs:gap-3'>
-                            <SearhbarWithIcon 
-                                name='query' 
-                                placeholder='Search members'
-                                className={`flex sm:w-96 xs:w-full ${errors.query && touched.query ? 'ring-red-500': ''} pr-10`}
-                            />
-                            <SelectFilter nullValue='All' name='membershipType' data={membershipType} className='flex' />
-                        </Form>
-                    )}
-                </Formik>
+            <div className='flex pt-6 pb-4 w-full gap-4'>
+                <div className='relative rounded-md shadow-sm sm:w-2/5 xs:w-full'>
+                    <div className="pointer-events-none absolute inset-y-0 left-0 flex items-center pl-2">
+                        <SearchNormal variant='Outline' size={20} color='gray' />
+                    </div>
+                    <input 
+                        name='query'
+                        placeholder='Search members'
+                        type='search'
+                        className={`pr-3 pl-10 block w-full rounded-md h-11 border-0 text-gray-900 ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-gray-200 sm:text-sm sm:leading-6`}
+                        onChange={(e) => searchMembers(e.target.value)}
+                    />
+                </div>
+                <div>
+                    <CustomSearch 
+                        data={membershipType}
+                        name='query'
+                        nullValue='All'
+                        onChange={handleStatusChange}
+                    />
+                </div>
             </div>
             <div>
                 <Table aria-label="">
@@ -132,7 +169,7 @@ const MemberList = () => {
                     </TableHeader>
                     <TableBody
                         items={members ?? []}
-                        loadingContent={<Spinner />}
+                        loadingContent={<Spinner color='default' />}
                         loadingState={loadingState}
                         emptyContent={"No members to display."}
                     >

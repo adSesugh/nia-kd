@@ -8,7 +8,10 @@ query GetMembers {
     phoneNumber
     photoURL
     joined
-    membershipType
+    membershipType {
+      id
+      name
+    }
     membershipId
     status
     createdAt
@@ -27,7 +30,10 @@ query GetMember($memberId: UUID!) {
     address
     userId
     joined
-    membershipType
+    membershipType {
+      id
+      name
+    }
     membershipId
     status
     createdAt
@@ -47,7 +53,10 @@ mutation DeactivateMember($memberId: UUID!, $status: String!) {
     address
     userId
     joined
-    membershipType
+    membershipType {
+      id
+      name
+    }
     membershipId
     status
     createdAt

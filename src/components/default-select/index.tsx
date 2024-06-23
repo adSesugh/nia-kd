@@ -12,7 +12,7 @@ type SelectProps = {
 
 const DefaultSelect: React.FC<SelectProps> = ({ data, name, label, placeholder, onChange, error }) => {
     return (
-        <div className={`mb-5 text-[14px]`}>
+        <div className={`mb-3 text-[14px]`}>
             <Select
                 name={name}
                 label={label}
@@ -20,8 +20,10 @@ const DefaultSelect: React.FC<SelectProps> = ({ data, name, label, placeholder, 
                 variant="bordered"
                 errorMessage={error}
                 isInvalid={error ? true : false}
-                className="w-full h-11"
+                className="w-full border-none"
                 onChange={onChange}
+                size='lg'
+                radius='sm'
             >
                 {data?.map((item: Record<string, any>) => (
                     <SelectItem key={item.id} value={item.id}>

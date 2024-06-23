@@ -1,6 +1,6 @@
 'use client'
 
-import React, { useEffect, useState } from 'react'
+import React, { ChangeEvent, useEffect, useState } from 'react'
 import TitleHeader from '../../TitleHeader'
 import Link from 'next/link'
 import { Form, Formik } from 'formik'
@@ -14,11 +14,30 @@ import { toast } from 'react-toastify'
 import Image from 'next/image'
 import moment from 'moment'
 import { useRouter } from 'next/navigation'
+import { SearchNormal } from 'iconsax-react'
+import CustomSearch from '@/components/custom-select'
+
+const eventStatuses = [
+  {
+    id: 'Draft',
+    name: 'Draft'
+  },
+  {
+      id: 'Published',
+      name: 'Published'
+  },
+  {
+    id: 'Ended',
+    name: 'Ended'
+}
+]
 
 const Events = () => {
   const router = useRouter()
   const [events, setEvents] = useState<any>([])
+  const [eventsHolder, setEventsHolder] = useState<any>([])
   const [index, setIndex] = useState<number>(0)
+  const [selectValue, setSelectValue] = useState<string>('')
   const [getEventList, {loading}] = useGetEventsLazyQuery({fetchPolicy: 'no-cache'})
   const [cancelEvent] = useCancelEventMutation({fetchPolicy: 'no-cache'})
   const [deleteEvent] = useDeleteEventMutation({fetchPolicy: 'no-cache'})
@@ -33,6 +52,7 @@ const Events = () => {
             toast.error(res.error.message)
         } else{
             setEvents(res?.data?.getEvents)
+            setEventsHolder(res?.data?.getEvents)
         }
     })()
   }, [getEventList])
@@ -133,6 +153,31 @@ const Events = () => {
 
     return setEvents((await getEventList()).data?.getEvents)    
   }
+
+  
+  const searchEvents = (query: string) => {
+    if(query.length === 0) {
+      setEvents(eventsHolder)
+    } else {
+      const filteredEvents = events?.filter((event: Event) => {
+        return event.name.toLowerCase().includes(query)
+      })
+      setEvents(filteredEvents)
+    }
+  }
+
+  const handleStatusChange = (e: ChangeEvent<HTMLInputElement>) => {
+    const value = e.target.value
+    setSelectValue(value)
+    if(value.length === 0 || value === 'All') {
+      setEvents(eventsHolder)
+    } else {
+      const filteredEvents = events?.filter((event: Event) => {
+        return event.name.toLowerCase().includes(value)
+      })
+      setEvents(filteredEvents)
+    }
+  }
   
   return (
     <div className='sm:px-12 xs:px-4 h-full overflow-y-auto'>
@@ -148,67 +193,74 @@ const Events = () => {
           </div>
       </div>
       <div className='pt-6 pb-4'>
-          <Formik
-              onSubmit={() => console.log('here...')}
-              initialValues={{query: ''}}
-          >
-              {({values, touched, errors, handleBlur, handleChange, handleSubmit}) => (
-                  <Form onSubmit={handleSubmit} className='flex sm:flex-row xs:flex-col sm:space-x-3 xs:space-x-0 xs:gap-3'>
-                      <SearhbarWithIcon 
-                          name='query' 
-                          placeholder='Search members'
-                          className={`flex sm:w-96 xs:w-full ${errors.query && touched.query ? 'ring-red-500': ''} pr-10`}
-                      />
-                      <SelectFilter nullValue='Status' name='membershipType' data={modelStatus} className='flex' />
-                  </Form>
-              )}
-          </Formik>
+        <div className='flex sm:flex-row xs:flex-col sm:space-x-3 items-center h-full w-full mt-1'>
+          <div className='relative rounded-md shadow-sm sm:w-1/3 xs:w-full'>
+            <div className="pointer-events-none absolute inset-y-0 left-0 flex items-center pl-2">
+              <SearchNormal variant='Outline' size={20} color='gray' />
+            </div>
+            <input 
+              name='query'
+              placeholder='Search events'
+              type='search'
+              className={`pr-3 pl-10 rounded-none h-12 block w-full border-0 text-gray-900 ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-gray-200 sm:text-sm sm:leading-6`}
+              onChange={(e) => searchEvents(e.target.value)}
+            />
+          </div>
+          <div>
+            <CustomSearch 
+              data={eventStatuses}
+              name='query'
+              nullValue='All'
+              onChange={handleStatusChange}
+            />
+          </div>
+        </div>
       </div>
       <div>
-          <Table aria-label="">
-              <TableHeader>
-                  <TableColumn key="id">S/N</TableColumn>
-                  <TableColumn key="starts_at">Date</TableColumn>
-                  <TableColumn key="event">Event</TableColumn>
-                  <TableColumn key="type">Type</TableColumn>
-                  <TableColumn key="tickets">Tickets sold</TableColumn>
-                  <TableColumn key="status">Status</TableColumn>
-                  <TableColumn key={'actions'}>.</TableColumn>
-              </TableHeader>
-              <TableBody
-                  items={events ?? []}
-                  loadingContent={<Spinner />}
-                  loadingState={loadingState}
-                  emptyContent={(
-                    <div className='flex flex-col items-center justify-center gap-3'>
-                      <Image 
-                        src={'/assets/event-empty.png'} 
-                        alt='empty state' 
-                        width={10} 
-                        height={10} 
-                        sizes='100vw'
-                        style={{
-                          width: '5%',
-                          height: 'auto'
-                        }}
-                      />
-                      <span>No events to display.</span>
-                      <Link 
-                        href={'/event/create'}
-                        className='flex px-4 py-2 justify-center items-center text-white text-sm bg-[#161314] rounded-lg'
-                      >
-                        Create event
-                      </Link>
-                    </div>
-                  )}
-              >
-                  {(item: Event) => (
-                      <TableRow key={item?.id} className='border-b last:border-b-0'>
-                          {(columnKey) => <TableCell>{renderCell(item, columnKey, index)}</TableCell>}
-                      </TableRow>
-                  )}
-              </TableBody>
-          </Table>
+        <Table aria-label="">
+          <TableHeader>
+              <TableColumn key="id">S/N</TableColumn>
+              <TableColumn key="starts_at">Date</TableColumn>
+              <TableColumn key="event">Event</TableColumn>
+              <TableColumn key="type">Type</TableColumn>
+              <TableColumn key="tickets">Tickets sold</TableColumn>
+              <TableColumn key="status">Status</TableColumn>
+              <TableColumn key={'actions'}>.</TableColumn>
+          </TableHeader>
+          <TableBody
+              items={events ?? []}
+              loadingContent={<Spinner color='default' />}
+              loadingState={loadingState}
+              emptyContent={(
+                <div className='flex flex-col items-center justify-center gap-3'>
+                  <Image 
+                    src={'/assets/event-empty.png'} 
+                    alt='empty state' 
+                    width={10} 
+                    height={10} 
+                    sizes='100vw'
+                    style={{
+                      width: '5%',
+                      height: 'auto'
+                    }}
+                  />
+                  <span>No events to display.</span>
+                  <Link 
+                    href={'/event/create'}
+                    className='flex px-4 py-2 justify-center items-center text-white text-sm bg-[#161314] rounded-lg'
+                  >
+                    Create event
+                  </Link>
+                </div>
+              )}
+          >
+              {(item: Event) => (
+                  <TableRow key={item?.id} className='border-b last:border-b-0'>
+                      {(columnKey) => <TableCell>{renderCell(item, columnKey, index)}</TableCell>}
+                  </TableRow>
+              )}
+          </TableBody>
+        </Table>
       </div>
     </div>
   )

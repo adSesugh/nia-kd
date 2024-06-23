@@ -2,7 +2,10 @@ query GetPayments {
   getPayments {
     id
     member {
-      membershipType
+      membershipType {
+        id
+        name
+      }
       firstName
       lastName
     }
@@ -24,7 +27,10 @@ query GetPayment($paymentId: UUID!) {
     member {
       firstName
       lastName
-      membershipType
+      membershipType {
+        id
+        name
+      }
       regId
     }
     due {

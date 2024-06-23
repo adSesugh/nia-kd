@@ -86,14 +86,17 @@ export type Due = {
   __typename?: 'Due';
   amount?: Maybe<Scalars['Decimal']['output']>;
   createdAt?: Maybe<Scalars['Time']['output']>;
+  deletedAt?: Maybe<Scalars['Time']['output']>;
   endsAt?: Maybe<Scalars['Time']['output']>;
   id: Scalars['UUID']['output'];
+  membershipType?: Maybe<MembershipType>;
+  membershipTypeId: Scalars['UUID']['output'];
   name?: Maybe<Scalars['String']['output']>;
   startsAt?: Maybe<Scalars['Time']['output']>;
   status?: Maybe<Scalars['String']['output']>;
   updatedAt?: Maybe<Scalars['Time']['output']>;
   user?: Maybe<User>;
-  userId?: Maybe<Scalars['String']['output']>;
+  userId?: Maybe<Scalars['UUID']['output']>;
 };
 
 export type DueResponse = {
@@ -216,7 +219,8 @@ export type Member = {
   joined?: Maybe<Scalars['Time']['output']>;
   lastName: Scalars['String']['output'];
   membershipId?: Maybe<Scalars['String']['output']>;
-  membershipType: Scalars['String']['output'];
+  membershipType?: Maybe<MembershipType>;
+  membershipTypeId: Scalars['UUID']['output'];
   phoneNumber: Scalars['String']['output'];
   photoURL?: Maybe<Scalars['String']['output']>;
   regId: Scalars['String']['output'];
@@ -247,8 +251,17 @@ export type MemberResponse = {
   success: Scalars['Boolean']['output'];
 };
 
+export type MembershipType = {
+  __typename?: 'MembershipType';
+  dues?: Maybe<Array<Maybe<Due>>>;
+  id: Scalars['UUID']['output'];
+  members?: Maybe<Array<Maybe<Member>>>;
+  name: Scalars['String']['output'];
+};
+
 export type Mutation = {
   __typename?: 'Mutation';
+  archiveDue?: Maybe<Scalars['Boolean']['output']>;
   cancelEvent?: Maybe<Scalars['Boolean']['output']>;
   createBlog?: Maybe<BlogResponse>;
   createDue?: Maybe<DueResponse>;
@@ -261,6 +274,11 @@ export type Mutation = {
   publishedBlog?: Maybe<BlogResponse>;
   updateDue?: Maybe<DueResponse>;
   watchEventViews?: Maybe<Scalars['Boolean']['output']>;
+};
+
+
+export type MutationArchiveDueArgs = {
+  dueId: Scalars['UUID']['input'];
 };
 
 
@@ -360,6 +378,7 @@ export type Query = {
   getMemberStat?: Maybe<MemberStat>;
   getMemberUnpaidDues?: Maybe<Array<Maybe<Due>>>;
   getMembersAttendance?: Maybe<Array<EventRegistration>>;
+  getMembershipTypes?: Maybe<Array<MembershipType>>;
   getPastEvents?: Maybe<Array<Event>>;
   getPayment?: Maybe<Payment>;
   getPayments?: Maybe<Array<Payment>>;
@@ -403,6 +422,7 @@ export type QueryGetMemberStatArgs = {
 
 export type QueryGetMemberUnpaidDuesArgs = {
   memberId: Scalars['UUID']['input'];
+  membershipTypeId: Scalars['UUID']['input'];
 };
 
 
@@ -517,11 +537,19 @@ export type BlogInput = {
 };
 
 export type DueInput = {
+  endsAt: Scalars['Time']['input'];
+  membership?: InputMaybe<Array<Scalars['JSON']['input']>>;
+  name: Scalars['String']['input'];
+  startsAt: Scalars['Time']['input'];
+  status: Scalars['String']['input'];
+  userId?: InputMaybe<Scalars['String']['input']>;
+};
+
+export type DueUpdateInput = {
   amount?: InputMaybe<Scalars['Decimal']['input']>;
   endsAt?: InputMaybe<Scalars['Time']['input']>;
   name?: InputMaybe<Scalars['String']['input']>;
   startsAt?: InputMaybe<Scalars['Time']['input']>;
-  status?: InputMaybe<Scalars['String']['input']>;
   userId?: InputMaybe<Scalars['String']['input']>;
 };
 
@@ -567,16 +595,20 @@ export type NewMember = {
   firstName: Scalars['String']['input'];
   lastName: Scalars['String']['input'];
   membershipId?: InputMaybe<Scalars['String']['input']>;
-  membershipType: Scalars['String']['input'];
+  membershipType: Scalars['UUID']['input'];
   password: Scalars['String']['input'];
   phoneNumber: Scalars['String']['input'];
 };
 
 export type PaymentInput = {
-  amount: Scalars['Decimal']['input'];
-  duesId: Scalars['String']['input'];
-  memberId: Scalars['String']['input'];
+  amount?: InputMaybe<Scalars['Decimal']['input']>;
+  description: Scalars['String']['input'];
+  duesId?: InputMaybe<Scalars['UUID']['input']>;
+  eventId?: InputMaybe<Scalars['UUID']['input']>;
+  memberId?: InputMaybe<Scalars['UUID']['input']>;
   paymentRef?: InputMaybe<Scalars['String']['input']>;
+  paymentType: Scalars['String']['input'];
+  phoneNumber: Scalars['String']['input'];
   status: Scalars['String']['input'];
 };
 
@@ -598,12 +630,17 @@ export type UserLoginMutationVariables = Exact<{
 }>;
 
 
-export type UserLoginMutation = { __typename?: 'Mutation', login?: { __typename?: 'AuthPayload', token?: string | null, user?: { __typename?: 'UserPayload', id: any, regId: string, role: string, member?: { __typename?: 'Member', membershipType: string, photoURL?: string | null, lastName: string, firstName: string, id: any } | null } | null } | null };
+export type UserLoginMutation = { __typename?: 'Mutation', login?: { __typename?: 'AuthPayload', token?: string | null, user?: { __typename?: 'UserPayload', id: any, regId: string, role: string, member?: { __typename?: 'Member', email: string, photoURL?: string | null, lastName: string, firstName: string, phoneNumber: string, id: any, membershipType?: { __typename?: 'MembershipType', id: any, name: string } | null } | null } | null } | null };
 
 export type GetUsersQueryVariables = Exact<{ [key: string]: never; }>;
 
 
 export type GetUsersQuery = { __typename?: 'Query', users?: Array<{ __typename?: 'User', id: any, regId: string, role: string, password: string, rememberMe?: boolean | null, createdAt?: any | null, updatedAt?: any | null } | null> | null };
+
+export type GetMembershipTypesQueryVariables = Exact<{ [key: string]: never; }>;
+
+
+export type GetMembershipTypesQuery = { __typename?: 'Query', getMembershipTypes?: Array<{ __typename?: 'MembershipType', id: any, name: string }> | null };
 
 export type CreateBlogMutationVariables = Exact<{
   input: BlogInput;
@@ -630,7 +667,7 @@ export type PublishedBlogMutation = { __typename?: 'Mutation', publishedBlog?: {
 export type GetRecentRegistrationQueryVariables = Exact<{ [key: string]: never; }>;
 
 
-export type GetRecentRegistrationQuery = { __typename?: 'Query', getRecentRegistration?: Array<{ __typename?: 'Member', id: any, firstName: string, lastName: string, membershipType: string, createdAt?: any | null }> | null };
+export type GetRecentRegistrationQuery = { __typename?: 'Query', getRecentRegistration?: Array<{ __typename?: 'Member', id: any, firstName: string, lastName: string, createdAt?: any | null, membershipType?: { __typename?: 'MembershipType', id: any, name: string } | null }> | null };
 
 export type GetAdminDashboardStatQueryVariables = Exact<{ [key: string]: never; }>;
 
@@ -652,21 +689,21 @@ export type GetMemberStatQuery = { __typename?: 'Query', getMemberStat?: { __typ
 export type GetDuesQueryVariables = Exact<{ [key: string]: never; }>;
 
 
-export type GetDuesQuery = { __typename?: 'Query', dues?: Array<{ __typename?: 'Due', id: any, name?: string | null, amount?: any | null, startsAt?: any | null, endsAt?: any | null, status?: string | null, userId?: string | null, createdAt?: any | null, updatedAt?: any | null } | null> | null };
+export type GetDuesQuery = { __typename?: 'Query', dues?: Array<{ __typename?: 'Due', id: any, name?: string | null, amount?: any | null, startsAt?: any | null, endsAt?: any | null, status?: string | null, userId?: any | null, createdAt?: any | null, updatedAt?: any | null } | null> | null };
 
 export type GetSingeDueQueryVariables = Exact<{
   dueId: Scalars['UUID']['input'];
 }>;
 
 
-export type GetSingeDueQuery = { __typename?: 'Query', singeDue?: { __typename?: 'Due', id: any, name?: string | null, amount?: any | null, startsAt?: any | null, endsAt?: any | null, status?: string | null, userId?: string | null, createdAt?: any | null, updatedAt?: any | null } | null };
+export type GetSingeDueQuery = { __typename?: 'Query', singeDue?: { __typename?: 'Due', id: any, name?: string | null, amount?: any | null, startsAt?: any | null, endsAt?: any | null, status?: string | null, userId?: any | null, createdAt?: any | null, updatedAt?: any | null } | null };
 
 export type CreateDueMutationVariables = Exact<{
   input: DueInput;
 }>;
 
 
-export type CreateDueMutation = { __typename?: 'Mutation', createDue?: { __typename?: 'DueResponse', code: number, success: boolean, message: string, due?: { __typename?: 'Due', id: any, name?: string | null, amount?: any | null, startsAt?: any | null, endsAt?: any | null, status?: string | null, userId?: string | null, createdAt?: any | null, updatedAt?: any | null } | null } | null };
+export type CreateDueMutation = { __typename?: 'Mutation', createDue?: { __typename?: 'DueResponse', code: number, success: boolean, message: string, due?: { __typename?: 'Due', id: any, name?: string | null, amount?: any | null, startsAt?: any | null, endsAt?: any | null, status?: string | null, userId?: any | null, createdAt?: any | null, updatedAt?: any | null } | null } | null };
 
 export type UpdateDueMutationVariables = Exact<{
   dueId: Scalars['UUID']['input'];
@@ -674,7 +711,7 @@ export type UpdateDueMutationVariables = Exact<{
 }>;
 
 
-export type UpdateDueMutation = { __typename?: 'Mutation', updateDue?: { __typename?: 'DueResponse', code: number, success: boolean, message: string, due?: { __typename?: 'Due', id: any, name?: string | null, amount?: any | null, startsAt?: any | null, endsAt?: any | null, status?: string | null, userId?: string | null, createdAt?: any | null, updatedAt?: any | null } | null } | null };
+export type UpdateDueMutation = { __typename?: 'Mutation', updateDue?: { __typename?: 'DueResponse', code: number, success: boolean, message: string, due?: { __typename?: 'Due', id: any, name?: string | null, amount?: any | null, startsAt?: any | null, endsAt?: any | null, status?: string | null, userId?: any | null, createdAt?: any | null, updatedAt?: any | null } | null } | null };
 
 export type GetDuePaymentQueryVariables = Exact<{
   memberId: Scalars['UUID']['input'];
@@ -685,6 +722,7 @@ export type GetDuePaymentQuery = { __typename?: 'Query', getDuePayment?: { __typ
 
 export type GetMemberUnpaidDuesQueryVariables = Exact<{
   memberId: Scalars['UUID']['input'];
+  membershipTypeId: Scalars['UUID']['input'];
 }>;
 
 
@@ -777,14 +815,14 @@ export type GetPastEventsQuery = { __typename?: 'Query', getPastEvents?: Array<{
 export type GetMembersQueryVariables = Exact<{ [key: string]: never; }>;
 
 
-export type GetMembersQuery = { __typename?: 'Query', members?: Array<{ __typename?: 'Member', id: any, regId: string, firstName: string, lastName: string, email: string, phoneNumber: string, photoURL?: string | null, joined?: any | null, membershipType: string, membershipId?: string | null, status?: string | null, createdAt?: any | null } | null> | null };
+export type GetMembersQuery = { __typename?: 'Query', members?: Array<{ __typename?: 'Member', id: any, regId: string, firstName: string, lastName: string, email: string, phoneNumber: string, photoURL?: string | null, joined?: any | null, membershipId?: string | null, status?: string | null, createdAt?: any | null, membershipType?: { __typename?: 'MembershipType', id: any, name: string } | null } | null> | null };
 
 export type GetMemberQueryVariables = Exact<{
   memberId: Scalars['UUID']['input'];
 }>;
 
 
-export type GetMemberQuery = { __typename?: 'Query', member?: { __typename?: 'Member', id: any, regId: string, firstName: string, lastName: string, email: string, phoneNumber: string, photoURL?: string | null, address: string, userId: any, joined?: any | null, membershipType: string, membershipId?: string | null, status?: string | null, createdAt?: any | null, updatedAt?: any | null } | null };
+export type GetMemberQuery = { __typename?: 'Query', member?: { __typename?: 'Member', id: any, regId: string, firstName: string, lastName: string, email: string, phoneNumber: string, photoURL?: string | null, address: string, userId: any, joined?: any | null, membershipId?: string | null, status?: string | null, createdAt?: any | null, updatedAt?: any | null, membershipType?: { __typename?: 'MembershipType', id: any, name: string } | null } | null };
 
 export type DeactivateMemberMutationVariables = Exact<{
   memberId: Scalars['UUID']['input'];
@@ -792,19 +830,19 @@ export type DeactivateMemberMutationVariables = Exact<{
 }>;
 
 
-export type DeactivateMemberMutation = { __typename?: 'Mutation', deactivateMember?: { __typename?: 'Member', id: any, regId: string, firstName: string, lastName: string, email: string, phoneNumber: string, photoURL?: string | null, address: string, userId: any, joined?: any | null, membershipType: string, membershipId?: string | null, status?: string | null, createdAt?: any | null, updatedAt?: any | null } | null };
+export type DeactivateMemberMutation = { __typename?: 'Mutation', deactivateMember?: { __typename?: 'Member', id: any, regId: string, firstName: string, lastName: string, email: string, phoneNumber: string, photoURL?: string | null, address: string, userId: any, joined?: any | null, membershipId?: string | null, status?: string | null, createdAt?: any | null, updatedAt?: any | null, membershipType?: { __typename?: 'MembershipType', id: any, name: string } | null } | null };
 
 export type GetPaymentsQueryVariables = Exact<{ [key: string]: never; }>;
 
 
-export type GetPaymentsQuery = { __typename?: 'Query', getPayments?: Array<{ __typename?: 'Payment', id: any, amount: any, status: string, createdAt?: any | null, member?: { __typename?: 'Member', membershipType: string, firstName: string, lastName: string } | null, due?: { __typename?: 'Due', name?: string | null, amount?: any | null, startsAt?: any | null, endsAt?: any | null } | null }> | null };
+export type GetPaymentsQuery = { __typename?: 'Query', getPayments?: Array<{ __typename?: 'Payment', id: any, amount: any, status: string, createdAt?: any | null, member?: { __typename?: 'Member', firstName: string, lastName: string, membershipType?: { __typename?: 'MembershipType', id: any, name: string } | null } | null, due?: { __typename?: 'Due', name?: string | null, amount?: any | null, startsAt?: any | null, endsAt?: any | null } | null }> | null };
 
 export type GetPaymentQueryVariables = Exact<{
   paymentId: Scalars['UUID']['input'];
 }>;
 
 
-export type GetPaymentQuery = { __typename?: 'Query', getPayment?: { __typename?: 'Payment', id: any, paymentRef?: string | null, amount: any, status: string, createdAt?: any | null, updatedAt?: any | null, member?: { __typename?: 'Member', firstName: string, lastName: string, membershipType: string, regId: string } | null, due?: { __typename?: 'Due', name?: string | null, startsAt?: any | null, endsAt?: any | null, amount?: any | null } | null } | null };
+export type GetPaymentQuery = { __typename?: 'Query', getPayment?: { __typename?: 'Payment', id: any, paymentRef?: string | null, amount: any, status: string, createdAt?: any | null, updatedAt?: any | null, member?: { __typename?: 'Member', firstName: string, lastName: string, regId: string, membershipType?: { __typename?: 'MembershipType', id: any, name: string } | null } | null, due?: { __typename?: 'Due', name?: string | null, startsAt?: any | null, endsAt?: any | null, amount?: any | null } | null } | null };
 
 export type PostPaymentMutationVariables = Exact<{
   input: PaymentInput;
@@ -872,10 +910,15 @@ export const UserLoginDocument = gql`
       regId
       role
       member {
-        membershipType
+        membershipType {
+          id
+          name
+        }
+        email
         photoURL
         lastName
         firstName
+        phoneNumber
         id
       }
     }
@@ -953,6 +996,46 @@ export type GetUsersQueryHookResult = ReturnType<typeof useGetUsersQuery>;
 export type GetUsersLazyQueryHookResult = ReturnType<typeof useGetUsersLazyQuery>;
 export type GetUsersSuspenseQueryHookResult = ReturnType<typeof useGetUsersSuspenseQuery>;
 export type GetUsersQueryResult = Apollo.QueryResult<GetUsersQuery, GetUsersQueryVariables>;
+export const GetMembershipTypesDocument = gql`
+    query GetMembershipTypes {
+  getMembershipTypes {
+    id
+    name
+  }
+}
+    `;
+
+/**
+ * __useGetMembershipTypesQuery__
+ *
+ * To run a query within a React component, call `useGetMembershipTypesQuery` and pass it any options that fit your needs.
+ * When your component renders, `useGetMembershipTypesQuery` returns an object from Apollo Client that contains loading, error, and data properties
+ * you can use to render your UI.
+ *
+ * @param baseOptions options that will be passed into the query, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options;
+ *
+ * @example
+ * const { data, loading, error } = useGetMembershipTypesQuery({
+ *   variables: {
+ *   },
+ * });
+ */
+export function useGetMembershipTypesQuery(baseOptions?: Apollo.QueryHookOptions<GetMembershipTypesQuery, GetMembershipTypesQueryVariables>) {
+        const options = {...defaultOptions, ...baseOptions}
+        return Apollo.useQuery<GetMembershipTypesQuery, GetMembershipTypesQueryVariables>(GetMembershipTypesDocument, options);
+      }
+export function useGetMembershipTypesLazyQuery(baseOptions?: Apollo.LazyQueryHookOptions<GetMembershipTypesQuery, GetMembershipTypesQueryVariables>) {
+          const options = {...defaultOptions, ...baseOptions}
+          return Apollo.useLazyQuery<GetMembershipTypesQuery, GetMembershipTypesQueryVariables>(GetMembershipTypesDocument, options);
+        }
+export function useGetMembershipTypesSuspenseQuery(baseOptions?: Apollo.SuspenseQueryHookOptions<GetMembershipTypesQuery, GetMembershipTypesQueryVariables>) {
+          const options = {...defaultOptions, ...baseOptions}
+          return Apollo.useSuspenseQuery<GetMembershipTypesQuery, GetMembershipTypesQueryVariables>(GetMembershipTypesDocument, options);
+        }
+export type GetMembershipTypesQueryHookResult = ReturnType<typeof useGetMembershipTypesQuery>;
+export type GetMembershipTypesLazyQueryHookResult = ReturnType<typeof useGetMembershipTypesLazyQuery>;
+export type GetMembershipTypesSuspenseQueryHookResult = ReturnType<typeof useGetMembershipTypesSuspenseQuery>;
+export type GetMembershipTypesQueryResult = Apollo.QueryResult<GetMembershipTypesQuery, GetMembershipTypesQueryVariables>;
 export const CreateBlogDocument = gql`
     mutation CreateBlog($input: blogInput!) {
   createBlog(input: $input) {
@@ -1098,7 +1181,10 @@ export const GetRecentRegistrationDocument = gql`
     id
     firstName
     lastName
-    membershipType
+    membershipType {
+      id
+      name
+    }
     createdAt
   }
 }
@@ -1503,8 +1589,8 @@ export type GetDuePaymentLazyQueryHookResult = ReturnType<typeof useGetDuePaymen
 export type GetDuePaymentSuspenseQueryHookResult = ReturnType<typeof useGetDuePaymentSuspenseQuery>;
 export type GetDuePaymentQueryResult = Apollo.QueryResult<GetDuePaymentQuery, GetDuePaymentQueryVariables>;
 export const GetMemberUnpaidDuesDocument = gql`
-    query GetMemberUnpaidDues($memberId: UUID!) {
-  getMemberUnpaidDues(memberId: $memberId) {
+    query GetMemberUnpaidDues($memberId: UUID!, $membershipTypeId: UUID!) {
+  getMemberUnpaidDues(memberId: $memberId, membershipTypeId: $membershipTypeId) {
     amount
     name
     startsAt
@@ -1528,6 +1614,7 @@ export const GetMemberUnpaidDuesDocument = gql`
  * const { data, loading, error } = useGetMemberUnpaidDuesQuery({
  *   variables: {
  *      memberId: // value for 'memberId'
+ *      membershipTypeId: // value for 'membershipTypeId'
  *   },
  * });
  */
@@ -2162,7 +2249,10 @@ export const GetMembersDocument = gql`
     phoneNumber
     photoURL
     joined
-    membershipType
+    membershipType {
+      id
+      name
+    }
     membershipId
     status
     createdAt
@@ -2214,7 +2304,10 @@ export const GetMemberDocument = gql`
     address
     userId
     joined
-    membershipType
+    membershipType {
+      id
+      name
+    }
     membershipId
     status
     createdAt
@@ -2268,7 +2361,10 @@ export const DeactivateMemberDocument = gql`
     address
     userId
     joined
-    membershipType
+    membershipType {
+      id
+      name
+    }
     membershipId
     status
     createdAt
@@ -2308,7 +2404,10 @@ export const GetPaymentsDocument = gql`
   getPayments {
     id
     member {
-      membershipType
+      membershipType {
+        id
+        name
+      }
       firstName
       lastName
     }
@@ -2363,7 +2462,10 @@ export const GetPaymentDocument = gql`
     member {
       firstName
       lastName
-      membershipType
+      membershipType {
+        id
+        name
+      }
       regId
     }
     due {
@@ -2631,7 +2733,7 @@ export type ResolversTypes = ResolversObject<{
   CpdpPoint: ResolverTypeWrapper<Omit<CpdpPoint, 'member'> & { member?: Maybe<ResolversTypes['Member']> }>;
   CreateUserResponse: ResolverTypeWrapper<CreateUserResponse>;
   Decimal: ResolverTypeWrapper<Scalars['Decimal']['output']>;
-  Due: ResolverTypeWrapper<Omit<Due, 'user'> & { user?: Maybe<ResolversTypes['User']> }>;
+  Due: ResolverTypeWrapper<Omit<Due, 'membershipType' | 'user'> & { membershipType?: Maybe<ResolversTypes['MembershipType']>, user?: Maybe<ResolversTypes['User']> }>;
   DueResponse: ResolverTypeWrapper<Omit<DueResponse, 'due'> & { due?: Maybe<ResolversTypes['Due']> }>;
   Event: ResolverTypeWrapper<EventModel>;
   EventForm: ResolverTypeWrapper<Omit<EventForm, 'event'> & { event?: Maybe<ResolversTypes['Event']> }>;
@@ -2645,6 +2747,7 @@ export type ResolversTypes = ResolversObject<{
   Member: ResolverTypeWrapper<MemberModel>;
   MemberDueResponse: ResolverTypeWrapper<MemberDueResponse>;
   MemberResponse: ResolverTypeWrapper<Omit<MemberResponse, 'member'> & { member?: Maybe<ResolversTypes['Member']> }>;
+  MembershipType: ResolverTypeWrapper<Omit<MembershipType, 'dues' | 'members'> & { dues?: Maybe<Array<Maybe<ResolversTypes['Due']>>>, members?: Maybe<Array<Maybe<ResolversTypes['Member']>>> }>;
   Mutation: ResolverTypeWrapper<{}>;
   Payment: ResolverTypeWrapper<PaymentModel>;
   Query: ResolverTypeWrapper<{}>;
@@ -2662,6 +2765,7 @@ export type ResolversTypes = ResolversObject<{
   UserPayload: ResolverTypeWrapper<Omit<UserPayload, 'member'> & { member?: Maybe<ResolversTypes['Member']> }>;
   blogInput: BlogInput;
   dueInput: DueInput;
+  dueUpdateInput: DueUpdateInput;
   eventInput: EventInput;
   memberStat: ResolverTypeWrapper<MemberStat>;
   newMember: NewMember;
@@ -2679,7 +2783,7 @@ export type ResolversParentTypes = ResolversObject<{
   CpdpPoint: Omit<CpdpPoint, 'member'> & { member?: Maybe<ResolversParentTypes['Member']> };
   CreateUserResponse: CreateUserResponse;
   Decimal: Scalars['Decimal']['output'];
-  Due: Omit<Due, 'user'> & { user?: Maybe<ResolversParentTypes['User']> };
+  Due: Omit<Due, 'membershipType' | 'user'> & { membershipType?: Maybe<ResolversParentTypes['MembershipType']>, user?: Maybe<ResolversParentTypes['User']> };
   DueResponse: Omit<DueResponse, 'due'> & { due?: Maybe<ResolversParentTypes['Due']> };
   Event: EventModel;
   EventForm: Omit<EventForm, 'event'> & { event?: Maybe<ResolversParentTypes['Event']> };
@@ -2693,6 +2797,7 @@ export type ResolversParentTypes = ResolversObject<{
   Member: MemberModel;
   MemberDueResponse: MemberDueResponse;
   MemberResponse: Omit<MemberResponse, 'member'> & { member?: Maybe<ResolversParentTypes['Member']> };
+  MembershipType: Omit<MembershipType, 'dues' | 'members'> & { dues?: Maybe<Array<Maybe<ResolversParentTypes['Due']>>>, members?: Maybe<Array<Maybe<ResolversParentTypes['Member']>>> };
   Mutation: {};
   Payment: PaymentModel;
   Query: {};
@@ -2710,6 +2815,7 @@ export type ResolversParentTypes = ResolversObject<{
   UserPayload: Omit<UserPayload, 'member'> & { member?: Maybe<ResolversParentTypes['Member']> };
   blogInput: BlogInput;
   dueInput: DueInput;
+  dueUpdateInput: DueUpdateInput;
   eventInput: EventInput;
   memberStat: MemberStat;
   newMember: NewMember;
@@ -2787,14 +2893,17 @@ export interface DecimalScalarConfig extends GraphQLScalarTypeConfig<ResolversTy
 export type DueResolvers<ContextType = GraphQLContext, ParentType extends ResolversParentTypes['Due'] = ResolversParentTypes['Due']> = ResolversObject<{
   amount?: Resolver<Maybe<ResolversTypes['Decimal']>, ParentType, ContextType>;
   createdAt?: Resolver<Maybe<ResolversTypes['Time']>, ParentType, ContextType>;
+  deletedAt?: Resolver<Maybe<ResolversTypes['Time']>, ParentType, ContextType>;
   endsAt?: Resolver<Maybe<ResolversTypes['Time']>, ParentType, ContextType>;
   id?: Resolver<ResolversTypes['UUID'], ParentType, ContextType>;
+  membershipType?: Resolver<Maybe<ResolversTypes['MembershipType']>, ParentType, ContextType>;
+  membershipTypeId?: Resolver<ResolversTypes['UUID'], ParentType, ContextType>;
   name?: Resolver<Maybe<ResolversTypes['String']>, ParentType, ContextType>;
   startsAt?: Resolver<Maybe<ResolversTypes['Time']>, ParentType, ContextType>;
   status?: Resolver<Maybe<ResolversTypes['String']>, ParentType, ContextType>;
   updatedAt?: Resolver<Maybe<ResolversTypes['Time']>, ParentType, ContextType>;
   user?: Resolver<Maybe<ResolversTypes['User']>, ParentType, ContextType>;
-  userId?: Resolver<Maybe<ResolversTypes['String']>, ParentType, ContextType>;
+  userId?: Resolver<Maybe<ResolversTypes['UUID']>, ParentType, ContextType>;
   __isTypeOf?: IsTypeOfResolverFn<ParentType, ContextType>;
 }>;
 
@@ -2914,7 +3023,8 @@ export type MemberResolvers<ContextType = GraphQLContext, ParentType extends Res
   joined?: Resolver<Maybe<ResolversTypes['Time']>, ParentType, ContextType>;
   lastName?: Resolver<ResolversTypes['String'], ParentType, ContextType>;
   membershipId?: Resolver<Maybe<ResolversTypes['String']>, ParentType, ContextType>;
-  membershipType?: Resolver<ResolversTypes['String'], ParentType, ContextType>;
+  membershipType?: Resolver<Maybe<ResolversTypes['MembershipType']>, ParentType, ContextType>;
+  membershipTypeId?: Resolver<ResolversTypes['UUID'], ParentType, ContextType>;
   phoneNumber?: Resolver<ResolversTypes['String'], ParentType, ContextType>;
   photoURL?: Resolver<Maybe<ResolversTypes['String']>, ParentType, ContextType>;
   regId?: Resolver<ResolversTypes['String'], ParentType, ContextType>;
@@ -2946,7 +3056,16 @@ export type MemberResponseResolvers<ContextType = GraphQLContext, ParentType ext
   __isTypeOf?: IsTypeOfResolverFn<ParentType, ContextType>;
 }>;
 
+export type MembershipTypeResolvers<ContextType = GraphQLContext, ParentType extends ResolversParentTypes['MembershipType'] = ResolversParentTypes['MembershipType']> = ResolversObject<{
+  dues?: Resolver<Maybe<Array<Maybe<ResolversTypes['Due']>>>, ParentType, ContextType>;
+  id?: Resolver<ResolversTypes['UUID'], ParentType, ContextType>;
+  members?: Resolver<Maybe<Array<Maybe<ResolversTypes['Member']>>>, ParentType, ContextType>;
+  name?: Resolver<ResolversTypes['String'], ParentType, ContextType>;
+  __isTypeOf?: IsTypeOfResolverFn<ParentType, ContextType>;
+}>;
+
 export type MutationResolvers<ContextType = GraphQLContext, ParentType extends ResolversParentTypes['Mutation'] = ResolversParentTypes['Mutation']> = ResolversObject<{
+  archiveDue?: Resolver<Maybe<ResolversTypes['Boolean']>, ParentType, ContextType, RequireFields<MutationArchiveDueArgs, 'dueId'>>;
   cancelEvent?: Resolver<Maybe<ResolversTypes['Boolean']>, ParentType, ContextType, RequireFields<MutationCancelEventArgs, 'eventId' | 'status'>>;
   createBlog?: Resolver<Maybe<ResolversTypes['BlogResponse']>, ParentType, ContextType, RequireFields<MutationCreateBlogArgs, 'input'>>;
   createDue?: Resolver<Maybe<ResolversTypes['DueResponse']>, ParentType, ContextType, RequireFields<MutationCreateDueArgs, 'input'>>;
@@ -2991,8 +3110,9 @@ export type QueryResolvers<ContextType = GraphQLContext, ParentType extends Reso
   getEvents?: Resolver<Maybe<Array<ResolversTypes['Event']>>, ParentType, ContextType>;
   getEventsForPublic?: Resolver<Maybe<Array<ResolversTypes['Event']>>, ParentType, ContextType>;
   getMemberStat?: Resolver<Maybe<ResolversTypes['memberStat']>, ParentType, ContextType, RequireFields<QueryGetMemberStatArgs, 'memberId'>>;
-  getMemberUnpaidDues?: Resolver<Maybe<Array<Maybe<ResolversTypes['Due']>>>, ParentType, ContextType, RequireFields<QueryGetMemberUnpaidDuesArgs, 'memberId'>>;
+  getMemberUnpaidDues?: Resolver<Maybe<Array<Maybe<ResolversTypes['Due']>>>, ParentType, ContextType, RequireFields<QueryGetMemberUnpaidDuesArgs, 'memberId' | 'membershipTypeId'>>;
   getMembersAttendance?: Resolver<Maybe<Array<ResolversTypes['EventRegistration']>>, ParentType, ContextType, RequireFields<QueryGetMembersAttendanceArgs, 'eventId'>>;
+  getMembershipTypes?: Resolver<Maybe<Array<ResolversTypes['MembershipType']>>, ParentType, ContextType>;
   getPastEvents?: Resolver<Maybe<Array<ResolversTypes['Event']>>, ParentType, ContextType>;
   getPayment?: Resolver<Maybe<ResolversTypes['Payment']>, ParentType, ContextType, RequireFields<QueryGetPaymentArgs, 'paymentId'>>;
   getPayments?: Resolver<Maybe<Array<ResolversTypes['Payment']>>, ParentType, ContextType, Partial<QueryGetPaymentsArgs>>;
@@ -3099,6 +3219,7 @@ export type Resolvers<ContextType = GraphQLContext> = ResolversObject<{
   Member?: MemberResolvers<ContextType>;
   MemberDueResponse?: MemberDueResponseResolvers<ContextType>;
   MemberResponse?: MemberResponseResolvers<ContextType>;
+  MembershipType?: MembershipTypeResolvers<ContextType>;
   Mutation?: MutationResolvers<ContextType>;
   Payment?: PaymentResolvers<ContextType>;
   Query?: QueryResolvers<ContextType>;

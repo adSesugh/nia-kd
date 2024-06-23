@@ -1,4 +1,0 @@
--- AlterTable
-ALTER TABLE `events` ADD COLUMN `ends_time` VARCHAR(191) NOT NULL DEFAULT '00:00:00',
-    ADD COLUMN `starts_time` VARCHAR(191) NOT NULL DEFAULT '00:00:00',
-    ALTER COLUMN `updatedAt` DROP DEFAULT;
