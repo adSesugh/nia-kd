@@ -64,6 +64,10 @@ const MemberList = () => {
                 return (
                     <div>{member.firstName} {member.lastName}</div>
                 )
+            case "membershipType":
+                return (
+                    <div>{member.membershipType?.name}</div>
+                )
             case "joined": 
                 return (
                     <div>{moment(member.createdAt).format('LL')}</div>
