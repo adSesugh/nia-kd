@@ -29,3 +29,7 @@ export const EventSchema = Yup.object().shape({
     hasCertificate: Yup.boolean().default(false),
     sendTag: Yup.boolean().default(false)
 });
+
+export const PasswordSchema = Yup.object().shape({
+    password: Yup.string().required('Password is required').min(6, 'Invalid password'),
+});

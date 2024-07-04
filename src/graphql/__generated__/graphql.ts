@@ -119,7 +119,7 @@ export type Event = {
   description?: Maybe<Scalars['String']['output']>;
   ends_at: Scalars['Time']['output'];
   ends_time: Scalars['String']['output'];
-  eventForm?: Maybe<Array<Maybe<EventForm>>>;
+  eventForms?: Maybe<Array<Maybe<EventForm>>>;
   eventPayments?: Maybe<Array<Maybe<Payment>>>;
   eventRegistrations?: Maybe<Array<Maybe<EventRegistration>>>;
   eventResources?: Maybe<Array<Maybe<EventResource>>>;
@@ -158,6 +158,7 @@ export type EventForm = {
 };
 
 export type EventFormInput = {
+  id?: InputMaybe<Scalars['UUID']['input']>;
   label?: InputMaybe<Scalars['String']['input']>;
   name: Scalars['String']['input'];
   required?: InputMaybe<Scalars['Boolean']['input']>;
@@ -166,7 +167,6 @@ export type EventFormInput = {
 
 export type EventRegistration = {
   __typename?: 'EventRegistration';
-  amount?: Maybe<Scalars['Decimal']['output']>;
   checkin?: Maybe<Scalars['Boolean']['output']>;
   checkinDate?: Maybe<Scalars['Time']['output']>;
   createdAt?: Maybe<Scalars['Time']['output']>;
@@ -175,9 +175,7 @@ export type EventRegistration = {
   id: Scalars['UUID']['output'];
   member?: Maybe<Member>;
   memberId?: Maybe<Scalars['UUID']['output']>;
-  paymentRef: Scalars['String']['output'];
-  registrantDetail?: Maybe<Scalars['JSON']['output']>;
-  status?: Maybe<Scalars['String']['output']>;
+  registrantDetail: Scalars['JSON']['output'];
   updatedAt?: Maybe<Scalars['Time']['output']>;
 };
 
@@ -271,10 +269,13 @@ export type Mutation = {
   deactivateMember?: Maybe<Member>;
   deleteEvent?: Maybe<Scalars['Boolean']['output']>;
   login?: Maybe<AuthPayload>;
+  postEventRegistration?: Maybe<EventRegistration>;
   postMultiPayment?: Maybe<Scalars['Boolean']['output']>;
   postPayment: Payment;
+  profilephotoUpload?: Maybe<UploadResponse>;
   publishedBlog?: Maybe<BlogResponse>;
-  updateDue?: Maybe<DueResponse>;
+  resetPassword?: Maybe<ResetPasswordResponse>;
+  updateDues?: Maybe<DueResponse>;
   watchEventViews?: Maybe<Scalars['Boolean']['output']>;
 };
 
@@ -326,6 +327,11 @@ export type MutationLoginArgs = {
 };
 
 
+export type MutationPostEventRegistrationArgs = {
+  input: EventRegistrationInput;
+};
+
+
 export type MutationPostMultiPaymentArgs = {
   input: MultiPaymentInput;
 };
@@ -336,15 +342,27 @@ export type MutationPostPaymentArgs = {
 };
 
 
+export type MutationProfilephotoUploadArgs = {
+  memberId: Scalars['UUID']['input'];
+  photo: Scalars['String']['input'];
+};
+
+
 export type MutationPublishedBlogArgs = {
   blogId: Scalars['UUID']['input'];
   status: Scalars['String']['input'];
 };
 
 
-export type MutationUpdateDueArgs = {
+export type MutationResetPasswordArgs = {
+  password: Scalars['String']['input'];
+  userId: Scalars['UUID']['input'];
+};
+
+
+export type MutationUpdateDuesArgs = {
   dueId: Scalars['UUID']['input'];
-  input: DueInput;
+  input: DueUpdateInput;
 };
 
 
@@ -382,6 +400,7 @@ export type Query = {
   getEvent?: Maybe<Event>;
   getEvents?: Maybe<Array<Event>>;
   getEventsForPublic?: Maybe<Array<Event>>;
+  getMember?: Maybe<Member>;
   getMemberStat?: Maybe<MemberStat>;
   getMemberUnpaidDues?: Maybe<Array<Maybe<Due>>>;
   getMembersAttendance?: Maybe<Array<EventRegistration>>;
@@ -391,8 +410,10 @@ export type Query = {
   getPayments?: Maybe<Array<Payment>>;
   getRecentRegistration?: Maybe<Array<Member>>;
   getRegisteredMembers?: Maybe<Array<EventRegistration>>;
+  getRegistrationForm?: Maybe<Event>;
   getSidebarStat?: Maybe<SidebarResponse>;
   getUpComingEvents?: Maybe<Array<EventRegistration>>;
+  getUser?: Maybe<Member>;
   member?: Maybe<Member>;
   memberPayments?: Maybe<Array<Payment>>;
   members?: Maybe<Array<Maybe<Member>>>;
@@ -419,6 +440,11 @@ export type QueryGetDuePaymentArgs = {
 
 export type QueryGetEventArgs = {
   eventId: Scalars['UUID']['input'];
+};
+
+
+export type QueryGetMemberArgs = {
+  memberId: Scalars['UUID']['input'];
 };
 
 
@@ -453,8 +479,18 @@ export type QueryGetRegisteredMembersArgs = {
 };
 
 
+export type QueryGetRegistrationFormArgs = {
+  eventId: Scalars['UUID']['input'];
+};
+
+
 export type QueryGetUpComingEventsArgs = {
   memberId: Scalars['UUID']['input'];
+};
+
+
+export type QueryGetUserArgs = {
+  userId: Scalars['UUID']['input'];
 };
 
 
@@ -470,6 +506,13 @@ export type QueryMemberPaymentsArgs = {
 
 export type QuerySingeDueArgs = {
   dueId: Scalars['UUID']['input'];
+};
+
+export type ResetPasswordResponse = {
+  __typename?: 'ResetPasswordResponse';
+  code: Scalars['Int']['output'];
+  message?: Maybe<Scalars['String']['output']>;
+  success: Scalars['Boolean']['output'];
 };
 
 export type ResourceInput = {
@@ -514,6 +557,11 @@ export type Tag = {
   name: Scalars['String']['output'];
 };
 
+export type UploadResponse = {
+  __typename?: 'UploadResponse';
+  url: Scalars['String']['output'];
+};
+
 export type User = {
   __typename?: 'User';
   createdAt?: Maybe<Scalars['Time']['output']>;
@@ -531,6 +579,7 @@ export type UserPayload = {
   __typename?: 'UserPayload';
   id: Scalars['UUID']['output'];
   member?: Maybe<Member>;
+  photoURL?: Maybe<Scalars['String']['output']>;
   regId: Scalars['String']['output'];
   role: Scalars['String']['output'];
 };
@@ -584,6 +633,13 @@ export type EventInput = {
   starts_time: Scalars['String']['input'];
   tickets?: InputMaybe<Scalars['Int']['input']>;
   type: Scalars['String']['input'];
+};
+
+export type EventRegistrationInput = {
+  eventId: Scalars['String']['input'];
+  memberId?: InputMaybe<Scalars['String']['input']>;
+  payment?: InputMaybe<Scalars['JSON']['input']>;
+  registrantDetail: Scalars['JSON']['input'];
 };
 
 export type MemberStat = {
@@ -644,7 +700,7 @@ export type UserLoginMutationVariables = Exact<{
 }>;
 
 
-export type UserLoginMutation = { __typename?: 'Mutation', login?: { __typename?: 'AuthPayload', token?: string | null, user?: { __typename?: 'UserPayload', id: any, regId: string, role: string, member?: { __typename?: 'Member', email: string, photoURL?: string | null, lastName: string, firstName: string, phoneNumber: string, id: any, membershipType?: { __typename?: 'MembershipType', id: any, name: string } | null } | null } | null } | null };
+export type UserLoginMutation = { __typename?: 'Mutation', login?: { __typename?: 'AuthPayload', token?: string | null, user?: { __typename?: 'UserPayload', id: any, regId: string, role: string, photoURL?: string | null, member?: { __typename?: 'Member', email: string, photoURL?: string | null, lastName: string, firstName: string, phoneNumber: string, id: any, membershipType?: { __typename?: 'MembershipType', id: any, name: string } | null } | null } | null } | null };
 
 export type GetUsersQueryVariables = Exact<{ [key: string]: never; }>;
 
@@ -703,7 +759,7 @@ export type GetMemberStatQuery = { __typename?: 'Query', getMemberStat?: { __typ
 export type GetDuesQueryVariables = Exact<{ [key: string]: never; }>;
 
 
-export type GetDuesQuery = { __typename?: 'Query', dues?: Array<{ __typename?: 'Due', id: any, name?: string | null, amount?: any | null, startsAt?: any | null, endsAt?: any | null, status?: string | null, userId?: any | null, createdAt?: any | null, updatedAt?: any | null } | null> | null };
+export type GetDuesQuery = { __typename?: 'Query', dues?: Array<{ __typename?: 'Due', id: any, name?: string | null, amount?: any | null, startsAt?: any | null, endsAt?: any | null, status?: string | null, userId?: any | null, createdAt?: any | null, updatedAt?: any | null, membershipType?: { __typename?: 'MembershipType', id: any, name: string } | null } | null> | null };
 
 export type GetSingeDueQueryVariables = Exact<{
   dueId: Scalars['UUID']['input'];
@@ -718,14 +774,6 @@ export type CreateDueMutationVariables = Exact<{
 
 
 export type CreateDueMutation = { __typename?: 'Mutation', createDue?: { __typename?: 'DueResponse', code: number, success: boolean, message: string, due?: { __typename?: 'Due', id: any, name?: string | null, amount?: any | null, startsAt?: any | null, endsAt?: any | null, status?: string | null, userId?: any | null, createdAt?: any | null, updatedAt?: any | null } | null } | null };
-
-export type UpdateDueMutationVariables = Exact<{
-  dueId: Scalars['UUID']['input'];
-  input: DueInput;
-}>;
-
-
-export type UpdateDueMutation = { __typename?: 'Mutation', updateDue?: { __typename?: 'DueResponse', code: number, success: boolean, message: string, due?: { __typename?: 'Due', id: any, name?: string | null, amount?: any | null, startsAt?: any | null, endsAt?: any | null, status?: string | null, userId?: any | null, createdAt?: any | null, updatedAt?: any | null } | null } | null };
 
 export type GetDuePaymentQueryVariables = Exact<{
   memberId: Scalars['UUID']['input'];
@@ -742,6 +790,21 @@ export type GetMemberUnpaidDuesQueryVariables = Exact<{
 
 export type GetMemberUnpaidDuesQuery = { __typename?: 'Query', getMemberUnpaidDues?: Array<{ __typename?: 'Due', amount?: any | null, name?: string | null, startsAt?: any | null, status?: string | null, id: any, endsAt?: any | null } | null> | null };
 
+export type ArchiveDueMutationVariables = Exact<{
+  dueId: Scalars['UUID']['input'];
+}>;
+
+
+export type ArchiveDueMutation = { __typename?: 'Mutation', archiveDue?: boolean | null };
+
+export type UpdateDuesMutationVariables = Exact<{
+  dueId: Scalars['UUID']['input'];
+  input: DueUpdateInput;
+}>;
+
+
+export type UpdateDuesMutation = { __typename?: 'Mutation', updateDues?: { __typename?: 'DueResponse', code: number, success: boolean, message: string, due?: { __typename?: 'Due', id: any, name?: string | null, amount?: any | null, startsAt?: any | null, endsAt?: any | null, status?: string | null, userId?: any | null, createdAt?: any | null, updatedAt?: any | null } | null } | null };
+
 export type EventFormFieldsQueryVariables = Exact<{ [key: string]: never; }>;
 
 
@@ -752,7 +815,7 @@ export type CreateEventMutationVariables = Exact<{
 }>;
 
 
-export type CreateEventMutation = { __typename?: 'Mutation', createEvent?: { __typename?: 'EventResponse', code: number, success: boolean, message: string, event?: { __typename?: 'Event', id: any, name: string, description?: string | null, type: string, link?: string | null, address?: string | null, starts_at: any, ends_at: any, paymentType: string, amount: any, tickets?: number | null, isInfinity?: boolean | null, coverPhoto?: string | null, userId?: any | null, formTitle: string, instructions: string, message: string, createdAt?: any | null, status: string, user?: { __typename?: 'User', member?: { __typename?: 'Member', firstName: string, lastName: string } | null } | null, eventForm?: Array<{ __typename?: 'EventForm', id: any, name: string, type: string, required?: boolean | null } | null> | null } | null } | null };
+export type CreateEventMutation = { __typename?: 'Mutation', createEvent?: { __typename?: 'EventResponse', code: number, success: boolean, message: string, event?: { __typename?: 'Event', id: any, name: string, description?: string | null, type: string, link?: string | null, address?: string | null, starts_at: any, ends_at: any, paymentType: string, amount: any, tickets?: number | null, isInfinity?: boolean | null, coverPhoto?: string | null, userId?: any | null, formTitle: string, instructions: string, message: string, createdAt?: any | null, status: string, user?: { __typename?: 'User', member?: { __typename?: 'Member', firstName: string, lastName: string } | null } | null, eventForms?: Array<{ __typename?: 'EventForm', id: any, name: string, type: string, required?: boolean | null } | null> | null } | null } | null };
 
 export type GetEventsQueryVariables = Exact<{ [key: string]: never; }>;
 
@@ -793,14 +856,14 @@ export type GetRegisteredMembersQueryVariables = Exact<{
 }>;
 
 
-export type GetRegisteredMembersQuery = { __typename?: 'Query', getRegisteredMembers?: Array<{ __typename?: 'EventRegistration', id: any, registrantDetail?: any | null, status?: string | null, createdAt?: any | null }> | null };
+export type GetRegisteredMembersQuery = { __typename?: 'Query', getRegisteredMembers?: Array<{ __typename?: 'EventRegistration', id: any, registrantDetail: any, createdAt?: any | null }> | null };
 
 export type GetMembersAttendanceQueryVariables = Exact<{
   eventId: Scalars['UUID']['input'];
 }>;
 
 
-export type GetMembersAttendanceQuery = { __typename?: 'Query', getMembersAttendance?: Array<{ __typename?: 'EventRegistration', id: any, registrantDetail?: any | null, checkin?: boolean | null, checkinDate?: any | null, createdAt?: any | null }> | null };
+export type GetMembersAttendanceQuery = { __typename?: 'Query', getMembersAttendance?: Array<{ __typename?: 'EventRegistration', id: any, registrantDetail: any, checkin?: boolean | null, checkinDate?: any | null, createdAt?: any | null }> | null };
 
 export type GetEventsForPublicQueryVariables = Exact<{ [key: string]: never; }>;
 
@@ -812,7 +875,7 @@ export type GetEventForPublicQueryVariables = Exact<{
 }>;
 
 
-export type GetEventForPublicQuery = { __typename?: 'Query', getEvent?: { __typename?: 'Event', address?: string | null, amount: any, coverPhoto?: string | null, description?: string | null, id: any, name: string, paymentType: string, starts_at: any, starts_time: string, status: string, type: string, sponsors?: Array<{ __typename?: 'Sponsor', logo: string } | null> | null, eventResources?: Array<{ __typename?: 'EventResource', id: any, resourceUrl: string } | null> | null, speakers?: Array<{ __typename?: 'Speaker', about: string, avatar: string, id: any, name: string, title: string } | null> | null } | null };
+export type GetEventForPublicQuery = { __typename?: 'Query', getEvent?: { __typename?: 'Event', address?: string | null, amount: any, coverPhoto?: string | null, description?: string | null, id: any, name: string, paymentType: string, starts_at: any, starts_time: string, status: string, type: string, sponsors?: Array<{ __typename?: 'Sponsor', id: any, logo: string } | null> | null, eventResources?: Array<{ __typename?: 'EventResource', id: any, resourceUrl: string, name: string } | null> | null, speakers?: Array<{ __typename?: 'Speaker', about: string, avatar: string, id: any, name: string, title: string } | null> | null } | null };
 
 export type GetUpComingEventsQueryVariables = Exact<{
   memberId: Scalars['UUID']['input'];
@@ -826,17 +889,24 @@ export type GetPastEventsQueryVariables = Exact<{ [key: string]: never; }>;
 
 export type GetPastEventsQuery = { __typename?: 'Query', getPastEvents?: Array<{ __typename?: 'Event', id: any, starts_at: any, starts_time: string, name: string, coverPhoto?: string | null, eventRegistrations?: Array<{ __typename?: 'EventRegistration', createdAt?: any | null, memberId?: any | null, id: any } | null> | null }> | null };
 
+export type GetRegistrationFormQueryVariables = Exact<{
+  eventId: Scalars['UUID']['input'];
+}>;
+
+
+export type GetRegistrationFormQuery = { __typename?: 'Query', getRegistrationForm?: { __typename?: 'Event', name: string, amount: any, formTitle: string, instructions: string, status: string, paymentType: string, eventForms?: Array<{ __typename?: 'EventForm', id: any, name: string, label: string, type: string, required?: boolean | null } | null> | null } | null };
+
+export type PostEventRegistrationMutationVariables = Exact<{
+  input: EventRegistrationInput;
+}>;
+
+
+export type PostEventRegistrationMutation = { __typename?: 'Mutation', postEventRegistration?: { __typename?: 'EventRegistration', id: any, memberId?: any | null, eventId: any, registrantDetail: any, checkin?: boolean | null, checkinDate?: any | null, createdAt?: any | null, updatedAt?: any | null } | null };
+
 export type GetMembersQueryVariables = Exact<{ [key: string]: never; }>;
 
 
 export type GetMembersQuery = { __typename?: 'Query', members?: Array<{ __typename?: 'Member', id: any, regId: string, firstName: string, lastName: string, email: string, phoneNumber: string, photoURL?: string | null, joined?: any | null, membershipId?: string | null, status?: string | null, createdAt?: any | null, membershipType?: { __typename?: 'MembershipType', id: any, name: string } | null } | null> | null };
-
-export type GetMemberQueryVariables = Exact<{
-  memberId: Scalars['UUID']['input'];
-}>;
-
-
-export type GetMemberQuery = { __typename?: 'Query', member?: { __typename?: 'Member', id: any, regId: string, firstName: string, lastName: string, email: string, phoneNumber: string, photoURL?: string | null, address: string, userId: any, joined?: any | null, membershipId?: string | null, status?: string | null, createdAt?: any | null, updatedAt?: any | null, membershipType?: { __typename?: 'MembershipType', id: any, name: string } | null } | null };
 
 export type DeactivateMemberMutationVariables = Exact<{
   memberId: Scalars['UUID']['input'];
@@ -845,6 +915,21 @@ export type DeactivateMemberMutationVariables = Exact<{
 
 
 export type DeactivateMemberMutation = { __typename?: 'Mutation', deactivateMember?: { __typename?: 'Member', id: any, regId: string, firstName: string, lastName: string, email: string, phoneNumber: string, photoURL?: string | null, address: string, userId: any, joined?: any | null, membershipId?: string | null, status?: string | null, createdAt?: any | null, updatedAt?: any | null, membershipType?: { __typename?: 'MembershipType', id: any, name: string } | null } | null };
+
+export type GetMemberQueryVariables = Exact<{
+  memberId: Scalars['UUID']['input'];
+}>;
+
+
+export type GetMemberQuery = { __typename?: 'Query', getMember?: { __typename?: 'Member', id: any, regId: string, firstName: string, lastName: string, email: string, phoneNumber: string, photoURL?: string | null, address: string, userId: any, joined?: any | null, membershipId?: string | null, status?: string | null, createdAt?: any | null, updatedAt?: any | null, membershipType?: { __typename?: 'MembershipType', id: any, name: string } | null, cpdpPoints?: { __typename?: 'CpdpPoint', id: any, points: number } | null } | null };
+
+export type ProfilephotoUploadMutationVariables = Exact<{
+  memberId: Scalars['UUID']['input'];
+  photo: Scalars['String']['input'];
+}>;
+
+
+export type ProfilephotoUploadMutation = { __typename?: 'Mutation', profilephotoUpload?: { __typename?: 'UploadResponse', url: string } | null };
 
 export type GetPaymentsQueryVariables = Exact<{ [key: string]: never; }>;
 
@@ -885,6 +970,21 @@ export type GetMemberPaymentsQueryVariables = Exact<{
 
 
 export type GetMemberPaymentsQuery = { __typename?: 'Query', getPayments?: Array<{ __typename?: 'Payment', id: any, amount: any, createdAt?: any | null, description: string, paymentRef?: string | null, paymentType: string, status: string }> | null };
+
+export type GetUserQueryVariables = Exact<{
+  userId: Scalars['UUID']['input'];
+}>;
+
+
+export type GetUserQuery = { __typename?: 'Query', getUser?: { __typename?: 'Member', id: any, regId: string, firstName: string, lastName: string, email: string, phoneNumber: string, photoURL?: string | null, address: string, userId: any, joined?: any | null, membershipId?: string | null, status?: string | null, createdAt?: any | null, updatedAt?: any | null, membershipType?: { __typename?: 'MembershipType', id: any, name: string } | null, cpdpPoints?: { __typename?: 'CpdpPoint', id: any, points: number } | null } | null };
+
+export type ResetPasswordMutationVariables = Exact<{
+  userId: Scalars['UUID']['input'];
+  password: Scalars['String']['input'];
+}>;
+
+
+export type ResetPasswordMutation = { __typename?: 'Mutation', resetPassword?: { __typename?: 'ResetPasswordResponse', code: number, success: boolean, message?: string | null } | null };
 
 
 export const CreateUserDocument = gql`
@@ -930,6 +1030,7 @@ export const UserLoginDocument = gql`
       id
       regId
       role
+      photoURL
       member {
         membershipType {
           id
@@ -1382,6 +1483,10 @@ export const GetDuesDocument = gql`
     endsAt
     status
     userId
+    membershipType {
+      id
+      name
+    }
     createdAt
     updatedAt
   }
@@ -1513,53 +1618,6 @@ export function useCreateDueMutation(baseOptions?: Apollo.MutationHookOptions<Cr
 export type CreateDueMutationHookResult = ReturnType<typeof useCreateDueMutation>;
 export type CreateDueMutationResult = Apollo.MutationResult<CreateDueMutation>;
 export type CreateDueMutationOptions = Apollo.BaseMutationOptions<CreateDueMutation, CreateDueMutationVariables>;
-export const UpdateDueDocument = gql`
-    mutation UpdateDue($dueId: UUID!, $input: dueInput!) {
-  updateDue(dueId: $dueId, input: $input) {
-    code
-    success
-    message
-    due {
-      id
-      name
-      amount
-      startsAt
-      endsAt
-      status
-      userId
-      createdAt
-      updatedAt
-    }
-  }
-}
-    `;
-export type UpdateDueMutationFn = Apollo.MutationFunction<UpdateDueMutation, UpdateDueMutationVariables>;
-
-/**
- * __useUpdateDueMutation__
- *
- * To run a mutation, you first call `useUpdateDueMutation` within a React component and pass it any options that fit your needs.
- * When your component renders, `useUpdateDueMutation` returns a tuple that includes:
- * - A mutate function that you can call at any time to execute the mutation
- * - An object with fields that represent the current status of the mutation's execution
- *
- * @param baseOptions options that will be passed into the mutation, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options-2;
- *
- * @example
- * const [updateDueMutation, { data, loading, error }] = useUpdateDueMutation({
- *   variables: {
- *      dueId: // value for 'dueId'
- *      input: // value for 'input'
- *   },
- * });
- */
-export function useUpdateDueMutation(baseOptions?: Apollo.MutationHookOptions<UpdateDueMutation, UpdateDueMutationVariables>) {
-        const options = {...defaultOptions, ...baseOptions}
-        return Apollo.useMutation<UpdateDueMutation, UpdateDueMutationVariables>(UpdateDueDocument, options);
-      }
-export type UpdateDueMutationHookResult = ReturnType<typeof useUpdateDueMutation>;
-export type UpdateDueMutationResult = Apollo.MutationResult<UpdateDueMutation>;
-export type UpdateDueMutationOptions = Apollo.BaseMutationOptions<UpdateDueMutation, UpdateDueMutationVariables>;
 export const GetDuePaymentDocument = gql`
     query GetDuePayment($memberId: UUID!) {
   getDuePayment(memberId: $memberId) {
@@ -1655,6 +1713,84 @@ export type GetMemberUnpaidDuesQueryHookResult = ReturnType<typeof useGetMemberU
 export type GetMemberUnpaidDuesLazyQueryHookResult = ReturnType<typeof useGetMemberUnpaidDuesLazyQuery>;
 export type GetMemberUnpaidDuesSuspenseQueryHookResult = ReturnType<typeof useGetMemberUnpaidDuesSuspenseQuery>;
 export type GetMemberUnpaidDuesQueryResult = Apollo.QueryResult<GetMemberUnpaidDuesQuery, GetMemberUnpaidDuesQueryVariables>;
+export const ArchiveDueDocument = gql`
+    mutation ArchiveDue($dueId: UUID!) {
+  archiveDue(dueId: $dueId)
+}
+    `;
+export type ArchiveDueMutationFn = Apollo.MutationFunction<ArchiveDueMutation, ArchiveDueMutationVariables>;
+
+/**
+ * __useArchiveDueMutation__
+ *
+ * To run a mutation, you first call `useArchiveDueMutation` within a React component and pass it any options that fit your needs.
+ * When your component renders, `useArchiveDueMutation` returns a tuple that includes:
+ * - A mutate function that you can call at any time to execute the mutation
+ * - An object with fields that represent the current status of the mutation's execution
+ *
+ * @param baseOptions options that will be passed into the mutation, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options-2;
+ *
+ * @example
+ * const [archiveDueMutation, { data, loading, error }] = useArchiveDueMutation({
+ *   variables: {
+ *      dueId: // value for 'dueId'
+ *   },
+ * });
+ */
+export function useArchiveDueMutation(baseOptions?: Apollo.MutationHookOptions<ArchiveDueMutation, ArchiveDueMutationVariables>) {
+        const options = {...defaultOptions, ...baseOptions}
+        return Apollo.useMutation<ArchiveDueMutation, ArchiveDueMutationVariables>(ArchiveDueDocument, options);
+      }
+export type ArchiveDueMutationHookResult = ReturnType<typeof useArchiveDueMutation>;
+export type ArchiveDueMutationResult = Apollo.MutationResult<ArchiveDueMutation>;
+export type ArchiveDueMutationOptions = Apollo.BaseMutationOptions<ArchiveDueMutation, ArchiveDueMutationVariables>;
+export const UpdateDuesDocument = gql`
+    mutation updateDues($dueId: UUID!, $input: dueUpdateInput!) {
+  updateDues(dueId: $dueId, input: $input) {
+    code
+    success
+    message
+    due {
+      id
+      name
+      amount
+      startsAt
+      endsAt
+      status
+      userId
+      createdAt
+      updatedAt
+    }
+  }
+}
+    `;
+export type UpdateDuesMutationFn = Apollo.MutationFunction<UpdateDuesMutation, UpdateDuesMutationVariables>;
+
+/**
+ * __useUpdateDuesMutation__
+ *
+ * To run a mutation, you first call `useUpdateDuesMutation` within a React component and pass it any options that fit your needs.
+ * When your component renders, `useUpdateDuesMutation` returns a tuple that includes:
+ * - A mutate function that you can call at any time to execute the mutation
+ * - An object with fields that represent the current status of the mutation's execution
+ *
+ * @param baseOptions options that will be passed into the mutation, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options-2;
+ *
+ * @example
+ * const [updateDuesMutation, { data, loading, error }] = useUpdateDuesMutation({
+ *   variables: {
+ *      dueId: // value for 'dueId'
+ *      input: // value for 'input'
+ *   },
+ * });
+ */
+export function useUpdateDuesMutation(baseOptions?: Apollo.MutationHookOptions<UpdateDuesMutation, UpdateDuesMutationVariables>) {
+        const options = {...defaultOptions, ...baseOptions}
+        return Apollo.useMutation<UpdateDuesMutation, UpdateDuesMutationVariables>(UpdateDuesDocument, options);
+      }
+export type UpdateDuesMutationHookResult = ReturnType<typeof useUpdateDuesMutation>;
+export type UpdateDuesMutationResult = Apollo.MutationResult<UpdateDuesMutation>;
+export type UpdateDuesMutationOptions = Apollo.BaseMutationOptions<UpdateDuesMutation, UpdateDuesMutationVariables>;
 export const EventFormFieldsDocument = gql`
     query EventFormFields {
   eventFormFields {
@@ -1728,7 +1864,7 @@ export const CreateEventDocument = gql`
           lastName
         }
       }
-      eventForm {
+      eventForms {
         id
         name
         type
@@ -1965,7 +2101,6 @@ export const GetRegisteredMembersDocument = gql`
   getRegisteredMembers(eventId: $eventId) {
     id
     registrantDetail
-    status
     createdAt
   }
 }
@@ -2112,11 +2247,13 @@ export const GetEventForPublicDocument = gql`
     starts_at
     starts_time
     sponsors {
+      id
       logo
     }
     eventResources {
       id
       resourceUrl
+      name
     }
     speakers {
       about
@@ -2259,6 +2396,98 @@ export type GetPastEventsQueryHookResult = ReturnType<typeof useGetPastEventsQue
 export type GetPastEventsLazyQueryHookResult = ReturnType<typeof useGetPastEventsLazyQuery>;
 export type GetPastEventsSuspenseQueryHookResult = ReturnType<typeof useGetPastEventsSuspenseQuery>;
 export type GetPastEventsQueryResult = Apollo.QueryResult<GetPastEventsQuery, GetPastEventsQueryVariables>;
+export const GetRegistrationFormDocument = gql`
+    query GetRegistrationForm($eventId: UUID!) {
+  getRegistrationForm(eventId: $eventId) {
+    name
+    amount
+    formTitle
+    instructions
+    status
+    paymentType
+    eventForms {
+      id
+      name
+      label
+      type
+      required
+    }
+  }
+}
+    `;
+
+/**
+ * __useGetRegistrationFormQuery__
+ *
+ * To run a query within a React component, call `useGetRegistrationFormQuery` and pass it any options that fit your needs.
+ * When your component renders, `useGetRegistrationFormQuery` returns an object from Apollo Client that contains loading, error, and data properties
+ * you can use to render your UI.
+ *
+ * @param baseOptions options that will be passed into the query, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options;
+ *
+ * @example
+ * const { data, loading, error } = useGetRegistrationFormQuery({
+ *   variables: {
+ *      eventId: // value for 'eventId'
+ *   },
+ * });
+ */
+export function useGetRegistrationFormQuery(baseOptions: Apollo.QueryHookOptions<GetRegistrationFormQuery, GetRegistrationFormQueryVariables> & ({ variables: GetRegistrationFormQueryVariables; skip?: boolean; } | { skip: boolean; }) ) {
+        const options = {...defaultOptions, ...baseOptions}
+        return Apollo.useQuery<GetRegistrationFormQuery, GetRegistrationFormQueryVariables>(GetRegistrationFormDocument, options);
+      }
+export function useGetRegistrationFormLazyQuery(baseOptions?: Apollo.LazyQueryHookOptions<GetRegistrationFormQuery, GetRegistrationFormQueryVariables>) {
+          const options = {...defaultOptions, ...baseOptions}
+          return Apollo.useLazyQuery<GetRegistrationFormQuery, GetRegistrationFormQueryVariables>(GetRegistrationFormDocument, options);
+        }
+export function useGetRegistrationFormSuspenseQuery(baseOptions?: Apollo.SuspenseQueryHookOptions<GetRegistrationFormQuery, GetRegistrationFormQueryVariables>) {
+          const options = {...defaultOptions, ...baseOptions}
+          return Apollo.useSuspenseQuery<GetRegistrationFormQuery, GetRegistrationFormQueryVariables>(GetRegistrationFormDocument, options);
+        }
+export type GetRegistrationFormQueryHookResult = ReturnType<typeof useGetRegistrationFormQuery>;
+export type GetRegistrationFormLazyQueryHookResult = ReturnType<typeof useGetRegistrationFormLazyQuery>;
+export type GetRegistrationFormSuspenseQueryHookResult = ReturnType<typeof useGetRegistrationFormSuspenseQuery>;
+export type GetRegistrationFormQueryResult = Apollo.QueryResult<GetRegistrationFormQuery, GetRegistrationFormQueryVariables>;
+export const PostEventRegistrationDocument = gql`
+    mutation PostEventRegistration($input: eventRegistrationInput!) {
+  postEventRegistration(input: $input) {
+    id
+    memberId
+    eventId
+    registrantDetail
+    checkin
+    checkinDate
+    createdAt
+    updatedAt
+  }
+}
+    `;
+export type PostEventRegistrationMutationFn = Apollo.MutationFunction<PostEventRegistrationMutation, PostEventRegistrationMutationVariables>;
+
+/**
+ * __usePostEventRegistrationMutation__
+ *
+ * To run a mutation, you first call `usePostEventRegistrationMutation` within a React component and pass it any options that fit your needs.
+ * When your component renders, `usePostEventRegistrationMutation` returns a tuple that includes:
+ * - A mutate function that you can call at any time to execute the mutation
+ * - An object with fields that represent the current status of the mutation's execution
+ *
+ * @param baseOptions options that will be passed into the mutation, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options-2;
+ *
+ * @example
+ * const [postEventRegistrationMutation, { data, loading, error }] = usePostEventRegistrationMutation({
+ *   variables: {
+ *      input: // value for 'input'
+ *   },
+ * });
+ */
+export function usePostEventRegistrationMutation(baseOptions?: Apollo.MutationHookOptions<PostEventRegistrationMutation, PostEventRegistrationMutationVariables>) {
+        const options = {...defaultOptions, ...baseOptions}
+        return Apollo.useMutation<PostEventRegistrationMutation, PostEventRegistrationMutationVariables>(PostEventRegistrationDocument, options);
+      }
+export type PostEventRegistrationMutationHookResult = ReturnType<typeof usePostEventRegistrationMutation>;
+export type PostEventRegistrationMutationResult = Apollo.MutationResult<PostEventRegistrationMutation>;
+export type PostEventRegistrationMutationOptions = Apollo.BaseMutationOptions<PostEventRegistrationMutation, PostEventRegistrationMutationVariables>;
 export const GetMembersDocument = gql`
     query GetMembers {
   members {
@@ -2312,63 +2541,6 @@ export type GetMembersQueryHookResult = ReturnType<typeof useGetMembersQuery>;
 export type GetMembersLazyQueryHookResult = ReturnType<typeof useGetMembersLazyQuery>;
 export type GetMembersSuspenseQueryHookResult = ReturnType<typeof useGetMembersSuspenseQuery>;
 export type GetMembersQueryResult = Apollo.QueryResult<GetMembersQuery, GetMembersQueryVariables>;
-export const GetMemberDocument = gql`
-    query GetMember($memberId: UUID!) {
-  member(id: $memberId) {
-    id
-    regId
-    firstName
-    lastName
-    email
-    phoneNumber
-    photoURL
-    address
-    userId
-    joined
-    membershipType {
-      id
-      name
-    }
-    membershipId
-    status
-    createdAt
-    updatedAt
-  }
-}
-    `;
-
-/**
- * __useGetMemberQuery__
- *
- * To run a query within a React component, call `useGetMemberQuery` and pass it any options that fit your needs.
- * When your component renders, `useGetMemberQuery` returns an object from Apollo Client that contains loading, error, and data properties
- * you can use to render your UI.
- *
- * @param baseOptions options that will be passed into the query, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options;
- *
- * @example
- * const { data, loading, error } = useGetMemberQuery({
- *   variables: {
- *      memberId: // value for 'memberId'
- *   },
- * });
- */
-export function useGetMemberQuery(baseOptions: Apollo.QueryHookOptions<GetMemberQuery, GetMemberQueryVariables> & ({ variables: GetMemberQueryVariables; skip?: boolean; } | { skip: boolean; }) ) {
-        const options = {...defaultOptions, ...baseOptions}
-        return Apollo.useQuery<GetMemberQuery, GetMemberQueryVariables>(GetMemberDocument, options);
-      }
-export function useGetMemberLazyQuery(baseOptions?: Apollo.LazyQueryHookOptions<GetMemberQuery, GetMemberQueryVariables>) {
-          const options = {...defaultOptions, ...baseOptions}
-          return Apollo.useLazyQuery<GetMemberQuery, GetMemberQueryVariables>(GetMemberDocument, options);
-        }
-export function useGetMemberSuspenseQuery(baseOptions?: Apollo.SuspenseQueryHookOptions<GetMemberQuery, GetMemberQueryVariables>) {
-          const options = {...defaultOptions, ...baseOptions}
-          return Apollo.useSuspenseQuery<GetMemberQuery, GetMemberQueryVariables>(GetMemberDocument, options);
-        }
-export type GetMemberQueryHookResult = ReturnType<typeof useGetMemberQuery>;
-export type GetMemberLazyQueryHookResult = ReturnType<typeof useGetMemberLazyQuery>;
-export type GetMemberSuspenseQueryHookResult = ReturnType<typeof useGetMemberSuspenseQuery>;
-export type GetMemberQueryResult = Apollo.QueryResult<GetMemberQuery, GetMemberQueryVariables>;
 export const DeactivateMemberDocument = gql`
     mutation DeactivateMember($memberId: UUID!, $status: String!) {
   deactivateMember(memberId: $memberId, status: $status) {
@@ -2420,6 +2592,101 @@ export function useDeactivateMemberMutation(baseOptions?: Apollo.MutationHookOpt
 export type DeactivateMemberMutationHookResult = ReturnType<typeof useDeactivateMemberMutation>;
 export type DeactivateMemberMutationResult = Apollo.MutationResult<DeactivateMemberMutation>;
 export type DeactivateMemberMutationOptions = Apollo.BaseMutationOptions<DeactivateMemberMutation, DeactivateMemberMutationVariables>;
+export const GetMemberDocument = gql`
+    query GetMember($memberId: UUID!) {
+  getMember(memberId: $memberId) {
+    id
+    regId
+    firstName
+    lastName
+    email
+    phoneNumber
+    photoURL
+    address
+    userId
+    joined
+    membershipType {
+      id
+      name
+    }
+    membershipId
+    status
+    cpdpPoints {
+      id
+      points
+    }
+    createdAt
+    updatedAt
+  }
+}
+    `;
+
+/**
+ * __useGetMemberQuery__
+ *
+ * To run a query within a React component, call `useGetMemberQuery` and pass it any options that fit your needs.
+ * When your component renders, `useGetMemberQuery` returns an object from Apollo Client that contains loading, error, and data properties
+ * you can use to render your UI.
+ *
+ * @param baseOptions options that will be passed into the query, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options;
+ *
+ * @example
+ * const { data, loading, error } = useGetMemberQuery({
+ *   variables: {
+ *      memberId: // value for 'memberId'
+ *   },
+ * });
+ */
+export function useGetMemberQuery(baseOptions: Apollo.QueryHookOptions<GetMemberQuery, GetMemberQueryVariables> & ({ variables: GetMemberQueryVariables; skip?: boolean; } | { skip: boolean; }) ) {
+        const options = {...defaultOptions, ...baseOptions}
+        return Apollo.useQuery<GetMemberQuery, GetMemberQueryVariables>(GetMemberDocument, options);
+      }
+export function useGetMemberLazyQuery(baseOptions?: Apollo.LazyQueryHookOptions<GetMemberQuery, GetMemberQueryVariables>) {
+          const options = {...defaultOptions, ...baseOptions}
+          return Apollo.useLazyQuery<GetMemberQuery, GetMemberQueryVariables>(GetMemberDocument, options);
+        }
+export function useGetMemberSuspenseQuery(baseOptions?: Apollo.SuspenseQueryHookOptions<GetMemberQuery, GetMemberQueryVariables>) {
+          const options = {...defaultOptions, ...baseOptions}
+          return Apollo.useSuspenseQuery<GetMemberQuery, GetMemberQueryVariables>(GetMemberDocument, options);
+        }
+export type GetMemberQueryHookResult = ReturnType<typeof useGetMemberQuery>;
+export type GetMemberLazyQueryHookResult = ReturnType<typeof useGetMemberLazyQuery>;
+export type GetMemberSuspenseQueryHookResult = ReturnType<typeof useGetMemberSuspenseQuery>;
+export type GetMemberQueryResult = Apollo.QueryResult<GetMemberQuery, GetMemberQueryVariables>;
+export const ProfilephotoUploadDocument = gql`
+    mutation ProfilephotoUpload($memberId: UUID!, $photo: String!) {
+  profilephotoUpload(memberId: $memberId, photo: $photo) {
+    url
+  }
+}
+    `;
+export type ProfilephotoUploadMutationFn = Apollo.MutationFunction<ProfilephotoUploadMutation, ProfilephotoUploadMutationVariables>;
+
+/**
+ * __useProfilephotoUploadMutation__
+ *
+ * To run a mutation, you first call `useProfilephotoUploadMutation` within a React component and pass it any options that fit your needs.
+ * When your component renders, `useProfilephotoUploadMutation` returns a tuple that includes:
+ * - A mutate function that you can call at any time to execute the mutation
+ * - An object with fields that represent the current status of the mutation's execution
+ *
+ * @param baseOptions options that will be passed into the mutation, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options-2;
+ *
+ * @example
+ * const [profilephotoUploadMutation, { data, loading, error }] = useProfilephotoUploadMutation({
+ *   variables: {
+ *      memberId: // value for 'memberId'
+ *      photo: // value for 'photo'
+ *   },
+ * });
+ */
+export function useProfilephotoUploadMutation(baseOptions?: Apollo.MutationHookOptions<ProfilephotoUploadMutation, ProfilephotoUploadMutationVariables>) {
+        const options = {...defaultOptions, ...baseOptions}
+        return Apollo.useMutation<ProfilephotoUploadMutation, ProfilephotoUploadMutationVariables>(ProfilephotoUploadDocument, options);
+      }
+export type ProfilephotoUploadMutationHookResult = ReturnType<typeof useProfilephotoUploadMutation>;
+export type ProfilephotoUploadMutationResult = Apollo.MutationResult<ProfilephotoUploadMutation>;
+export type ProfilephotoUploadMutationOptions = Apollo.BaseMutationOptions<ProfilephotoUploadMutation, ProfilephotoUploadMutationVariables>;
 export const GetPaymentsDocument = gql`
     query GetPayments {
   getPayments {
@@ -2705,6 +2972,103 @@ export type GetMemberPaymentsQueryHookResult = ReturnType<typeof useGetMemberPay
 export type GetMemberPaymentsLazyQueryHookResult = ReturnType<typeof useGetMemberPaymentsLazyQuery>;
 export type GetMemberPaymentsSuspenseQueryHookResult = ReturnType<typeof useGetMemberPaymentsSuspenseQuery>;
 export type GetMemberPaymentsQueryResult = Apollo.QueryResult<GetMemberPaymentsQuery, GetMemberPaymentsQueryVariables>;
+export const GetUserDocument = gql`
+    query GetUser($userId: UUID!) {
+  getUser(userId: $userId) {
+    id
+    regId
+    firstName
+    lastName
+    email
+    phoneNumber
+    photoURL
+    address
+    userId
+    joined
+    membershipType {
+      id
+      name
+    }
+    membershipId
+    status
+    cpdpPoints {
+      id
+      points
+    }
+    createdAt
+    updatedAt
+  }
+}
+    `;
+
+/**
+ * __useGetUserQuery__
+ *
+ * To run a query within a React component, call `useGetUserQuery` and pass it any options that fit your needs.
+ * When your component renders, `useGetUserQuery` returns an object from Apollo Client that contains loading, error, and data properties
+ * you can use to render your UI.
+ *
+ * @param baseOptions options that will be passed into the query, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options;
+ *
+ * @example
+ * const { data, loading, error } = useGetUserQuery({
+ *   variables: {
+ *      userId: // value for 'userId'
+ *   },
+ * });
+ */
+export function useGetUserQuery(baseOptions: Apollo.QueryHookOptions<GetUserQuery, GetUserQueryVariables> & ({ variables: GetUserQueryVariables; skip?: boolean; } | { skip: boolean; }) ) {
+        const options = {...defaultOptions, ...baseOptions}
+        return Apollo.useQuery<GetUserQuery, GetUserQueryVariables>(GetUserDocument, options);
+      }
+export function useGetUserLazyQuery(baseOptions?: Apollo.LazyQueryHookOptions<GetUserQuery, GetUserQueryVariables>) {
+          const options = {...defaultOptions, ...baseOptions}
+          return Apollo.useLazyQuery<GetUserQuery, GetUserQueryVariables>(GetUserDocument, options);
+        }
+export function useGetUserSuspenseQuery(baseOptions?: Apollo.SuspenseQueryHookOptions<GetUserQuery, GetUserQueryVariables>) {
+          const options = {...defaultOptions, ...baseOptions}
+          return Apollo.useSuspenseQuery<GetUserQuery, GetUserQueryVariables>(GetUserDocument, options);
+        }
+export type GetUserQueryHookResult = ReturnType<typeof useGetUserQuery>;
+export type GetUserLazyQueryHookResult = ReturnType<typeof useGetUserLazyQuery>;
+export type GetUserSuspenseQueryHookResult = ReturnType<typeof useGetUserSuspenseQuery>;
+export type GetUserQueryResult = Apollo.QueryResult<GetUserQuery, GetUserQueryVariables>;
+export const ResetPasswordDocument = gql`
+    mutation ResetPassword($userId: UUID!, $password: String!) {
+  resetPassword(userId: $userId, password: $password) {
+    code
+    success
+    message
+  }
+}
+    `;
+export type ResetPasswordMutationFn = Apollo.MutationFunction<ResetPasswordMutation, ResetPasswordMutationVariables>;
+
+/**
+ * __useResetPasswordMutation__
+ *
+ * To run a mutation, you first call `useResetPasswordMutation` within a React component and pass it any options that fit your needs.
+ * When your component renders, `useResetPasswordMutation` returns a tuple that includes:
+ * - A mutate function that you can call at any time to execute the mutation
+ * - An object with fields that represent the current status of the mutation's execution
+ *
+ * @param baseOptions options that will be passed into the mutation, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options-2;
+ *
+ * @example
+ * const [resetPasswordMutation, { data, loading, error }] = useResetPasswordMutation({
+ *   variables: {
+ *      userId: // value for 'userId'
+ *      password: // value for 'password'
+ *   },
+ * });
+ */
+export function useResetPasswordMutation(baseOptions?: Apollo.MutationHookOptions<ResetPasswordMutation, ResetPasswordMutationVariables>) {
+        const options = {...defaultOptions, ...baseOptions}
+        return Apollo.useMutation<ResetPasswordMutation, ResetPasswordMutationVariables>(ResetPasswordDocument, options);
+      }
+export type ResetPasswordMutationHookResult = ReturnType<typeof useResetPasswordMutation>;
+export type ResetPasswordMutationResult = Apollo.MutationResult<ResetPasswordMutation>;
+export type ResetPasswordMutationOptions = Apollo.BaseMutationOptions<ResetPasswordMutation, ResetPasswordMutationVariables>;
 export type WithIndex<TObject> = TObject & Record<string, any>;
 export type ResolversObject<TObject> = WithIndex<TObject>;
 
@@ -2803,6 +3167,7 @@ export type ResolversTypes = ResolversObject<{
   Mutation: ResolverTypeWrapper<{}>;
   Payment: ResolverTypeWrapper<PaymentModel>;
   Query: ResolverTypeWrapper<{}>;
+  ResetPasswordResponse: ResolverTypeWrapper<ResetPasswordResponse>;
   ResourceInput: ResourceInput;
   SidebarResponse: ResolverTypeWrapper<SidebarResponse>;
   Speaker: ResolverTypeWrapper<Speaker>;
@@ -2813,12 +3178,14 @@ export type ResolversTypes = ResolversObject<{
   Time: ResolverTypeWrapper<Scalars['Time']['output']>;
   UUID: ResolverTypeWrapper<Scalars['UUID']['output']>;
   Upload: ResolverTypeWrapper<Scalars['Upload']['output']>;
+  UploadResponse: ResolverTypeWrapper<UploadResponse>;
   User: ResolverTypeWrapper<UserModel>;
   UserPayload: ResolverTypeWrapper<Omit<UserPayload, 'member'> & { member?: Maybe<ResolversTypes['Member']> }>;
   blogInput: BlogInput;
   dueInput: DueInput;
   dueUpdateInput: DueUpdateInput;
   eventInput: EventInput;
+  eventRegistrationInput: EventRegistrationInput;
   memberStat: ResolverTypeWrapper<MemberStat>;
   multiPaymentInput: MultiPaymentInput;
   newMember: NewMember;
@@ -2854,6 +3221,7 @@ export type ResolversParentTypes = ResolversObject<{
   Mutation: {};
   Payment: PaymentModel;
   Query: {};
+  ResetPasswordResponse: ResetPasswordResponse;
   ResourceInput: ResourceInput;
   SidebarResponse: SidebarResponse;
   Speaker: Speaker;
@@ -2864,12 +3232,14 @@ export type ResolversParentTypes = ResolversObject<{
   Time: Scalars['Time']['output'];
   UUID: Scalars['UUID']['output'];
   Upload: Scalars['Upload']['output'];
+  UploadResponse: UploadResponse;
   User: UserModel;
   UserPayload: Omit<UserPayload, 'member'> & { member?: Maybe<ResolversParentTypes['Member']> };
   blogInput: BlogInput;
   dueInput: DueInput;
   dueUpdateInput: DueUpdateInput;
   eventInput: EventInput;
+  eventRegistrationInput: EventRegistrationInput;
   memberStat: MemberStat;
   multiPaymentInput: MultiPaymentInput;
   newMember: NewMember;
@@ -2980,7 +3350,7 @@ export type EventResolvers<ContextType = GraphQLContext, ParentType extends Reso
   description?: Resolver<Maybe<ResolversTypes['String']>, ParentType, ContextType>;
   ends_at?: Resolver<ResolversTypes['Time'], ParentType, ContextType>;
   ends_time?: Resolver<ResolversTypes['String'], ParentType, ContextType>;
-  eventForm?: Resolver<Maybe<Array<Maybe<ResolversTypes['EventForm']>>>, ParentType, ContextType>;
+  eventForms?: Resolver<Maybe<Array<Maybe<ResolversTypes['EventForm']>>>, ParentType, ContextType>;
   eventPayments?: Resolver<Maybe<Array<Maybe<ResolversTypes['Payment']>>>, ParentType, ContextType>;
   eventRegistrations?: Resolver<Maybe<Array<Maybe<ResolversTypes['EventRegistration']>>>, ParentType, ContextType>;
   eventResources?: Resolver<Maybe<Array<Maybe<ResolversTypes['EventResource']>>>, ParentType, ContextType>;
@@ -3020,7 +3390,6 @@ export type EventFormResolvers<ContextType = GraphQLContext, ParentType extends 
 }>;
 
 export type EventRegistrationResolvers<ContextType = GraphQLContext, ParentType extends ResolversParentTypes['EventRegistration'] = ResolversParentTypes['EventRegistration']> = ResolversObject<{
-  amount?: Resolver<Maybe<ResolversTypes['Decimal']>, ParentType, ContextType>;
   checkin?: Resolver<Maybe<ResolversTypes['Boolean']>, ParentType, ContextType>;
   checkinDate?: Resolver<Maybe<ResolversTypes['Time']>, ParentType, ContextType>;
   createdAt?: Resolver<Maybe<ResolversTypes['Time']>, ParentType, ContextType>;
@@ -3029,9 +3398,7 @@ export type EventRegistrationResolvers<ContextType = GraphQLContext, ParentType 
   id?: Resolver<ResolversTypes['UUID'], ParentType, ContextType>;
   member?: Resolver<Maybe<ResolversTypes['Member']>, ParentType, ContextType>;
   memberId?: Resolver<Maybe<ResolversTypes['UUID']>, ParentType, ContextType>;
-  paymentRef?: Resolver<ResolversTypes['String'], ParentType, ContextType>;
-  registrantDetail?: Resolver<Maybe<ResolversTypes['JSON']>, ParentType, ContextType>;
-  status?: Resolver<Maybe<ResolversTypes['String']>, ParentType, ContextType>;
+  registrantDetail?: Resolver<ResolversTypes['JSON'], ParentType, ContextType>;
   updatedAt?: Resolver<Maybe<ResolversTypes['Time']>, ParentType, ContextType>;
   __isTypeOf?: IsTypeOfResolverFn<ParentType, ContextType>;
 }>;
@@ -3129,10 +3496,13 @@ export type MutationResolvers<ContextType = GraphQLContext, ParentType extends R
   deactivateMember?: Resolver<Maybe<ResolversTypes['Member']>, ParentType, ContextType, RequireFields<MutationDeactivateMemberArgs, 'memberId' | 'status'>>;
   deleteEvent?: Resolver<Maybe<ResolversTypes['Boolean']>, ParentType, ContextType, RequireFields<MutationDeleteEventArgs, 'eventId'>>;
   login?: Resolver<Maybe<ResolversTypes['AuthPayload']>, ParentType, ContextType, RequireFields<MutationLoginArgs, 'input'>>;
+  postEventRegistration?: Resolver<Maybe<ResolversTypes['EventRegistration']>, ParentType, ContextType, RequireFields<MutationPostEventRegistrationArgs, 'input'>>;
   postMultiPayment?: Resolver<Maybe<ResolversTypes['Boolean']>, ParentType, ContextType, RequireFields<MutationPostMultiPaymentArgs, 'input'>>;
   postPayment?: Resolver<ResolversTypes['Payment'], ParentType, ContextType, RequireFields<MutationPostPaymentArgs, 'input'>>;
+  profilephotoUpload?: Resolver<Maybe<ResolversTypes['UploadResponse']>, ParentType, ContextType, RequireFields<MutationProfilephotoUploadArgs, 'memberId' | 'photo'>>;
   publishedBlog?: Resolver<Maybe<ResolversTypes['BlogResponse']>, ParentType, ContextType, RequireFields<MutationPublishedBlogArgs, 'blogId' | 'status'>>;
-  updateDue?: Resolver<Maybe<ResolversTypes['DueResponse']>, ParentType, ContextType, RequireFields<MutationUpdateDueArgs, 'dueId' | 'input'>>;
+  resetPassword?: Resolver<Maybe<ResolversTypes['ResetPasswordResponse']>, ParentType, ContextType, RequireFields<MutationResetPasswordArgs, 'password' | 'userId'>>;
+  updateDues?: Resolver<Maybe<ResolversTypes['DueResponse']>, ParentType, ContextType, RequireFields<MutationUpdateDuesArgs, 'dueId' | 'input'>>;
   watchEventViews?: Resolver<Maybe<ResolversTypes['Boolean']>, ParentType, ContextType, RequireFields<MutationWatchEventViewsArgs, 'eventId'>>;
 }>;
 
@@ -3165,6 +3535,7 @@ export type QueryResolvers<ContextType = GraphQLContext, ParentType extends Reso
   getEvent?: Resolver<Maybe<ResolversTypes['Event']>, ParentType, ContextType, RequireFields<QueryGetEventArgs, 'eventId'>>;
   getEvents?: Resolver<Maybe<Array<ResolversTypes['Event']>>, ParentType, ContextType>;
   getEventsForPublic?: Resolver<Maybe<Array<ResolversTypes['Event']>>, ParentType, ContextType>;
+  getMember?: Resolver<Maybe<ResolversTypes['Member']>, ParentType, ContextType, RequireFields<QueryGetMemberArgs, 'memberId'>>;
   getMemberStat?: Resolver<Maybe<ResolversTypes['memberStat']>, ParentType, ContextType, RequireFields<QueryGetMemberStatArgs, 'memberId'>>;
   getMemberUnpaidDues?: Resolver<Maybe<Array<Maybe<ResolversTypes['Due']>>>, ParentType, ContextType, RequireFields<QueryGetMemberUnpaidDuesArgs, 'memberId' | 'membershipTypeId'>>;
   getMembersAttendance?: Resolver<Maybe<Array<ResolversTypes['EventRegistration']>>, ParentType, ContextType, RequireFields<QueryGetMembersAttendanceArgs, 'eventId'>>;
@@ -3174,14 +3545,23 @@ export type QueryResolvers<ContextType = GraphQLContext, ParentType extends Reso
   getPayments?: Resolver<Maybe<Array<ResolversTypes['Payment']>>, ParentType, ContextType, Partial<QueryGetPaymentsArgs>>;
   getRecentRegistration?: Resolver<Maybe<Array<ResolversTypes['Member']>>, ParentType, ContextType>;
   getRegisteredMembers?: Resolver<Maybe<Array<ResolversTypes['EventRegistration']>>, ParentType, ContextType, RequireFields<QueryGetRegisteredMembersArgs, 'eventId'>>;
+  getRegistrationForm?: Resolver<Maybe<ResolversTypes['Event']>, ParentType, ContextType, RequireFields<QueryGetRegistrationFormArgs, 'eventId'>>;
   getSidebarStat?: Resolver<Maybe<ResolversTypes['SidebarResponse']>, ParentType, ContextType>;
   getUpComingEvents?: Resolver<Maybe<Array<ResolversTypes['EventRegistration']>>, ParentType, ContextType, RequireFields<QueryGetUpComingEventsArgs, 'memberId'>>;
+  getUser?: Resolver<Maybe<ResolversTypes['Member']>, ParentType, ContextType, RequireFields<QueryGetUserArgs, 'userId'>>;
   member?: Resolver<Maybe<ResolversTypes['Member']>, ParentType, ContextType, RequireFields<QueryMemberArgs, 'id'>>;
   memberPayments?: Resolver<Maybe<Array<ResolversTypes['Payment']>>, ParentType, ContextType, RequireFields<QueryMemberPaymentsArgs, 'memberId'>>;
   members?: Resolver<Maybe<Array<Maybe<ResolversTypes['Member']>>>, ParentType, ContextType>;
   singeDue?: Resolver<Maybe<ResolversTypes['Due']>, ParentType, ContextType, RequireFields<QuerySingeDueArgs, 'dueId'>>;
   tags?: Resolver<Maybe<Array<ResolversTypes['Tag']>>, ParentType, ContextType>;
   users?: Resolver<Maybe<Array<Maybe<ResolversTypes['User']>>>, ParentType, ContextType>;
+}>;
+
+export type ResetPasswordResponseResolvers<ContextType = GraphQLContext, ParentType extends ResolversParentTypes['ResetPasswordResponse'] = ResolversParentTypes['ResetPasswordResponse']> = ResolversObject<{
+  code?: Resolver<ResolversTypes['Int'], ParentType, ContextType>;
+  message?: Resolver<Maybe<ResolversTypes['String']>, ParentType, ContextType>;
+  success?: Resolver<ResolversTypes['Boolean'], ParentType, ContextType>;
+  __isTypeOf?: IsTypeOfResolverFn<ParentType, ContextType>;
 }>;
 
 export type SidebarResponseResolvers<ContextType = GraphQLContext, ParentType extends ResolversParentTypes['SidebarResponse'] = ResolversParentTypes['SidebarResponse']> = ResolversObject<{
@@ -3226,6 +3606,11 @@ export interface UploadScalarConfig extends GraphQLScalarTypeConfig<ResolversTyp
   name: 'Upload';
 }
 
+export type UploadResponseResolvers<ContextType = GraphQLContext, ParentType extends ResolversParentTypes['UploadResponse'] = ResolversParentTypes['UploadResponse']> = ResolversObject<{
+  url?: Resolver<ResolversTypes['String'], ParentType, ContextType>;
+  __isTypeOf?: IsTypeOfResolverFn<ParentType, ContextType>;
+}>;
+
 export type UserResolvers<ContextType = GraphQLContext, ParentType extends ResolversParentTypes['User'] = ResolversParentTypes['User']> = ResolversObject<{
   createdAt?: Resolver<Maybe<ResolversTypes['Time']>, ParentType, ContextType>;
   email?: Resolver<Maybe<ResolversTypes['String']>, ParentType, ContextType>;
@@ -3242,6 +3627,7 @@ export type UserResolvers<ContextType = GraphQLContext, ParentType extends Resol
 export type UserPayloadResolvers<ContextType = GraphQLContext, ParentType extends ResolversParentTypes['UserPayload'] = ResolversParentTypes['UserPayload']> = ResolversObject<{
   id?: Resolver<ResolversTypes['UUID'], ParentType, ContextType>;
   member?: Resolver<Maybe<ResolversTypes['Member']>, ParentType, ContextType>;
+  photoURL?: Resolver<Maybe<ResolversTypes['String']>, ParentType, ContextType>;
   regId?: Resolver<ResolversTypes['String'], ParentType, ContextType>;
   role?: Resolver<ResolversTypes['String'], ParentType, ContextType>;
   __isTypeOf?: IsTypeOfResolverFn<ParentType, ContextType>;
@@ -3279,6 +3665,7 @@ export type Resolvers<ContextType = GraphQLContext> = ResolversObject<{
   Mutation?: MutationResolvers<ContextType>;
   Payment?: PaymentResolvers<ContextType>;
   Query?: QueryResolvers<ContextType>;
+  ResetPasswordResponse?: ResetPasswordResponseResolvers<ContextType>;
   SidebarResponse?: SidebarResponseResolvers<ContextType>;
   Speaker?: SpeakerResolvers<ContextType>;
   Sponsor?: SponsorResolvers<ContextType>;
@@ -3286,6 +3673,7 @@ export type Resolvers<ContextType = GraphQLContext> = ResolversObject<{
   Time?: GraphQLScalarType;
   UUID?: GraphQLScalarType;
   Upload?: GraphQLScalarType;
+  UploadResponse?: UploadResponseResolvers<ContextType>;
   User?: UserResolvers<ContextType>;
   UserPayload?: UserPayloadResolvers<ContextType>;
   memberStat?: MemberStatResolvers<ContextType>;

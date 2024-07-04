@@ -1,0 +1,34 @@
+query GetUser($userId: UUID!) {
+  getUser(userId: $userId) {
+    id
+    regId
+    firstName
+    lastName
+    email
+    phoneNumber
+    photoURL
+    address
+    userId
+    joined
+    membershipType {
+      id
+      name
+    }
+    membershipId
+    status
+    cpdpPoints {
+      id
+      points
+    }
+    createdAt
+    updatedAt
+  }
+}
+
+mutation ResetPassword($userId: UUID!, $password: String!) {
+  resetPassword(userId: $userId, password: $password) {
+    code
+    success
+    message
+  }
+}

@@ -13,12 +13,16 @@ type EventCardProps = {
 
 const EventCard: React.FC<EventCardProps> = ({href = '/', event }) => {
     return (
-        <Link href={`/events/${event.id}`} className='rounded-2xl shadow-sm overflow-hidden'>
-            <figure>
+        <Link href={`/events/${event.id}`} className='rounded-2xl shadow-sm overflow-hidden w-full bg-white'>
+            <figure className='w-full'>
                 <img
                     src={event?.coverPhoto || '/assets/events/event.svg'} 
                     alt={event?.name.replaceAll(' ', '-')}
-                    className='w-full h-56'
+                    className='w-full h-56 object-cover'
+                    sizes='100vw'
+                    style={{
+                        width: '100%'
+                    }}
                 />
             </figure>
             <div className='bg-white p-3'>
@@ -39,7 +43,11 @@ const EventCard: React.FC<EventCardProps> = ({href = '/', event }) => {
                     </div>
                 </div>
                 <div className='pt-3'>
-                    <h1 className='text-lg font-semibold'>{'\u20a6'}{Intl.NumberFormat().format(event?.amount)}</h1>
+                    {event?.status === 'Ended' ? (
+                        <h1 className='text-lg font-semibold'>{'Closed'}</h1>
+                    ):(
+                        <h1 className='text-lg font-semibold'>{'\u20a6'}{Intl.NumberFormat().format(event?.amount)}</h1>
+                    )}
                 </div>
             </div>
         </Link>

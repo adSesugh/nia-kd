@@ -13,6 +13,7 @@ mutation UserLogin($input: signInUser!) {
       id
       regId
       role
+      photoURL
       member {
         membershipType {
           id

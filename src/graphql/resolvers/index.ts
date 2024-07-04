@@ -7,7 +7,6 @@ export const resolvers: Resolvers = {
         createUser: (_, { input }, { prisma, dataSources }) => dataSources.userAPI.addUser(prisma, input),
         login: (_, { input }, { prisma, dataSources }) => dataSources.userAPI.loginUser(prisma, input),
         createDue: (_, { input }, { prisma, dataSources, userId }) => dataSources.dueAPI.createDue(prisma, input, userId),
-        updateDue: (_, { dueId, input }, { prisma, dataSources, userId }) => dataSources.dueAPI.updateDue(prisma, dueId, input, userId),
         postPayment: (_, { input }, { prisma, dataSources }) => dataSources.paymentAPI.postPayment(prisma, input),
         deactivateMember: (_, { memberId, status }, { prisma, dataSources }) => dataSources.memberAPI.deactivate(prisma, memberId, status),
         createBlog: (_, { input }, { prisma, dataSources, userId }) => dataSources.blogAPI.createBlog(prisma, userId, input),
@@ -16,8 +15,12 @@ export const resolvers: Resolvers = {
         watchEventViews: (_, {eventId}, {prisma, dataSources}) => dataSources.eventAPI.watchViews(prisma, eventId),
         cancelEvent: (_, {eventId, status}, {prisma, dataSources}) => dataSources.eventAPI.cancelEvent(prisma, eventId, status),
         deleteEvent: (_, {eventId}, {prisma, dataSources}) => dataSources.eventAPI.deleteEvent(prisma, eventId),
-        archiveDue: (_, {dueId}, {prisma, dataSources}) => dataSources.eventAPI.deleteEvent(prisma, dueId),
-        postMultiPayment: (_, {input}, {prisma, dataSources}) => dataSources.paymentAPI.postMultiPayment(prisma, input)
+        archiveDue: (_, {dueId}, {prisma, dataSources}) => dataSources.dueAPI.archiveDue(prisma, dueId),
+        updateDues: (_, {dueId, input}, {prisma, dataSources, userId}) => dataSources.dueAPI.updateDue(prisma, dueId, input, userId),
+        postMultiPayment: (_, {input}, {prisma, dataSources}) => dataSources.paymentAPI.postMultiPayment(prisma, input),
+        postEventRegistration: (_, {input}, {prisma, dataSources}) => dataSources.eventAPI.postRegistration(prisma, input),
+        profilephotoUpload: (_, {memberId, photo}, {prisma, dataSources}) => dataSources.memberAPI.uploadPhoto(prisma, memberId, photo),
+        resetPassword: (_, {userId, password}, {prisma, dataSources}) => dataSources.userAPI.resetPassword(prisma, userId, password)
     },
     Query: {
         members: (_, __, { prisma, dataSources, userId }) => dataSources.memberAPI.getMembers(prisma, userId),
@@ -44,6 +47,9 @@ export const resolvers: Resolvers = {
         getPastEvents: (_, __, {prisma, dataSources}) => dataSources.eventAPI.passedEvents(prisma),
         getMemberStat: (_, {memberId}, {prisma, dataSources}) => dataSources.dashboardAPI.getMemberStat(prisma, memberId),
         getMemberUnpaidDues: (_, {memberId, membershipTypeId}, {prisma, dataSources}) => dataSources.dueAPI.getUnpaidDues(prisma, memberId, membershipTypeId),
-        getMembershipTypes: (_, __, {prisma, dataSources}) => dataSources.userAPI.getMembershipTypes(prisma)
+        getMembershipTypes: (_, __, {prisma, dataSources}) => dataSources.userAPI.getMembershipTypes(prisma),
+        getRegistrationForm: (_, {eventId}, {prisma, dataSources}) => dataSources.eventAPI.getRegistrationForm(prisma, eventId),
+        getMember: (_, {memberId}, {prisma, dataSources}) => dataSources.memberAPI.getMember(prisma, memberId),
+        getUser: (_, {userId}, {prisma, dataSources}) => dataSources.userAPI.getUser(prisma, userId)
     },
 };

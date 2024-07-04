@@ -10,8 +10,10 @@ import { toast } from 'react-toastify'
 import moment from 'moment'
 import { SearchNormal } from 'iconsax-react'
 import CustomSearch from '@/components/custom-select'
+import { useRouter } from 'next/navigation'
 
 const MemberList = () => {
+    const router = useRouter()
     const [members, setMembers] = useState<any>([])
     const [membersHolder, setMembersHolder] = useState<any>([])
     const [index, setIndex] = useState<number>(0)
@@ -88,8 +90,10 @@ const MemberList = () => {
                             </Button>
                         </DropdownTrigger>
                         <DropdownMenu>
-                            <DropdownItem>View</DropdownItem>
-                            <DropdownItem>Edit</DropdownItem>
+                            <DropdownItem onClick={() => router.push(`members/${member?.id}`)}>
+                                View
+                            </DropdownItem>
+                            {/* <DropdownItem>Edit</DropdownItem> */}
                             {member.status === 'Active' ? (
                                 <DropdownItem onClick={() => switchMemberStatus(member.id, 'Inactive')}>Deactivate</DropdownItem>
                             ): (

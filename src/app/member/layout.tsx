@@ -152,7 +152,7 @@ const MemberLayout: React.FC<LayoutProps> = ({ children }) => {
                     as="button"
                     avatarProps={{
                       isBordered: false,
-                      src: "/assets/profile.svg",
+                      src: user?.photoURL || "/assets/profile.svg",
                       size: 'sm'
                     }}
                     className="transition-transform w-full"
@@ -168,7 +168,7 @@ const MemberLayout: React.FC<LayoutProps> = ({ children }) => {
                   <DropdownItem key="profile" className="h-10 gap-2">
                     <p className="font-bold">Signed in as {user?.role.toLowerCase()}</p>
                   </DropdownItem>
-                  <DropdownItem key="settings" as={Link} href='/profile'>
+                  <DropdownItem key="settings" as={Link} href='/member/profile'>
                     My Profile
                   </DropdownItem>
                   <DropdownItem key="logout" onClick={() => dispatch(logOut())}>

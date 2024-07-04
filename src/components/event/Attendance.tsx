@@ -77,7 +77,7 @@ const EventAttendance = ({ eventId }: {eventId: string}) => {
             loadingState={loadingState}
             emptyContent={(
               <div className='flex flex-col items-center justify-center gap-3'>
-                <span>No member to display.</span>
+                <span>No attendance to display.</span>
               </div>
             )}
         >

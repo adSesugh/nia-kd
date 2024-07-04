@@ -109,7 +109,7 @@ export const typeDefs = `#graphql
     hasCertificate: Boolean
     views: Int
     certificate: String
-    eventForm: [EventForm]
+    eventForms: [EventForm]
     eventPayments: [Payment]
     eventRegistrations: [EventRegistration]
     eventResources: [EventResource]
@@ -173,10 +173,7 @@ export const typeDefs = `#graphql
     member: Member
     eventId: UUID!
     event: Event
-    registrantDetail: JSON
-    amount: Decimal
-    paymentRef: String!
-    status: String
+    registrantDetail: JSON!
     checkin: Boolean
     checkinDate: Time
     createdAt: Time
@@ -268,6 +265,7 @@ export const typeDefs = `#graphql
   }
 
   input EventFormInput {
+    id: UUID
     name: String!
     label: String
     type: String!
@@ -313,6 +311,13 @@ export const typeDefs = `#graphql
     sponsors: [String!]
     sendTag: Boolean
   }
+  
+  input eventRegistrationInput {
+    memberId: String
+    eventId: String!
+    registrantDetail: JSON!
+    payment: JSON
+  }
 
   ## ------------------------------------- Type Response ---------------------------------------------------##
   
@@ -320,6 +325,7 @@ export const typeDefs = `#graphql
     id: UUID!
     regId: String!
     role: String!
+    photoURL: String
     member: Member
   }
 
@@ -399,13 +405,22 @@ export const typeDefs = `#graphql
     fin_status: Boolean
   }
 
+  type ResetPasswordResponse {
+    code: Int!
+    success: Boolean!
+    message: String
+  }
+  
+  type UploadResponse {
+    url: String!
+  }
+
   ## ------------------------------------- Mutation ---------------------------------------------------##
 
   type Mutation {
     createUser(input: newMember!): CreateUserResponse
     login(input: signInUser!): AuthPayload
     createDue(input: dueInput!): DueResponse
-    updateDue(dueId: UUID!, input: dueInput!): DueResponse
     postPayment(input: paymentInput!): Payment!
     deactivateMember(memberId: UUID!, status: String!): Member
     createBlog(input: blogInput!): BlogResponse
@@ -415,7 +430,11 @@ export const typeDefs = `#graphql
     cancelEvent(eventId: UUID!, status: String!): Boolean
     deleteEvent(eventId: UUID!): Boolean
     archiveDue(dueId: UUID!): Boolean
+    updateDues(dueId: UUID!, input: dueUpdateInput!): DueResponse
     postMultiPayment(input: multiPaymentInput!): Boolean
+    postEventRegistration(input: eventRegistrationInput!): EventRegistration
+    resetPassword(userId: UUID!, password: String!): ResetPasswordResponse
+    profilephotoUpload(memberId: UUID!, photo: String!): UploadResponse
   }
 
   ## ------------------------------------- Query ---------------------------------------------------##
@@ -448,5 +467,8 @@ export const typeDefs = `#graphql
     getMemberStat(memberId: UUID!): memberStat
     getMemberUnpaidDues(memberId: UUID!, membershipTypeId: UUID!): [Due]
     getMembershipTypes: [MembershipType!]
+    getRegistrationForm(eventId: UUID!): Event
+    getMember(memberId: UUID!): Member
+    getUser(userId: UUID!): Member
   }
 `;

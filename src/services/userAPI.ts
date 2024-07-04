@@ -1,4 +1,4 @@
-import { NewMember, SignInUser } from "@/graphql/__generated__/graphql";
+import { NewMember, ResetPasswordResponse, SignInUser } from "@/graphql/__generated__/graphql";
 import { authenticateUser } from "@/lib/common";
 import { generateZerofillID } from "@/lib/helpers";
 import { RESTDataSource } from "@apollo/datasource-rest";
@@ -23,7 +23,8 @@ class UserAPI extends RESTDataSource {
         const user = await prisma.member.findFirst({
             where: {
                 userId: id
-            }
+            },
+            include: {membershipType: true}
         })
         return user
     }
@@ -128,7 +129,8 @@ class UserAPI extends RESTDataSource {
             })
         }
 
-        const validPassword = bcrypt.compare(password, loggedUser.password);
+        const validPassword = await bcrypt.compare(password, loggedUser.password);
+        
         if (!validPassword) {
             throw new GraphQLError("Invalid credentials", {
                 extensions: {
@@ -142,7 +144,8 @@ class UserAPI extends RESTDataSource {
             id: loggedUser.id,
             regId: loggedUser.regId as string,
             role: loggedUser.role,
-            member: loggedUser.member
+            member: loggedUser.member,
+            photoURL: loggedUser.member?.photoURL
         }
 
         const token = authenticateUser(loggedUser.id as string);
@@ -158,6 +161,28 @@ class UserAPI extends RESTDataSource {
         })
 
         return allMembershipTypes
+    }
+
+    async resetPassword(prisma: PrismaClient, userId: string, password: string) {
+        const salt = await bcrypt.genSalt(Number(process.env.NEXT_PUBLIC_HASH_SALT))
+        const hashPassword = bcrypt.hashSync(password, salt)
+
+        const user = await prisma.user.update({
+            where: {
+                id: userId
+            },
+            data: {
+                password: hashPassword
+            }
+        })
+
+        const response: ResetPasswordResponse = {
+            code: 200,
+            success: true,
+            message: 'Password reset succesffuly'
+        }
+
+        return response
     }
 }
 

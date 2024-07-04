@@ -92,7 +92,7 @@ const Events = () => {
               <span>No event found</span>
             </div>
           ): (
-            <div className='grid sm:grid-cols-3 xs:grid-cols-1 gap-x-6 gap-y-3 justify-between pb-6'>
+            <div className='grid sm:grid-cols-3 xs:grid-cols-1 gap-x-10 gap-y-3 justify-between pb-6'>
               {events?.map((event: Event, index: number) => (
                 <EventCard event={event} href={`/events/${event.id}`} key={index} />
               ))}

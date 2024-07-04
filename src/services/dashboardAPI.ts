@@ -43,8 +43,6 @@ class DashboardAPI extends RESTDataSource {
             },
         })
 
-        console.log(groupMembers)
-
         const payments = await prisma.payment.aggregate({
             where: {
                 createdAt: {

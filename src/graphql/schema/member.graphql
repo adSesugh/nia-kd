@@ -18,8 +18,8 @@ query GetMembers {
   }
 }
 
-query GetMember($memberId: UUID!) {
-  member(id: $memberId) {
+mutation DeactivateMember($memberId: UUID!, $status: String!) {
+  deactivateMember(memberId: $memberId, status: $status) {
     id
     regId
     firstName
@@ -41,8 +41,8 @@ query GetMember($memberId: UUID!) {
   }
 }
 
-mutation DeactivateMember($memberId: UUID!, $status: String!) {
-  deactivateMember(memberId: $memberId, status: $status) {
+query GetMember($memberId: UUID!) {
+  getMember(memberId: $memberId) {
     id
     regId
     firstName
@@ -59,7 +59,17 @@ mutation DeactivateMember($memberId: UUID!, $status: String!) {
     }
     membershipId
     status
+    cpdpPoints {
+      id
+      points
+    }
     createdAt
     updatedAt
+  }
+}
+
+mutation ProfilephotoUpload($memberId: UUID!, $photo: String!) {
+  profilephotoUpload(memberId: $memberId, photo: $photo) {
+    url
   }
 }

@@ -19,9 +19,10 @@ class DueAPI extends RESTDataSource {
                         member: true,
                     }
                 },
+                membershipType: true
             },
             orderBy: {
-                startsAt: 'desc'
+                createdAt: 'desc',
             }
         })
         return dues
@@ -82,8 +83,6 @@ class DueAPI extends RESTDataSource {
             })
         }
 
-        console.log(userId)
-
         const formattedData = input.membership?.map((membership: { id: any; amount: any; }) => {
             return {
                 membershipTypeId: membership.id,
@@ -124,8 +123,8 @@ class DueAPI extends RESTDataSource {
             },
             data: {
                 amount: input.amount,
-                startsAt: input.startsAt,
-                endsAt: input.endsAt,
+                startsAt: new Date(input.startsAt),
+                endsAt: new Date(input.endsAt),
                 name: input.name as string,
                 userId: userId
             }
@@ -140,7 +139,7 @@ class DueAPI extends RESTDataSource {
     }
 
     async archiveDue(prisma: PrismaClient, dueId: string) {
-        (await prisma.dues.update({
+        await prisma.dues.update({
             where: {
                 id: dueId
             },
@@ -148,7 +147,7 @@ class DueAPI extends RESTDataSource {
                 deletedAt: new Date(),
                 status: 'Archived'
             }
-        }))
+        })
 
         return true
     }

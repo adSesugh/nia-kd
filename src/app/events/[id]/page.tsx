@@ -4,9 +4,8 @@
 
 import Badge from '@/components/badge'
 import NIAFooter from '@/components/footer'
-import SubmitButton from '@/components/submit-button'
-import { Speaker, useGetEventForPublicQuery, useWatchEventViewsMutation } from '@/graphql/__generated__/graphql'
-import { ArrowLeft, Clock, DocumentUpload, Ticket2 } from 'iconsax-react'
+import { useGetEventForPublicQuery, useWatchEventViewsMutation } from '@/graphql/__generated__/graphql'
+import { ArrowLeft, DocumentUpload } from 'iconsax-react'
 import moment from 'moment'
 import Image from 'next/image'
 import Link from 'next/link'
@@ -15,6 +14,7 @@ import React, { useEffect } from 'react'
 
 const EventDetail = () => {
     const { id } = useParams()
+
     const [eventView] = useWatchEventViewsMutation()
     const { data, loading } = useGetEventForPublicQuery({
         variables: {
@@ -30,13 +30,13 @@ const EventDetail = () => {
                 }
             })
         })()
-    }, [eventView])
+    }, [eventView, id])
 
     const registerForEvent = () =>  redirect(`/events/${id}/register`)
     
     return (
         <div>
-            <div className='sm:py-20 sm:px-32 xs:px-6 pt-20'>
+            <div className='sm:py-20 sm:px-40 xs:px-6 pt-20'>
                 <div className='flex justify-between items-center pt-6 w-full pb-6'>
                     <Link href={'/events'} className='flex items-center space-x-2 '>
                         <ArrowLeft variant='Outline' size={20} className='rgb(82 71 75 / 0.7)' />
@@ -50,8 +50,8 @@ const EventDetail = () => {
                                 <Badge label={data?.getEvent?.type as string} className='flex justify-center items-center rounded-2xl bg-[#F3ECE2] px-3' labelStyle='text-[12px]' />
                                 <Badge label={data?.getEvent?.status === 'Published' ? 'Open': 'Closed'} className={`flex justify-center items-center rounded-2xl ${data?.getEvent?.status === 'Published' ? 'bg-[#E2F3E6]' : ' bg-[#F3E2E2]'} px-3`} labelStyle='text-[12px]' />
                             </div>
-                            <div className='text-[28px] pt-2'>
-                                <h1>{data?.getEvent?.name}</h1>
+                            <div className='text-[20px] pt-2'>
+                                <h1 className=''>{data?.getEvent?.name}</h1>
                             </div>
                         </div>
                         <div>
@@ -73,7 +73,7 @@ const EventDetail = () => {
                     </div>
                 </div>
                 <div className='flex sm:flex-row xs:flex-col w-full py-5'>
-                    <div className='sm:w-9/12 xs:w-full mr-4'>
+                    <div className='sm:w-8/12 xs:w-full mr-4'>
                        <div className='p-5 w-full'>
                             <h1 className='font-semibold text-[18px]'>About Event</h1>
                             <div className='py-2 text-[#1E1A1C]' dangerouslySetInnerHTML={{ __html: data?.getEvent?.description || ''}}></div>
@@ -84,7 +84,7 @@ const EventDetail = () => {
                                 <div className='grid sm:grid-cols-3 gap-x-12 gap-y-6 space-y-3 mt-3'>
                                     {data?.getEvent?.speakers?.map((speaker) => (
                                         <div key={speaker?.id} className='space-y-3 items-center'>
-                                            <div><img src={speaker?.avatar || '/assets/profile.png'} className='h-72 rounded-[25px] w-96' /></div>
+                                            <div><img src={speaker?.avatar || '/assets/profile.png'} className='h-48 rounded-[25px] w-48' /></div>
                                             <div className='flex flex-col items-center justify-center'>
                                                 <h2 className='font-semibold'>{speaker?.name}</h2>
                                                 <span className='text-[12px] text-[#6F6F6F]'>{speaker?.title}</span>
@@ -105,24 +105,15 @@ const EventDetail = () => {
                         {data?.getEvent?.sponsors?.length !== 0 && (
                             <div className='my-4 p-4 w-full'>
                                 <h1 className='font-semibold text-[18px]'>Event Partners</h1>
-                                <div className='space-y-3 mt-3'>
-                                    <div className='flex space-x-2 items-center'>
-                                        <img src='/assets/ife.svg' className='h-7 w-7 rounded-md' />
-                                        <div>
-                                            <h2 className='font-semibold text-sm'>Nigeria Institute of Architects</h2>
-                                        </div>
-                                    </div>
-                                    <div className='flex space-x-2 items-center'>
-                                        <img src='/assets/nestle.svg' className='h-7 w-7 rounded-md' />
-                                        <div>
-                                            <h2 className='font-semibold text-sm'>Nestle Foods</h2>
-                                        </div>
-                                    </div>
+                                <div className='flex flex-wrap space-y-3 gap-4 mt-3'>
+                                    {data?.getEvent?.sponsors?.map(sponsor => (
+                                        <img key={sponsor?.id} src={sponsor?.logo} className='h-7 w-7 rounded-md' />
+                                    ))}
                                 </div>
                             </div>
                         )}
                     </div>
-                    <div className='sm:w-3/12 xs:w-full'>
+                    <div className='sm:w-4/12 xs:w-full'>
                         {data?.getEvent?.eventResources?.length !== 0 && (
                             <div className='border shadowm-sm rounded-[20px] p-4 w-full mb-4'>
                                 {data?.getEvent?.eventResources?.map((resource, index: number) => (
@@ -131,7 +122,7 @@ const EventDetail = () => {
                                         <div className="flex items-center mb-4" >
                                             <img src="/assets/PDF.png" alt="PDF Icon" className="w-6 h-6 mr-2" />
                                             <div className="flex-grow">
-                                                <p className="font-medium text-sm">{resource?.resourceUrl.split('/')[Number(resource?.resourceUrl.length) - 1]}</p>
+                                                <p className="font-medium text-sm">{resource?.name}</p>
                                             </div>
                                         </div>
                                     </Link>

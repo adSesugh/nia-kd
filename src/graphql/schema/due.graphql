@@ -7,6 +7,10 @@ query GetDues {
     endsAt
     status
     userId
+    membershipType {
+      id
+      name
+    }
     createdAt
     updatedAt
   }
@@ -28,25 +32,6 @@ query GetSingeDue($dueId: UUID!) {
 
 mutation CreateDue($input: dueInput!) {
   createDue(input: $input) {
-    code
-    success
-    message
-    due {
-      id
-      name
-      amount
-      startsAt
-      endsAt
-      status
-      userId
-      createdAt
-      updatedAt
-    }
-  }
-}
-
-mutation UpdateDue($dueId: UUID!, $input: dueInput!) {
-  updateDue(dueId: $dueId, input: $input) {
     code
     success
     message
@@ -87,5 +72,28 @@ query GetMemberUnpaidDues($memberId: UUID!, $membershipTypeId: UUID!) {
     status
     id
     endsAt
+  }
+}
+
+mutation ArchiveDue($dueId: UUID!) {
+  archiveDue(dueId: $dueId)
+}
+
+mutation updateDues($dueId: UUID!, $input: dueUpdateInput!) {
+  updateDues(dueId: $dueId, input: $input) {
+    code
+    success
+    message
+    due {
+      id
+      name
+      amount
+      startsAt
+      endsAt
+      status
+      userId
+      createdAt
+      updatedAt
+    }
   }
 }

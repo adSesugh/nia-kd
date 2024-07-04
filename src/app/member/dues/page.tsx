@@ -15,7 +15,6 @@ import CustomSearch from '@/components/custom-select';
 import { PaystackButton } from 'react-paystack';
 import { HookConfig } from 'react-paystack/dist/types';
 import { toast } from 'react-toastify';
-import { Dues } from '.prisma/client';
 import { usePostMultiPaymentMutation } from '@/graphql/__generated__/graphql';
 
 ChartJS.register(ArcElement, ToolkitChart, Legend);
@@ -346,7 +345,7 @@ const DueScreen = () => {
                     className='flex mt-4 px-4 rounded-lg py-2 items-center justify-center xs:justify-start bg-black text-white'
                   >
                     <PaystackButton 
-                      amount={4000 * 100} 
+                      amount={Number(cummDues) * 100} 
                       email={user?.member?.email as string} 
                       reference={(new Date()).getTime().toString()}
                       {...componentProps} 

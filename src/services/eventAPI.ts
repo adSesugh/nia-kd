@@ -1,10 +1,15 @@
-import { EventForm, EventInput } from "@/graphql/__generated__/graphql";
+import { EventForm, EventInput, EventRegistrationInput } from "@/graphql/__generated__/graphql";
 import { s3FileUpload, s3FileUploadPdf } from "@/lib/s3Client";
 import { RESTDataSource } from "@apollo/datasource-rest";
 import { PrismaClient } from "@prisma/client";
+import { GraphQLError } from "graphql/error";
 import moment from "moment";
 
 class EventAPI extends RESTDataSource {
+
+    todayDate = new Date(moment().format("Y-MM-D"))
+    startOfYear = new Date(moment().startOf('year').format("Y-MM-D"))
+    endOfYear = new Date(moment().endOf('year').format("Y-MM-D"))
 
     async createEvent(prisma: PrismaClient, input: EventInput) {
 
@@ -155,7 +160,6 @@ class EventAPI extends RESTDataSource {
                         member: true 
                     } 
                 }, 
-                eventForms: true, 
                 speakers: true, 
                 eventResources: true,
                 eventRegistrations: true
@@ -258,6 +262,18 @@ class EventAPI extends RESTDataSource {
         return true
     }
 
+    async getRegistrationForm(prisma: PrismaClient, eventId: string) {
+
+        const event = await prisma.event.findUnique({
+            where: {
+                id: eventId
+            },
+            include: {eventForms: true}
+        })
+
+        return event
+    }
+
     async getEventsForPublic(prisma: PrismaClient) {
         const events = await prisma.event.findMany({
             include: { 
@@ -328,6 +344,65 @@ class EventAPI extends RESTDataSource {
         })
 
         return events
+    }
+
+    async postRegistration(prisma: PrismaClient, input: EventRegistrationInput) {
+        const totalRegistration = await prisma.eventRegistration.count({
+            where: {
+                eventId: input.eventId
+            }
+        })
+
+        const event = await prisma.event.findFirst({
+            where: {
+                id: input.eventId,
+                ends_at: {
+                    gt: this.todayDate
+                }
+            },
+            select: {
+                tickets: true,
+                starts_at: true,
+                ends_at: true
+            }
+        })
+
+        if(event !== null && totalRegistration < Number(event?.tickets)) {
+            const registered = await prisma.eventRegistration.create({
+                data: {
+                    eventId: input.eventId,
+                    memberId: input.memberId,
+                    registrantDetail: input.registrantDetail,
+                    checkin: false
+                }
+            })
+
+            if(input.payment) {
+                await prisma.payment.create({
+                    data: {
+                        eventId: input.eventId,
+                        paymentType: input.payment.paymentType,
+                        memberId: input.memberId,
+                        description: input.payment.description,
+                        phoneNumber: input.payment.phoneNumber,
+                        paymentRef: input.payment.paymentRef,
+                        amount: parseFloat(input.payment.amount),
+                        status: input.payment.status,
+                        eventRegistrationId: registered.id
+                    }
+                })
+            }
+
+            return registered
+        } else {
+            console.log('first')
+            throw new GraphQLError('Event registration closed', {
+                extensions: {
+                    code: 'NOTFOUND',
+                    http: { status: 400 },
+                },
+            });
+        }
     }
 }
 

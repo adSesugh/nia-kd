@@ -178,8 +178,8 @@ model EventForm {
   label     String
   type      String
   required  Boolean
-  event     Event?   @relation(fields: [eventId], references: [id])
-  eventId   String?
+  event     Event   @relation(fields: [eventId], references: [id])
+  eventId   String
   createdAt DateTime @default(now()) @map(name: "created_at")
   updatedAt DateTime @updatedAt @map(name: "updated_at")
 
@@ -210,17 +210,15 @@ model EventResource {
 }
 
 model EventRegistration {
-  id               String  @id @default(uuid())
+  id               String   @id @default(uuid())
   memberId         String?
-  member           Member? @relation(fields: [memberId], references: [id])
+  member           Member?  @relation(fields: [memberId], references: [id])
   eventId          String?
   event            Event?   @relation(fields: [eventId], references: [id])
   registrantDetail Json
-  amount           Decimal @default(0.00)
-  paymentRef       String  @unique
-  status           String  @default("Successful") @db.VarChar(15)
-  checkin          Boolean @default(false)
-  checkinDate      DateTime @map(name: "checkin_date")
+  checkin          Boolean  @default(false)
+  checkinDate      DateTime? @map(name: "checkin_date")
+  payment          Payment?
 
   createdAt DateTime @default(now()) @map(name: "created_at")
   updatedAt DateTime @updatedAt @map(name: "updated_at")
@@ -256,21 +254,23 @@ model CpdpPoint {
 }
 
 model Payment {
-  id          String   @id @default(uuid())
-  paymentType String
-  memberId    String?
-  member      Member?   @relation(fields: [memberId], references: [id])
-  duesId      String
-  due         Dues     @relation(fields: [duesId], references: [id])
-  eventId     String?
-  event       Event?   @relation(fields: [eventId], references: [id])
-  phoneNumber String
-  description String   @db.Text
-  paymentRef  String   @unique
-  amount      Decimal  @default(0.00)
-  status      String   @default("Successful") @db.VarChar(15)
-  createdAt   DateTime @default(now()) @map(name: "created_at")
-  updatedAt   DateTime @updatedAt @map(name: "updated_at")
+  id                    String   @id @default(uuid())
+  paymentType           String
+  memberId              String?
+  member                Member?   @relation(fields: [memberId], references: [id])
+  duesId                String?
+  due                   Dues?     @relation(fields: [duesId], references: [id])
+  eventId               String?
+  event                 Event?   @relation(fields: [eventId], references: [id])
+  eventRegistrationId   String?  @unique
+  eventRegistration     EventRegistration? @relation(fields: [eventRegistrationId], references: [id])
+  phoneNumber           String
+  description           String   @db.Text
+  paymentRef            String
+  amount                Decimal  @default(0.00)
+  status                String   @default("Successful") @db.VarChar(15)
+  createdAt             DateTime @default(now()) @map(name: "created_at")
+  updatedAt             DateTime @updatedAt @map(name: "updated_at")
 
   @@map("payments")
 }

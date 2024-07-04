@@ -95,6 +95,12 @@ const DashboardLayout: React.FC<LayoutProps> = ({ children }) => {
                       return {
                         marginLeft: active ? -5 : undefined
                       }
+                    },
+                    suffix: ({active}) => {
+                      return {
+                        color: active ? 'white' : '#AB8144',
+                        fontSize: 12
+                      }
                     }
                   }}
                   onClick={() => setToggled(!toggled)}
@@ -165,7 +171,7 @@ const DashboardLayout: React.FC<LayoutProps> = ({ children }) => {
                         Ads
                     </MenuItem>
                   </div>
-                  <div className={`${pathname.includes('certificates') && 'border-l-[5px] border-[#AB8144]'}`}>
+                  <div className={`${pathname.includes('resources') && 'border-l-[5px] border-[#AB8144]'}`}>
                     <MenuItem 
                         icon={<Books width={24} height={24} stroke={`${pathname.includes('resources') ? '#ffffff' : '#BFBFBF'}`} />} 
                         component={<Link href="/resources" />}
@@ -185,7 +191,7 @@ const DashboardLayout: React.FC<LayoutProps> = ({ children }) => {
                     as="button"
                     avatarProps={{
                       isBordered: false,
-                      src: "/assets/profile.svg",
+                      src: user?.photoURL || "/assets/profile.svg",
                       size: 'sm',
                     }}
                     className="transition-transform text-white"
@@ -222,7 +228,7 @@ const DashboardLayout: React.FC<LayoutProps> = ({ children }) => {
             <HambergerMenu className=' sm:py-0 sm:pl-0 xs:flex sm:hidden' size={20} variant='Outline' color={`${PRIMARY_TWO}`} onClick={() => setToggled(!toggled)} />
             <BellSimple className='float-start mr-3' size={24} color='#150D09' />
           </div>
-          <div className={`pb-6 h-full`}>
+          <div className={`h-full`}>
             {children}
           </div>
         </main>

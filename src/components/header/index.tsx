@@ -60,7 +60,7 @@ const Header = () => {
         </div>
         <div className={styles.loginRegister}>
           {user?.id ? (
-            <Link href={user.role === Role.ADMINISTRATOR ? '/dashboard' : '/member/dashboard'} className={styles.joinButton}>Go Dashboard</Link>
+            <Link href={user.role === Role.ADMINISTRATOR ? '/dashboard' : '/member/dashboard'} className={styles.joinButton}>Go to Dashboard</Link>
           ): (
             <>
               <Link href={'/auth/login'} className={styles.loginButton}>Login</Link>
@@ -113,7 +113,7 @@ const Header = () => {
                 <div className='pt-12 w-full px-4'>
                   <div className={'flex space-x-4'}>
                     {user?.id ? (
-                      <Link href={user.role === Role.ADMINISTRATOR ? '/dashboard' : '/member/dashboard'} className={styles.joinButton}>Go Dashboard</Link>
+                      <Link href={user.role === Role.ADMINISTRATOR ? '/dashboard' : '/member/dashboard'} className={styles.joinButton}>Go to Dashboard</Link>
                     ): (
                       <>
                         <Link href={'/auth/login'} className={styles.loginButton}>Login</Link>
