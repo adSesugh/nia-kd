@@ -108,15 +108,15 @@ const CreateEvent = () => {
 
     useEffect(() => {
         document.title = `Create Event | NIA-Kd`;
-        getFormFields()
-    }, [])
+        (async () => {
+            const res = await getFormDesign()
+            if(res.data?.eventFormFields) {
+                setFormFields(res.data.eventFormFields)
+            }
+        })()
+    }, [getFormDesign])
 
-    const getFormFields = async () => {
-        const res = await getFormDesign()
-        if(res.data?.eventFormFields) {
-            setFormFields(res.data.eventFormFields)
-        }
-    }
+    const getFormFields = 
 
     console.log(selectedFields)
 

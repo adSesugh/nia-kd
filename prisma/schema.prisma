@@ -35,6 +35,7 @@ model User {
   status           String    @default("Active")
   Blog             Blog[]
   Event            Event[]
+  resources        Resource[]
 
   createdAt        DateTime  @default(now()) @map(name: "created_at")
   updatedAt        DateTime  @updatedAt @map(name: "updated_at")
@@ -273,4 +274,16 @@ model Payment {
   updatedAt             DateTime @updatedAt @map(name: "updated_at")
 
   @@map("payments")
+}
+
+model Resource {
+  id            String @id @default(uuid())
+  name          String
+  resourcePath  String
+  userId        String?
+  user User?    @relation(fields: [userId], references: [id])
+  createdAt     DateTime @default(now()) @map(name: "created_at")
+  updatedAt     DateTime @updatedAt @map(name: "updated_at")
+
+  @@map("resources")
 }

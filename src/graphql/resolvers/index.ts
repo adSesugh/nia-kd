@@ -20,7 +20,8 @@ export const resolvers: Resolvers = {
         postMultiPayment: (_, {input}, {prisma, dataSources}) => dataSources.paymentAPI.postMultiPayment(prisma, input),
         postEventRegistration: (_, {input}, {prisma, dataSources}) => dataSources.eventAPI.postRegistration(prisma, input),
         profilephotoUpload: (_, {memberId, photo}, {prisma, dataSources}) => dataSources.memberAPI.uploadPhoto(prisma, memberId, photo),
-        resetPassword: (_, {userId, password}, {prisma, dataSources}) => dataSources.userAPI.resetPassword(prisma, userId, password)
+        resetPassword: (_, {userId, password}, {prisma, dataSources}) => dataSources.userAPI.resetPassword(prisma, userId, password),
+        createResources: (_, {input}, {prisma, dataSources, userId}) => dataSources.resourceAPI.createResources(prisma, input, userId)
     },
     Query: {
         members: (_, __, { prisma, dataSources, userId }) => dataSources.memberAPI.getMembers(prisma, userId),
@@ -50,6 +51,8 @@ export const resolvers: Resolvers = {
         getMembershipTypes: (_, __, {prisma, dataSources}) => dataSources.userAPI.getMembershipTypes(prisma),
         getRegistrationForm: (_, {eventId}, {prisma, dataSources}) => dataSources.eventAPI.getRegistrationForm(prisma, eventId),
         getMember: (_, {memberId}, {prisma, dataSources}) => dataSources.memberAPI.getMember(prisma, memberId),
-        getUser: (_, {userId}, {prisma, dataSources}) => dataSources.userAPI.getUser(prisma, userId)
+        getUser: (_, {userId}, {prisma, dataSources}) => dataSources.userAPI.getUser(prisma, userId),
+        getResources: (_, __, {prisma, dataSources}) => dataSources.resourceAPI.getResources(prisma),
+        getResource: (_, {resourceId}, {prisma, dataSources}) => dataSources.resourceAPI.getResource(prisma, resourceId)
     },
 };

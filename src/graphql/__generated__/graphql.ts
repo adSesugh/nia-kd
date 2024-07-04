@@ -265,6 +265,7 @@ export type Mutation = {
   createBlog?: Maybe<BlogResponse>;
   createDue?: Maybe<DueResponse>;
   createEvent?: Maybe<EventResponse>;
+  createResources?: Maybe<ResourceResponse>;
   createUser?: Maybe<CreateUserResponse>;
   deactivateMember?: Maybe<Member>;
   deleteEvent?: Maybe<Scalars['Boolean']['output']>;
@@ -303,6 +304,11 @@ export type MutationCreateDueArgs = {
 
 export type MutationCreateEventArgs = {
   input: EventInput;
+};
+
+
+export type MutationCreateResourcesArgs = {
+  input?: InputMaybe<Array<ResourcesInput>>;
 };
 
 
@@ -411,6 +417,8 @@ export type Query = {
   getRecentRegistration?: Maybe<Array<Member>>;
   getRegisteredMembers?: Maybe<Array<EventRegistration>>;
   getRegistrationForm?: Maybe<Event>;
+  getResource?: Maybe<Resource>;
+  getResources?: Maybe<Array<Resource>>;
   getSidebarStat?: Maybe<SidebarResponse>;
   getUpComingEvents?: Maybe<Array<EventRegistration>>;
   getUser?: Maybe<Member>;
@@ -484,6 +492,11 @@ export type QueryGetRegistrationFormArgs = {
 };
 
 
+export type QueryGetResourceArgs = {
+  resourceId: Scalars['UUID']['input'];
+};
+
+
 export type QueryGetUpComingEventsArgs = {
   memberId: Scalars['UUID']['input'];
 };
@@ -515,9 +528,32 @@ export type ResetPasswordResponse = {
   success: Scalars['Boolean']['output'];
 };
 
+export type Resource = {
+  __typename?: 'Resource';
+  createdAt?: Maybe<Scalars['Time']['output']>;
+  id: Scalars['UUID']['output'];
+  name: Scalars['String']['output'];
+  resourcePath: Scalars['String']['output'];
+  user?: Maybe<User>;
+  userId?: Maybe<Scalars['UUID']['output']>;
+};
+
 export type ResourceInput = {
   name: Scalars['String']['input'];
   resourceUrl: Scalars['String']['input'];
+};
+
+export type ResourceResponse = {
+  __typename?: 'ResourceResponse';
+  code: Scalars['Int']['output'];
+  message?: Maybe<Scalars['String']['output']>;
+  resources?: Maybe<Array<Resource>>;
+  success: Scalars['Boolean']['output'];
+};
+
+export type ResourcesInput = {
+  name: Scalars['String']['input'];
+  resourcePath: Scalars['String']['input'];
 };
 
 export type SidebarResponse = {
@@ -3168,7 +3204,10 @@ export type ResolversTypes = ResolversObject<{
   Payment: ResolverTypeWrapper<PaymentModel>;
   Query: ResolverTypeWrapper<{}>;
   ResetPasswordResponse: ResolverTypeWrapper<ResetPasswordResponse>;
+  Resource: ResolverTypeWrapper<Omit<Resource, 'user'> & { user?: Maybe<ResolversTypes['User']> }>;
   ResourceInput: ResourceInput;
+  ResourceResponse: ResolverTypeWrapper<Omit<ResourceResponse, 'resources'> & { resources?: Maybe<Array<ResolversTypes['Resource']>> }>;
+  ResourcesInput: ResourcesInput;
   SidebarResponse: ResolverTypeWrapper<SidebarResponse>;
   Speaker: ResolverTypeWrapper<Speaker>;
   SpeakerFormInput: SpeakerFormInput;
@@ -3222,7 +3261,10 @@ export type ResolversParentTypes = ResolversObject<{
   Payment: PaymentModel;
   Query: {};
   ResetPasswordResponse: ResetPasswordResponse;
+  Resource: Omit<Resource, 'user'> & { user?: Maybe<ResolversParentTypes['User']> };
   ResourceInput: ResourceInput;
+  ResourceResponse: Omit<ResourceResponse, 'resources'> & { resources?: Maybe<Array<ResolversParentTypes['Resource']>> };
+  ResourcesInput: ResourcesInput;
   SidebarResponse: SidebarResponse;
   Speaker: Speaker;
   SpeakerFormInput: SpeakerFormInput;
@@ -3492,6 +3534,7 @@ export type MutationResolvers<ContextType = GraphQLContext, ParentType extends R
   createBlog?: Resolver<Maybe<ResolversTypes['BlogResponse']>, ParentType, ContextType, RequireFields<MutationCreateBlogArgs, 'input'>>;
   createDue?: Resolver<Maybe<ResolversTypes['DueResponse']>, ParentType, ContextType, RequireFields<MutationCreateDueArgs, 'input'>>;
   createEvent?: Resolver<Maybe<ResolversTypes['EventResponse']>, ParentType, ContextType, RequireFields<MutationCreateEventArgs, 'input'>>;
+  createResources?: Resolver<Maybe<ResolversTypes['ResourceResponse']>, ParentType, ContextType, Partial<MutationCreateResourcesArgs>>;
   createUser?: Resolver<Maybe<ResolversTypes['CreateUserResponse']>, ParentType, ContextType, RequireFields<MutationCreateUserArgs, 'input'>>;
   deactivateMember?: Resolver<Maybe<ResolversTypes['Member']>, ParentType, ContextType, RequireFields<MutationDeactivateMemberArgs, 'memberId' | 'status'>>;
   deleteEvent?: Resolver<Maybe<ResolversTypes['Boolean']>, ParentType, ContextType, RequireFields<MutationDeleteEventArgs, 'eventId'>>;
@@ -3546,6 +3589,8 @@ export type QueryResolvers<ContextType = GraphQLContext, ParentType extends Reso
   getRecentRegistration?: Resolver<Maybe<Array<ResolversTypes['Member']>>, ParentType, ContextType>;
   getRegisteredMembers?: Resolver<Maybe<Array<ResolversTypes['EventRegistration']>>, ParentType, ContextType, RequireFields<QueryGetRegisteredMembersArgs, 'eventId'>>;
   getRegistrationForm?: Resolver<Maybe<ResolversTypes['Event']>, ParentType, ContextType, RequireFields<QueryGetRegistrationFormArgs, 'eventId'>>;
+  getResource?: Resolver<Maybe<ResolversTypes['Resource']>, ParentType, ContextType, RequireFields<QueryGetResourceArgs, 'resourceId'>>;
+  getResources?: Resolver<Maybe<Array<ResolversTypes['Resource']>>, ParentType, ContextType>;
   getSidebarStat?: Resolver<Maybe<ResolversTypes['SidebarResponse']>, ParentType, ContextType>;
   getUpComingEvents?: Resolver<Maybe<Array<ResolversTypes['EventRegistration']>>, ParentType, ContextType, RequireFields<QueryGetUpComingEventsArgs, 'memberId'>>;
   getUser?: Resolver<Maybe<ResolversTypes['Member']>, ParentType, ContextType, RequireFields<QueryGetUserArgs, 'userId'>>;
@@ -3560,6 +3605,24 @@ export type QueryResolvers<ContextType = GraphQLContext, ParentType extends Reso
 export type ResetPasswordResponseResolvers<ContextType = GraphQLContext, ParentType extends ResolversParentTypes['ResetPasswordResponse'] = ResolversParentTypes['ResetPasswordResponse']> = ResolversObject<{
   code?: Resolver<ResolversTypes['Int'], ParentType, ContextType>;
   message?: Resolver<Maybe<ResolversTypes['String']>, ParentType, ContextType>;
+  success?: Resolver<ResolversTypes['Boolean'], ParentType, ContextType>;
+  __isTypeOf?: IsTypeOfResolverFn<ParentType, ContextType>;
+}>;
+
+export type ResourceResolvers<ContextType = GraphQLContext, ParentType extends ResolversParentTypes['Resource'] = ResolversParentTypes['Resource']> = ResolversObject<{
+  createdAt?: Resolver<Maybe<ResolversTypes['Time']>, ParentType, ContextType>;
+  id?: Resolver<ResolversTypes['UUID'], ParentType, ContextType>;
+  name?: Resolver<ResolversTypes['String'], ParentType, ContextType>;
+  resourcePath?: Resolver<ResolversTypes['String'], ParentType, ContextType>;
+  user?: Resolver<Maybe<ResolversTypes['User']>, ParentType, ContextType>;
+  userId?: Resolver<Maybe<ResolversTypes['UUID']>, ParentType, ContextType>;
+  __isTypeOf?: IsTypeOfResolverFn<ParentType, ContextType>;
+}>;
+
+export type ResourceResponseResolvers<ContextType = GraphQLContext, ParentType extends ResolversParentTypes['ResourceResponse'] = ResolversParentTypes['ResourceResponse']> = ResolversObject<{
+  code?: Resolver<ResolversTypes['Int'], ParentType, ContextType>;
+  message?: Resolver<Maybe<ResolversTypes['String']>, ParentType, ContextType>;
+  resources?: Resolver<Maybe<Array<ResolversTypes['Resource']>>, ParentType, ContextType>;
   success?: Resolver<ResolversTypes['Boolean'], ParentType, ContextType>;
   __isTypeOf?: IsTypeOfResolverFn<ParentType, ContextType>;
 }>;
@@ -3666,6 +3729,8 @@ export type Resolvers<ContextType = GraphQLContext> = ResolversObject<{
   Payment?: PaymentResolvers<ContextType>;
   Query?: QueryResolvers<ContextType>;
   ResetPasswordResponse?: ResetPasswordResponseResolvers<ContextType>;
+  Resource?: ResourceResolvers<ContextType>;
+  ResourceResponse?: ResourceResponseResolvers<ContextType>;
   SidebarResponse?: SidebarResponseResolvers<ContextType>;
   Speaker?: SpeakerResolvers<ContextType>;
   Sponsor?: SponsorResolvers<ContextType>;

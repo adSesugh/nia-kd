@@ -13,6 +13,7 @@ import PaymentAPI from '@/services/paymentAPI';
 import DashboardAPI from '@/services/dashboardAPI';
 import BlogAPI from '@/services/blogAPI';
 import EventAPI from '@/services/eventAPI';
+import ResourceAPI from '@/services/resourceAPI';
 
 const server = new ApolloServer({
     resolvers,
@@ -39,7 +40,8 @@ const handler = startServerAndCreateNextHandler<NextRequest>(server, {
                 paymentAPI: new PaymentAPI({ cache }),
                 dashboardAPI: new DashboardAPI({ cache }),
                 blogAPI: new BlogAPI({ cache }),
-                eventAPI: new EventAPI({ cache })
+                eventAPI: new EventAPI({ cache }),
+                resourceAPI: new ResourceAPI({ cache })
             },
         }
     },

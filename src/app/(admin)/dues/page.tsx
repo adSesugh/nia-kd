@@ -51,7 +51,7 @@ const DuesPage = () => {
             setDueList(res.data?.dues)
             setDueListHolder(res.data?.dues)
         })()
-    }, [])
+    }, [getDues])
 
     const removeDue = async (due: string) => {
         try {

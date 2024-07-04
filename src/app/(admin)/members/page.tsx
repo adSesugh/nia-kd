@@ -34,7 +34,7 @@ const MemberList = () => {
             }
         })()
         document.title = `Members | NIA-Kd`
-    }, [getMembers])
+    }, [getMembers, router])
 
     const switchMemberStatus = async (memberId: string, status: string) => {
         const member = (await deactiveMember({

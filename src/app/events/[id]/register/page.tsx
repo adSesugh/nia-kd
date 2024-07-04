@@ -85,9 +85,7 @@ const EventRegistration = () => {
 			const amount = Number(data?.getRegistrationForm?.amount) * 100
 			setAmount(amount)
 		}
-	}, [id])
-
-	console.log(config)
+	}, [id, data?.getRegistrationForm])
 
 	const handleRegistration = async (e: ChangeEvent<HTMLFormElement>) => {
 		e.preventDefault()
@@ -127,7 +125,7 @@ const EventRegistration = () => {
 				<form method='POST' onSubmit={handleRegistration}>
 					<div className='grid sm:grid-cols-2 xs:grid-cols-1 gap-4'>
 						{data?.getRegistrationForm?.eventForms?.map(form => (
-							<div className={`mb-2 text-[14px]`}>
+							<div className={`mb-2 text-[14px]`} key={form?.id}>
 								<div className='py-1'>
 									<h3>{form?.label}</h3>
 								</div>

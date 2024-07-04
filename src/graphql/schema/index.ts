@@ -200,6 +200,15 @@ export const typeDefs = `#graphql
     member: Member
     points: Int!
   } 
+  
+  type Resource {
+    id:             UUID!
+    name:           String!
+    resourcePath:   String!
+    userId:         UUID
+    user:           User,
+    createdAt:      Time
+  }
 
   ## ------------------------------------- Type Input ---------------------------------------------------##
 
@@ -318,6 +327,11 @@ export const typeDefs = `#graphql
     registrantDetail: JSON!
     payment: JSON
   }
+  
+  input ResourcesInput {
+    name: String!
+    resourcePath: String!
+  }
 
   ## ------------------------------------- Type Response ---------------------------------------------------##
   
@@ -414,6 +428,13 @@ export const typeDefs = `#graphql
   type UploadResponse {
     url: String!
   }
+  
+  type ResourceResponse {
+    code: Int!
+    success: Boolean!
+    message: String,
+    resources: [Resource!]
+  }
 
   ## ------------------------------------- Mutation ---------------------------------------------------##
 
@@ -435,6 +456,7 @@ export const typeDefs = `#graphql
     postEventRegistration(input: eventRegistrationInput!): EventRegistration
     resetPassword(userId: UUID!, password: String!): ResetPasswordResponse
     profilephotoUpload(memberId: UUID!, photo: String!): UploadResponse
+    createResources(input: [ResourcesInput!]): ResourceResponse
   }
 
   ## ------------------------------------- Query ---------------------------------------------------##
@@ -470,5 +492,7 @@ export const typeDefs = `#graphql
     getRegistrationForm(eventId: UUID!): Event
     getMember(memberId: UUID!): Member
     getUser(userId: UUID!): Member
+    getResources: [Resource!]
+    getResource(resourceId: UUID!): Resource
   }
 `;
