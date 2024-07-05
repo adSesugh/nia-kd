@@ -10,7 +10,7 @@ export const metadata: Metadata = {
 
 const ResourceLayout: React.FC<LayoutProps> = ({children}) => {
   return (
-    <div className='h-full'>{children}</div>
+    <div className='h-full w-full'>{children}</div>
   )
 }
 

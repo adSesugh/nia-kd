@@ -27,7 +27,7 @@ mutation DeactivateMember($memberId: UUID!, $status: String!) {
     email
     phoneNumber
     photoURL
-    address
+    workplace
     userId
     joined
     membershipType {
@@ -50,7 +50,7 @@ query GetMember($memberId: UUID!) {
     email
     phoneNumber
     photoURL
-    address
+    workplace
     userId
     joined
     membershipType {

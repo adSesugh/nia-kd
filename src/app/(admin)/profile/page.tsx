@@ -1,21 +1,29 @@
 'use client'
 
-import React from 'react'
+import React, { useEffect, useState } from 'react'
 // @ts-ignore
 import ProfileScreen from '@/components/profile'
-import { Member, useGetUserQuery } from '@/graphql/__generated__/graphql'
+import { Member, useGetUserLazyQuery, useGetUserQuery } from '@/graphql/__generated__/graphql'
 import { useSelector } from 'react-redux'
 import { RootState } from '@/features/store'
 import { Role } from '@/lib/common'
 
 const AdminProfile = () => {
   const user = useSelector((state: RootState) => state?.auth.userData.user)
-  const {data, loading} = useGetUserQuery({
-      fetchPolicy: 'no-cache',
-      variables: {
+  const [userDetail, setUserDetail] = useState<any>()
+  const [getUser, {loading}] = useGetUserLazyQuery({fetchPolicy: 'no-cache'})
+
+  useEffect(() => {
+    document.title = `Profile | NIA-Kd`
+    ;(async () => {
+      const res = (await getUser({
+        variables: {
           userId: user?.id
-      }
-  })
+        }
+      })).data
+      setUserDetail(res?.getUser)
+    })()
+  }, [])
 
   if(user?.role === Role.ADMINISTRATOR){
     return (
@@ -27,7 +35,7 @@ const AdminProfile = () => {
 
   return (
     <div className='w-full'>
-      <ProfileScreen data={data?.getUser as Member} loading={loading} />
+      <ProfileScreen data={userDetail} loading={loading} />
     </div>
   )
 }

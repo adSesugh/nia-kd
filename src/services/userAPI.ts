@@ -46,6 +46,13 @@ class UserAPI extends RESTDataSource {
             }
         }))
 
+        const memberType = await prisma.membershipType.findFirst({
+            where: {
+                id: input.membershipType
+            }, 
+            select: { name: true}
+        })
+
         if (userExists) {
             throw new GraphQLError("Account already exists", {
                 extensions: {
@@ -75,11 +82,12 @@ class UserAPI extends RESTDataSource {
                             regId: registrationId,
                             membershipTypeId: input.membershipType,
                             membershipId: input.membershipId,
+                            memberType: memberType?.name,
                             firstName: input.firstName,
                             lastName: input.lastName,
                             email: input.email,
                             phoneNumber: input.phoneNumber,
-                            address: input.address
+                            workplace: input.workplace
                         }
                     }
                 },

@@ -616,7 +616,7 @@ const CreateEvent = () => {
                                         </div>
                                         <hr className='h-[1px] bg-[#D9D9D9 w-full' />
                                         <div className='py-3 px-4'>
-                                            <Button type='button' className='flex gap-3' onClick={addSpeaker}>
+                                            <Button type='button' className='flex gap-3 bg-white border rounded-lg' onClick={addSpeaker}>
                                                 <Plus size={20} color='#E08D14' />
                                                 <span className='text-[#E08D14]'>Add speaker</span>
                                             </Button>

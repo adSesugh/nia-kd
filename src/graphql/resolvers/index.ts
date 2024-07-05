@@ -21,7 +21,8 @@ export const resolvers: Resolvers = {
         postEventRegistration: (_, {input}, {prisma, dataSources}) => dataSources.eventAPI.postRegistration(prisma, input),
         profilephotoUpload: (_, {memberId, photo}, {prisma, dataSources}) => dataSources.memberAPI.uploadPhoto(prisma, memberId, photo),
         resetPassword: (_, {userId, password}, {prisma, dataSources}) => dataSources.userAPI.resetPassword(prisma, userId, password),
-        createResources: (_, {input}, {prisma, dataSources, userId}) => dataSources.resourceAPI.createResources(prisma, input, userId)
+        createResources: (_, {input}, {prisma, dataSources, userId}) => dataSources.resourceAPI.createResources(prisma, input, userId),
+        deleteResource: (_, {resourceId}, {prisma, dataSources}) => dataSources.resourceAPI.deleteResource(prisma, resourceId)
     },
     Query: {
         members: (_, __, { prisma, dataSources, userId }) => dataSources.memberAPI.getMembers(prisma, userId),

@@ -1,0 +1,33 @@
+query GetResources {
+  getResources {
+    id
+    name
+    resourcePath
+    fileType
+    fileSize
+    createdAt
+  }
+}
+
+query GetResource($resourceId: UUID!) {
+  getResource(resourceId: $resourceId) {
+    id
+    name
+    resourcePath
+    fileType
+    fileSize
+    createdAt
+  }
+}
+
+mutation CreateResources($input: ResourcesInput!) {
+  createResources(input: $input) {
+    code
+    success
+    message
+  }
+}
+
+mutation DeleteResourceMutation($resourceId: UUID!) {
+  deleteResource(resourceId: $resourceId)
+}

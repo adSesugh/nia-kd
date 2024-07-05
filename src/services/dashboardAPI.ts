@@ -32,7 +32,7 @@ class DashboardAPI extends RESTDataSource {
         })
 
         const groupMembers = await prisma.member.groupBy({
-            by: ['membershipTypeId'],
+            by: ['memberType'],
             where: {
               status: {
                 equals: 'Active',
@@ -106,12 +106,12 @@ class DashboardAPI extends RESTDataSource {
         }
 
         const membership = [
-            groupMembers.find((member) => member.membershipTypeId === 'Assoicate')?._count._all || 0,
-            groupMembers.find((member) => member.membershipTypeId === 'Fellow')?._count._all || 0,
-            groupMembers.find((member) => member.membershipTypeId === 'Full Member')?._count._all || 0,
-            groupMembers.find((member) => member.membershipTypeId === 'Graduate')?._count._all || 0,
-            groupMembers.find((member) => member.membershipTypeId === 'Student')?._count._all || 0,
-            groupMembers.find((member) => member.membershipTypeId === 'Technologist')?._count._all || 0,
+            groupMembers.find((member) => member.memberType === 'Assoicate')?._count._all || 0,
+            groupMembers.find((member) => member.memberType === 'Fellow')?._count._all || 0,
+            groupMembers.find((member) => member.memberType === 'Full Member')?._count._all || 0,
+            groupMembers.find((member) => member.memberType === 'Graduate')?._count._all || 0,
+            groupMembers.find((member) => member.memberType === 'Student')?._count._all || 0,
+            groupMembers.find((member) => member.memberType === 'Technologist')?._count._all || 0,
         ]
 
         const avgAttendance = attendances / eventHeld || 0
@@ -150,11 +150,17 @@ class DashboardAPI extends RESTDataSource {
             }
         })
 
+        const resources = await prisma.resource.count({
+            where: {
+                deletedAt: null
+            }
+        })
+
         return {
             members: members,
             events: events._count._all,
             blogs,
-            resources: 0,
+            resources: resources,
             ads: 0
         }
     }

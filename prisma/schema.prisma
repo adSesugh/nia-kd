@@ -60,9 +60,10 @@ model Member {
   email               String              @unique
   phoneNumber         String              @unique
   photoURL            String?
-  address             String?             @db.VarChar(191)
+  workplace           String?             @db.VarChar(191)
   joined              DateTime?
   membershipId        String?             @unique
+  memberType          String              @default("Member")
   membershipTypeId    String
   membershipType      MembershipType     @relation(fields: [membershipTypeId], references: [id])
   status              String              @default("Active") @db.VarChar(191)
@@ -280,10 +281,13 @@ model Resource {
   id            String @id @default(uuid())
   name          String
   resourcePath  String
+  fileType      String
+  fileSize      Int
   userId        String?
   user User?    @relation(fields: [userId], references: [id])
   createdAt     DateTime @default(now()) @map(name: "created_at")
   updatedAt     DateTime @updatedAt @map(name: "updated_at")
+  deletedAt     DateTime?
 
   @@map("resources")
 }

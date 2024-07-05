@@ -15,7 +15,7 @@ const nextConfig = {
         AWS_SECRET_ACCESS_KEY: process.env.NEXT_PUBLIC_AWS_SECRET_ACCESS_KEY,
         AWS_REGION: process.env.NEXT_PUBLIC_AWS_REGION,
         AWS_S3_BUCKET_NAME: process.env.NEXT_PUBLIC_AWS_S3_BUCKET_NAME,
-    },
+    }
 };
 
 export default nextConfig;

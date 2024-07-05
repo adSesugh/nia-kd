@@ -10,7 +10,7 @@ export type RegisterForm = {
     phoneNumber: string
     membershipType: string
     membershipId: string
-    address: string
+    workplace: string
     password: string
     confirmPassword: string
 }

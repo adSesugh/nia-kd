@@ -4,9 +4,8 @@ import React, { useEffect } from 'react'
 import styles from '@/styles/auth.module.css'
 import { Form, Formik, FormikHelpers } from 'formik';
 import { RegisterForm } from '@/types/auth';
-import { Eye, EyeSlash, Lock } from 'iconsax-react';
+import { Eye, EyeSlash } from 'iconsax-react';
 import Link from 'next/link';
-import * as Yup from 'yup'
 import TextField from '@/components/textfield';
 import TextFieldWithIcon from '@/components/textfield-withicon';
 import SubmitButton from '@/components/submit-button';
@@ -14,19 +13,7 @@ import DefaultSelect from '@/components/default-select';
 import { useCreateUserMutation, useGetMembershipTypesQuery } from '@/graphql/__generated__/graphql';
 import { useRouter } from 'next/navigation';
 import { toast } from 'react-toastify';
-
-const LoginSchema = Yup.object().shape({
-  firstName: Yup.string().required('First name is required'),
-  lastName: Yup.string().required('Last name is required'),
-  email: Yup.string().email().required('Email Address is required'),
-  phoneNumber: Yup.string().required('Phone number is required'),
-  membershipId: Yup.string().nullable(),
-  membershipType: Yup.string().nullable(),
-  address: Yup.string().required('Resident Address is required'),
-  password: Yup.string().required('Password is required').min(6, 'Password must be 6 or more characters long'),
-  confirmPassword: Yup.string()
-    .oneOf([Yup.ref('password')], 'Password must match')
-});
+import { RegisterSchema } from '@/lib/validations';
 
 
 const RegisterPage: React.FC<{}> = () => {
@@ -37,7 +24,7 @@ const RegisterPage: React.FC<{}> = () => {
     phoneNumber: '',
     membershipType: '', 
     membershipId: '', 
-    address: '',
+    workplace: '',
     password: '',
     confirmPassword: '' 
   };
@@ -57,7 +44,7 @@ const RegisterPage: React.FC<{}> = () => {
       <h2>Get started by filling the registration form below</h2>
       <Formik
         initialValues={initialValues}
-        validationSchema={LoginSchema}
+        validationSchema={RegisterSchema}
         onSubmit={async(values: RegisterForm, { setSubmitting }: FormikHelpers<RegisterForm>) => {
           
           try {
@@ -70,7 +57,7 @@ const RegisterPage: React.FC<{}> = () => {
                   membershipId: values.membershipId || null,
                   email: values.email,
                   phoneNumber: values.phoneNumber,
-                  address: values.address,
+                  workplace: values.workplace,
                   password: values.password
                 }
               }
@@ -118,13 +105,13 @@ const RegisterPage: React.FC<{}> = () => {
             />
             <TextField
               name='membershipId'
-              placeholder='Membership ID' 
+              placeholder='Membership ID (Optional)' 
               className={`${errors.membershipId && touched.membershipId ? 'ring-red-500': ''} pr-10`}
             />
             <TextField
-              name='address'
-              placeholder='Resident Address'
-              className={`${errors.address && touched.address ? 'ring-red-500': ''} pr-10`}
+              name='workplace'
+              placeholder='Workplace'
+              className={`${errors.workplace && touched.workplace ? 'ring-red-500': ''} pr-10`}
             />
             <TextFieldWithIcon 
               name='password' 

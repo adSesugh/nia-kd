@@ -6,6 +6,18 @@ export const LoginSchema = Yup.object().shape({
     email: Yup.string().email()
 });
 
+export const RegisterSchema = Yup.object().shape({
+    firstName: Yup.string().required('First name is required'),
+    lastName: Yup.string().required('Last name is required'),
+    email: Yup.string().email().required('Email Address is required'),
+    phoneNumber: Yup.string().required('Phone number is required'),
+    membershipId: Yup.string().nullable(),
+    membershipType: Yup.string().nullable(),
+    workplace: Yup.string().required('Workplace is required'),
+    password: Yup.string().required('Password is required').min(6, 'Password must be 6 or more characters long'),
+    confirmPassword: Yup.string()
+      .oneOf([Yup.ref('password')], 'Password must match')
+});
 
 export const EventSchema = Yup.object().shape({
     name: Yup.string().required('Event name is required'),

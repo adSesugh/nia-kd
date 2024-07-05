@@ -7,7 +7,7 @@ query GetUser($userId: UUID!) {
     email
     phoneNumber
     photoURL
-    address
+    workplace
     userId
     joined
     membershipType {

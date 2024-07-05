@@ -14,28 +14,30 @@ import { PasswordSchema } from "@/lib/validations";
 import { Member, useProfilephotoUploadMutation, useResetPasswordMutation } from "@/graphql/__generated__/graphql";
 import { useRouter } from "next/navigation";
 import { useAppDispatch } from "@/features/hooks";
+import { Spinner } from "@nextui-org/react";
 
 type ProfilePropType = {
-    data: Member,
+    data: any,
     loading: boolean
 }
 
 const ProfileScreen: React.FC<ProfilePropType> = ({ data, loading }) => {
     
     const router = useRouter()
-    const dispatch = useAppDispatch()
     const user = useSelector((state: RootState) => state?.auth.userData.user)
     const [speakerImg, setSpeakerImg] = useState<string>()
     const [resetPassword, {loading: resetPasswordLoading}] = useResetPasswordMutation()
     const [profilePhotoUpload, {loading: profileLoading}] = useProfilephotoUploadMutation()
 
-    useEffect(() => {
-        document.title = `Profile | NIA-Kd`
-    }, [])
-
-    function setProfilePhoto(arg0: { __typename?: "UserPayload"; id?: import("@/graphql/__generated__/graphql").Scalars["UUID"]["output"]; member?: import("@/graphql/__generated__/graphql").Maybe<Member>; regId?: string | undefined; role?: string | undefined; }): any {
-        throw new Error("Function not implemented.");
+    if(loading){
+        return (
+            <div className="flex h-screen justify-center items-center">
+                <Spinner size="lg"  color="default" />
+            </div>
+        )
     }
+
+    console.log(data)
 
     return (
         <div className={'flex sm:px-40 xs:px-6 justify-center'}>
@@ -91,9 +93,9 @@ const ProfileScreen: React.FC<ProfilePropType> = ({ data, loading }) => {
                                             }}
                                         />
                                         <label aria-label='speakerPix' htmlFor="profilePix" className="flex flex-col items-center rounded-full cursor-pointer h-28 w-28">
-                                            {speakerImg ? (
+                                            {speakerImg || user?.photoURL ? (
                                                 <div className="flex relative items-center justify-center h-24 w-24">
-                                                    <img src={speakerImg} className='rounded-full h-24 w-24' />
+                                                    <img src={user?.photoURL || speakerImg} className='rounded-full h-24 w-24' />
                                                     <div className="absolute p-1 rounded-full bg-[#eae1df] bottom-3 -right-1">
                                                         <Camera size={16} />
                                                     </div>
@@ -107,7 +109,7 @@ const ProfileScreen: React.FC<ProfilePropType> = ({ data, loading }) => {
                                                 </div>
                                             )}
                                         </label>
-                                        <div>
+                                        <div className="space-y-1">
                                             <h1 className="font-semibold">{data?.lastName} {data?.firstName}</h1>
                                             <div className="flex space-x-2 items-center cursor-pointer">
                                                 <h3 className="text-sm">{data?.email}</h3>
@@ -115,6 +117,7 @@ const ProfileScreen: React.FC<ProfilePropType> = ({ data, loading }) => {
                                                     <Copy variant="Outline" size={16} />
                                                 </CopyToClipboard>
                                             </div>
+                                            <h4>{data?.workplace}</h4>
                                         </div>
                                     </div>
                                 </div>
@@ -152,8 +155,8 @@ const ProfileScreen: React.FC<ProfilePropType> = ({ data, loading }) => {
                                                 <td className='text-sm'>{data?.phoneNumber}</td>
                                             </tr>
                                             <tr>
-                                                <td className='text-sm w-1/3 py-2'>Address:</td>
-                                                <td className='text-sm'>{data?.address}</td>
+                                                <td className='text-sm w-1/3 py-2'>Workplace:</td>
+                                                <td className='text-sm'>{data?.workplace}</td>
                                             </tr>
                                             <tr>
                                                 <td className='text-sm w-1/3 py-2'>Email:</td>

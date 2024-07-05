@@ -1,67 +1,62 @@
 'use client'
 
-import React, { useState } from 'react'
+import React, { useEffect, useState } from 'react'
 import TitleHeader from '../TitleHeader'
-import Link from 'next/link'
 import Image from 'next/image'
-import { Chip, Spinner, Table, TableBody, TableCell, TableColumn, TableHeader, TableRow } from '@nextui-org/react'
-import { Event } from '@/graphql/__generated__/graphql'
+import { Spinner, Table, TableBody, TableCell, TableColumn, TableHeader, TableRow } from '@nextui-org/react'
+import { Resource, useCreateResourcesMutation, useDeleteResourceMutationMutation, useGetResourcesLazyQuery } from '@/graphql/__generated__/graphql'
 import moment from 'moment'
+import { SearchNormal } from 'iconsax-react'
+import { formatFileSize, readFileAsDataURL } from '@/lib/helpers'
+import { CaretDown, Trash } from '@phosphor-icons/react'
+import { toast } from 'react-toastify'
 
 const ResourceList = () => {
   const [index, setIndex] = useState<number>(0)
-  const renderCell = React.useCallback((event: Event, columnKey: React.Key, index: number) => {
-    const cellValue = event[columnKey as keyof Event];
-    const state = event.address?.split(',')[event.address.split(',').length - 2]
-    const country = event.address?.split(',')[event.address.split(',').length - 1]
+  const [resources, setResources] = useState<any>([])
+  const [resourcesHolder, setResourcesHolder] = useState<any>([])
+  const [getResources, {loading}] = useGetResourcesLazyQuery({fetchPolicy: 'no-cache'})
+  const [createResource, {loading: createLoading}] = useCreateResourcesMutation()
+  const [deleteReource] = useDeleteResourceMutationMutation()
+
+  const loadingState = loading || resources === 0 ? "loading" : "idle";
+
+  useEffect(() => {
+    document.title = `Resources | NIA-Kd`;
+    (async () => {
+      const res = await getResources()
+      setResources(res.data?.getResources)
+      setResourcesHolder(res.data?.getResources)
+    })()
+  }, [getResources])
+
+  const renderCell = React.useCallback((resource: Resource, columnKey: React.Key, index: number) => {
+    const cellValue = resource[columnKey as keyof Resource];
     
     switch (columnKey) {
         case "id":
             setIndex(cur => cur + 1)
             return <span>{index}</span>;
-        case "starts_at":
+        case "name":
           return (
-            <div>
-              <h1 className='text-[#E08D14] font-medium'>{moment(event.starts_at).format("MMM")}</h1>
-              <h1>{moment(event.starts_at).format("D, Y")}</h1>
-            </div>
+            <div>{resource.name.split('.')[0]}</div>
           )
-        case "event":
+        case "size":
+          return (
+            <div>{formatFileSize(resource.fileSize as number)}</div>
+          )
+        case "type":
             return (
-                <div className='flex gap-3'>
-                  <img 
-                    src={event.coverPhoto || '/assets/events/event.svg'} 
-                    alt={event.name} 
-                    className='h-16 w-16'
-                  />
-                  <div className='flex flex-col items-start justify-center'>
-                    <h1 className='font-medium text-sm'>{event.name}</h1>
-                    <div className='flex space-x-3 text-sm text-[#52474B]'>
-                      <span>{"9:00 AM"}</span>
-                      {(event.link || event.address) && <span>|</span> }
-                      {event.type === 'Physical' ? (
-                        <span>{state}, {country}</span>
-                      ): (
-                        <span>{event.link}</span>
-                      )}
-                    </div>
-                  </div>
-                </div>
+              <div>{resource.fileType}</div>
             )
-        case "tickets":
-          return (
-            <span>{Number(event.eventRegistrations?.length) || 0}/{event.isInfinity || event.tickets === 0 ? '\u221E' : event.tickets}</span>
-          )
-        case "status":
+        case "uploaded":
             return (
-                <Chip className="capitalize" color={event.status === 'Published' ? 'success' : 'default'} size="sm" variant="flat">
-                    <span className={`${event.status === 'Published' ? 'text-[#0A7535]' : 'text-[#4D4B4C]'}`}>{cellValue}</span>
-                </Chip>
-            );
+                <div className='text-sm'>{moment(resource.createdAt).format('LL')}</div>
+            )
         case "actions":
             return (
-                <div className="relative flex justify-end items-center gap-2">
-                    
+                <div className="flex justify-end items-center gap-3">
+                    <Trash onClick={() => removeResource(resource?.id)} size={20} color='#C70F0F' className='cursor-pointer' />
                 </div>
             );
         default:
@@ -69,21 +64,119 @@ const ResourceList = () => {
     }
   }, []);
 
+  const searchResources = (query: string) => {
+    if(query.length === 0) {
+      setResources(resourcesHolder)
+    } else {
+      const filteredResources = resources?.filter((resource: Resource) => {
+        return resource.name.toLowerCase().includes(query)
+      })
+      setResources(filteredResources)
+    }
+  }
+  const removeResource = async(resourceId: string) => {
+    const res = await deleteReource({
+      variables: {
+        resourceId
+      }
+    })
+
+    if(res.data?.deleteResource){
+      const resoures = await getResources()
+      setResources(resoures.data?.getResources)
+      setResourcesHolder(resoures.data?.getResources)
+    }
+  }
+
   return (
     <div className='sm:px-12 xs:px-4 h-full overflow-y-auto'>
       <div className='flex justify-between items-center'>
-          <TitleHeader title='Resources' />
-          <div className='sm:pt-10 xs:pt-2'>
-            <Link 
-              aria-disabled={true}
-              href={'/blogs/create'}
-              className='flex px-4 py-2 justify-center items-center text-white text-sm bg-[#161314] rounded-lg'
+        <TitleHeader title='Resources' />
+        <div className='sm:pt-10 xs:pt-2'>
+          <input
+            type="file"
+            id="file-upload"
+            className="hidden"
+            multiple
+            accept=".pdf"
+            onChange={(event: React.ChangeEvent<HTMLInputElement>) => {
+              console.log(event.target.files)
+                if (event.target.files) {
+                  const newFiles = Array.from(event.target.files).filter((file) =>
+                    file.type === 'application/pdf'
+                  ).map((file) =>
+                      Object.assign(file)
+                  );
+
+                  let count: number = 0
+                  
+                  Array.from(event.target.files).forEach(async(resr: File, index: number) => {
+                    const contentURL = await readFileAsDataURL(resr)
+                    try {
+                      const upres = (await createResource({
+                        variables: {
+                          input: {
+                            name: resr.name,
+                            resourcePath: contentURL as string,
+                            fileSize: resr.size,
+                            fileType: resr.type.split('/')[1] as string
+                          }
+                        }
+                      })).data
+
+                      count++
+
+                      if(upres?.createResources?.success) {
+                        if(Number(newFiles.length) === count) {
+                          toast.success('Resource upload completed')
+                        } else {
+                          toast.success('Resource added')
+                        }
+                        const res = (await getResources()).data
+                        setResources(res?.getResources)
+                        setResourcesHolder(res?.getResources)
+                      }
+                    } catch (error: any) {
+                      console.log(error)
+                      toast.error(error)
+                    }
+                  })
+                }
+            }}
+          />
+           <label aria-label='file-upload' htmlFor="file-upload" className="flex flex-col items-center cursor-pointer">
+            <div
+                className='flex px-6 py-2.5 justify-center items-center text-white text-sm bg-[#161314] rounded-lg'
               >
-                Upload
-            </Link>
+                {createLoading ? 'Please wait...' : 'Upload'}
+              </div>
+          </label>
+        </div>
+      </div>
+      <div className='flex sm:flex-row xs:flex-col justify-between pt-6 w-full gap-4'>
+          <div className='relative rounded-md shadow-sm sm:w-2/5 xs:w-full'>
+            <div className="pointer-events-none absolute inset-y-0 left-0 flex items-center pl-2">
+                <SearchNormal variant='Outline' size={20} color='gray' />
+            </div>
+            <input 
+                name='query'
+                placeholder='Search resources'
+                type='search'
+                className={`pr-3 pl-10 block w-full rounded-md h-11 border-0 text-gray-900 ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-gray-200 sm:text-sm sm:leading-6`}
+                onChange={(e) => searchResources(e.target.value)}
+            />
+          </div>
+          <div>
+            <div className='flex space-x-2 items-center'>
+              <span className='text-[#787878] text-sm'>Sort by</span>
+              <div className='flex space-x-1 items-center'>
+                <span className='text-sm text-[#161314]'>Recently added</span>
+                <CaretDown size={16} />
+              </div>
+            </div>
           </div>
       </div>
-      <div className='pt-8'>
+      <div className='pt-4'>
         <Table aria-label="">
           <TableHeader>
             <TableColumn key="id">S/N</TableColumn>
@@ -94,9 +187,9 @@ const ResourceList = () => {
             <TableColumn key={'actions'}>.</TableColumn>
           </TableHeader>
           <TableBody
-          items={[] ?? []}
+          items={resources ?? []}
           loadingContent={<Spinner color='default' />}
-          loadingState={'idle'}
+          loadingState={loadingState}
           emptyContent={(
             <div className='flex flex-col items-center justify-center gap-3'>
               <Image 
@@ -114,9 +207,9 @@ const ResourceList = () => {
             </div>
           )}
           >
-            {(item: Event) => (
+            {(item: Resource) => (
                 <TableRow key={item?.id} className='border-b last:border-b-0'>
-                    {(columnKey) => <TableCell>{renderCell(item, columnKey, index)}</TableCell>}
+                    {(columnKey) => <TableCell className='py-3.5'>{renderCell(item, columnKey, index)}</TableCell>}
                 </TableRow>
             )}
           </TableBody>

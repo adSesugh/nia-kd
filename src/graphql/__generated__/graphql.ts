@@ -209,7 +209,6 @@ export type FormDesign = {
 
 export type Member = {
   __typename?: 'Member';
-  address: Scalars['String']['output'];
   cpdpPoints?: Maybe<CpdpPoint>;
   createdAt?: Maybe<Scalars['Time']['output']>;
   email: Scalars['String']['output'];
@@ -226,6 +225,7 @@ export type Member = {
   status?: Maybe<Scalars['String']['output']>;
   updatedAt?: Maybe<Scalars['Time']['output']>;
   userId: Scalars['UUID']['output'];
+  workplace: Scalars['String']['output'];
 };
 
 export type MemberDueResponse = {
@@ -269,6 +269,7 @@ export type Mutation = {
   createUser?: Maybe<CreateUserResponse>;
   deactivateMember?: Maybe<Member>;
   deleteEvent?: Maybe<Scalars['Boolean']['output']>;
+  deleteResource?: Maybe<Scalars['Boolean']['output']>;
   login?: Maybe<AuthPayload>;
   postEventRegistration?: Maybe<EventRegistration>;
   postMultiPayment?: Maybe<Scalars['Boolean']['output']>;
@@ -308,7 +309,7 @@ export type MutationCreateEventArgs = {
 
 
 export type MutationCreateResourcesArgs = {
-  input?: InputMaybe<Array<ResourcesInput>>;
+  input: ResourcesInput;
 };
 
 
@@ -325,6 +326,11 @@ export type MutationDeactivateMemberArgs = {
 
 export type MutationDeleteEventArgs = {
   eventId: Scalars['UUID']['input'];
+};
+
+
+export type MutationDeleteResourceArgs = {
+  resourceId: Scalars['UUID']['input'];
 };
 
 
@@ -531,6 +537,8 @@ export type ResetPasswordResponse = {
 export type Resource = {
   __typename?: 'Resource';
   createdAt?: Maybe<Scalars['Time']['output']>;
+  fileSize?: Maybe<Scalars['Int']['output']>;
+  fileType?: Maybe<Scalars['String']['output']>;
   id: Scalars['UUID']['output'];
   name: Scalars['String']['output'];
   resourcePath: Scalars['String']['output'];
@@ -547,11 +555,12 @@ export type ResourceResponse = {
   __typename?: 'ResourceResponse';
   code: Scalars['Int']['output'];
   message?: Maybe<Scalars['String']['output']>;
-  resources?: Maybe<Array<Resource>>;
   success: Scalars['Boolean']['output'];
 };
 
 export type ResourcesInput = {
+  fileSize?: InputMaybe<Scalars['Int']['input']>;
+  fileType: Scalars['String']['input'];
   name: Scalars['String']['input'];
   resourcePath: Scalars['String']['input'];
 };
@@ -696,7 +705,6 @@ export type MultiPaymentInput = {
 };
 
 export type NewMember = {
-  address: Scalars['String']['input'];
   email: Scalars['String']['input'];
   firstName: Scalars['String']['input'];
   lastName: Scalars['String']['input'];
@@ -704,6 +712,7 @@ export type NewMember = {
   membershipType: Scalars['UUID']['input'];
   password: Scalars['String']['input'];
   phoneNumber: Scalars['String']['input'];
+  workplace: Scalars['String']['input'];
 };
 
 export type PaymentInput = {
@@ -950,14 +959,14 @@ export type DeactivateMemberMutationVariables = Exact<{
 }>;
 
 
-export type DeactivateMemberMutation = { __typename?: 'Mutation', deactivateMember?: { __typename?: 'Member', id: any, regId: string, firstName: string, lastName: string, email: string, phoneNumber: string, photoURL?: string | null, address: string, userId: any, joined?: any | null, membershipId?: string | null, status?: string | null, createdAt?: any | null, updatedAt?: any | null, membershipType?: { __typename?: 'MembershipType', id: any, name: string } | null } | null };
+export type DeactivateMemberMutation = { __typename?: 'Mutation', deactivateMember?: { __typename?: 'Member', id: any, regId: string, firstName: string, lastName: string, email: string, phoneNumber: string, photoURL?: string | null, workplace: string, userId: any, joined?: any | null, membershipId?: string | null, status?: string | null, createdAt?: any | null, updatedAt?: any | null, membershipType?: { __typename?: 'MembershipType', id: any, name: string } | null } | null };
 
 export type GetMemberQueryVariables = Exact<{
   memberId: Scalars['UUID']['input'];
 }>;
 
 
-export type GetMemberQuery = { __typename?: 'Query', getMember?: { __typename?: 'Member', id: any, regId: string, firstName: string, lastName: string, email: string, phoneNumber: string, photoURL?: string | null, address: string, userId: any, joined?: any | null, membershipId?: string | null, status?: string | null, createdAt?: any | null, updatedAt?: any | null, membershipType?: { __typename?: 'MembershipType', id: any, name: string } | null, cpdpPoints?: { __typename?: 'CpdpPoint', id: any, points: number } | null } | null };
+export type GetMemberQuery = { __typename?: 'Query', getMember?: { __typename?: 'Member', id: any, regId: string, firstName: string, lastName: string, email: string, phoneNumber: string, photoURL?: string | null, workplace: string, userId: any, joined?: any | null, membershipId?: string | null, status?: string | null, createdAt?: any | null, updatedAt?: any | null, membershipType?: { __typename?: 'MembershipType', id: any, name: string } | null, cpdpPoints?: { __typename?: 'CpdpPoint', id: any, points: number } | null } | null };
 
 export type ProfilephotoUploadMutationVariables = Exact<{
   memberId: Scalars['UUID']['input'];
@@ -1007,12 +1016,38 @@ export type GetMemberPaymentsQueryVariables = Exact<{
 
 export type GetMemberPaymentsQuery = { __typename?: 'Query', getPayments?: Array<{ __typename?: 'Payment', id: any, amount: any, createdAt?: any | null, description: string, paymentRef?: string | null, paymentType: string, status: string }> | null };
 
+export type GetResourcesQueryVariables = Exact<{ [key: string]: never; }>;
+
+
+export type GetResourcesQuery = { __typename?: 'Query', getResources?: Array<{ __typename?: 'Resource', id: any, name: string, resourcePath: string, fileType?: string | null, fileSize?: number | null, createdAt?: any | null }> | null };
+
+export type GetResourceQueryVariables = Exact<{
+  resourceId: Scalars['UUID']['input'];
+}>;
+
+
+export type GetResourceQuery = { __typename?: 'Query', getResource?: { __typename?: 'Resource', id: any, name: string, resourcePath: string, fileType?: string | null, fileSize?: number | null, createdAt?: any | null } | null };
+
+export type CreateResourcesMutationVariables = Exact<{
+  input: ResourcesInput;
+}>;
+
+
+export type CreateResourcesMutation = { __typename?: 'Mutation', createResources?: { __typename?: 'ResourceResponse', code: number, success: boolean, message?: string | null } | null };
+
+export type DeleteResourceMutationMutationVariables = Exact<{
+  resourceId: Scalars['UUID']['input'];
+}>;
+
+
+export type DeleteResourceMutationMutation = { __typename?: 'Mutation', deleteResource?: boolean | null };
+
 export type GetUserQueryVariables = Exact<{
   userId: Scalars['UUID']['input'];
 }>;
 
 
-export type GetUserQuery = { __typename?: 'Query', getUser?: { __typename?: 'Member', id: any, regId: string, firstName: string, lastName: string, email: string, phoneNumber: string, photoURL?: string | null, address: string, userId: any, joined?: any | null, membershipId?: string | null, status?: string | null, createdAt?: any | null, updatedAt?: any | null, membershipType?: { __typename?: 'MembershipType', id: any, name: string } | null, cpdpPoints?: { __typename?: 'CpdpPoint', id: any, points: number } | null } | null };
+export type GetUserQuery = { __typename?: 'Query', getUser?: { __typename?: 'Member', id: any, regId: string, firstName: string, lastName: string, email: string, phoneNumber: string, photoURL?: string | null, workplace: string, userId: any, joined?: any | null, membershipId?: string | null, status?: string | null, createdAt?: any | null, updatedAt?: any | null, membershipType?: { __typename?: 'MembershipType', id: any, name: string } | null, cpdpPoints?: { __typename?: 'CpdpPoint', id: any, points: number } | null } | null };
 
 export type ResetPasswordMutationVariables = Exact<{
   userId: Scalars['UUID']['input'];
@@ -2587,7 +2622,7 @@ export const DeactivateMemberDocument = gql`
     email
     phoneNumber
     photoURL
-    address
+    workplace
     userId
     joined
     membershipType {
@@ -2638,7 +2673,7 @@ export const GetMemberDocument = gql`
     email
     phoneNumber
     photoURL
-    address
+    workplace
     userId
     joined
     membershipType {
@@ -3008,6 +3043,161 @@ export type GetMemberPaymentsQueryHookResult = ReturnType<typeof useGetMemberPay
 export type GetMemberPaymentsLazyQueryHookResult = ReturnType<typeof useGetMemberPaymentsLazyQuery>;
 export type GetMemberPaymentsSuspenseQueryHookResult = ReturnType<typeof useGetMemberPaymentsSuspenseQuery>;
 export type GetMemberPaymentsQueryResult = Apollo.QueryResult<GetMemberPaymentsQuery, GetMemberPaymentsQueryVariables>;
+export const GetResourcesDocument = gql`
+    query GetResources {
+  getResources {
+    id
+    name
+    resourcePath
+    fileType
+    fileSize
+    createdAt
+  }
+}
+    `;
+
+/**
+ * __useGetResourcesQuery__
+ *
+ * To run a query within a React component, call `useGetResourcesQuery` and pass it any options that fit your needs.
+ * When your component renders, `useGetResourcesQuery` returns an object from Apollo Client that contains loading, error, and data properties
+ * you can use to render your UI.
+ *
+ * @param baseOptions options that will be passed into the query, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options;
+ *
+ * @example
+ * const { data, loading, error } = useGetResourcesQuery({
+ *   variables: {
+ *   },
+ * });
+ */
+export function useGetResourcesQuery(baseOptions?: Apollo.QueryHookOptions<GetResourcesQuery, GetResourcesQueryVariables>) {
+        const options = {...defaultOptions, ...baseOptions}
+        return Apollo.useQuery<GetResourcesQuery, GetResourcesQueryVariables>(GetResourcesDocument, options);
+      }
+export function useGetResourcesLazyQuery(baseOptions?: Apollo.LazyQueryHookOptions<GetResourcesQuery, GetResourcesQueryVariables>) {
+          const options = {...defaultOptions, ...baseOptions}
+          return Apollo.useLazyQuery<GetResourcesQuery, GetResourcesQueryVariables>(GetResourcesDocument, options);
+        }
+export function useGetResourcesSuspenseQuery(baseOptions?: Apollo.SuspenseQueryHookOptions<GetResourcesQuery, GetResourcesQueryVariables>) {
+          const options = {...defaultOptions, ...baseOptions}
+          return Apollo.useSuspenseQuery<GetResourcesQuery, GetResourcesQueryVariables>(GetResourcesDocument, options);
+        }
+export type GetResourcesQueryHookResult = ReturnType<typeof useGetResourcesQuery>;
+export type GetResourcesLazyQueryHookResult = ReturnType<typeof useGetResourcesLazyQuery>;
+export type GetResourcesSuspenseQueryHookResult = ReturnType<typeof useGetResourcesSuspenseQuery>;
+export type GetResourcesQueryResult = Apollo.QueryResult<GetResourcesQuery, GetResourcesQueryVariables>;
+export const GetResourceDocument = gql`
+    query GetResource($resourceId: UUID!) {
+  getResource(resourceId: $resourceId) {
+    id
+    name
+    resourcePath
+    fileType
+    fileSize
+    createdAt
+  }
+}
+    `;
+
+/**
+ * __useGetResourceQuery__
+ *
+ * To run a query within a React component, call `useGetResourceQuery` and pass it any options that fit your needs.
+ * When your component renders, `useGetResourceQuery` returns an object from Apollo Client that contains loading, error, and data properties
+ * you can use to render your UI.
+ *
+ * @param baseOptions options that will be passed into the query, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options;
+ *
+ * @example
+ * const { data, loading, error } = useGetResourceQuery({
+ *   variables: {
+ *      resourceId: // value for 'resourceId'
+ *   },
+ * });
+ */
+export function useGetResourceQuery(baseOptions: Apollo.QueryHookOptions<GetResourceQuery, GetResourceQueryVariables> & ({ variables: GetResourceQueryVariables; skip?: boolean; } | { skip: boolean; }) ) {
+        const options = {...defaultOptions, ...baseOptions}
+        return Apollo.useQuery<GetResourceQuery, GetResourceQueryVariables>(GetResourceDocument, options);
+      }
+export function useGetResourceLazyQuery(baseOptions?: Apollo.LazyQueryHookOptions<GetResourceQuery, GetResourceQueryVariables>) {
+          const options = {...defaultOptions, ...baseOptions}
+          return Apollo.useLazyQuery<GetResourceQuery, GetResourceQueryVariables>(GetResourceDocument, options);
+        }
+export function useGetResourceSuspenseQuery(baseOptions?: Apollo.SuspenseQueryHookOptions<GetResourceQuery, GetResourceQueryVariables>) {
+          const options = {...defaultOptions, ...baseOptions}
+          return Apollo.useSuspenseQuery<GetResourceQuery, GetResourceQueryVariables>(GetResourceDocument, options);
+        }
+export type GetResourceQueryHookResult = ReturnType<typeof useGetResourceQuery>;
+export type GetResourceLazyQueryHookResult = ReturnType<typeof useGetResourceLazyQuery>;
+export type GetResourceSuspenseQueryHookResult = ReturnType<typeof useGetResourceSuspenseQuery>;
+export type GetResourceQueryResult = Apollo.QueryResult<GetResourceQuery, GetResourceQueryVariables>;
+export const CreateResourcesDocument = gql`
+    mutation CreateResources($input: ResourcesInput!) {
+  createResources(input: $input) {
+    code
+    success
+    message
+  }
+}
+    `;
+export type CreateResourcesMutationFn = Apollo.MutationFunction<CreateResourcesMutation, CreateResourcesMutationVariables>;
+
+/**
+ * __useCreateResourcesMutation__
+ *
+ * To run a mutation, you first call `useCreateResourcesMutation` within a React component and pass it any options that fit your needs.
+ * When your component renders, `useCreateResourcesMutation` returns a tuple that includes:
+ * - A mutate function that you can call at any time to execute the mutation
+ * - An object with fields that represent the current status of the mutation's execution
+ *
+ * @param baseOptions options that will be passed into the mutation, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options-2;
+ *
+ * @example
+ * const [createResourcesMutation, { data, loading, error }] = useCreateResourcesMutation({
+ *   variables: {
+ *      input: // value for 'input'
+ *   },
+ * });
+ */
+export function useCreateResourcesMutation(baseOptions?: Apollo.MutationHookOptions<CreateResourcesMutation, CreateResourcesMutationVariables>) {
+        const options = {...defaultOptions, ...baseOptions}
+        return Apollo.useMutation<CreateResourcesMutation, CreateResourcesMutationVariables>(CreateResourcesDocument, options);
+      }
+export type CreateResourcesMutationHookResult = ReturnType<typeof useCreateResourcesMutation>;
+export type CreateResourcesMutationResult = Apollo.MutationResult<CreateResourcesMutation>;
+export type CreateResourcesMutationOptions = Apollo.BaseMutationOptions<CreateResourcesMutation, CreateResourcesMutationVariables>;
+export const DeleteResourceMutationDocument = gql`
+    mutation DeleteResourceMutation($resourceId: UUID!) {
+  deleteResource(resourceId: $resourceId)
+}
+    `;
+export type DeleteResourceMutationMutationFn = Apollo.MutationFunction<DeleteResourceMutationMutation, DeleteResourceMutationMutationVariables>;
+
+/**
+ * __useDeleteResourceMutationMutation__
+ *
+ * To run a mutation, you first call `useDeleteResourceMutationMutation` within a React component and pass it any options that fit your needs.
+ * When your component renders, `useDeleteResourceMutationMutation` returns a tuple that includes:
+ * - A mutate function that you can call at any time to execute the mutation
+ * - An object with fields that represent the current status of the mutation's execution
+ *
+ * @param baseOptions options that will be passed into the mutation, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options-2;
+ *
+ * @example
+ * const [deleteResourceMutationMutation, { data, loading, error }] = useDeleteResourceMutationMutation({
+ *   variables: {
+ *      resourceId: // value for 'resourceId'
+ *   },
+ * });
+ */
+export function useDeleteResourceMutationMutation(baseOptions?: Apollo.MutationHookOptions<DeleteResourceMutationMutation, DeleteResourceMutationMutationVariables>) {
+        const options = {...defaultOptions, ...baseOptions}
+        return Apollo.useMutation<DeleteResourceMutationMutation, DeleteResourceMutationMutationVariables>(DeleteResourceMutationDocument, options);
+      }
+export type DeleteResourceMutationMutationHookResult = ReturnType<typeof useDeleteResourceMutationMutation>;
+export type DeleteResourceMutationMutationResult = Apollo.MutationResult<DeleteResourceMutationMutation>;
+export type DeleteResourceMutationMutationOptions = Apollo.BaseMutationOptions<DeleteResourceMutationMutation, DeleteResourceMutationMutationVariables>;
 export const GetUserDocument = gql`
     query GetUser($userId: UUID!) {
   getUser(userId: $userId) {
@@ -3018,7 +3208,7 @@ export const GetUserDocument = gql`
     email
     phoneNumber
     photoURL
-    address
+    workplace
     userId
     joined
     membershipType {
@@ -3206,7 +3396,7 @@ export type ResolversTypes = ResolversObject<{
   ResetPasswordResponse: ResolverTypeWrapper<ResetPasswordResponse>;
   Resource: ResolverTypeWrapper<Omit<Resource, 'user'> & { user?: Maybe<ResolversTypes['User']> }>;
   ResourceInput: ResourceInput;
-  ResourceResponse: ResolverTypeWrapper<Omit<ResourceResponse, 'resources'> & { resources?: Maybe<Array<ResolversTypes['Resource']>> }>;
+  ResourceResponse: ResolverTypeWrapper<ResourceResponse>;
   ResourcesInput: ResourcesInput;
   SidebarResponse: ResolverTypeWrapper<SidebarResponse>;
   Speaker: ResolverTypeWrapper<Speaker>;
@@ -3263,7 +3453,7 @@ export type ResolversParentTypes = ResolversObject<{
   ResetPasswordResponse: ResetPasswordResponse;
   Resource: Omit<Resource, 'user'> & { user?: Maybe<ResolversParentTypes['User']> };
   ResourceInput: ResourceInput;
-  ResourceResponse: Omit<ResourceResponse, 'resources'> & { resources?: Maybe<Array<ResolversParentTypes['Resource']>> };
+  ResourceResponse: ResourceResponse;
   ResourcesInput: ResourcesInput;
   SidebarResponse: SidebarResponse;
   Speaker: Speaker;
@@ -3478,7 +3668,6 @@ export interface JsonScalarConfig extends GraphQLScalarTypeConfig<ResolversTypes
 }
 
 export type MemberResolvers<ContextType = GraphQLContext, ParentType extends ResolversParentTypes['Member'] = ResolversParentTypes['Member']> = ResolversObject<{
-  address?: Resolver<ResolversTypes['String'], ParentType, ContextType>;
   cpdpPoints?: Resolver<Maybe<ResolversTypes['CpdpPoint']>, ParentType, ContextType>;
   createdAt?: Resolver<Maybe<ResolversTypes['Time']>, ParentType, ContextType>;
   email?: Resolver<ResolversTypes['String'], ParentType, ContextType>;
@@ -3495,6 +3684,7 @@ export type MemberResolvers<ContextType = GraphQLContext, ParentType extends Res
   status?: Resolver<Maybe<ResolversTypes['String']>, ParentType, ContextType>;
   updatedAt?: Resolver<Maybe<ResolversTypes['Time']>, ParentType, ContextType>;
   userId?: Resolver<ResolversTypes['UUID'], ParentType, ContextType>;
+  workplace?: Resolver<ResolversTypes['String'], ParentType, ContextType>;
   __isTypeOf?: IsTypeOfResolverFn<ParentType, ContextType>;
 }>;
 
@@ -3534,10 +3724,11 @@ export type MutationResolvers<ContextType = GraphQLContext, ParentType extends R
   createBlog?: Resolver<Maybe<ResolversTypes['BlogResponse']>, ParentType, ContextType, RequireFields<MutationCreateBlogArgs, 'input'>>;
   createDue?: Resolver<Maybe<ResolversTypes['DueResponse']>, ParentType, ContextType, RequireFields<MutationCreateDueArgs, 'input'>>;
   createEvent?: Resolver<Maybe<ResolversTypes['EventResponse']>, ParentType, ContextType, RequireFields<MutationCreateEventArgs, 'input'>>;
-  createResources?: Resolver<Maybe<ResolversTypes['ResourceResponse']>, ParentType, ContextType, Partial<MutationCreateResourcesArgs>>;
+  createResources?: Resolver<Maybe<ResolversTypes['ResourceResponse']>, ParentType, ContextType, RequireFields<MutationCreateResourcesArgs, 'input'>>;
   createUser?: Resolver<Maybe<ResolversTypes['CreateUserResponse']>, ParentType, ContextType, RequireFields<MutationCreateUserArgs, 'input'>>;
   deactivateMember?: Resolver<Maybe<ResolversTypes['Member']>, ParentType, ContextType, RequireFields<MutationDeactivateMemberArgs, 'memberId' | 'status'>>;
   deleteEvent?: Resolver<Maybe<ResolversTypes['Boolean']>, ParentType, ContextType, RequireFields<MutationDeleteEventArgs, 'eventId'>>;
+  deleteResource?: Resolver<Maybe<ResolversTypes['Boolean']>, ParentType, ContextType, RequireFields<MutationDeleteResourceArgs, 'resourceId'>>;
   login?: Resolver<Maybe<ResolversTypes['AuthPayload']>, ParentType, ContextType, RequireFields<MutationLoginArgs, 'input'>>;
   postEventRegistration?: Resolver<Maybe<ResolversTypes['EventRegistration']>, ParentType, ContextType, RequireFields<MutationPostEventRegistrationArgs, 'input'>>;
   postMultiPayment?: Resolver<Maybe<ResolversTypes['Boolean']>, ParentType, ContextType, RequireFields<MutationPostMultiPaymentArgs, 'input'>>;
@@ -3611,6 +3802,8 @@ export type ResetPasswordResponseResolvers<ContextType = GraphQLContext, ParentT
 
 export type ResourceResolvers<ContextType = GraphQLContext, ParentType extends ResolversParentTypes['Resource'] = ResolversParentTypes['Resource']> = ResolversObject<{
   createdAt?: Resolver<Maybe<ResolversTypes['Time']>, ParentType, ContextType>;
+  fileSize?: Resolver<Maybe<ResolversTypes['Int']>, ParentType, ContextType>;
+  fileType?: Resolver<Maybe<ResolversTypes['String']>, ParentType, ContextType>;
   id?: Resolver<ResolversTypes['UUID'], ParentType, ContextType>;
   name?: Resolver<ResolversTypes['String'], ParentType, ContextType>;
   resourcePath?: Resolver<ResolversTypes['String'], ParentType, ContextType>;
@@ -3622,7 +3815,6 @@ export type ResourceResolvers<ContextType = GraphQLContext, ParentType extends R
 export type ResourceResponseResolvers<ContextType = GraphQLContext, ParentType extends ResolversParentTypes['ResourceResponse'] = ResolversParentTypes['ResourceResponse']> = ResolversObject<{
   code?: Resolver<ResolversTypes['Int'], ParentType, ContextType>;
   message?: Resolver<Maybe<ResolversTypes['String']>, ParentType, ContextType>;
-  resources?: Resolver<Maybe<Array<ResolversTypes['Resource']>>, ParentType, ContextType>;
   success?: Resolver<ResolversTypes['Boolean'], ParentType, ContextType>;
   __isTypeOf?: IsTypeOfResolverFn<ParentType, ContextType>;
 }>;

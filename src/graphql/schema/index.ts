@@ -36,7 +36,7 @@ export const typeDefs = `#graphql
     email: String!
     phoneNumber: String!
     photoURL: String
-    address: String!
+    workplace: String!
     userId: UUID!
     joined: Time
     membershipTypeId: UUID!
@@ -202,12 +202,14 @@ export const typeDefs = `#graphql
   } 
   
   type Resource {
-    id:             UUID!
-    name:           String!
-    resourcePath:   String!
-    userId:         UUID
-    user:           User,
-    createdAt:      Time
+    id: UUID!
+    name: String!
+    resourcePath: String!
+    fileType: String
+    fileSize: Int
+    userId: UUID
+    user: User,
+    createdAt: Time
   }
 
   ## ------------------------------------- Type Input ---------------------------------------------------##
@@ -225,7 +227,7 @@ export const typeDefs = `#graphql
     lastName: String!
     email: String!
     phoneNumber: String!
-    address: String!
+    workplace: String!
     password: String!
   }
 
@@ -331,6 +333,8 @@ export const typeDefs = `#graphql
   input ResourcesInput {
     name: String!
     resourcePath: String!
+    fileType: String!
+    fileSize: Int
   }
 
   ## ------------------------------------- Type Response ---------------------------------------------------##
@@ -432,8 +436,7 @@ export const typeDefs = `#graphql
   type ResourceResponse {
     code: Int!
     success: Boolean!
-    message: String,
-    resources: [Resource!]
+    message: String
   }
 
   ## ------------------------------------- Mutation ---------------------------------------------------##
@@ -456,7 +459,8 @@ export const typeDefs = `#graphql
     postEventRegistration(input: eventRegistrationInput!): EventRegistration
     resetPassword(userId: UUID!, password: String!): ResetPasswordResponse
     profilephotoUpload(memberId: UUID!, photo: String!): UploadResponse
-    createResources(input: [ResourcesInput!]): ResourceResponse
+    createResources(input: ResourcesInput!): ResourceResponse
+    deleteResource(resourceId: UUID!): Boolean
   }
 
   ## ------------------------------------- Query ---------------------------------------------------##

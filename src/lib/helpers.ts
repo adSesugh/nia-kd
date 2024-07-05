@@ -36,3 +36,20 @@ function isLeapYear(year: number): boolean {
 function getNumberOfDaysInYear(year: number): number {
     return isLeapYear(year) ? 366 : 365;
 }
+
+export function formatFileSize(bytes: number): string {
+    const kilobytes = bytes / 1024;
+    const megabytes = kilobytes / 1024;
+    const gigabytes = megabytes / 1024;
+
+    return `${megabytes.toFixed(2)} MB`;
+}
+
+export const readFileAsDataURL = (file: Blob): Promise<string | ArrayBuffer | null> => {
+    return new Promise((resolve, reject) => {
+        const reader = new FileReader();
+        reader.onloadend = () => resolve(reader.result);
+        reader.onerror = () => reject(reader.error);
+        reader.readAsDataURL(file);
+    });
+}

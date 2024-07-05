@@ -5,7 +5,13 @@ import { ResourceResponse, ResourcesInput } from "@/graphql/__generated__/graphq
 
 class ResourceAPI extends RESTDataSource {
     async getResources(prisma: PrismaClient) {
-        const resources = await prisma.resource.findMany({})
+        const resources = await prisma.resource.findMany({
+            where: {
+                deletedAt: null
+            }
+        })
+
+        //console.log(resources)
 
         return resources
     }
@@ -13,44 +19,99 @@ class ResourceAPI extends RESTDataSource {
     async getResource(prisma: PrismaClient, resourceId: string) {
         const resource = await prisma.resource.findFirst({
             where: {
-                id: resourceId
+                id: resourceId,
+                deletedAt: null
             }
         })
 
         return resource
     }
 
-    async createResources(prisma: PrismaClient, input: any, userId: string) {
-        const fileUploads: Record<string, any>[] = []
-        if(input && input?.length > 0){
-            input.forEach(async (resource: { resourcePath: string; name: string; }) => {
-                const buffer = resource.resourcePath ? Buffer.from(resource.resourcePath.split(',')[1], 'base64') : '';
-                const url: string = buffer ? `https://${process.env.NEXT_PUBLIC_AWS_BUCKET_NAME}.s3.${process.env.NEXT_PUBLIC_AWS_REGION}.amazonaws.com/resources/${resource.name.replaceAll(' ', '-')}.pdf` : ''
-                const response =  await s3FileUploadPdf(`resources/${resource.name.replaceAll(' ', '-')}.pdf`, buffer)
-                if(response.httpStatusCode === 200){
-                    fileUploads.push({name: resource.name, resourcePath: url, userId: userId})
-                }
-            })
-        }
-
-        const resources = await prisma.resource.createMany({
-            data: [...fileUploads as any]
+    async deleteResource(prisma: PrismaClient, resourceId: string) {
+        const resource = await prisma.resource.update({
+            where: {
+                id: resourceId,
+                deletedAt: null
+            },
+            data: {
+                deletedAt: new Date()
+            }
         })
 
-        const response: ResourceResponse = {
-            code: 201,
-            success: true,
-            message: 'Resource created'
+        if (resource) return true
+
+        return false
+    }
+
+    async createResources(prisma: PrismaClient, input: ResourcesInput, userId: string) {
+       
+        const buffer = input.resourcePath ? Buffer.from(input.resourcePath.split(',')[1], 'base64') : '';
+
+        const url: string = buffer ? `https://${process.env.NEXT_PUBLIC_AWS_BUCKET_NAME}.s3.${process.env.NEXT_PUBLIC_AWS_REGION}.amazonaws.com/resources/${input.name.replaceAll(' ', '-')}` : ''
+        const response =  await s3FileUploadPdf(`resources/${input.name.replaceAll(' ', '-')}`, buffer)
+        
+        if(response.httpStatusCode === 200){
+            const res = await prisma.resource.create({
+                data: {
+                    name: input.name, 
+                    resourcePath: url, 
+                    fileType: input.fileType.toUpperCase(), 
+                    fileSize: Number(input.fileSize),
+                    userId: userId
+                }
+            })
+
+            const response: ResourceResponse = {
+                code: 201,
+                success: true,
+                message: 'Resource created',
+            }
+
+            return response
+        } else {
+            const response: ResourceResponse = {
+                code: 400,
+                success: false,
+                message: 'No effect occured',
+            }
+
+            return response
         }
+        // if(input && input?.length > 0){
+        //     input.forEach(async (resource: { resourcePath: string; name: string; fileType: string; fileSize: string; }) => {
+        //         const buffer = resource.resourcePath ? Buffer.from(resource.resourcePath.split(',')[1], 'base64') : '';
+        //         console.log(buffer)
+        //         const url: string = buffer ? `https://${process.env.NEXT_PUBLIC_AWS_BUCKET_NAME}.s3.${process.env.NEXT_PUBLIC_AWS_REGION}.amazonaws.com/resources/${resource.name.replaceAll(' ', '-')}.pdf` : ''
+        //         const response =  await s3FileUploadPdf(`resources/${resource.name.replaceAll(' ', '-')}.${resource.fileType}`, buffer)
+        //         console.log(response)
+        //         if(response.httpStatusCode === 200){
+        //             const res = await prisma.resource.create({
+        //                 data: {
+        //                     name: resource.name, 
+        //                     resourcePath: url, 
+        //                     fileType: resource.fileType, 
+        //                     fileSize: Number(resource.fileSize)
+        //                 }
+        //             })
 
-        if(resources.count > 0) {
-            const res = {...response, resources: resources as any}
-            return res
-        }
+        //             const response: ResourceResponse = {
+        //                 code: 201,
+        //                 success: true,
+        //                 message: 'Resource created',
+        //             }
 
-        const resnull = {...response, resources: null}
+        //             return response
+        //         }
+        //     })
+        // } else {
+        //     const response: ResourceResponse = {
+        //         code: 400,
+        //         success: false,
+        //         message: 'No effect occured',
+        //     }
 
-        return resnull
+        //     return response
+        // }
     }
 }
 

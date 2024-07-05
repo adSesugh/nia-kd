@@ -21,7 +21,7 @@ const EventRegistration = () => {
 		email: ''
 	})
 	const [amount, setAmount] = useState<number>(0)
-	const user = useSelector((state: RootState) => state.auth.userData.user)
+	const user = useSelector((state: RootState) => state?.auth.userData.user)
 	const {data } = useGetRegistrationFormQuery({
 		fetchPolicy: 'no-cache',
 		variables: {
