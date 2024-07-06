@@ -11,8 +11,6 @@ class ResourceAPI extends RESTDataSource {
             }
         })
 
-        //console.log(resources)
-
         return resources
     }
 
@@ -77,41 +75,6 @@ class ResourceAPI extends RESTDataSource {
 
             return response
         }
-        // if(input && input?.length > 0){
-        //     input.forEach(async (resource: { resourcePath: string; name: string; fileType: string; fileSize: string; }) => {
-        //         const buffer = resource.resourcePath ? Buffer.from(resource.resourcePath.split(',')[1], 'base64') : '';
-        //         console.log(buffer)
-        //         const url: string = buffer ? `https://${process.env.NEXT_PUBLIC_AWS_BUCKET_NAME}.s3.${process.env.NEXT_PUBLIC_AWS_REGION}.amazonaws.com/resources/${resource.name.replaceAll(' ', '-')}.pdf` : ''
-        //         const response =  await s3FileUploadPdf(`resources/${resource.name.replaceAll(' ', '-')}.${resource.fileType}`, buffer)
-        //         console.log(response)
-        //         if(response.httpStatusCode === 200){
-        //             const res = await prisma.resource.create({
-        //                 data: {
-        //                     name: resource.name, 
-        //                     resourcePath: url, 
-        //                     fileType: resource.fileType, 
-        //                     fileSize: Number(resource.fileSize)
-        //                 }
-        //             })
-
-        //             const response: ResourceResponse = {
-        //                 code: 201,
-        //                 success: true,
-        //                 message: 'Resource created',
-        //             }
-
-        //             return response
-        //         }
-        //     })
-        // } else {
-        //     const response: ResourceResponse = {
-        //         code: 400,
-        //         success: false,
-        //         message: 'No effect occured',
-        //     }
-
-        //     return response
-        // }
     }
 }
 

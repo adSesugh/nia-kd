@@ -137,7 +137,6 @@ const ResourceList = () => {
                         setResourcesHolder(res?.getResources)
                       }
                     } catch (error: any) {
-                      console.log(error)
                       toast.error(error)
                     }
                   })
@@ -187,7 +186,7 @@ const ResourceList = () => {
             <TableColumn key={'actions'}>.</TableColumn>
           </TableHeader>
           <TableBody
-          items={resources ?? []}
+          items={resources || []}
           loadingContent={<Spinner color='default' />}
           loadingState={loadingState}
           emptyContent={(
