@@ -5,9 +5,10 @@ import { Resource, useGetResourcesLazyQuery } from '@/graphql/__generated__/grap
 import { Spinner } from '@nextui-org/react';
 import { CaretDown } from '@phosphor-icons/react';
 import { SearchNormal } from 'iconsax-react';
-import Link from 'next/link';
+import dynamic from 'next/dynamic';
 import React, { useEffect, useState } from 'react'
-import { Document, Page } from 'react-pdf';
+const PdfViewer = dynamic(() => import('@/components/PdfViewer'), { ssr: false });
+
 
 const MemberResource = () => {
   const [resources, setResources] = useState<any>([])
@@ -34,6 +35,8 @@ const MemberResource = () => {
       setResources(filteredResources)
     }
   }
+
+  console.log()
 
   if(loading) {
     return (
@@ -76,16 +79,7 @@ const MemberResource = () => {
       <div className='w-full py-6'>
         <div className='grid sm:grid-cols-5 xs:grid-cols-1 gap-x-10 gap-y-5'>
           {resources?.map((resource: any) => (
-            <Link key={resource.id} href={resource.resourcePath} target="_blank" rel="noopener noreferrer">
-              <div style={{ width: '220px', height: '300px', overflow: 'hidden' }}>
-                {/* <Document
-                  file={resource.resourcePath}
-                  onLoadSuccess={(h) => console.log(h)}
-                >
-                  <Page pageNumber={1} width={200} />
-                </Document> */}
-              </div>
-            </Link>
+            <PdfViewer key={resource.id} fileUrl={resource.resourcePath} />
           ))}
         </div>
       </div>

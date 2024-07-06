@@ -143,7 +143,7 @@ const ResourceList = () => {
                 }
             }}
           />
-           <label aria-label='file-upload' htmlFor="file-upload" className="flex flex-col items-center cursor-pointer">
+           <label aria-disabled={loading} aria-label='file-upload' htmlFor="file-upload" className="flex flex-col items-center cursor-pointer">
             <div
                 className='flex px-6 py-2.5 justify-center items-center text-white text-sm bg-[#161314] rounded-lg'
               >

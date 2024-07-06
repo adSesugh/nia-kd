@@ -8,7 +8,14 @@ type ShowcaseCardProps = {
 }
 
 const ShowcaseCard: React.FC<ShowcaseCardProps> = ({ photoUrl, className }) => {
-  return <Image src={photoUrl} alt='member' width={422} height={438} className={className} />
+  return (
+    <Image 
+      src={photoUrl} alt='member' 
+      width={422} 
+      height={438} 
+      className={`${className} h-96 w-full rounded-xl`} 
+    />
+  )
 }
 
 export default ShowcaseCard

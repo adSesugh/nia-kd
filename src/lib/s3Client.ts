@@ -31,7 +31,8 @@ export const s3FileUploadPdf = async (key: string, buffer: any) => {
         Bucket: process.env.NEXT_PUBLIC_AWS_BUCKET_NAME as string,
         Key: key,
         Body: buffer,
-        ContentEncoding: 'base64'
+        ContentEncoding: 'base64',
+        ContentType: 'application/pdf'
     });
 
     const { $metadata: res } = await s3Client.send(command);

@@ -9,14 +9,16 @@ import NextProvider from "@/providers/NextProvider";
 import ReduxProvider from "@/providers/ReduxProvider";
 import { ToastContainer } from "react-toastify";
 import 'react-toastify/dist/ReactToastify.css';
-import 'swiper/css';
-// import { pdfjs } from 'react-pdf';
+import "swiper/swiper-bundle.css"; 
+// import function to register Swiper custom elements
+import { register } from 'swiper/element/bundle';
+// register Swiper custom elements
+register();
 
 // pdfjs.GlobalWorkerOptions.workerSrc = new URL(
 //   'pdfjs-dist/build/pdf.worker.min.mjs',
 //   import.meta.url,
 // ).toString();
-
 
 const inter = Inter({ subsets: ["latin"] });
 
@@ -44,6 +46,7 @@ export default function RootLayout({
             async
             defer
           ></script>
+          <script async defer src="https://cdn.jsdelivr.net/npm/swiper@11/swiper-element-bundle.min.js"></script>
       </head>
       <body className={`${inter.className} select-none`}>
         <ApolloWrapper>

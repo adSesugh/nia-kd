@@ -14,10 +14,7 @@ const TeamCard: React.FC<TeamCardProps> = ({imageUrl, name, designation, social_
                 width={281} 
                 height={330}
                 sizes='100vw'
-                style={{
-                    width: '100%',
-                    height: 'auto'
-                }} 
+                className='h-80'
             />
             <div className={styles.teamTitle}>
                 <h1>{name}</h1>

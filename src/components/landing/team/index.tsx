@@ -4,27 +4,27 @@ import TeamCard from './TeamCard'
 
 const members = [
     {
-        imageUrl: '',
-        name: 'Jimoh Abdulrazak',
-        designation: 'President',
+        imageUrl: '/assets/team/3.jpeg',
+        name: 'Arc. Olulaja M. Balogun',
+        designation: 'Ex Officio Member, ECNIAK',
         social_media: {
             twitter: '',
             linkedin: ''
         }
     },
     {
-        imageUrl: '',
-        name: 'Jimoh Abdulrazak',
-        designation: 'President',
+        imageUrl: '/assets/team/2.jpeg',
+        name: 'Danjuma Sokolayam Ageni',
+        designation: 'Chapter Secretary',
         social_media: {
             twitter: '',
             linkedin: ''
         }
     },
     {
-        imageUrl: '',
-        name: 'Jimoh Abdulrazak',
-        designation: 'President',
+        imageUrl: '/assets/team/1.jpeg',
+        name: 'Bawa Y. Chindo',
+        designation: 'Assistant Secretary',
         social_media: {
             twitter: '',
             linkedin: ''
