@@ -2,16 +2,13 @@
 import NIAFooter from '@/components/footer'
 import SubHeader from '@/components/sub-header'
 import React from 'react'
-import Showcase3 from '@/assets/showcase/showcase-3.svg'
-import Showcase1 from '@/assets/showcase/showcase-1.svg'
 import ShowcaseCard from '@/components/landing/showcase/ShowcaseCard'
 import { TeamCardProps } from '@/types/common'
-import TeamPicture from '@/assets/team.svg'
 import TeamCardBlack from '@/components/landing/team/TeamCardBlack'
 
 const teams: TeamCardProps[] = [
   {
-    imageUrl: TeamPicture,
+    imageUrl: '/assets/team/1.jpeg',
     name: 'Jimoh Abdulrazak',
     designation: 'President',
     social_media: {
@@ -20,7 +17,7 @@ const teams: TeamCardProps[] = [
     }
   },
   {
-    imageUrl: TeamPicture,
+    imageUrl: '/assets/team/2.jpeg',
     name: 'Jimoh Abdulrazak',
     designation: 'President',
     social_media: {
@@ -29,7 +26,7 @@ const teams: TeamCardProps[] = [
     }
   },
   {
-    imageUrl: TeamPicture,
+    imageUrl: '/assets/team/3.jpeg',
     name: 'Jimoh Abdulrazak',
     designation: 'President',
     social_media: {
@@ -38,7 +35,7 @@ const teams: TeamCardProps[] = [
     }
   },
   {
-    imageUrl: TeamPicture,
+    imageUrl: '/assets/team/2.jpeg',
     name: 'Jimoh Abdulrazak',
     designation: 'President',
     social_media: {
@@ -47,7 +44,7 @@ const teams: TeamCardProps[] = [
     }
   },
   {
-    imageUrl: TeamPicture,
+    imageUrl: '/assets/team/1.jpeg',
     name: 'Jimoh Abdulrazak',
     designation: 'President',
     social_media: {
@@ -56,7 +53,7 @@ const teams: TeamCardProps[] = [
     }
   },
   {
-    imageUrl: TeamPicture,
+    imageUrl: '/assets/team/3.jpeg',
     name: 'Jimoh Abdulrazak',
     designation: 'President',
     social_media: {
@@ -71,10 +68,10 @@ const About = () => {
     <div className=''>
       <SubHeader title='About Us' subtitle={''} />
       <div className='flex gap-8 overflow-hidden bg-[#1E1A1C] pb-28 xs:px-6 sm:px-0'>
-        <ShowcaseCard photoUrl={Showcase3} className='border-2 border-white rounded-2xl' />
-        <ShowcaseCard photoUrl={Showcase1} className='border-2 border-white rounded-2xl' />
-        <ShowcaseCard photoUrl={Showcase3} className='border-2 border-white rounded-2xl' />
-        <ShowcaseCard photoUrl={Showcase1} className='border-2 border-white rounded-2xl' />
+        <ShowcaseCard photoUrl={'/assets/showcase/1.jpeg'} className='border-2 border-white rounded-2xl' />
+        <ShowcaseCard photoUrl={'/assets/showcase/3.jpeg'} className='border-2 border-white rounded-2xl' />
+        <ShowcaseCard photoUrl={'/assets/showcase/2.jpeg'} className='border-2 border-white rounded-2xl' />
+        <ShowcaseCard photoUrl={'/assets/showcase/1.jpeg'} className='border-2 border-white rounded-2xl' />
       </div>
       <div className='flex justify-center py-12 xs:px-6 sm:px-0'>
         <div className='sm:w-6/12 xs:w-full'>
