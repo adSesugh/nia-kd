@@ -111,7 +111,7 @@ const ProfileScreen: React.FC<ProfilePropType> = ({ data, loading }) => {
                                         </label>
                                         <div className="space-y-1">
                                             <h1 className="font-semibold">{data?.lastName} {data?.firstName}</h1>
-                                            <div className="flex space-x-2 items-center cursor-pointer">
+                                            <div className="flex space-x-2 items-center justify-center cursor-pointer">
                                                 <h3 className="text-sm">{data?.email}</h3>
                                                 <CopyToClipboard text="abdulrazaq290.aj@gmail.com" onCopy={() => toast.success('Copy!')}>
                                                     <Copy variant="Outline" size={16} />

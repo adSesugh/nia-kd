@@ -5,6 +5,7 @@ import { ArrowLeft, ArrowRight } from 'iconsax-react'
 import Showcase3 from '@/assets/showcase/showcase-3.svg'
 import Showcase2 from '@/assets/showcase/showcase-2.svg'
 import Showcase1 from '@/assets/showcase/showcase-1.svg'
+import { Swiper, SwiperSlide } from 'swiper/react';
 
 const Showcase = () => {
   return (
@@ -14,10 +15,25 @@ const Showcase = () => {
             <h2>One platform to unite Us all.</h2>
         </div>
         <div className='gap-8 overflow-hidden mt-8'>
-          <ShowcaseCard photoUrl={Showcase3} />
-          <ShowcaseCard photoUrl={Showcase1} />
-          <ShowcaseCard photoUrl={Showcase3} />
-          <ShowcaseCard photoUrl={Showcase1} />
+          <Swiper
+            spaceBetween={50}
+            slidesPerView={3}
+            onSlideChange={() => console.log('slide change')}
+            onSwiper={(swiper) => console.log(swiper)}
+          >
+            <SwiperSlide>
+              <ShowcaseCard photoUrl={Showcase3} />
+            </SwiperSlide>
+            <SwiperSlide>
+              <ShowcaseCard photoUrl={Showcase1} />
+            </SwiperSlide>
+            <SwiperSlide>
+              <ShowcaseCard photoUrl={Showcase3} />
+            </SwiperSlide>
+            <SwiperSlide>
+              <ShowcaseCard photoUrl={Showcase1} />
+            </SwiperSlide>
+          </Swiper>
         </div>
         <div className='flex my-12 gap-3 justify-center items-center text-white'>
           <button className='flex justify-center items-center h-12 w-12 rounded-full border border-[#F3ECE2]'>
