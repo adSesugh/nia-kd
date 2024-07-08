@@ -405,6 +405,7 @@ export const typeDefs = `#graphql
     membership: [Int!]
     avgAttendance: Decimal
     revenue: Decimal
+    result: JSON
     revByCategory: JSON
   }
 

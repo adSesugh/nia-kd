@@ -59,8 +59,7 @@ class DashboardAPI extends RESTDataSource {
             }
         })
 
-        const revenueByMonth = await prisma.payment.groupBy({
-            by: ['createdAt'],
+        const paymentByMonths = await prisma.payment.findMany({
             where: {
                 createdAt: {
                     gte: this.startOfYear,
@@ -70,12 +69,12 @@ class DashboardAPI extends RESTDataSource {
                     equals: 'Successful'
                 }
             },
-            _sum: {
-                amount: true
-            }
-        })
-
-        console.log(revenueByMonth)
+            select: {
+              createdAt: true,
+              amount: true,
+              paymentType: true,
+            },
+        });
 
         const payments = await prisma.payment.aggregate({
             where: {
@@ -92,37 +91,37 @@ class DashboardAPI extends RESTDataSource {
             }
         })
 
-        const eventPayments = await prisma.payment.aggregate({
-            where: {
-                createdAt: {
-                    gte: this.startOfYear,
-                    lte: this.endOfYear
-                },
-                status: {
-                    equals: 'Successful'
-                },
-                paymentType: 'event'
-            },
-            _sum: {
-                amount: true
-            }
-        })
+        // const eventPayments = await prisma.payment.aggregate({
+        //     where: {
+        //         createdAt: {
+        //             gte: this.startOfYear,
+        //             lte: this.endOfYear
+        //         },
+        //         status: {
+        //             equals: 'Successful'
+        //         },
+        //         paymentType: 'event'
+        //     },
+        //     _sum: {
+        //         amount: true
+        //     }
+        // })
 
-        const duesPayments = await prisma.payment.aggregate({
-            where: {
-                createdAt: {
-                    gte: this.startOfYear,
-                    lte: this.endOfYear
-                },
-                status: {
-                    equals: 'Successful'
-                },
-                paymentType: 'dues'
-            },
-            _sum: {
-                amount: true
-            }
-        })
+        // const duesPayments = await prisma.payment.aggregate({
+        //     where: {
+        //         createdAt: {
+        //             gte: this.startOfYear,
+        //             lte: this.endOfYear
+        //         },
+        //         status: {
+        //             equals: 'Successful'
+        //         },
+        //         paymentType: 'dues'
+        //     },
+        //     _sum: {
+        //         amount: true
+        //     }
+        // })
 
         const attendances = await prisma.eventRegistration.count({
             where: {
@@ -141,8 +140,6 @@ class DashboardAPI extends RESTDataSource {
             })?._sum.amount || 0
         }
 
-        console.log(revData)
-
         const membership = [
             groupMembers.find((member) => member.memberType === 'Assoicate')?._count._all || 0,
             groupMembers.find((member) => member.memberType === 'Fellow')?._count._all || 0,
@@ -154,12 +151,34 @@ class DashboardAPI extends RESTDataSource {
 
         const avgAttendance = attendances / eventHeld || 0
 
+        // Initialize the result object
+        const result = {
+            months: ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun', 'Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec'],
+            dues: Array(12).fill(0),
+            event: Array(12).fill(0),
+            totalRevenue: Array(12).fill(0),
+        };
+
+        // Process each payment
+        paymentByMonths.forEach(payment => {
+            const month = new Date(payment.createdAt).getMonth();
+            if (payment.paymentType === 'dues') {
+            result.dues[month] += Number(payment.amount);
+            } else if (payment.paymentType === 'event') {
+            result.event[month] += Number(payment.amount);
+            }
+            result.totalRevenue[month] += Number(payment.amount);
+        });
+
+        console.log(result)
+
         const dashboardData = {
             totalMember: memberCount,
             eventHeld,
             membership,
             avgAttendance,
             revenue,
+            result,
             revByCategory: revData 
         }
     

@@ -22,27 +22,32 @@ ChartJS.register(
   Legend
 );
 
-const LineChart: React.FC = () => {
+type LinePropType = {
+    record: any
+}
+
+const LineChart: React.FC<LinePropType> = ({record}) => {
+    console.log(record)
     const data = {
-        labels: ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun', 'Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec'],
+        labels: record?.months || ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun', 'Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec'],
         datasets: [
             {
                 label: 'Dues',
-                data: [0, 15000, 20000, 17000, 18000, 19000, 20000, 21000, 15000, 14000, 13000, 120000],
+                data: record?.dues,
                 borderColor: '#4E2444',
                 backgroundColor: '#4E2444',
                 yAxisID: 'y',
             },
             {
                 label: 'Events',
-                data: [0, 150000, 2000000, 1700000, 1800000, 19000, 2000000, 21000, 150000, 14000, 13000, 1200000],
+                data: record?.event,
                 borderColor: '#F8C308',
                 backgroundColor: '#F8C308',
                 yAxisID: 'y',
             },
             {
                 label: 'Revenue',
-                data: [0, 150000, 200000, 170000, 180000, 190000, 200000, 210000, 150000, 140000, 130000, 120000],
+                data: record?.totalRevenue,
                 borderColor: '#25A248',
                 backgroundColor: '#25A248',
                 yAxisID: 'y',

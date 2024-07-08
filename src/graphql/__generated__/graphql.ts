@@ -32,6 +32,7 @@ export type AdminDashboardStatResponse = {
   avgAttendance?: Maybe<Scalars['Decimal']['output']>;
   eventHeld?: Maybe<Scalars['Int']['output']>;
   membership?: Maybe<Array<Scalars['Int']['output']>>;
+  result?: Maybe<Scalars['JSON']['output']>;
   revByCategory?: Maybe<Scalars['JSON']['output']>;
   revenue?: Maybe<Scalars['Decimal']['output']>;
   totalMember?: Maybe<Scalars['Decimal']['output']>;
@@ -787,7 +788,7 @@ export type GetRecentRegistrationQuery = { __typename?: 'Query', getRecentRegist
 export type GetAdminDashboardStatQueryVariables = Exact<{ [key: string]: never; }>;
 
 
-export type GetAdminDashboardStatQuery = { __typename?: 'Query', getAdminDashboardStat?: { __typename?: 'AdminDashboardStatResponse', totalMember?: any | null, eventHeld?: number | null, membership?: Array<number> | null, avgAttendance?: any | null, revenue?: any | null, revByCategory?: any | null } | null };
+export type GetAdminDashboardStatQuery = { __typename?: 'Query', getAdminDashboardStat?: { __typename?: 'AdminDashboardStatResponse', totalMember?: any | null, eventHeld?: number | null, membership?: Array<number> | null, avgAttendance?: any | null, revenue?: any | null, result?: any | null, revByCategory?: any | null } | null };
 
 export type GetSidebarStatQueryVariables = Exact<{ [key: string]: never; }>;
 
@@ -1422,6 +1423,7 @@ export const GetAdminDashboardStatDocument = gql`
     membership
     avgAttendance
     revenue
+    result
     revByCategory
   }
 }
@@ -3491,6 +3493,7 @@ export type AdminDashboardStatResponseResolvers<ContextType = GraphQLContext, Pa
   avgAttendance?: Resolver<Maybe<ResolversTypes['Decimal']>, ParentType, ContextType>;
   eventHeld?: Resolver<Maybe<ResolversTypes['Int']>, ParentType, ContextType>;
   membership?: Resolver<Maybe<Array<ResolversTypes['Int']>>, ParentType, ContextType>;
+  result?: Resolver<Maybe<ResolversTypes['JSON']>, ParentType, ContextType>;
   revByCategory?: Resolver<Maybe<ResolversTypes['JSON']>, ParentType, ContextType>;
   revenue?: Resolver<Maybe<ResolversTypes['Decimal']>, ParentType, ContextType>;
   totalMember?: Resolver<Maybe<ResolversTypes['Decimal']>, ParentType, ContextType>;

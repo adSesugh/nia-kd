@@ -18,6 +18,7 @@ query GetAdminDashboardStat {
     membership
     avgAttendance
     revenue
+    result
     revByCategory
   }
 }

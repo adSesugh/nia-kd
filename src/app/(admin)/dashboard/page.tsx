@@ -90,6 +90,8 @@ const AdminDashboard = () => {
   }
 
 
+  console.log(adminStats)
+
   return (
     <div className='sm:px-12 xs:px-4 sm:pt-14 xs:pt-2 pb-12 w-full h-full overflow-y-auto'>
       <h1 className={`text-[${PRIMARY_TWO}] sm:text-xl xs:text-lg  font-semibold`}>Good afternoon, {user?.role}</h1>
@@ -119,7 +121,7 @@ const AdminDashboard = () => {
               </div>
             </div>
             <div className='pt-3 h-full w-full'>
-              <LineChart />
+              <LineChart record={adminStats?.result} />
             </div>
           </div>
           <div className='sm:w-5/12 xs:w-full h-full rounded-2xl bg-white shadow-small p-4 pb-12'>

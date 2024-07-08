@@ -370,11 +370,6 @@ class EventAPI extends RESTDataSource {
             }
         })
 
-        // console.log('event', event)
-        // console.log('details', input.registrantDetail)
-        console.log('input', input)
-        // console.log('descr', {...input.registrantDetail})
-
         if(event !== null && totalRegistration < Number(event?.tickets)) {
             
             const registered = await prisma.eventRegistration.create({
@@ -385,10 +380,8 @@ class EventAPI extends RESTDataSource {
                 }
             })
 
-            console.log('registered', registered)
-
             if(input.payment) {
-                const payment = await prisma.payment.create({
+                await prisma.payment.create({
                     data: {
                         eventId: input.eventId ?? null,
                         paymentType: input.payment.paymentType,
@@ -401,8 +394,6 @@ class EventAPI extends RESTDataSource {
                         eventRegistrationId: registered.id
                     }
                 })
-
-                console.log('payment', payment)
 
                 try {
                     sendEmail(
@@ -424,7 +415,6 @@ class EventAPI extends RESTDataSource {
 
             return registered
         } else {
-            console.log('first')
             throw new GraphQLError('Event registration closed', {
                 extensions: {
                     code: 'NOTFOUND',

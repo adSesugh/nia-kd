@@ -38,7 +38,7 @@ const DueScreen = () => {
   const [cummDues, setCummDues] = useState<number>(0)
   const [pendingDues, setPendingDues] = useState<any>([])
   const [selectedPayments, setSelectedPayments] = useState<any>([])
-  const user = useAppSelector((state: RootState) => state.auth.userData.user)
+  const user = useAppSelector((state: RootState) => state?.auth.userData.user)
   const [config, setConfig] = useState<HookConfig>(
     {
       reference: (new Date()).getTime().toString(),
