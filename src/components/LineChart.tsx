@@ -1,6 +1,6 @@
 // LineChart.js
 import React from 'react';
-import { Line } from 'react-chartjs-2';
+import { Line, Bar } from 'react-chartjs-2';
 import {
   Chart as ChartJS,
   CategoryScale,
@@ -11,6 +11,7 @@ import {
   Tooltip,
   Legend,
 } from 'chart.js';
+import { getRandomColor } from '@/lib/common';
 
 ChartJS.register(
   CategoryScale,
@@ -23,11 +24,11 @@ ChartJS.register(
 );
 
 type LinePropType = {
-    record: any
+    record: any,
+    type?: string
 }
 
-const LineChart: React.FC<LinePropType> = ({record}) => {
-    console.log(record)
+const LineChart: React.FC<LinePropType> = ({record, type}) => {
     const data = {
         labels: record?.months || ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun', 'Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec'],
         datasets: [
@@ -54,6 +55,25 @@ const LineChart: React.FC<LinePropType> = ({record}) => {
             }
         ],
     };
+
+    if(type === 'yearly'){
+        const labels = type === 'yearly' && Object?.keys(record) || [];
+        const barData = {
+            labels: labels,
+            datasets: [{
+                label: `Annual Revenue for ${Object?.keys(record)[0]} - ${Object?.keys(record)[Object?.keys(record).length - 1]}`,
+                data: Object?.values(record),
+                backgroundColor: Array.from({ length:  Number(Object?.values(record).length)}, () => getRandomColor()),
+                borderWidth: 1
+            }]
+        }
+
+        return (
+            <div className='w-full h-56'>
+                <Bar data={barData} />
+            </div>
+        )
+    }
 
     const options = {
         responsive: true,

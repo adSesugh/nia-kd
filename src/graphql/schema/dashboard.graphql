@@ -41,3 +41,7 @@ query GetMemberStat($memberId: UUID!) {
     fin_status
   }
 }
+
+query revenueCategory($duration: String!) {
+  revenueByCategory(duration: $duration)
+}

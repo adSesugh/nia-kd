@@ -4,15 +4,13 @@ import React, { ChangeEvent, useEffect, useState } from 'react'
 import { PRIMARY_TWO } from '@/constant/Colors';
 import StatisticsCard from '@/components/stats/StatisticsCard';
 import { Chart as ChartJS, ArcElement, Tooltip, Legend, LineElement, LinearScale, CategoryScale, PointElement, Title, Filler } from 'chart.js';
-import { Line } from 'react-chartjs-2';
 import Link from 'next/link';
 import RecentRegisteredMembers from '@/components/dashboard/RecentRegisteredMembers';
 import DoughnutChart from '@/components/DoughnutChart';
 import LineChart from '@/components/LineChart';
-import { AdminDashboardStatResponse, useGetAdminDashboardStatLazyQuery } from '@/graphql/__generated__/graphql';
+import { AdminDashboardStatResponse, useGetAdminDashboardStatLazyQuery, useRevenueCategoryLazyQuery } from '@/graphql/__generated__/graphql';
 import { useSelector } from 'react-redux';
 import { RootState } from '@/features/store';
-import CustomSearch from '@/components/custom-select';
 import { Select, SelectItem } from '@nextui-org/react';
 
 ChartJS.register(ArcElement, Tooltip, Legend, LineElement, LinearScale, CategoryScale, PointElement, Title, Filler);
@@ -22,9 +20,11 @@ const AdminDashboard = () => {
   const [value, setValue] = React.useState(new Set([]));
   const [adminStats, setAdminStats] = useState<AdminDashboardStatResponse|any>()
   const user = useSelector((state: RootState) => state.auth.userData.user)
-  const [selectValue, setSelectValue] = useState<string>()
+  const [selectValue, setSelectValue] = useState<string>('monthly')
+  const [barchart, setBarchart] = useState<Record<string, any>>()
 
   const [getAdminStats, {loading}] = useGetAdminDashboardStatLazyQuery({fetchPolicy: 'no-cache'})
+  const [getRevenueByCategory, {loading: revenueByCategoryLoader}] = useRevenueCategoryLazyQuery({fetchPolicy: 'no-cache'})
 
   const revByCategory = {
     labels: ['Events', 'Dues', 'Others'],
@@ -83,14 +83,21 @@ const AdminDashboard = () => {
     })()
   }, [getAdminStats])
 
-  const handleDurationChange = (e: ChangeEvent<HTMLSelectElement>) => {
+  const handleDurationChange = async(e: ChangeEvent<HTMLSelectElement>) => {
     const value = e.target.value
     setSelectValue(value)
-    console.log(value)
+    console.log('selected', value)
+    if (value === 'yearly') {
+      console.log(value)
+      const res = (await getRevenueByCategory({
+        variables: {
+          duration: value
+        }
+      })).data
+      console.log(res?.revenueByCategory)
+      setBarchart(res?.revenueByCategory)
+    }
   }
-
-
-  console.log(adminStats)
 
   return (
     <div className='sm:px-12 xs:px-4 sm:pt-14 xs:pt-2 pb-12 w-full h-full overflow-y-auto'>
@@ -121,7 +128,7 @@ const AdminDashboard = () => {
               </div>
             </div>
             <div className='pt-3 h-full w-full'>
-              <LineChart record={adminStats?.result} />
+              <LineChart record={selectValue === 'monthly' ? adminStats?.result : barchart} />
             </div>
           </div>
           <div className='sm:w-5/12 xs:w-full h-full rounded-2xl bg-white shadow-small p-4 pb-12'>

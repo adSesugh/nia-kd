@@ -281,6 +281,7 @@ export const typeDefs = `#graphql
     label: String
     type: String!
     required: Boolean
+    priority: Int
   }
   
   input SpeakerFormInput {

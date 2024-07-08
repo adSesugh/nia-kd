@@ -162,6 +162,7 @@ export type EventFormInput = {
   id?: InputMaybe<Scalars['UUID']['input']>;
   label?: InputMaybe<Scalars['String']['input']>;
   name: Scalars['String']['input'];
+  priority?: InputMaybe<Scalars['Int']['input']>;
   required?: InputMaybe<Scalars['Boolean']['input']>;
   type: Scalars['String']['input'];
 };
@@ -807,6 +808,13 @@ export type GetMemberStatQueryVariables = Exact<{
 
 
 export type GetMemberStatQuery = { __typename?: 'Query', getMemberStat?: { __typename?: 'memberStat', eventAttended: number, totalEventPoints: number, pointsEarned: number, fin_status?: boolean | null } | null };
+
+export type RevenueCategoryQueryVariables = Exact<{
+  duration: Scalars['String']['input'];
+}>;
+
+
+export type RevenueCategoryQuery = { __typename?: 'Query', revenueByCategory?: any | null };
 
 export type GetDuesQueryVariables = Exact<{ [key: string]: never; }>;
 
@@ -1552,6 +1560,44 @@ export type GetMemberStatQueryHookResult = ReturnType<typeof useGetMemberStatQue
 export type GetMemberStatLazyQueryHookResult = ReturnType<typeof useGetMemberStatLazyQuery>;
 export type GetMemberStatSuspenseQueryHookResult = ReturnType<typeof useGetMemberStatSuspenseQuery>;
 export type GetMemberStatQueryResult = Apollo.QueryResult<GetMemberStatQuery, GetMemberStatQueryVariables>;
+export const RevenueCategoryDocument = gql`
+    query revenueCategory($duration: String!) {
+  revenueByCategory(duration: $duration)
+}
+    `;
+
+/**
+ * __useRevenueCategoryQuery__
+ *
+ * To run a query within a React component, call `useRevenueCategoryQuery` and pass it any options that fit your needs.
+ * When your component renders, `useRevenueCategoryQuery` returns an object from Apollo Client that contains loading, error, and data properties
+ * you can use to render your UI.
+ *
+ * @param baseOptions options that will be passed into the query, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options;
+ *
+ * @example
+ * const { data, loading, error } = useRevenueCategoryQuery({
+ *   variables: {
+ *      duration: // value for 'duration'
+ *   },
+ * });
+ */
+export function useRevenueCategoryQuery(baseOptions: Apollo.QueryHookOptions<RevenueCategoryQuery, RevenueCategoryQueryVariables> & ({ variables: RevenueCategoryQueryVariables; skip?: boolean; } | { skip: boolean; }) ) {
+        const options = {...defaultOptions, ...baseOptions}
+        return Apollo.useQuery<RevenueCategoryQuery, RevenueCategoryQueryVariables>(RevenueCategoryDocument, options);
+      }
+export function useRevenueCategoryLazyQuery(baseOptions?: Apollo.LazyQueryHookOptions<RevenueCategoryQuery, RevenueCategoryQueryVariables>) {
+          const options = {...defaultOptions, ...baseOptions}
+          return Apollo.useLazyQuery<RevenueCategoryQuery, RevenueCategoryQueryVariables>(RevenueCategoryDocument, options);
+        }
+export function useRevenueCategorySuspenseQuery(baseOptions?: Apollo.SuspenseQueryHookOptions<RevenueCategoryQuery, RevenueCategoryQueryVariables>) {
+          const options = {...defaultOptions, ...baseOptions}
+          return Apollo.useSuspenseQuery<RevenueCategoryQuery, RevenueCategoryQueryVariables>(RevenueCategoryDocument, options);
+        }
+export type RevenueCategoryQueryHookResult = ReturnType<typeof useRevenueCategoryQuery>;
+export type RevenueCategoryLazyQueryHookResult = ReturnType<typeof useRevenueCategoryLazyQuery>;
+export type RevenueCategorySuspenseQueryHookResult = ReturnType<typeof useRevenueCategorySuspenseQuery>;
+export type RevenueCategoryQueryResult = Apollo.QueryResult<RevenueCategoryQuery, RevenueCategoryQueryVariables>;
 export const GetDuesDocument = gql`
     query GetDues {
   dues {

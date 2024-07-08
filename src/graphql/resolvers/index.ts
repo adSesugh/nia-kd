@@ -55,5 +55,6 @@ export const resolvers: Resolvers = {
         getUser: (_, {userId}, {prisma, dataSources}) => dataSources.userAPI.getUser(prisma, userId),
         getResources: (_, __, {prisma, dataSources}) => dataSources.resourceAPI.getResources(prisma),
         getResource: (_, {resourceId}, {prisma, dataSources}) => dataSources.resourceAPI.getResource(prisma, resourceId),
+        revenueByCategory: (_, {duration}, {prisma, dataSources}) => dataSources.dashboardAPI.revenueByCategory(prisma, duration)
     },
 };

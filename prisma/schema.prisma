@@ -180,6 +180,7 @@ model EventForm {
   label     String
   type      String
   required  Boolean
+  priority  Int     @default(1)
   event     Event   @relation(fields: [eventId], references: [id])
   eventId   String
   createdAt DateTime @default(now()) @map(name: "created_at")
