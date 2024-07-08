@@ -54,6 +54,6 @@ export const resolvers: Resolvers = {
         getMember: (_, {memberId}, {prisma, dataSources}) => dataSources.memberAPI.getMember(prisma, memberId),
         getUser: (_, {userId}, {prisma, dataSources}) => dataSources.userAPI.getUser(prisma, userId),
         getResources: (_, __, {prisma, dataSources}) => dataSources.resourceAPI.getResources(prisma),
-        getResource: (_, {resourceId}, {prisma, dataSources}) => dataSources.resourceAPI.getResource(prisma, resourceId)
+        getResource: (_, {resourceId}, {prisma, dataSources}) => dataSources.resourceAPI.getResource(prisma, resourceId),
     },
 };

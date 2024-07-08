@@ -170,8 +170,6 @@ class DashboardAPI extends RESTDataSource {
             result.totalRevenue[month] += Number(payment.amount);
         });
 
-        console.log(result)
-
         const dashboardData = {
             totalMember: memberCount,
             eventHeld,
@@ -270,6 +268,77 @@ class DashboardAPI extends RESTDataSource {
         return response
     }
       
+    async revenueByCategory(prisma: PrismaClient, duration: string) {
+        if(duration === 'monthly') {
+            const paymentByMonths = await prisma.payment.findMany({
+                where: {
+                    createdAt: {
+                        gte: this.startOfYear,
+                        lte: this.endOfYear
+                    },
+                    status: {
+                        equals: 'Successful'
+                    }
+                },
+                select: {
+                  createdAt: true,
+                  amount: true,
+                  paymentType: true,
+                },
+            });
+
+            // Initialize the result object
+            const result = {
+                months: ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun', 'Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec'],
+                dues: Array(12).fill(0),
+                event: Array(12).fill(0),
+                totalRevenue: Array(12).fill(0),
+            };
+
+            // Process each payment
+            paymentByMonths.forEach(payment => {
+                const month = new Date(payment.createdAt).getMonth();
+                if (payment.paymentType === 'dues') {
+                result.dues[month] += Number(payment.amount);
+                } else if (payment.paymentType === 'event') {
+                result.event[month] += Number(payment.amount);
+                }
+                result.totalRevenue[month] += Number(payment.amount);
+            });
+
+            return result
+        }
+        else {
+            const paymentByYears = await prisma.payment.findMany({
+                where: {
+                    status: {
+                        equals: 'Successful'
+                    }
+                },
+                select: {
+                  createdAt: true,
+                  amount: true,
+                  paymentType: true,
+                },
+            });
+
+            // Initialize the result object
+            const result: { [year: string]: number } = {};
+
+            // Process each payment
+            paymentByYears.forEach(payment => {
+                const year = new Date(payment.createdAt).getFullYear();
+
+                if (!result[year]) {
+                result[year] = 0;
+                }
+
+                result[year] += Number(payment.amount);
+            });
+
+            return result;
+        }
+    }   
 }
 
 export default DashboardAPI

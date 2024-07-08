@@ -499,5 +499,6 @@ export const typeDefs = `#graphql
     getUser(userId: UUID!): Member
     getResources: [Resource!]
     getResource(resourceId: UUID!): Resource
+    revenueByCategory(duration: String!): JSON
   }
 `;

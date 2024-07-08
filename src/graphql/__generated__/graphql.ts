@@ -432,6 +432,7 @@ export type Query = {
   member?: Maybe<Member>;
   memberPayments?: Maybe<Array<Payment>>;
   members?: Maybe<Array<Maybe<Member>>>;
+  revenueByCategory?: Maybe<Scalars['JSON']['output']>;
   singeDue?: Maybe<Due>;
   tags?: Maybe<Array<Tag>>;
   users?: Maybe<Array<Maybe<User>>>;
@@ -521,6 +522,11 @@ export type QueryMemberArgs = {
 
 export type QueryMemberPaymentsArgs = {
   memberId: Scalars['UUID']['input'];
+};
+
+
+export type QueryRevenueByCategoryArgs = {
+  duration: Scalars['String']['input'];
 };
 
 
@@ -3791,6 +3797,7 @@ export type QueryResolvers<ContextType = GraphQLContext, ParentType extends Reso
   member?: Resolver<Maybe<ResolversTypes['Member']>, ParentType, ContextType, RequireFields<QueryMemberArgs, 'id'>>;
   memberPayments?: Resolver<Maybe<Array<ResolversTypes['Payment']>>, ParentType, ContextType, RequireFields<QueryMemberPaymentsArgs, 'memberId'>>;
   members?: Resolver<Maybe<Array<Maybe<ResolversTypes['Member']>>>, ParentType, ContextType>;
+  revenueByCategory?: Resolver<Maybe<ResolversTypes['JSON']>, ParentType, ContextType, RequireFields<QueryRevenueByCategoryArgs, 'duration'>>;
   singeDue?: Resolver<Maybe<ResolversTypes['Due']>, ParentType, ContextType, RequireFields<QuerySingeDueArgs, 'dueId'>>;
   tags?: Resolver<Maybe<Array<ResolversTypes['Tag']>>, ParentType, ContextType>;
   users?: Resolver<Maybe<Array<Maybe<ResolversTypes['User']>>>, ParentType, ContextType>;
