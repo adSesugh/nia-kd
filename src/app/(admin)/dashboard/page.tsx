@@ -31,7 +31,7 @@ const AdminDashboard = () => {
     datasets: [
         {
             data: [
-              adminStats?.revByCategory?.event,
+              adminStats?.revByCategory?.events,
               adminStats?.revByCategory?.dues,
               adminStats?.revByCategory?.others
             ],

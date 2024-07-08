@@ -173,7 +173,7 @@ const DueScreen = () => {
           input: {
             memberId: user?.member?.id,
             duesId: dues.id as string,
-            paymentType: 'Dues',
+            paymentType: 'dues',
             description: dues.name,
             status: reference.status === 'success' ? 'Successful' : 'Unsuccessful',
             phoneNumber: user?.member?.phoneNumber as string,

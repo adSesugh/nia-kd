@@ -43,6 +43,40 @@ class DashboardAPI extends RESTDataSource {
             },
         })
 
+        const revenueAcc = await prisma.payment.groupBy({
+            by: ['paymentType'],
+            where: {
+                createdAt: {
+                    gte: this.startOfYear,
+                    lte: this.endOfYear
+                },
+                status: {
+                    equals: 'Successful'
+                }
+            },
+            _sum: {
+                amount: true
+            }
+        })
+
+        const revenueByMonth = await prisma.payment.groupBy({
+            by: ['createdAt'],
+            where: {
+                createdAt: {
+                    gte: this.startOfYear,
+                    lte: this.endOfYear
+                },
+                status: {
+                    equals: 'Successful'
+                }
+            },
+            _sum: {
+                amount: true
+            }
+        })
+
+        console.log(revenueByMonth)
+
         const payments = await prisma.payment.aggregate({
             where: {
                 createdAt: {
@@ -100,10 +134,14 @@ class DashboardAPI extends RESTDataSource {
 
         const revenue = Number(payments._sum.amount)
         const revData = {
-            events: eventPayments._sum.amount || 0,
-            dues: duesPayments._sum.amount || 0,
-            others: 0
+            events: revenueAcc.find(type => type.paymentType === 'event')?._sum.amount || 0,  //eventPayments._sum.amount || 0,
+            dues: revenueAcc.find(type => type.paymentType === 'dues')?._sum.amount || 0, //duesPayments._sum.amount || 0,
+            others: revenueAcc.find(type => {
+                return type.paymentType !== 'event' && type.paymentType !== 'dues'
+            })?._sum.amount || 0
         }
+
+        console.log(revData)
 
         const membership = [
             groupMembers.find((member) => member.memberType === 'Assoicate')?._count._all || 0,

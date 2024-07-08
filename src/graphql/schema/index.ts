@@ -326,7 +326,7 @@ export const typeDefs = `#graphql
   input eventRegistrationInput {
     memberId: String
     eventId: String!
-    registrantDetail: JSON!
+    registrantDetail: JSON
     payment: JSON
   }
   

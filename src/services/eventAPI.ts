@@ -1,4 +1,5 @@
 import { EventForm, EventInput, EventRegistrationInput } from "@/graphql/__generated__/graphql";
+import { sendEmail } from "@/lib/mailer";
 import { s3FileUpload, s3FileUploadPdf } from "@/lib/s3Client";
 import { RESTDataSource } from "@apollo/datasource-rest";
 import { PrismaClient } from "@prisma/client";
@@ -363,26 +364,35 @@ class EventAPI extends RESTDataSource {
             select: {
                 tickets: true,
                 starts_at: true,
-                ends_at: true
+                ends_at: true,
+                message: true,
+                name: true
             }
         })
 
+        // console.log('event', event)
+        // console.log('details', input.registrantDetail)
+        console.log('input', input)
+        // console.log('descr', {...input.registrantDetail})
+
         if(event !== null && totalRegistration < Number(event?.tickets)) {
+            
             const registered = await prisma.eventRegistration.create({
                 data: {
-                    eventId: input.eventId,
-                    memberId: input.memberId,
-                    registrantDetail: input.registrantDetail,
-                    checkin: false
+                    eventId: input.eventId ?? null,
+                    memberId: input.memberId ?? null,
+                    registrantDetail: {...input.registrantDetail}
                 }
             })
 
+            console.log('registered', registered)
+
             if(input.payment) {
-                await prisma.payment.create({
+                const payment = await prisma.payment.create({
                     data: {
-                        eventId: input.eventId,
+                        eventId: input.eventId ?? null,
                         paymentType: input.payment.paymentType,
-                        memberId: input.memberId,
+                        memberId: input.memberId ?? null,
                         description: input.payment.description,
                         phoneNumber: input.payment.phoneNumber,
                         paymentRef: input.payment.paymentRef,
@@ -391,6 +401,25 @@ class EventAPI extends RESTDataSource {
                         eventRegistrationId: registered.id
                     }
                 })
+
+                console.log('payment', payment)
+
+                try {
+                    sendEmail(
+                        input.registrantDetail.email, 
+                        'Event Registration', 
+                        event.message as string, {
+                            fullname: `${input.registrantDetail.first_name} ${input.registrantDetail.last_name}`,
+                            eventName: event.name,
+                            startDate: event.starts_at,
+                            endDate: event.ends_at,
+                            startTime: moment(event.starts_at).format('h:mm A'),
+                            endTime: moment(event.ends_at).format('h:mm A')
+                        }
+                    )
+                } catch (error: any) {
+                    console.log(error)
+                }
             }
 
             return registered

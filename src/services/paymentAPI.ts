@@ -75,7 +75,7 @@ class PaymentAPI extends RESTDataSource {
 
         const formattedData = dues.map((due: Due) => {
             return {
-                paymentType: "Dues",
+                paymentType: "dues",
                 description: due.name,
                 eventId: input.eventId,
                 phoneNumber: input.phoneNumber,

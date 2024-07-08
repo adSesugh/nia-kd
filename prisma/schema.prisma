@@ -176,7 +176,7 @@ model Event {
 
 model EventForm {
   id        String   @id @default(uuid())
-  name      String   @unique
+  name      String   
   label     String
   type      String
   required  Boolean
@@ -217,7 +217,7 @@ model EventRegistration {
   member           Member?  @relation(fields: [memberId], references: [id])
   eventId          String?
   event            Event?   @relation(fields: [eventId], references: [id])
-  registrantDetail Json
+  registrantDetail Json?
   checkin          Boolean  @default(false)
   checkinDate      DateTime? @map(name: "checkin_date")
   payment          Payment?

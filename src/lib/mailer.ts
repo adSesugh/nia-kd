@@ -15,7 +15,7 @@ function replacePlaceholders(template: string, replacements: { [key: string]: st
 //     return result;
 // }
 
-export async function sendEmail(to: string, subject: string, content: string, member: any) {
+export async function sendEmail(to: string, subject: string, content: string, data: any) {
     let transporter = nodemailer.createTransport({
         host: process.env.MAIL_HOST!,
         port: parseInt(process.env.MAIL_PORT!),
@@ -25,7 +25,7 @@ export async function sendEmail(to: string, subject: string, content: string, me
         },
     });
 
-    const emailContent = replacePlaceholders(content, member);
+    const emailContent = replacePlaceholders(content, data);
 
     let mailOptions = {
         from: process.env.MAILER_EMAIL!,

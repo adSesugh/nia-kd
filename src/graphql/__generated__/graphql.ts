@@ -684,7 +684,7 @@ export type EventRegistrationInput = {
   eventId: Scalars['String']['input'];
   memberId?: InputMaybe<Scalars['String']['input']>;
   payment?: InputMaybe<Scalars['JSON']['input']>;
-  registrantDetail: Scalars['JSON']['input'];
+  registrantDetail?: InputMaybe<Scalars['JSON']['input']>;
 };
 
 export type MemberStat = {

@@ -64,8 +64,8 @@ const EventDetail = () => {
                     <div className='flex h-[20%] w-full overflow-hidden'>
                         <Image 
                             src={data?.getEvent?.coverPhoto || '/assets/events/event-detail.svg'} 
-                            alt={data?.getEvent?.name as string}
-                            className='flex w-full rounded-[25px]'
+                            alt={data?.getEvent?.name as string || 'event cover'}
+                            className='flex w-full rounded-[25px] object-contain'
                             height={250}
                             width={250}
                             sizes='100vw'
@@ -84,7 +84,7 @@ const EventDetail = () => {
                                 <div className='grid sm:grid-cols-3 gap-x-12 gap-y-6 space-y-3 mt-3'>
                                     {data?.getEvent?.speakers?.map((speaker) => (
                                         <div key={speaker?.id} className='space-y-3 items-center'>
-                                            <div><img src={speaker?.avatar || '/assets/profile.png'} className='h-48 rounded-[25px] w-48' /></div>
+                                            <div><img src={speaker?.avatar || '/assets/profile.png'} className='h-48 rounded-[25px] w-48' alt={speaker?.name} /></div>
                                             <div className='flex flex-col items-center justify-center'>
                                                 <h2 className='font-semibold'>{speaker?.name}</h2>
                                                 <span className='text-[12px] text-[#6F6F6F]'>{speaker?.title}</span>
@@ -107,7 +107,7 @@ const EventDetail = () => {
                                 <h1 className='font-semibold text-[18px]'>Event Partners</h1>
                                 <div className='flex flex-wrap space-y-3 gap-4 mt-3'>
                                     {data?.getEvent?.sponsors?.map(sponsor => (
-                                        <img key={sponsor?.id} src={sponsor?.logo} className='h-7 w-7 rounded-md' />
+                                        <img key={sponsor?.id} src={sponsor?.logo} alt={`sponsor-${sponsor?.id}`} className='h-7 w-7 rounded-md' />
                                     ))}
                                 </div>
                             </div>

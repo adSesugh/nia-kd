@@ -46,9 +46,10 @@ CREATE TABLE `members` (
     `email` VARCHAR(191) NOT NULL,
     `phoneNumber` VARCHAR(191) NOT NULL,
     `photoURL` VARCHAR(191) NULL,
-    `address` VARCHAR(191) NULL,
+    `workplace` VARCHAR(191) NULL,
     `joined` DATETIME(3) NULL,
     `membershipId` VARCHAR(191) NULL,
+    `memberType` VARCHAR(191) NOT NULL DEFAULT 'Member',
     `membershipTypeId` VARCHAR(191) NOT NULL,
     `status` VARCHAR(191) NOT NULL DEFAULT 'Active',
     `created_at` DATETIME(3) NOT NULL DEFAULT CURRENT_TIMESTAMP(3),
@@ -151,9 +152,10 @@ CREATE TABLE `events` (
 CREATE TABLE `event_forms` (
     `id` VARCHAR(191) NOT NULL,
     `name` VARCHAR(191) NOT NULL,
+    `label` VARCHAR(191) NOT NULL,
     `type` VARCHAR(191) NOT NULL,
     `required` BOOLEAN NOT NULL,
-    `eventId` VARCHAR(191) NULL,
+    `eventId` VARCHAR(191) NOT NULL,
     `created_at` DATETIME(3) NOT NULL DEFAULT CURRENT_TIMESTAMP(3),
     `updated_at` DATETIME(3) NOT NULL,
 
@@ -191,15 +193,11 @@ CREATE TABLE `event_registrations` (
     `memberId` VARCHAR(191) NULL,
     `eventId` VARCHAR(191) NULL,
     `registrantDetail` JSON NOT NULL,
-    `amount` DECIMAL(65, 30) NOT NULL DEFAULT 0.00,
-    `paymentRef` VARCHAR(191) NOT NULL,
-    `status` VARCHAR(15) NOT NULL DEFAULT 'Successful',
     `checkin` BOOLEAN NOT NULL DEFAULT false,
-    `checkin_date` DATETIME(3) NOT NULL,
+    `checkin_date` DATETIME(3) NULL,
     `created_at` DATETIME(3) NOT NULL DEFAULT CURRENT_TIMESTAMP(3),
     `updated_at` DATETIME(3) NOT NULL,
 
-    UNIQUE INDEX `event_registrations_paymentRef_key`(`paymentRef`),
     PRIMARY KEY (`id`)
 ) DEFAULT CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci;
 
@@ -239,8 +237,9 @@ CREATE TABLE `payments` (
     `id` VARCHAR(191) NOT NULL,
     `paymentType` VARCHAR(191) NOT NULL,
     `memberId` VARCHAR(191) NULL,
-    `duesId` VARCHAR(191) NOT NULL,
+    `duesId` VARCHAR(191) NULL,
     `eventId` VARCHAR(191) NULL,
+    `eventRegistrationId` VARCHAR(191) NULL,
     `phoneNumber` VARCHAR(191) NOT NULL,
     `description` TEXT NOT NULL,
     `paymentRef` VARCHAR(191) NOT NULL,
@@ -249,7 +248,22 @@ CREATE TABLE `payments` (
     `created_at` DATETIME(3) NOT NULL DEFAULT CURRENT_TIMESTAMP(3),
     `updated_at` DATETIME(3) NOT NULL,
 
-    UNIQUE INDEX `payments_paymentRef_key`(`paymentRef`),
+    UNIQUE INDEX `payments_eventRegistrationId_key`(`eventRegistrationId`),
+    PRIMARY KEY (`id`)
+) DEFAULT CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci;
+
+-- CreateTable
+CREATE TABLE `resources` (
+    `id` VARCHAR(191) NOT NULL,
+    `name` VARCHAR(191) NOT NULL,
+    `resourcePath` VARCHAR(191) NOT NULL,
+    `fileType` VARCHAR(191) NOT NULL,
+    `fileSize` INTEGER NOT NULL,
+    `userId` VARCHAR(191) NULL,
+    `created_at` DATETIME(3) NOT NULL DEFAULT CURRENT_TIMESTAMP(3),
+    `updated_at` DATETIME(3) NOT NULL,
+    `deletedAt` DATETIME(3) NULL,
+
     PRIMARY KEY (`id`)
 ) DEFAULT CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci;
 
@@ -278,7 +292,7 @@ ALTER TABLE `TagOnPosts` ADD CONSTRAINT `TagOnPosts_tagId_fkey` FOREIGN KEY (`ta
 ALTER TABLE `events` ADD CONSTRAINT `events_userId_fkey` FOREIGN KEY (`userId`) REFERENCES `users`(`id`) ON DELETE SET NULL ON UPDATE CASCADE;
 
 -- AddForeignKey
-ALTER TABLE `event_forms` ADD CONSTRAINT `event_forms_eventId_fkey` FOREIGN KEY (`eventId`) REFERENCES `events`(`id`) ON DELETE SET NULL ON UPDATE CASCADE;
+ALTER TABLE `event_forms` ADD CONSTRAINT `event_forms_eventId_fkey` FOREIGN KEY (`eventId`) REFERENCES `events`(`id`) ON DELETE RESTRICT ON UPDATE CASCADE;
 
 -- AddForeignKey
 ALTER TABLE `event_resources` ADD CONSTRAINT `event_resources_eventId_fkey` FOREIGN KEY (`eventId`) REFERENCES `events`(`id`) ON DELETE SET NULL ON UPDATE CASCADE;
@@ -302,7 +316,13 @@ ALTER TABLE `cpdp_points` ADD CONSTRAINT `cpdp_points_memberId_fkey` FOREIGN KEY
 ALTER TABLE `payments` ADD CONSTRAINT `payments_memberId_fkey` FOREIGN KEY (`memberId`) REFERENCES `members`(`id`) ON DELETE SET NULL ON UPDATE CASCADE;
 
 -- AddForeignKey
-ALTER TABLE `payments` ADD CONSTRAINT `payments_duesId_fkey` FOREIGN KEY (`duesId`) REFERENCES `dues`(`id`) ON DELETE RESTRICT ON UPDATE CASCADE;
+ALTER TABLE `payments` ADD CONSTRAINT `payments_duesId_fkey` FOREIGN KEY (`duesId`) REFERENCES `dues`(`id`) ON DELETE SET NULL ON UPDATE CASCADE;
 
 -- AddForeignKey
 ALTER TABLE `payments` ADD CONSTRAINT `payments_eventId_fkey` FOREIGN KEY (`eventId`) REFERENCES `events`(`id`) ON DELETE SET NULL ON UPDATE CASCADE;
+
+-- AddForeignKey
+ALTER TABLE `payments` ADD CONSTRAINT `payments_eventRegistrationId_fkey` FOREIGN KEY (`eventRegistrationId`) REFERENCES `event_registrations`(`id`) ON DELETE SET NULL ON UPDATE CASCADE;
+
+-- AddForeignKey
+ALTER TABLE `resources` ADD CONSTRAINT `resources_userId_fkey` FOREIGN KEY (`userId`) REFERENCES `users`(`id`) ON DELETE SET NULL ON UPDATE CASCADE;

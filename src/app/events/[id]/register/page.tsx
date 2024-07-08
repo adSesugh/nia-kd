@@ -21,7 +21,7 @@ const EventRegistration = () => {
 		email: ''
 	})
 	const [amount, setAmount] = useState<number>(0)
-	const user = useSelector((state: RootState) => state?.auth.userData.user)
+	const user = useSelector((state: RootState) => state?.auth?.userData.user)
 	const {data } = useGetRegistrationFormQuery({
 		fetchPolicy: 'no-cache',
 		variables: {
@@ -29,10 +29,19 @@ const EventRegistration = () => {
 		}
 	})
 
+	useEffect(() => {
+		if(data?.getRegistrationForm) {
+			const amount = Number(data?.getRegistrationForm?.amount) * 100
+			setAmount(amount)
+		}
+	}, [id, data?.getRegistrationForm?.amount, amount])
+
+	console.log(data?.getRegistrationForm?.amount)
+
 	const [config, setConfig] = useState<HookConfig>(
 		{
 		  reference: (new Date()).getTime().toString(),
-		  amount: Number(data?.getRegistrationForm?.amount) * 100,
+		  amount: amount,
 		  email: formData.email || user?.member?.email,
 		  publicKey: process.env.NEXT_PUBLIC_PAYSTACK_PUBLIC_KEY as string,
 		}
@@ -53,7 +62,7 @@ const EventRegistration = () => {
 					eventId: id as string,
 					registrantDetail: {...formData},
 					payment: {
-						paymentType: 'Event',
+						paymentType: 'event',
 						memberId: user?.member?.id,
 						eventId: id as string,
 						description: data?.getRegistrationForm?.name,
@@ -69,7 +78,8 @@ const EventRegistration = () => {
 			toast.success('Event registered')
 		  }
 		} catch (error: any) {
-		  toast.error(error.messge)
+			console.log(error)
+		  	toast.error(error.messge)
 		}
 	};
 
@@ -79,13 +89,6 @@ const EventRegistration = () => {
 		onSuccess: (reference: any) => handlePaystackSuccessAction(reference),
 		onClose: handlePaystackCloseAction,
 	};
-
-	useEffect(() => {
-		if(data?.getRegistrationForm) {
-			const amount = Number(data?.getRegistrationForm?.amount) * 100
-			setAmount(amount)
-		}
-	}, [id, data?.getRegistrationForm])
 
 	const handleRegistration = async (e: ChangeEvent<HTMLFormElement>) => {
 		e.preventDefault()
@@ -103,7 +106,7 @@ const EventRegistration = () => {
 				toast.success('Event registered')
 			}
 		} catch (error: any) {
-			console.log(error)
+			console.log(error.message)
 			toast.error(error.messge)
 		}
 	}
@@ -147,7 +150,7 @@ const EventRegistration = () => {
 									type='reset' 
 									className='border border-gray-400 text-black/70 item-center rounded-xl text-sm w-28 h-11'
 								/>
-								{data?.getRegistrationForm?.paymentType === 'Free' ? (
+								{data?.getRegistrationForm?.paymentType === 'Free' || Number(data?.getRegistrationForm?.amount) === 0 ? (
 									<Button 
 										name='Register' 
 										type='submit' 
@@ -160,8 +163,8 @@ const EventRegistration = () => {
 										name='Register' 
 										type='submit' 
 										onClick={() => {
-											const amount = Number(data?.getRegistrationForm?.amount) * 100
-											setConfig({...config, email: formData.email, amount})
+											const totalAmount = amount
+											setConfig({...config, email: formData.email, amount: totalAmount})
 										}}
 										className='bg-black text-white item-center rounded-xl text-sm w-32 h-11'
 									>
