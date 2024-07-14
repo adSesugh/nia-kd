@@ -22,6 +22,7 @@ const years = [
 
 const DueManagement = () => {
     const [dueList, setDueList] = useState<any>()
+    let [index, setIndex] = useState<number>(0)
 
     const [getDues, {loading: duesLoader, error: dueError}] = useGetDuesLazyQuery({fetchPolicy: 'no-cache'})
 
@@ -40,8 +41,7 @@ const DueManagement = () => {
     
         switch (columnKey) {
             case "id":
-                const index = dueList?.findIndex((obj: Due) => obj.id === due.id);
-                return <span>{index+1}</span>;
+                return <span>{++index}</span>;
             case "name":
                 return (
                     <div>{due?.name}</div>

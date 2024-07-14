@@ -4,6 +4,7 @@ import React, { useEffect, useState } from 'react'
 import moment from 'moment'
 
 const EventAttendance = ({ eventId }: {eventId: string}) => {
+    let [index, setIndex] = useState<number>(0)
     const [attendance, setAttendance] = useState<any>([])
     const [getAttendance, {loading}] = useGetMembersAttendanceLazyQuery({fetchPolicy: 'no-cache'})
 
@@ -26,8 +27,7 @@ const EventAttendance = ({ eventId }: {eventId: string}) => {
       
       switch (columnKey) {
           case "id":
-            const index = attendance?.findIndex((obj: EventRegistration) => obj.id === registeredMember.id);
-            return <span>{index+1}</span>;
+            return <span>{++index}</span>;
           case "full_name":
             return (
               <div>{registeredMember?.registrantDetail.firstName} {registeredMember?.registrantDetail.firstNamelastName}</div>

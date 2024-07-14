@@ -7,6 +7,7 @@ import moment from 'moment'
 import React, { useEffect, useState } from 'react'
 
 const EventRegistrations = ({ eventId }: {eventId: string}) => {
+    let [index, setIndex] = useState<number>(0)
     const [registeredMembers, setRegisteredMembers] = useState<any>()
     const [getRegisteredMembers, {loading}] = useGetRegisteredMembersLazyQuery({fetchPolicy: 'no-cache'})
 
@@ -31,8 +32,7 @@ const EventRegistrations = ({ eventId }: {eventId: string}) => {
         
         switch (columnKey) {
             case "id":
-                const index = registeredMembers.findIndex((obj: EventRegistration) => obj.id === registeredMember.id);
-            return <span>{index+1}</span>;
+            return <span>{++index}</span>;
             case "first_ame":
               return (
                 <div>{registeredMember?.registrantDetail.firstName}</div>
