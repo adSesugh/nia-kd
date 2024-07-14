@@ -222,17 +222,17 @@ class DashboardAPI extends RESTDataSource {
 
     async getMemberStat(prisma: PrismaClient, memberId: string) {
         
-        const totalEventPoints = await prisma.event.count({
-            select: {
+        const totalEventPoints = await prisma.event.aggregate({
+            _sum: {
                 cpdp_points: true
             }
         })
 
-        const totalPointsEarned = await prisma.cpdpPoint.count({
+        const totalPointsEarned = await prisma.cpdpPoint.aggregate({
             where: {
                 memberId
             },
-            select: {
+            _sum: {
                 points: true
             }
         })
@@ -259,8 +259,8 @@ class DashboardAPI extends RESTDataSource {
         })
 
         const response = {
-            'totalEventPoints': totalEventPoints.cpdp_points,
-            'pointsEarned': totalPointsEarned.points,
+            'totalEventPoints': totalEventPoints._sum.cpdp_points,
+            'pointsEarned': totalPointsEarned._sum.points,
             'eventAttended': eventAttended,
             'fin_status': checkYearlyDuePayment > 0 ? true : false
         }
