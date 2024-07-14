@@ -19,6 +19,11 @@ const nextConfig = {
         AWS_REGION: process.env.NEXT_PUBLIC_AWS_REGION,
         AWS_S3_BUCKET_NAME: process.env.NEXT_PUBLIC_AWS_S3_BUCKET_NAME,
     },
+    webpack: (config) => {
+        config.resolve.alias.canvas = false;
+        
+        return config;
+    },
     // webpack: (config) => {
     //     const pdfWorkerPath = `./node_modules/pdfjs-dist/build/pdf.worker.min.mjs`;
 
