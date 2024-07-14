@@ -153,7 +153,7 @@ const MemberDashboard = () => {
       <div className='pt-8 w-full'>
         <div className='flex xs:flex-col sm:flex-row gap-4 h-full'>
           <div className='sm:w-1/2 xs:w-full bg-white rounded-2xl p-4'>
-            <div className='h-60 w-full'>
+            <div className={`${(Number(upComing?.getUpComingEvents?.length) === 0 || Number(upComing?.getUpComingEvents?.length) === 1) && 'h-60'} w-full`}>
               <h1 className='text-sm font-semibold'>Upcoming events</h1>
               {Number(upComing?.getUpComingEvents?.length) > 0 ? (
                 <div className='h-60 w-full pt-10'>
@@ -190,7 +190,7 @@ const MemberDashboard = () => {
             </div>
           </div>
           <div className='sm:w-1/2 xs:w-full bg-white rounded-2xl p-4'>
-            <div className='h-60 w-full'>
+            <div className={`${(Number(past?.getPastEvents?.length) === 0 || Number(past?.getPastEvents?.length) === 1) && 'h-60'} w-full`}>
               <h1 className='text-sm font-semibold'>Recent events</h1>
               {Number(past?.getPastEvents?.length) > 0 ? (
                 <div className='h-60 w-full pt-10'>

@@ -18,7 +18,7 @@ const EventCard: React.FC<EventCardProps> = ({ bordered, href='/', data, type, i
     const [ratio, setRatio] = useState(16/9)
     
     return (
-        <Link href={href} as={'div'} className='flex sm:flex-row xs:flex-col gap-y-5 gap-x-5 cursor-pointer'>
+        <Link href={href} as={'div'} className='flex sm:flex-row xs:flex-col gap-y-5 gap-x-5 cursor-pointer mb-3'>
             <div className='flex gap-6 sm:w-3/12 xs:w-full'>
                 <div>
                     <h1 className='text-[#E08D14]'>{moment(type === 'upcoming' ? data.event.starts_at : data.starts_at).format('MMM').toUpperCase()}</h1>
@@ -42,7 +42,7 @@ const EventCard: React.FC<EventCardProps> = ({ bordered, href='/', data, type, i
                     />
                 </div>
             </div>
-            <div className={`sm:w-9/12 xs:w-full space-y-2 ${bordered} xs:pb-1 sm:pb-0`}>
+            <div className={`sm:w-9/12 xs:w-full space-y-2 ${bordered} xs:pb-2 sm:pb-3`}>
                 {registered && <h1 className='text-sm text-green-500'>Registered</h1>}
                 <h1 className='flex flex-wrap text-md font-medium truncate'>{type === 'upcoming' ? data.event.name : data.name}</h1>
                 <div className='text-sm divide-x-[2px] divide-gray-300 space-x-4'>
