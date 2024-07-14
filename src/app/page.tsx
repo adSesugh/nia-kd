@@ -10,7 +10,6 @@ import NIATeam from '@/components/landing/team';
 import Showcase from '@/components/landing/showcase';
 import NIAFooter from '@/components/footer';
 import BlogUpdate from '@/components/landing/blog-update';
-import Image from 'next/image';
 
 export const metadata: Metadata = {
   title: "Home | NIA-Kd",

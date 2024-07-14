@@ -8,40 +8,40 @@ import TeamCardBlack from '@/components/landing/team/TeamCardBlack'
 
 const teams: TeamCardProps[] = [
   {
-    imageUrl: '/assets/team/1.jpeg',
-    name: 'Jimoh Abdulrazak',
-    designation: 'President',
-    social_media: {
-      linkedin: '',
-      twitter: '',
-    }
-  },
-  {
-    imageUrl: '/assets/team/2.jpeg',
-    name: 'Jimoh Abdulrazak',
-    designation: 'President',
-    social_media: {
-      linkedin: '',
-      twitter: '',
-    }
-  },
-  {
     imageUrl: '/assets/team/3.jpeg',
-    name: 'Jimoh Abdulrazak',
-    designation: 'President',
+    name: 'Arc. Olulaja M. Balogun',
+    designation: 'Ex Officio Member, ECNIAK',
     social_media: {
-      linkedin: '',
-      twitter: '',
+        twitter: '',
+        linkedin: ''
     }
   },
   {
-    imageUrl: '/assets/team/2.jpeg',
-    name: 'Jimoh Abdulrazak',
-    designation: 'President',
-    social_media: {
-      linkedin: '',
-      twitter: '',
-    }
+      imageUrl: '/assets/team/2.jpeg',
+      name: 'Danjuma Sokolayam Ageni',
+      designation: 'Chapter Secretary',
+      social_media: {
+          twitter: '',
+          linkedin: ''
+      }
+  },
+  {
+      imageUrl: '/assets/team/1.jpeg',
+      name: 'Bawa Y. Chindo',
+      designation: 'Assistant Secretary',
+      social_media: {
+          twitter: '',
+          linkedin: ''
+      }
+  },
+  {
+      imageUrl: '/assets/team/4.jpg',
+      name: 'Gbenga Popoola',
+      designation: 'Financial Secretary',
+      social_media: {
+          twitter: '',
+          linkedin: ''
+      }
   },
   {
     imageUrl: '/assets/team/1.jpeg',
