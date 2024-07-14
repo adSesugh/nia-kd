@@ -31,9 +31,9 @@ const members = [
         }
     },
     {
-        imageUrl: '',
-        name: 'Jimoh Abdulrazak',
-        designation: 'President',
+        imageUrl: '/assets/team/4.jpg',
+        name: 'Gbenga Popoola',
+        designation: 'Financial Secretary',
         social_media: {
             twitter: '',
             linkedin: ''
