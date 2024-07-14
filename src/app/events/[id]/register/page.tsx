@@ -155,6 +155,7 @@ const EventRegistration = () => {
 									<Button 
 										name='Register' 
 										type='submit' 
+										disabled={loading}
 										onClick={handleRegistration}
 										className='bg-black text-white item-center rounded-xl text-sm w-32 h-11'
 									>

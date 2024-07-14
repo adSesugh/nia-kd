@@ -372,16 +372,25 @@ class EventAPI extends RESTDataSource {
         })
 
         if(event !== null && totalRegistration < Number(event?.tickets)) {
-            console.log('here')
+            const member = await prisma.member.findFirst({
+                where: {
+                    OR: [
+                        {
+                            phoneNumber: input.registrantDetail.phoneNumber,
+                        },
+                        {
+                            email: input.registrantDetail.email
+                        }
+                    ]
+                }
+            })
             const registered = await prisma.eventRegistration.create({
                 data: {
                     eventId: input.eventId ?? null,
-                    memberId: input.memberId ?? null,
+                    memberId: input.memberId ?? member?.id ?? null,
                     registrantDetail: {...input.registrantDetail}
                 }
             })
-
-            console.log(registered)
 
             if(input.payment) {
                 await prisma.payment.create({
@@ -462,6 +471,18 @@ class EventAPI extends RESTDataSource {
         })
 
         if(eventRegistration){
+            const event = await prisma.event.findFirst({
+                where: {
+                    id: eventRegistration?.eventId as string
+                }
+            })
+            await prisma.cpdpPoint.create({
+                data: {
+                    memberId: eventRegistration.memberId,
+                    points: event?.cpdp_points as number,
+                    eventId: event?.id
+                }
+            })
             return true
         }
         return false
