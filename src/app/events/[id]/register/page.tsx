@@ -5,7 +5,7 @@ import { RootState } from '@/features/store';
 import { useGetRegistrationFormQuery, usePostEventRegistrationMutation } from '@/graphql/__generated__/graphql';
 import { ArrowLeft } from 'iconsax-react';
 import Link from 'next/link';
-import { useParams } from 'next/navigation';
+import { useParams, useRouter } from 'next/navigation';
 import React, { ChangeEvent, ChangeEventHandler, useEffect, useState } from 'react'
 import { useSelector } from 'react-redux';
 import { toast } from 'react-toastify';
@@ -16,6 +16,7 @@ import { Button } from '@nextui-org/react';
 
 const EventRegistration = () => {
 	const { id } = useParams()
+	const router = useRouter()
 	const [formData, setFormData] = useState({
 		phoneNumber: '',
 		email: ''
@@ -35,8 +36,6 @@ const EventRegistration = () => {
 			setAmount(amount)
 		}
 	}, [id, data?.getRegistrationForm?.amount, amount])
-
-	console.log(data?.getRegistrationForm?.amount)
 
 	const [config, setConfig] = useState<HookConfig>(
 		{
@@ -76,6 +75,7 @@ const EventRegistration = () => {
 		  })
 		  if(res.data?.postEventRegistration){
 			toast.success('Event registered')
+			return router.push('/events')
 		  }
 		} catch (error: any) {
 			console.log(error)
@@ -85,13 +85,12 @@ const EventRegistration = () => {
 
 	const componentProps = {
 		...config,
-		text: 'Register',
+		text: 'Pay Now',
 		onSuccess: (reference: any) => handlePaystackSuccessAction(reference),
 		onClose: handlePaystackCloseAction,
 	};
 
-	const handleRegistration = async (e: ChangeEvent<HTMLFormElement>) => {
-		e.preventDefault()
+	const handleRegistration = async () => {
 		try {
 			const res = await postEventRegistration({
 			variables: {
@@ -104,6 +103,7 @@ const EventRegistration = () => {
 			})
 			if(res.data?.postEventRegistration){
 				toast.success('Event registered')
+				return router.push('/events')
 			}
 		} catch (error: any) {
 			console.log(error.message)
@@ -125,7 +125,7 @@ const EventRegistration = () => {
 				<span className='flex flew-wrap text-[#1E1A1C]'>{data?.getRegistrationForm?.instructions}</span>
 			</div>
 			<div className='py-8'>
-				<form method='POST' onSubmit={handleRegistration}>
+				<form method='POST'>
 					<div className='grid sm:grid-cols-2 xs:grid-cols-1 gap-4'>
 						{data?.getRegistrationForm?.eventForms?.map(form => (
 							<div className={`mb-2 text-[14px]`} key={form?.id}>
@@ -154,6 +154,7 @@ const EventRegistration = () => {
 									<Button 
 										name='Register' 
 										type='submit' 
+										onClick={handleRegistration}
 										className='bg-black text-white item-center rounded-xl text-sm w-32 h-11'
 									>
 										Register
@@ -180,74 +181,6 @@ const EventRegistration = () => {
 						</div>
 					</div>
 				</form>
-				{/* <div className=''>
-					<Formik 
-						initialValues={{any: ''}}
-						onSubmit={async (values, { setSubmitting }) => {
-							console.log(values);
-							try {
-								const res = await postEventRegistration({
-									variables: {
-										eventId: id,
-										input: {
-											memberId: user?.member?.id,
-											eventId: id as string,
-											registrantDetail: {
-												firstName: values?.firstName,
-												lastName: values?.lastName,
-												phoneNumber: values.phoneNumber,
-												gender: values.gender
-											},
-											payment: {
-												paymentType: 'Event',
-												memberId: user?.member?.id,
-												eventId: id as string,
-												description: data?.getRegistrationForm?.name,
-												phoneNumber: values.phoneNumber,
-												paymentRef: reference.trxref,
-												amount: data?.getRegistrationForm?.amount,
-												status: reference.status === 'success' ? 'Successful' : 'Unsuccessful',
-											}
-										}
-									}
-								})
-							} catch (error: any) {
-								toast.error(error.message)
-								setSubmitting(false)
-							}
-						}}
-					>
-						{({ values, errors, touched, handleChange, handleBlur, handleSubmit, isSubmitting, }) => (
-							<form onSubmit={handleSubmit} className='grid sm:grid-cols-2 xs:grid-cols-1 gap-4'>
-								{data?.getRegistrationForm?.eventForms?.map(form => (
-									<TextField
-										key={form?.id}
-										type={form?.type}
-										name={form?.name as string}
-										label={form?.label}
-										className='w-full'
-										required={form?.required as boolean}
-									/>
-								))}
-								<div>
-									<div className='flex float-end space-x-3'>
-										<SubmitButton 
-											name='Cancel' 
-											type='reset' 
-											className='border border-gray-400 text-black/70 item-center rounded-xl text-sm w-28 h-11'
-										/>
-										<SubmitButton 
-											name='Register' 
-											type='submit' 
-											//disabled={isSubmitting || data?.getRegistrationForm.eventForms?.length === 0 && true} 
-											className='bg-black text-white item-center rounded-xl text-sm w-32 h-11'
-										/>
-									</div>
-								</div>
-							</form>
-						)}
-					</Formik>
-				</div> */}
 			</div>
 		</div>
     )

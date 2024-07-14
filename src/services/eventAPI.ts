@@ -163,7 +163,8 @@ class EventAPI extends RESTDataSource {
                 }, 
                 speakers: true, 
                 eventResources: true,
-                eventRegistrations: true
+                eventRegistrations: true,
+                sponsors: true
             },
         })
 

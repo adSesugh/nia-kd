@@ -102,12 +102,12 @@ const EventDetail = () => {
                                 </div>
                             </div>
                         )}
-                        {data?.getEvent?.sponsors?.length !== 0 && (
+                        {!!data?.getEvent?.sponsors?.length && (
                             <div className='my-4 p-4 w-full'>
                                 <h1 className='font-semibold text-[18px]'>Event Partners</h1>
                                 <div className='flex flex-wrap space-y-3 gap-4 mt-3'>
                                     {data?.getEvent?.sponsors?.map(sponsor => (
-                                        <img key={sponsor?.id} src={sponsor?.logo} alt={`sponsor-${sponsor?.id}`} className='h-7 w-7 rounded-md' />
+                                        <img key={sponsor?.id} src={sponsor?.logo} alt={`sponsor-${sponsor?.id}`} className='h-16 w-16 rounded-md' />
                                     ))}
                                 </div>
                             </div>

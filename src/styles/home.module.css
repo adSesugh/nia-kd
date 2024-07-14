@@ -1,8 +1,8 @@
 .slideSection {
-    @apply bg-[url('/assets/images/slide-bg.svg')] sm:h-[703px] xs:h-[440px] w-[100%];
+    @apply bg-[url('/assets/images/slide-bg.svg')] sm:h-[720px] xs:h-[440px] w-[100%];
     background-repeat: no-repeat;
     background-attachment: fixed;
-    background-size: contain;
+    background-size: cover;
 }
 
 .shaddyCover {
