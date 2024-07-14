@@ -30,9 +30,9 @@ const eventStatuses = [
 
 const Events = () => {
   const router = useRouter()
+  let [index, setIndex] = useState<number>(0)
   const [events, setEvents] = useState<any>([])
   const [eventsHolder, setEventsHolder] = useState<any>([])
-  const [index, setIndex] = useState<number>(0)
   const [selectValue, setSelectValue] = useState<string>('')
   const [getEventList, {loading}] = useGetEventsLazyQuery({fetchPolicy: 'no-cache'})
   const [cancelEvent] = useCancelEventMutation({fetchPolicy: 'no-cache'})
@@ -53,15 +53,14 @@ const Events = () => {
     })()
   }, [getEventList])
 
-  const renderCell = React.useCallback((event: Event, columnKey: React.Key, index: number) => {
+  const renderCell = React.useCallback((event: Event, columnKey: React.Key) => {
       const cellValue = event[columnKey as keyof Event];
       const state = event.address?.split(',')[event.address.split(',').length - 2]
       const country = event.address?.split(',')[event.address.split(',').length - 1]
       
       switch (columnKey) {
           case "id":
-              setIndex(cur => cur + 1)
-              return <span>{index}</span>;
+            return <span>{++index}</span>;
           case "starts_at":
             return (
               <div>
@@ -252,7 +251,7 @@ const Events = () => {
           >
               {(item: Event) => (
                   <TableRow key={item?.id} className='border-b last:border-b-0'>
-                      {(columnKey) => <TableCell>{renderCell(item, columnKey, index)}</TableCell>}
+                      {(columnKey) => <TableCell>{renderCell(item, columnKey)}</TableCell>}
                   </TableRow>
               )}
           </TableBody>

@@ -14,9 +14,9 @@ import { useRouter } from 'next/navigation'
 
 const MemberList = () => {
     const router = useRouter()
+    let [index, setIndex] = useState<number>(0)
     const [members, setMembers] = useState<any>([])
     const [membersHolder, setMembersHolder] = useState<any>([])
-    const [index, setIndex] = useState<number>(0)
     const [selectValue, setSelectValue] = useState<string>('')
     const [getMembers, {loading, fetchMore}] = useGetMembersLazyQuery({fetchPolicy: 'no-cache'})
     const [deactiveMember, {}] = useDeactivateMemberMutation()
@@ -54,14 +54,13 @@ const MemberList = () => {
         }
     }
 
-    const renderCell = React.useCallback((member: Member, columnKey: React.Key, index: number) => {
+    const renderCell = React.useCallback((member: Member, columnKey: React.Key) => {
         const cellValue = member[columnKey as keyof Member];
         
     
         switch (columnKey) {
             case "id":
-                setIndex(cur => cur + 1)
-                return <span>{index}</span>;
+                return <span>{++index}</span>;
             case "name":
                 return (
                     <div>{member.firstName} {member.lastName}</div>
@@ -183,7 +182,7 @@ const MemberList = () => {
                     >
                         {(item: Member) => (
                             <TableRow key={item?.id} className='border-b last:border-b-0'>
-                                {(columnKey) => <TableCell>{renderCell(item, columnKey, index)}</TableCell>}
+                                {(columnKey) => <TableCell>{renderCell(item, columnKey)}</TableCell>}
                             </TableRow>
                         )}
                     </TableBody>

@@ -1,12 +1,9 @@
 'use client'
 
-import React, { useCallback, useRef } from 'react'
+import React, {  } from 'react'
 import styles from '@/styles/home.module.css'
 import ShowcaseCard from './ShowcaseCard'
 import { ArrowLeft, ArrowRight } from 'iconsax-react'
-import Showcase1 from '@/assets/showcase/1.jpeg'
-import Showcase2 from '@/assets/showcase/2.jpeg'
-import Showcase3 from '@/assets/showcase/3.jpeg'
 import { Swiper, SwiperSlide } from 'swiper/react';
 import { Autoplay, Navigation, Pagination } from "swiper/modules";
 

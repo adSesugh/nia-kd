@@ -21,7 +21,6 @@ const years = [
 ]
 
 const DueManagement = () => {
-    const [index, setIndex] = useState<number>(0)
     const [dueList, setDueList] = useState<any>()
 
     const [getDues, {loading: duesLoader, error: dueError}] = useGetDuesLazyQuery({fetchPolicy: 'no-cache'})
@@ -35,14 +34,14 @@ const DueManagement = () => {
         })()
     }, [getDues])
 
-    const renderCell = React.useCallback((due: Due, columnKey: React.Key, index: number) => {
+    const renderCell = React.useCallback((due: Due, columnKey: React.Key) => {
         const cellValue = due[columnKey as keyof Due];
         
     
         switch (columnKey) {
             case "id":
-                setIndex(cur => cur + 1)
-                return <span>{index}</span>;
+                const index = dueList?.findIndex((obj: Due) => obj.id === due.id);
+                return <span>{index+1}</span>;
             case "name":
                 return (
                     <div>{due?.name}</div>
@@ -105,7 +104,7 @@ const DueManagement = () => {
                 >
                     {(item: any) => (
                         <TableRow key={item?.id} className='border-b last:border-b-0'>
-                            {(columnKey) => <TableCell>{renderCell(item, columnKey, index)}</TableCell>}
+                            {(columnKey) => <TableCell>{renderCell(item, columnKey)}</TableCell>}
                         </TableRow>
                     )}
                 </TableBody>

@@ -21,8 +21,8 @@ const years = [
 ]
 
 const Transaction = () => {
-  const [index, setIndex] = useState<number>(0)
-  const [payments, setPayments] = useState<any>()
+  let [index, setIndex] = useState<number>(0)
+  const [payments, setPayments] = useState<any>([])
   const [paymentsHolder, setPaymentsHolder] = useState<any>([])
   const [getPayments, {loading, error}] = useGetMemberPaymentsLazyQuery({
     fetchPolicy: 'no-cache',
@@ -45,14 +45,13 @@ const Transaction = () => {
       })()
   }, [getPayments])
 
-  const renderCell = React.useCallback((payment: Payment, columnKey: React.Key, index: number) => {
+  const renderCell = React.useCallback((payment: Payment, columnKey: React.Key) => {
       const cellValue = payment[columnKey as keyof Payment];
       
   
       switch (columnKey) {
           case "id":
-              setIndex(cur => cur + 1)
-              return <span>{index}</span>;
+            return <span>{++index}</span>;
           case "paymentRef":
               return (
                   <div>{payment?.paymentRef}</div>
@@ -132,7 +131,7 @@ const Transaction = () => {
           >
               {(item: any) => (
                   <TableRow key={item?.id} className='border-b last:border-b-0'>
-                      {(columnKey) => <TableCell>{renderCell(item, columnKey, index)}</TableCell>}
+                      {(columnKey) => <TableCell>{renderCell(item, columnKey)}</TableCell>}
                   </TableRow>
               )}
           </TableBody>

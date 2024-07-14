@@ -5,7 +5,6 @@ import moment from 'moment'
 
 const EventAttendance = ({ eventId }: {eventId: string}) => {
     const [attendance, setAttendance] = useState<any>([])
-    const [index, setIndex] = useState<number>(0)
     const [getAttendance, {loading}] = useGetMembersAttendanceLazyQuery({fetchPolicy: 'no-cache'})
 
     const loadingState = loading || attendance === 0 ? "loading" : "idle";
@@ -22,13 +21,13 @@ const EventAttendance = ({ eventId }: {eventId: string}) => {
       })()
     }, [getAttendance, eventId])
 
-  const renderCell = React.useCallback((registeredMember: EventRegistration, columnKey: React.Key, index: number) => {
+  const renderCell = React.useCallback((registeredMember: EventRegistration, columnKey: React.Key) => {
       const cellValue = registeredMember[columnKey as keyof EventRegistration];
       
       switch (columnKey) {
           case "id":
-              setIndex(cur => cur + 1)
-              return <span>{index}</span>;
+            const index = attendance?.findIndex((obj: EventRegistration) => obj.id === registeredMember.id);
+            return <span>{index+1}</span>;
           case "full_name":
             return (
               <div>{registeredMember?.registrantDetail.firstName} {registeredMember?.registrantDetail.firstNamelastName}</div>
@@ -83,7 +82,7 @@ const EventAttendance = ({ eventId }: {eventId: string}) => {
         >
             {(item: EventRegistration) => (
                 <TableRow key={item?.id} className='border-b last:border-b-0'>
-                    {(columnKey) => <TableCell>{renderCell(item, columnKey, index)}</TableCell>}
+                    {(columnKey) => <TableCell>{renderCell(item, columnKey)}</TableCell>}
                 </TableRow>
             )}
         </TableBody>

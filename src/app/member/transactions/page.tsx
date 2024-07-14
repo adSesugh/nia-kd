@@ -1,12 +1,9 @@
 'use client'
 
-import SearhbarWithIcon from '@/components/searhbar-with-icon'
-import SelectFilter from '@/components/select-filter'
 import { RootState } from '@/features/store'
-import { Payment, useGetMemberPaymentsLazyQuery, useGetPaymentsLazyQuery } from '@/graphql/__generated__/graphql'
+import { Payment, useGetMemberPaymentsLazyQuery } from '@/graphql/__generated__/graphql'
 import { Chip, Spinner, Table, TableBody, TableCell, TableColumn, TableHeader, TableRow } from '@nextui-org/react'
 import { DotsThree } from '@phosphor-icons/react'
-import { Form, Formik } from 'formik'
 import { SearchNormal } from 'iconsax-react'
 import moment from 'moment'
 import React, { useEffect, useState } from 'react'
@@ -24,8 +21,8 @@ const years = [
 ]
 
 const TransactionList = () => {
-  const [index, setIndex] = useState<number>(0)
-  const [payments, setPayments] = useState<any>()
+  let [index, setIndex] = useState<number>(0)
+  const [payments, setPayments] = useState<any>([])
   const [paymentsHolder, setPaymentsHolder] = useState<any>([])
   const user = useSelector((state:RootState) => state.auth.userData.user)
   const [getPayments, {loading, error}] = useGetMemberPaymentsLazyQuery({
@@ -49,14 +46,13 @@ const TransactionList = () => {
       })()
   }, [getPayments])
 
-  const renderCell = React.useCallback((payment: Payment, columnKey: React.Key, index: number) => {
+  const renderCell = React.useCallback((payment: Payment, columnKey: React.Key) => {
       const cellValue = payment[columnKey as keyof Payment];
       
   
       switch (columnKey) {
           case "id":
-              setIndex(cur => cur + 1)
-              return <span>{index}</span>;
+            return <span>{++index}</span>;
           case "paymentRef":
               return (
                   <div>{payment?.paymentRef}</div>
@@ -140,7 +136,7 @@ const TransactionList = () => {
           >
               {(item: any) => (
                   <TableRow key={item?.id} className='border-b last:border-b-0'>
-                      {(columnKey) => <TableCell>{renderCell(item, columnKey, index)}</TableCell>}
+                      {(columnKey) => <TableCell>{renderCell(item, columnKey)}</TableCell>}
                   </TableRow>
               )}
           </TableBody>

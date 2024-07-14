@@ -12,7 +12,7 @@ import { CaretDown, Trash } from '@phosphor-icons/react'
 import { toast } from 'react-toastify'
 
 const ResourceList = () => {
-  const [index, setIndex] = useState<number>(0)
+  let [index, setIndex] = useState<number>(0)
   const [resources, setResources] = useState<any>([])
   const [resourcesHolder, setResourcesHolder] = useState<any>([])
   const [getResources, {loading}] = useGetResourcesLazyQuery({fetchPolicy: 'no-cache'})
@@ -30,13 +30,12 @@ const ResourceList = () => {
     })()
   }, [getResources])
 
-  const renderCell = React.useCallback((resource: Resource, columnKey: React.Key, index: number) => {
+  const renderCell = React.useCallback((resource: Resource, columnKey: React.Key) => {
     const cellValue = resource[columnKey as keyof Resource];
     
     switch (columnKey) {
         case "id":
-            setIndex(cur => cur + 1)
-            return <span>{index}</span>;
+          return <span>{++index}</span>;
         case "name":
           return (
             <div>{resource.name.split('.')[0]}</div>
@@ -208,7 +207,7 @@ const ResourceList = () => {
           >
             {(item: Resource) => (
                 <TableRow key={item?.id} className='border-b last:border-b-0'>
-                    {(columnKey) => <TableCell className='py-3.5'>{renderCell(item, columnKey, index)}</TableCell>}
+                    {(columnKey) => <TableCell className='py-3.5'>{renderCell(item, columnKey)}</TableCell>}
                 </TableRow>
             )}
           </TableBody>

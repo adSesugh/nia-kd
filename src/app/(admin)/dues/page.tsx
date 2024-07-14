@@ -26,9 +26,9 @@ const years = [
 
 
 const DuesPage = () => {
+    let [index, setIndex] = useState<number>(0)
     const [clickBtn, setClickBtn] = useState('save')
-    const [index, setIndex] = useState<number>(0)
-    const [dueList, setDueList] = useState<any>()
+    const [dueList, setDueList] = useState<any>([])
     const [dueListHolder, setDueListHolder] = useState<any>()
     const [selectValue, setSelectValue] = useState<string>('')
     const [selectedDue, setSelectedDue] = useState<Due>()
@@ -73,14 +73,12 @@ const DuesPage = () => {
         }
     } 
 
-    const renderCell = React.useCallback((due: Due, columnKey: React.Key, index: number) => {
+    const renderCell = React.useCallback((due: Due, columnKey: React.Key) => {
         const cellValue = due[columnKey as keyof Due];
-        
-    
+
         switch (columnKey) {
             case "id":
-                setIndex(cur => cur + 1)
-                return <span>{index}</span>;
+                return <span>{++index}</span>;
             case "name":
                 return (
                     <div>{due?.name}</div>
@@ -192,7 +190,7 @@ const DuesPage = () => {
                     >
                         {(item: any) => (
                             <TableRow key={item?.id} className='border-b last:border-b-0'>
-                                {(columnKey) => <TableCell>{renderCell(item, columnKey, index)}</TableCell>}
+                                {(columnKey) => <TableCell>{renderCell(item, columnKey)}</TableCell>}
                             </TableRow>
                         )}
                     </TableBody>

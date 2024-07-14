@@ -7,7 +7,6 @@ import moment from 'moment'
 import React, { useEffect, useState } from 'react'
 
 const EventRegistrations = ({ eventId }: {eventId: string}) => {
-    const [index, setIndex] = useState<number>(0)
     const [registeredMembers, setRegisteredMembers] = useState<any>()
     const [getRegisteredMembers, {loading}] = useGetRegisteredMembersLazyQuery({fetchPolicy: 'no-cache'})
 
@@ -27,13 +26,13 @@ const EventRegistrations = ({ eventId }: {eventId: string}) => {
 
     const resendMail = async (registrationId: string) => console.log(registrationId)
 
-    const renderCell = React.useCallback((registeredMember: EventRegistration, columnKey: React.Key, index: number) => {
+    const renderCell = React.useCallback((registeredMember: EventRegistration, columnKey: React.Key) => {
         const cellValue = registeredMember[columnKey as keyof EventRegistration];
         
         switch (columnKey) {
             case "id":
-                setIndex(cur => cur + 1)
-                return <span>{index}</span>;
+                const index = registeredMembers.findIndex((obj: EventRegistration) => obj.id === registeredMember.id);
+            return <span>{index+1}</span>;
             case "first_ame":
               return (
                 <div>{registeredMember?.registrantDetail.firstName}</div>
@@ -97,7 +96,7 @@ const EventRegistrations = ({ eventId }: {eventId: string}) => {
                 >
                     {(item: EventRegistration) => (
                         <TableRow key={item?.id} className='border-b last:border-b-0'>
-                            {(columnKey) => <TableCell>{renderCell(item, columnKey, index)}</TableCell>}
+                            {(columnKey) => <TableCell>{renderCell(item, columnKey)}</TableCell>}
                         </TableRow>
                     )}
                 </TableBody>

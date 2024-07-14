@@ -11,7 +11,7 @@ import { toast } from 'react-toastify';
 import moment from 'moment';
 
 const PublishedBlog = () => {
-    const [index, setIndex] = useState<number>(0)
+    let [index, setIndex] = useState<number>(0)
     const [blogs, setBlogs] = useState<any>()
     const [getBlogs, {loading, error}] = useGetBlogsLazyQuery({fetchPolicy: 'no-cache'})
     const [publishedBlog] = usePublishedBlogMutation({fetchPolicy: 'no-cache'})
@@ -48,14 +48,13 @@ const PublishedBlog = () => {
         }
     }
 
-    const renderCell = React.useCallback((blog: Blog, columnKey: React.Key, index: number) => {
+    const renderCell = React.useCallback((blog: Blog, columnKey: React.Key) => {
         const cellValue = blog[columnKey as keyof Blog];
         
     
         switch (columnKey) {
             case "id":
-                setIndex(cur => cur + 1)
-                return <span>{index}</span>;
+                return <span>{++index}</span>;
             case 'created_at':
                 return (
                     <div>{moment(blog.createdAt).format('MMM D | h:ss A')}</div>
@@ -127,7 +126,7 @@ const PublishedBlog = () => {
                 >
                     {(item: any) => (
                         <TableRow key={item?.id}>
-                            {(columnKey) => <TableCell>{renderCell(item, columnKey, index)}</TableCell>}
+                            {(columnKey) => <TableCell>{renderCell(item, columnKey)}</TableCell>}
                         </TableRow>
                     )}
                 </TableBody>
