@@ -97,7 +97,8 @@ const EventRegistration = () => {
 				input: {
 					memberId: user?.member?.id,
 					eventId: id as string,
-					registrantDetail: {...formData}
+					registrantDetail: {...formData},
+					payment: null
 				}
 			}
 			})
@@ -125,7 +126,7 @@ const EventRegistration = () => {
 				<span className='flex flew-wrap text-[#1E1A1C]'>{data?.getRegistrationForm?.instructions}</span>
 			</div>
 			<div className='py-8'>
-				<form method='POST'>
+				<div>
 					<div className='grid sm:grid-cols-2 xs:grid-cols-1 gap-4'>
 						{data?.getRegistrationForm?.eventForms?.map(form => (
 							<div className={`mb-2 text-[14px]`} key={form?.id}>
@@ -168,6 +169,8 @@ const EventRegistration = () => {
 											setConfig({...config, email: formData.email, amount: totalAmount})
 										}}
 										className='bg-black text-white item-center rounded-xl text-sm w-32 h-11'
+										as={'div'}
+										disabled={formData.email !== undefined ? false : true}
 									>
 										<PaystackButton 
 											amount={amount} 
@@ -180,7 +183,7 @@ const EventRegistration = () => {
 							</div>
 						</div>
 					</div>
-				</form>
+				</div>
 			</div>
 		</div>
     )

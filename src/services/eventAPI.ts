@@ -372,7 +372,7 @@ class EventAPI extends RESTDataSource {
         })
 
         if(event !== null && totalRegistration < Number(event?.tickets)) {
-            
+            console.log('here')
             const registered = await prisma.eventRegistration.create({
                 data: {
                     eventId: input.eventId ?? null,
@@ -380,6 +380,8 @@ class EventAPI extends RESTDataSource {
                     registrantDetail: {...input.registrantDetail}
                 }
             })
+
+            console.log(registered)
 
             if(input.payment) {
                 await prisma.payment.create({
