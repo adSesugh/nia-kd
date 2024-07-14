@@ -28,10 +28,14 @@ const EventAttendance = ({ eventId }: {eventId: string}) => {
       switch (columnKey) {
           case "id":
             return <span>{++index}</span>;
-          case "full_name":
+          case "first_name":
             return (
-              <div>{registeredMember?.registrantDetail.firstName} {registeredMember?.registrantDetail.firstNamelastName}</div>
+              <div>{registeredMember?.registrantDetail.firstName}</div>
             )
+          case "last_name":
+              return (
+                <div>{registeredMember?.registrantDetail.lastName}</div>
+              )
           case "email":
               return (
                 <div>{registeredMember?.registrantDetail.email}</div>
@@ -65,7 +69,8 @@ const EventAttendance = ({ eventId }: {eventId: string}) => {
       <Table aria-label="attendance">
         <TableHeader>
             <TableColumn key="id">S/N</TableColumn>
-            <TableColumn key="full_name">Full name</TableColumn>
+            <TableColumn key="first_name">First name</TableColumn>
+            <TableColumn key="last_name">Last name</TableColumn>
             <TableColumn key="email">Email</TableColumn>
             <TableColumn key="registered">Registered</TableColumn>
             <TableColumn key="checkin"><span></span></TableColumn>

@@ -1,4 +1,4 @@
-import { EventForm, EventInput, EventRegistrationInput } from "@/graphql/__generated__/graphql";
+import { EventForm, EventInput, EventRegistrationInput, SendMailInput } from "@/graphql/__generated__/graphql";
 import { sendEmail } from "@/lib/mailer";
 import { s3FileUpload, s3FileUploadPdf } from "@/lib/s3Client";
 import { RESTDataSource } from "@apollo/datasource-rest";
@@ -228,7 +228,7 @@ class EventAPI extends RESTDataSource {
     async getMembersAttendance(prisma: PrismaClient, eventId: string){
         const membersAttendance = await prisma.eventRegistration.findMany({
             where: {
-                checkin: true
+                eventId
             }
         })
 
@@ -402,8 +402,8 @@ class EventAPI extends RESTDataSource {
                         event.message as string, {
                             fullname: `${input.registrantDetail.first_name} ${input.registrantDetail.last_name}`,
                             eventName: event.name,
-                            startDate: event.starts_at,
-                            endDate: event.ends_at,
+                            startDate: moment(event.starts_at).format('LL'),
+                            endDate: moment(event.ends_at).format('LL'),
                             startTime: moment(event.starts_at).format('h:mm A'),
                             endTime: moment(event.ends_at).format('h:mm A')
                         }
@@ -421,6 +421,29 @@ class EventAPI extends RESTDataSource {
                     http: { status: 400 },
                 },
             });
+        }
+    }
+
+    async resendEventMail(prisma: PrismaClient, input: SendMailInput) {
+        const event = await prisma.event.findFirst({where: {id: input.eventId}})
+        try {
+            sendEmail(
+                input.email, 
+                'Event Registration', 
+                event?.message as string, {
+                    fullname: `${input.firstName} ${input.lastName}`,
+                    eventName: event?.name,
+                    startDate: moment(event?.starts_at).format('LL'),
+                    endDate: moment(event?.ends_at).format('LL'),
+                    startTime: moment(event?.starts_at).format('h:mm A'),
+                    endTime: moment(event?.ends_at).format('h:mm A')
+                }
+            )
+
+            return true
+        } catch (error: any) {
+            console.log(error)
+            return false
         }
     }
 }

@@ -22,7 +22,8 @@ export const resolvers: Resolvers = {
         profilephotoUpload: (_, {memberId, photo}, {prisma, dataSources}) => dataSources.memberAPI.uploadPhoto(prisma, memberId, photo),
         resetPassword: (_, {userId, password}, {prisma, dataSources}) => dataSources.userAPI.resetPassword(prisma, userId, password),
         createResources: (_, {input}, {prisma, dataSources, userId}) => dataSources.resourceAPI.createResources(prisma, input, userId),
-        deleteResource: (_, {resourceId}, {prisma, dataSources}) => dataSources.resourceAPI.deleteResource(prisma, resourceId)
+        deleteResource: (_, {resourceId}, {prisma, dataSources}) => dataSources.resourceAPI.deleteResource(prisma, resourceId),
+        resendEventMail: (_, {input}, {prisma, dataSources}) => dataSources.eventAPI.resendEventMail(prisma, input),
     },
     Query: {
         members: (_, __, { prisma, dataSources, userId }) => dataSources.memberAPI.getMembers(prisma, userId),
@@ -43,7 +44,7 @@ export const resolvers: Resolvers = {
         getAdminDashboardStat: (_, __, {prisma, dataSources}) => dataSources.dashboardAPI.getAdminStat(prisma),
         getSidebarStat: (_, __, {prisma, dataSources}) => dataSources.dashboardAPI.getSidebarData(prisma),
         getMembersAttendance: (_, {eventId}, {prisma, dataSources}) => dataSources.eventAPI.getMembersAttendance(prisma, eventId),
-        getRegisteredMembers: (_, {eventId}, {prisma, dataSources}) => dataSources.eventAPI.getMembersAttendance(prisma, eventId),
+        getRegisteredMembers: (_, {eventId}, {prisma, dataSources}) => dataSources.eventAPI.getRegisteredMembers(prisma, eventId),
         getEventsForPublic: (_, __, { prisma, dataSources }) => dataSources.eventAPI.getEventsForPublic(prisma),
         getUpComingEvents: (_, {memberId}, {prisma, dataSources}) => dataSources.eventAPI.upComingEvents(prisma, memberId),
         getPastEvents: (_, __, {prisma, dataSources}) => dataSources.eventAPI.passedEvents(prisma),

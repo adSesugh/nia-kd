@@ -278,6 +278,7 @@ export type Mutation = {
   postPayment: Payment;
   profilephotoUpload?: Maybe<UploadResponse>;
   publishedBlog?: Maybe<BlogResponse>;
+  resendEventMail?: Maybe<Scalars['Boolean']['output']>;
   resetPassword?: Maybe<ResetPasswordResponse>;
   updateDues?: Maybe<DueResponse>;
   watchEventViews?: Maybe<Scalars['Boolean']['output']>;
@@ -365,6 +366,11 @@ export type MutationProfilephotoUploadArgs = {
 export type MutationPublishedBlogArgs = {
   blogId: Scalars['UUID']['input'];
   status: Scalars['String']['input'];
+};
+
+
+export type MutationResendEventMailArgs = {
+  input: SendMailInput;
 };
 
 
@@ -735,6 +741,13 @@ export type PaymentInput = {
   status: Scalars['String']['input'];
 };
 
+export type SendMailInput = {
+  email: Scalars['String']['input'];
+  eventId: Scalars['String']['input'];
+  firstName: Scalars['String']['input'];
+  lastName: Scalars['String']['input'];
+};
+
 export type SignInUser = {
   password: Scalars['String']['input'];
   regId: Scalars['String']['input'];
@@ -962,6 +975,13 @@ export type PostEventRegistrationMutationVariables = Exact<{
 
 
 export type PostEventRegistrationMutation = { __typename?: 'Mutation', postEventRegistration?: { __typename?: 'EventRegistration', id: any, memberId?: any | null, eventId: any, registrantDetail: any, checkin?: boolean | null, checkinDate?: any | null, createdAt?: any | null, updatedAt?: any | null } | null };
+
+export type ResendEventMailMutationVariables = Exact<{
+  input: SendMailInput;
+}>;
+
+
+export type ResendEventMailMutation = { __typename?: 'Mutation', resendEventMail?: boolean | null };
 
 export type GetMembersQueryVariables = Exact<{ [key: string]: never; }>;
 
@@ -2613,6 +2633,37 @@ export function usePostEventRegistrationMutation(baseOptions?: Apollo.MutationHo
 export type PostEventRegistrationMutationHookResult = ReturnType<typeof usePostEventRegistrationMutation>;
 export type PostEventRegistrationMutationResult = Apollo.MutationResult<PostEventRegistrationMutation>;
 export type PostEventRegistrationMutationOptions = Apollo.BaseMutationOptions<PostEventRegistrationMutation, PostEventRegistrationMutationVariables>;
+export const ResendEventMailDocument = gql`
+    mutation ResendEventMail($input: sendMailInput!) {
+  resendEventMail(input: $input)
+}
+    `;
+export type ResendEventMailMutationFn = Apollo.MutationFunction<ResendEventMailMutation, ResendEventMailMutationVariables>;
+
+/**
+ * __useResendEventMailMutation__
+ *
+ * To run a mutation, you first call `useResendEventMailMutation` within a React component and pass it any options that fit your needs.
+ * When your component renders, `useResendEventMailMutation` returns a tuple that includes:
+ * - A mutate function that you can call at any time to execute the mutation
+ * - An object with fields that represent the current status of the mutation's execution
+ *
+ * @param baseOptions options that will be passed into the mutation, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options-2;
+ *
+ * @example
+ * const [resendEventMailMutation, { data, loading, error }] = useResendEventMailMutation({
+ *   variables: {
+ *      input: // value for 'input'
+ *   },
+ * });
+ */
+export function useResendEventMailMutation(baseOptions?: Apollo.MutationHookOptions<ResendEventMailMutation, ResendEventMailMutationVariables>) {
+        const options = {...defaultOptions, ...baseOptions}
+        return Apollo.useMutation<ResendEventMailMutation, ResendEventMailMutationVariables>(ResendEventMailDocument, options);
+      }
+export type ResendEventMailMutationHookResult = ReturnType<typeof useResendEventMailMutation>;
+export type ResendEventMailMutationResult = Apollo.MutationResult<ResendEventMailMutation>;
+export type ResendEventMailMutationOptions = Apollo.BaseMutationOptions<ResendEventMailMutation, ResendEventMailMutationVariables>;
 export const GetMembersDocument = gql`
     query GetMembers {
   members {
@@ -3473,6 +3524,7 @@ export type ResolversTypes = ResolversObject<{
   multiPaymentInput: MultiPaymentInput;
   newMember: NewMember;
   paymentInput: PaymentInput;
+  sendMailInput: SendMailInput;
   signInUser: SignInUser;
 }>;
 
@@ -3530,6 +3582,7 @@ export type ResolversParentTypes = ResolversObject<{
   multiPaymentInput: MultiPaymentInput;
   newMember: NewMember;
   paymentInput: PaymentInput;
+  sendMailInput: SendMailInput;
   signInUser: SignInUser;
 }>;
 
@@ -3790,6 +3843,7 @@ export type MutationResolvers<ContextType = GraphQLContext, ParentType extends R
   postPayment?: Resolver<ResolversTypes['Payment'], ParentType, ContextType, RequireFields<MutationPostPaymentArgs, 'input'>>;
   profilephotoUpload?: Resolver<Maybe<ResolversTypes['UploadResponse']>, ParentType, ContextType, RequireFields<MutationProfilephotoUploadArgs, 'memberId' | 'photo'>>;
   publishedBlog?: Resolver<Maybe<ResolversTypes['BlogResponse']>, ParentType, ContextType, RequireFields<MutationPublishedBlogArgs, 'blogId' | 'status'>>;
+  resendEventMail?: Resolver<Maybe<ResolversTypes['Boolean']>, ParentType, ContextType, RequireFields<MutationResendEventMailArgs, 'input'>>;
   resetPassword?: Resolver<Maybe<ResolversTypes['ResetPasswordResponse']>, ParentType, ContextType, RequireFields<MutationResetPasswordArgs, 'password' | 'userId'>>;
   updateDues?: Resolver<Maybe<ResolversTypes['DueResponse']>, ParentType, ContextType, RequireFields<MutationUpdateDuesArgs, 'dueId' | 'input'>>;
   watchEventViews?: Resolver<Maybe<ResolversTypes['Boolean']>, ParentType, ContextType, RequireFields<MutationWatchEventViewsArgs, 'eventId'>>;

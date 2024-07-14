@@ -1,15 +1,17 @@
 'use client'
 
-import { EventRegistration, useGetRegisteredMembersLazyQuery } from '@/graphql/__generated__/graphql'
+import { EventRegistration, useGetRegisteredMembersLazyQuery, useResendEventMailMutation } from '@/graphql/__generated__/graphql'
 import { Button, Chip, Dropdown, DropdownItem, DropdownMenu, DropdownTrigger, Spinner, Table, TableBody, TableCell, TableColumn, TableHeader, TableRow } from '@nextui-org/react'
 import { DotsThreeVertical } from '@phosphor-icons/react'
 import moment from 'moment'
 import React, { useEffect, useState } from 'react'
+import { toast } from 'react-toastify'
 
 const EventRegistrations = ({ eventId }: {eventId: string}) => {
     let [index, setIndex] = useState<number>(0)
     const [registeredMembers, setRegisteredMembers] = useState<any>()
     const [getRegisteredMembers, {loading}] = useGetRegisteredMembersLazyQuery({fetchPolicy: 'no-cache'})
+    const [resendEventMail, {loading: sendLoading}] = useResendEventMailMutation()
 
     const loadingState = loading || registeredMembers === 0 ? "loading" : "idle";
 
@@ -25,7 +27,25 @@ const EventRegistrations = ({ eventId }: {eventId: string}) => {
         })()
     }, [getRegisteredMembers, eventId])
 
-    const resendMail = async (registrationId: string) => console.log(registrationId)
+    const mailResend = async (registrant: EventRegistration) => {
+        console.log(registrant)
+        const resMail = await resendEventMail({
+            variables: {
+                input: {
+                    email: registrant.registrantDetail.email,
+                    firstName: registrant.registrantDetail.firstName,
+                    lastName: registrant.registrantDetail.lastName,
+                    eventId: eventId
+                }
+            }
+        })
+
+        if(resMail){
+            toast.success('Email sent!')
+        } else {
+            toast.error('Email not sent!')
+        }
+    }
 
     const renderCell = React.useCallback((registeredMember: EventRegistration, columnKey: React.Key) => {
         const cellValue = registeredMember[columnKey as keyof EventRegistration];
@@ -33,13 +53,13 @@ const EventRegistrations = ({ eventId }: {eventId: string}) => {
         switch (columnKey) {
             case "id":
             return <span>{++index}</span>;
-            case "first_ame":
+            case "first_name":
               return (
                 <div>{registeredMember?.registrantDetail.firstName}</div>
               )
-            case "last_ame":
+            case "last_name":
                 return (
-                  <div>{registeredMember?.registrantDetail.firstNamelastName}</div>
+                  <div>{registeredMember?.registrantDetail.lastName}</div>
                 )
             case "email":
                 return (
@@ -49,17 +69,21 @@ const EventRegistrations = ({ eventId }: {eventId: string}) => {
               return (
                 <div>{moment(registeredMember?.createdAt).format('LL')}</div>
               )
-            case "actions":
+            case "action":
                 return (
                     <div className="relative flex justify-end items-center gap-2">
                         <Dropdown>
                             <DropdownTrigger>
                                 <Button isIconOnly size="sm" variant="light">
-                                    <DotsThreeVertical size={40} className="text-default-300" color='#161314' />
+                                    {sendLoading && cellValue === registeredMember.id ? (
+                                        <Spinner color='default' />
+                                    ): (
+                                        <DotsThreeVertical size={40} className="text-default-300" color='#161314' />
+                                    )}
                                 </Button>
                             </DropdownTrigger>
-                            <DropdownMenu onClick={() => resendMail(registeredMember.id)}>
-                                <DropdownItem>Resend registration mail</DropdownItem>
+                            <DropdownMenu>
+                                <DropdownItem onClick={() => mailResend(registeredMember)}>Resend registration mail</DropdownItem>
                             </DropdownMenu>
                         </Dropdown>
                     </div>
@@ -79,14 +103,15 @@ const EventRegistrations = ({ eventId }: {eventId: string}) => {
             <Table aria-label="attendance">
                 <TableHeader>
                     <TableColumn key="id">S/N</TableColumn>
-                    <TableColumn key="full_name">Full name</TableColumn>
+                    <TableColumn key="first_name">First name</TableColumn>
+                    <TableColumn key="last_name">Last name</TableColumn>
                     <TableColumn key="email">Email</TableColumn>
                     <TableColumn key="registered">Registered</TableColumn>
                     <TableColumn key="action"><span></span></TableColumn>
                 </TableHeader>
                 <TableBody
                     items={registeredMembers ?? []}
-                    loadingContent={<Spinner />}
+                    loadingContent={<Spinner color='default' />}
                     loadingState={loadingState}
                     emptyContent={(
                     <div className='flex flex-col items-center justify-center gap-3'>
@@ -95,7 +120,7 @@ const EventRegistrations = ({ eventId }: {eventId: string}) => {
                     )}
                 >
                     {(item: EventRegistration) => (
-                        <TableRow key={item?.id} className='border-b last:border-b-0'>
+                        <TableRow key={item?.id} className='border-b last:border-b-0 my-2'>
                             {(columnKey) => <TableCell>{renderCell(item, columnKey)}</TableCell>}
                         </TableRow>
                     )}

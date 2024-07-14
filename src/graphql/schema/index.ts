@@ -337,6 +337,13 @@ export const typeDefs = `#graphql
     fileType: String!
     fileSize: Int
   }
+  
+  input sendMailInput {
+    eventId: String!
+    firstName: String!
+    lastName: String!
+    email: String!
+  }
 
   ## ------------------------------------- Type Response ---------------------------------------------------##
   
@@ -463,6 +470,7 @@ export const typeDefs = `#graphql
     profilephotoUpload(memberId: UUID!, photo: String!): UploadResponse
     createResources(input: ResourcesInput!): ResourceResponse
     deleteResource(resourceId: UUID!): Boolean
+    resendEventMail(input: sendMailInput!): Boolean
   }
 
   ## ------------------------------------- Query ---------------------------------------------------##
