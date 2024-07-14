@@ -259,8 +259,8 @@ class DashboardAPI extends RESTDataSource {
         })
 
         const response = {
-            'totalEventPoints': totalEventPoints._sum.cpdp_points,
-            'pointsEarned': totalPointsEarned._sum.points,
+            'totalEventPoints': totalEventPoints._sum.cpdp_points as number,
+            'pointsEarned': totalPointsEarned._sum.points as number,
             'eventAttended': eventAttended,
             'fin_status': checkYearlyDuePayment > 0 ? true : false
         }
