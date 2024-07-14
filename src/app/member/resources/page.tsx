@@ -36,8 +36,6 @@ const MemberResource = () => {
     }
   }
 
-  console.log()
-
   if(loading) {
     return (
       <div className='flex h-screen items-center justify-center'>
@@ -77,7 +75,7 @@ const MemberResource = () => {
         </div>
       </div>
       <div className='w-full py-6'>
-        <div className='grid sm:grid-cols-5 xs:grid-cols-1 gap-x-10 gap-y-5 items-center justify-center w-full text-center'>
+        <div className='grid sm:grid-cols-5 xs:grid-cols-1 gap-x-10 gap-y-5 xs:flex items-center justify-center w-full text-center'>
           {resources?.map((resource: any) => (
             <PdfViewer key={resource.id} fileUrl={resource.resourcePath} />
           ))}
