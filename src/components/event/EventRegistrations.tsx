@@ -93,7 +93,7 @@ const EventRegistrations = ({ eventId }: {eventId: string}) => {
     }, []);
 
     return (
-        <div className='h-full w-full overflow-y-auto'>
+        <div className='h-full w-full overflow-y-auto pb-10'>
             <div className='flex items-center py-3 px-3 rounded-t-lg bg-white space-x-3'>
                 <div className='text-[#554E51] text-sm'>
                     <span>{registeredMembers?.length || 0} registrations</span>

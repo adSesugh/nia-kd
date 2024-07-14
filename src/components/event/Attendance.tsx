@@ -3,10 +3,12 @@ import { Chip, Spinner, Table, TableBody, TableCell, TableColumn, TableHeader, T
 import React, { useEffect, useState } from 'react'
 import moment from 'moment'
 import { toast } from 'react-toastify'
+import { SearchNormal } from 'iconsax-react'
 
 const EventAttendance = ({ eventId }: {eventId: string}) => {
     let [index, setIndex] = useState<number>(0)
     const [attendance, setAttendance] = useState<any>([])
+    const [attendanceHolder, setAttendanceHolder] = useState<any>([])
     const [getAttendance, {loading}] = useGetMembersAttendanceLazyQuery({fetchPolicy: 'no-cache'})
     const [checkinMember] = useMemberEventCheckinMutation()
 
@@ -21,6 +23,7 @@ const EventAttendance = ({ eventId }: {eventId: string}) => {
           })).data
 
           setAttendance(res?.getMembersAttendance)
+          setAttendanceHolder(res?.getMembersAttendance)
       })()
     }, [getAttendance, eventId])
 
@@ -40,6 +43,7 @@ const EventAttendance = ({ eventId }: {eventId: string}) => {
       })).data
 
       setAttendance(res?.getMembersAttendance)
+      setAttendanceHolder(res?.getMembersAttendance)
     } else {
       toast.error('Error occured!')
     }
@@ -83,9 +87,36 @@ const EventAttendance = ({ eventId }: {eventId: string}) => {
               return cellValue;
       }
   }, []);
+
+  const searchRegistrations = (query: string) => {
+    if(query === '') {
+      setAttendance(attendanceHolder)
+    } else {
+      const filteredEvents = attendance?.filter((att: EventRegistration) => {
+        return att?.registrantDetail.firstName?.toLowerCase().includes(query) 
+            || att?.registrantDetail.lastName?.toLowerCase().includes(query) 
+            || att?.registrantDetail.phoneNumber.toLowerCase().includes(query)
+      })
+      setAttendance(filteredEvents)
+    }
+  }
     
   return (
-    <div className='h-full w-full overflow-y-auto'>
+    <div className='h-full w-full overflow-y-auto pb-10'>
+      <div className='flex pb-4 w-full gap-4'>
+        <div className='relative rounded-md shadow-sm sm:w-2/5 xs:w-full'>
+            <div className="pointer-events-none absolute inset-y-0 left-0 flex items-center pl-2">
+                <SearchNormal variant='Outline' size={20} color='gray' />
+            </div>
+            <input 
+                name='query'
+                placeholder='Search registrants'
+                type='search'
+                className={`pr-3 pl-10 block w-full rounded-md h-11 border-0 text-gray-900 ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-gray-200 sm:text-sm sm:leading-6`}
+                onChange={(e) => searchRegistrations(e.target.value)}
+            />
+        </div>
+      </div>
       <div className='flex items-center py-3 px-3 rounded-t-lg bg-white space-x-3'>
         <div className='text-[#554E51] text-sm'>
           <span>{attendance?.length || 0} attendees</span>

@@ -28,7 +28,7 @@ const EventDetail = () => {
     }, [getEvent, id])
 
     return (
-        <div className='h-full overflow-y-auto mt-10'>
+        <div className='h-full overflow-y-auto mt-10 pb-10'>
             <div className='flex h-20 bg-white pt-2 justify-between items-center sm:px-12 xs:px-4'>
                 <div className='space-y-1'>
                     <div className='flex space-x-2 items-center cursor-pointer' onClick={() => router.back()}>
