@@ -446,6 +446,23 @@ class EventAPI extends RESTDataSource {
             return false
         }
     }
+
+    async memberEventCheckin(prisma: PrismaClient, id: string) {
+        const eventRegistration = await prisma.eventRegistration.update({
+            where: {
+                id
+            },
+            data: {
+                checkin: true,
+                checkinDate: new Date()
+            }
+        })
+
+        if(eventRegistration){
+            return true
+        }
+        return false
+    }
 }
 
 export default EventAPI

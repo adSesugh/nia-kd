@@ -24,6 +24,7 @@ export const resolvers: Resolvers = {
         createResources: (_, {input}, {prisma, dataSources, userId}) => dataSources.resourceAPI.createResources(prisma, input, userId),
         deleteResource: (_, {resourceId}, {prisma, dataSources}) => dataSources.resourceAPI.deleteResource(prisma, resourceId),
         resendEventMail: (_, {input}, {prisma, dataSources}) => dataSources.eventAPI.resendEventMail(prisma, input),
+        memberEventCheckin: (_, {id}, {prisma, dataSources}) => dataSources.eventAPI.memberEventCheckin(prisma, id)
     },
     Query: {
         members: (_, __, { prisma, dataSources, userId }) => dataSources.memberAPI.getMembers(prisma, userId),

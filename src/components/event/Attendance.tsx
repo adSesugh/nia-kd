@@ -1,12 +1,14 @@
-import { EventRegistration, useGetMembersAttendanceLazyQuery } from '@/graphql/__generated__/graphql'
+import { EventRegistration, useGetMembersAttendanceLazyQuery, useMemberEventCheckinMutation } from '@/graphql/__generated__/graphql'
 import { Chip, Spinner, Table, TableBody, TableCell, TableColumn, TableHeader, TableRow } from '@nextui-org/react'
 import React, { useEffect, useState } from 'react'
 import moment from 'moment'
+import { toast } from 'react-toastify'
 
 const EventAttendance = ({ eventId }: {eventId: string}) => {
     let [index, setIndex] = useState<number>(0)
     const [attendance, setAttendance] = useState<any>([])
     const [getAttendance, {loading}] = useGetMembersAttendanceLazyQuery({fetchPolicy: 'no-cache'})
+    const [checkinMember] = useMemberEventCheckinMutation()
 
     const loadingState = loading || attendance === 0 ? "loading" : "idle";
 
@@ -21,6 +23,27 @@ const EventAttendance = ({ eventId }: {eventId: string}) => {
           setAttendance(res?.getMembersAttendance)
       })()
     }, [getAttendance, eventId])
+
+  const memberCheckin = async (registrantId: string) => {
+    const checkinRes = (await checkinMember({
+      variables: {
+        id: registrantId
+      }
+    })).data
+    if(checkinRes?.memberEventCheckin){
+      toast.success('Member checkin!')
+
+      const res = (await getAttendance({
+          variables: {
+              eventId
+          }
+      })).data
+
+      setAttendance(res?.getMembersAttendance)
+    } else {
+      toast.error('Error occured!')
+    }
+  }
 
   const renderCell = React.useCallback((registeredMember: EventRegistration, columnKey: React.Key) => {
       const cellValue = registeredMember[columnKey as keyof EventRegistration];
@@ -46,8 +69,14 @@ const EventAttendance = ({ eventId }: {eventId: string}) => {
             )
           case "checkin":
               return (
-                  <Chip className={`capitalize border ${registeredMember.checkin ? '#3ABC5E': '#B7B7B7'}`} size="sm" variant="bordered">
-                      <span className={`${registeredMember.checkin ? 'text-[#3ABC5E]' : 'text-[#B7B7B7]'}`}>{registeredMember.checkin ? 'Checked in' : 'Check in'}</span>
+                  <Chip 
+                    className={`capitalize border-2 border-[#3ABC5E] cursor-pointer px-2 py-2.5 border-[${registeredMember.checkin ? '#3ABC5E': '#2e2929'}]`} 
+                    size="md" 
+                    variant="bordered"
+                    onClick={() => memberCheckin(registeredMember.id)}
+                    isDisabled={registeredMember.checkin as boolean}
+                  >
+                      <span className={`${registeredMember.checkin ? 'text-[#3ABC5E]' : 'text-[#2e2929]'}`}>{registeredMember.checkin ? 'Checked in' : 'Check in'}</span>
                   </Chip>
               );
           default:
@@ -77,7 +106,7 @@ const EventAttendance = ({ eventId }: {eventId: string}) => {
         </TableHeader>
         <TableBody
             items={attendance ?? []}
-            loadingContent={<Spinner />}
+            loadingContent={<Spinner color='default' />}
             loadingState={loadingState}
             emptyContent={(
               <div className='flex flex-col items-center justify-center gap-3'>

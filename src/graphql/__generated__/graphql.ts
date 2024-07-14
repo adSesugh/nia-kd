@@ -273,6 +273,7 @@ export type Mutation = {
   deleteEvent?: Maybe<Scalars['Boolean']['output']>;
   deleteResource?: Maybe<Scalars['Boolean']['output']>;
   login?: Maybe<AuthPayload>;
+  memberEventCheckin?: Maybe<Scalars['Boolean']['output']>;
   postEventRegistration?: Maybe<EventRegistration>;
   postMultiPayment?: Maybe<Scalars['Boolean']['output']>;
   postPayment: Payment;
@@ -339,6 +340,11 @@ export type MutationDeleteResourceArgs = {
 
 export type MutationLoginArgs = {
   input: SignInUser;
+};
+
+
+export type MutationMemberEventCheckinArgs = {
+  id: Scalars['UUID']['input'];
 };
 
 
@@ -982,6 +988,13 @@ export type ResendEventMailMutationVariables = Exact<{
 
 
 export type ResendEventMailMutation = { __typename?: 'Mutation', resendEventMail?: boolean | null };
+
+export type MemberEventCheckinMutationVariables = Exact<{
+  id: Scalars['UUID']['input'];
+}>;
+
+
+export type MemberEventCheckinMutation = { __typename?: 'Mutation', memberEventCheckin?: boolean | null };
 
 export type GetMembersQueryVariables = Exact<{ [key: string]: never; }>;
 
@@ -2664,6 +2677,37 @@ export function useResendEventMailMutation(baseOptions?: Apollo.MutationHookOpti
 export type ResendEventMailMutationHookResult = ReturnType<typeof useResendEventMailMutation>;
 export type ResendEventMailMutationResult = Apollo.MutationResult<ResendEventMailMutation>;
 export type ResendEventMailMutationOptions = Apollo.BaseMutationOptions<ResendEventMailMutation, ResendEventMailMutationVariables>;
+export const MemberEventCheckinDocument = gql`
+    mutation memberEventCheckin($id: UUID!) {
+  memberEventCheckin(id: $id)
+}
+    `;
+export type MemberEventCheckinMutationFn = Apollo.MutationFunction<MemberEventCheckinMutation, MemberEventCheckinMutationVariables>;
+
+/**
+ * __useMemberEventCheckinMutation__
+ *
+ * To run a mutation, you first call `useMemberEventCheckinMutation` within a React component and pass it any options that fit your needs.
+ * When your component renders, `useMemberEventCheckinMutation` returns a tuple that includes:
+ * - A mutate function that you can call at any time to execute the mutation
+ * - An object with fields that represent the current status of the mutation's execution
+ *
+ * @param baseOptions options that will be passed into the mutation, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options-2;
+ *
+ * @example
+ * const [memberEventCheckinMutation, { data, loading, error }] = useMemberEventCheckinMutation({
+ *   variables: {
+ *      id: // value for 'id'
+ *   },
+ * });
+ */
+export function useMemberEventCheckinMutation(baseOptions?: Apollo.MutationHookOptions<MemberEventCheckinMutation, MemberEventCheckinMutationVariables>) {
+        const options = {...defaultOptions, ...baseOptions}
+        return Apollo.useMutation<MemberEventCheckinMutation, MemberEventCheckinMutationVariables>(MemberEventCheckinDocument, options);
+      }
+export type MemberEventCheckinMutationHookResult = ReturnType<typeof useMemberEventCheckinMutation>;
+export type MemberEventCheckinMutationResult = Apollo.MutationResult<MemberEventCheckinMutation>;
+export type MemberEventCheckinMutationOptions = Apollo.BaseMutationOptions<MemberEventCheckinMutation, MemberEventCheckinMutationVariables>;
 export const GetMembersDocument = gql`
     query GetMembers {
   members {
@@ -3838,6 +3882,7 @@ export type MutationResolvers<ContextType = GraphQLContext, ParentType extends R
   deleteEvent?: Resolver<Maybe<ResolversTypes['Boolean']>, ParentType, ContextType, RequireFields<MutationDeleteEventArgs, 'eventId'>>;
   deleteResource?: Resolver<Maybe<ResolversTypes['Boolean']>, ParentType, ContextType, RequireFields<MutationDeleteResourceArgs, 'resourceId'>>;
   login?: Resolver<Maybe<ResolversTypes['AuthPayload']>, ParentType, ContextType, RequireFields<MutationLoginArgs, 'input'>>;
+  memberEventCheckin?: Resolver<Maybe<ResolversTypes['Boolean']>, ParentType, ContextType, RequireFields<MutationMemberEventCheckinArgs, 'id'>>;
   postEventRegistration?: Resolver<Maybe<ResolversTypes['EventRegistration']>, ParentType, ContextType, RequireFields<MutationPostEventRegistrationArgs, 'input'>>;
   postMultiPayment?: Resolver<Maybe<ResolversTypes['Boolean']>, ParentType, ContextType, RequireFields<MutationPostMultiPaymentArgs, 'input'>>;
   postPayment?: Resolver<ResolversTypes['Payment'], ParentType, ContextType, RequireFields<MutationPostPaymentArgs, 'input'>>;

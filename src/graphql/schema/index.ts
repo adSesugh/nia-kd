@@ -471,6 +471,7 @@ export const typeDefs = `#graphql
     createResources(input: ResourcesInput!): ResourceResponse
     deleteResource(resourceId: UUID!): Boolean
     resendEventMail(input: sendMailInput!): Boolean
+    memberEventCheckin(id: UUID!): Boolean
   }
 
   ## ------------------------------------- Query ---------------------------------------------------##

@@ -28,7 +28,6 @@ const EventRegistrations = ({ eventId }: {eventId: string}) => {
     }, [getRegisteredMembers, eventId])
 
     const mailResend = async (registrant: EventRegistration) => {
-        console.log(registrant)
         const resMail = await resendEventMail({
             variables: {
                 input: {
@@ -40,7 +39,7 @@ const EventRegistrations = ({ eventId }: {eventId: string}) => {
             }
         })
 
-        if(resMail){
+        if(resMail.data?.resendEventMail){
             toast.success('Email sent!')
         } else {
             toast.error('Email not sent!')

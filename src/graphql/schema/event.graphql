@@ -226,3 +226,7 @@ mutation PostEventRegistration($input: eventRegistrationInput!) {
 mutation ResendEventMail($input: sendMailInput!){
   resendEventMail(input: $input)
 }
+
+mutation memberEventCheckin($id: UUID!){
+  memberEventCheckin(id: $id)
+}
