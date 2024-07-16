@@ -12,6 +12,7 @@
     "db:generate": "npx prisma generate",
     "db:migrate": "npx prisma migrate dev",
     "db:studio": "npx prisma studio",
+    "db:refresh": "npx prisma db seed",
     "postinstall": "prisma generate"
   },
   "dependencies": {

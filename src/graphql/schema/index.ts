@@ -137,6 +137,7 @@ export const typeDefs = `#graphql
     label: String
     type: String!
     required: Boolean
+    order: Int
     createdAt: Time
     updatedAt: Time
   }

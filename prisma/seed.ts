@@ -31,31 +31,36 @@ async function seed() {
                 name: 'firstName',
                 label: 'First name',
                 type: 'text',
-                required: true
+                required: true,
+                order: 1
             },
             {
                 name: 'lastName',
                 label: 'Last name',
                 type: 'text',
-                required: true
+                required: true,
+                order: 2
             },
             {
                 name: 'phoneNumber',
                 label: 'Phone number',
                 type: 'text',
-                required: true
+                required: true,
+                order: 4
             },
             {
                 name: 'gender',
                 label: 'Gender',
                 type: 'select',
-                required: true
+                required: true,
+                order: 5
             },
             {
                 name: 'email',
                 label: 'Email address',
                 type: 'email',
-                required: true
+                required: true,
+                order: 3
             },
         ]
     })

@@ -47,7 +47,8 @@ class EventAPI extends RESTDataSource {
                     label: field.label,
                     required: field.required,
                     type: field.type,
-                    eventId: event.id
+                    eventId: event.id,
+                    priority: field.priority
                 }
             })
             await prisma.eventForm.createMany({
@@ -270,7 +271,11 @@ class EventAPI extends RESTDataSource {
             where: {
                 id: eventId
             },
-            include: {eventForms: true}
+            include: {eventForms: {
+                orderBy: {
+                    priority: 'asc'
+                }
+            }}
         })
 
         return event

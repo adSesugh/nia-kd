@@ -195,6 +195,7 @@ model FormDesign {
   label    String?
   type     String
   required Boolean
+  order    Int?    @default(0)
 
   createdAt DateTime @default(now()) @map(name: "created_at")
   updatedAt DateTime @updatedAt @map(name: "updated_at")

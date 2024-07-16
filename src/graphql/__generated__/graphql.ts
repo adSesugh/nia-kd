@@ -204,6 +204,7 @@ export type FormDesign = {
   id: Scalars['UUID']['output'];
   label?: Maybe<Scalars['String']['output']>;
   name: Scalars['String']['output'];
+  order?: Maybe<Scalars['Int']['output']>;
   required?: Maybe<Scalars['Boolean']['output']>;
   type: Scalars['String']['output'];
   updatedAt?: Maybe<Scalars['Time']['output']>;
@@ -3809,6 +3810,7 @@ export type FormDesignResolvers<ContextType = GraphQLContext, ParentType extends
   id?: Resolver<ResolversTypes['UUID'], ParentType, ContextType>;
   label?: Resolver<Maybe<ResolversTypes['String']>, ParentType, ContextType>;
   name?: Resolver<ResolversTypes['String'], ParentType, ContextType>;
+  order?: Resolver<Maybe<ResolversTypes['Int']>, ParentType, ContextType>;
   required?: Resolver<Maybe<ResolversTypes['Boolean']>, ParentType, ContextType>;
   type?: Resolver<ResolversTypes['String'], ParentType, ContextType>;
   updatedAt?: Resolver<Maybe<ResolversTypes['Time']>, ParentType, ContextType>;

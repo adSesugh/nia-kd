@@ -275,7 +275,8 @@ const CreateEvent = () => {
                                     name: item?.name,
                                     label: item?.label,
                                     type: item?.type,
-                                    required: item?.required
+                                    required: item?.required,
+                                    priority: item?.order
                                 }
                             })
 
