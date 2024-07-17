@@ -1,7 +1,7 @@
 'use client'
 
 import { RootState } from '@/features/store'
-import { Payment, useGetMemberPaymentsLazyQuery } from '@/graphql/__generated__/graphql'
+import { Payment, useGetMemberPaymentsLazyQuery, useGetPaymentLazyQuery, useGetPaymentsLazyQuery } from '@/graphql/__generated__/graphql'
 import { Chip, Spinner, Table, TableBody, TableCell, TableColumn, TableHeader, TableRow } from '@nextui-org/react'
 import { DotsThree } from '@phosphor-icons/react'
 import { SearchNormal } from 'iconsax-react'
@@ -24,11 +24,8 @@ const Transaction = () => {
   let [index, setIndex] = useState<number>(0)
   const [payments, setPayments] = useState<any>([])
   const [paymentsHolder, setPaymentsHolder] = useState<any>([])
-  const [getPayments, {loading, error}] = useGetMemberPaymentsLazyQuery({
-    fetchPolicy: 'no-cache',
-    variables: {
-      memberId: ''
-    }
+  const [getPayments, {loading, error}] = useGetPaymentsLazyQuery({
+    fetchPolicy: 'no-cache'
   })
 
   const loadingState = loading || payments === 0 ? "loading" : "idle";

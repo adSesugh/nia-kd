@@ -15,6 +15,7 @@ query GetPayments {
       startsAt
       endsAt
     }
+    paymentRef
     amount
     status
     createdAt

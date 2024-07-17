@@ -73,7 +73,7 @@ const EventRegistration = () => {
 				}
 			}
 		  })
-		  if(res.data?.postEventRegistration){
+		  if(res.data?.postEventRegistration?.id){
 			toast.success('Event registered')
 			return router.push('/events')
 		  }
@@ -102,7 +102,7 @@ const EventRegistration = () => {
 				}
 			}
 			})
-			if(res.data?.postEventRegistration){
+			if(res.data?.postEventRegistration?.id){
 				toast.success('Event registered')
 				return router.push('/events')
 			}
