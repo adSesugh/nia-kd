@@ -40,7 +40,7 @@ export const typeDefs = `#graphql
     userId: UUID!
     joined: Time
     membershipTypeId: UUID!
-    membershipType: MembershipType
+    membershipType: MembershipType!
     membershipId: String
     status: String @uppercase
     cpdpPoints: CpdpPoint
@@ -213,6 +213,21 @@ export const typeDefs = `#graphql
     createdAt: Time
   }
 
+  type Compaign {
+  id: UUID!
+  name: String!
+  duration: String!
+  starts_at: Time!
+  ends_at: Time!
+  web_banner: String!
+  mobile_banner: String!
+  link: String!
+  status: Boolean!
+  createdAt: Time
+  updatedAt: Time
+  deletedAt: Time
+}
+
   ## ------------------------------------- Type Input ---------------------------------------------------##
 
   input signInUser {
@@ -346,6 +361,16 @@ export const typeDefs = `#graphql
     email: String!
   }
 
+  input CompaignInput {
+  name: String!
+  duration: String!
+  starts_at: Time!
+  ends_at: Time!
+  web_banner: String!
+  mobile_banner: String!
+  link: String!
+}
+
   ## ------------------------------------- Type Response ---------------------------------------------------##
   
   type UserPayload {
@@ -473,6 +498,10 @@ export const typeDefs = `#graphql
     deleteResource(resourceId: UUID!): Boolean
     resendEventMail(input: sendMailInput!): Boolean
     memberEventCheckin(id: UUID!): Boolean
+    createCompaign(input: CompaignInput!): Compaign
+    deleteCompaign(compaignId: String!): Compaign
+    updateCompaign(compaignId: String!, input: CompaignInput!): Compaign,
+    stopCompaign(compaignId: String!, status: Boolean!): Compaign
   }
 
   ## ------------------------------------- Query ---------------------------------------------------##
@@ -511,5 +540,7 @@ export const typeDefs = `#graphql
     getResources: [Resource!]
     getResource(resourceId: UUID!): Resource
     revenueByCategory(duration: String!): JSON
+    getCompaigns: [Compaign!]
+    getCompaign(compaignId: String!): Compaign
   }
 `;

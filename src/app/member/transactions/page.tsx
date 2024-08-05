@@ -136,7 +136,7 @@ const TransactionList = () => {
           >
               {(item: any) => (
                   <TableRow key={item?.id} className='border-b last:border-b-0'>
-                      {(columnKey) => <TableCell>{renderCell(item, columnKey)}</TableCell>}
+                      {(columnKey) => <TableCell className='py-3'>{renderCell(item, columnKey)}</TableCell>}
                   </TableRow>
               )}
           </TableBody>

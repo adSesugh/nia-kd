@@ -69,6 +69,7 @@ const RegisterPage: React.FC<{}> = () => {
               return router.push('/auth/login')
             }
           } catch (error: any) {
+            console.log(error.message)
             toast.error("Whoops! error occurred")
             setSubmitting(false)
           }

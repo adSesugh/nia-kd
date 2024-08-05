@@ -8,9 +8,9 @@ import moment from "moment";
 
 class EventAPI extends RESTDataSource {
 
-    todayDate = new Date(moment().format("Y-MM-D"))
-    startOfYear = new Date(moment().startOf('year').format("Y-MM-D"))
-    endOfYear = new Date(moment().endOf('year').format("Y-MM-D"))
+    private _todayDate = new Date(moment().format("Y-MM-D"))
+    private _startOfYear = new Date(moment().startOf('year').format("Y-MM-D"))
+    private _endOfYear = new Date(moment().endOf('year').format("Y-MM-D"))
 
     async createEvent(prisma: PrismaClient, input: EventInput) {
 
@@ -309,17 +309,16 @@ class EventAPI extends RESTDataSource {
     }
 
     async upComingEvents(prisma: PrismaClient, memberId: string) {
-        const todayDate = new Date(moment().format('Y-MM-DD'))
 
         const upComingEvents = prisma.eventRegistration.findMany({
             where: {
                 memberId,
                 event: {
                     starts_at: {
-                        gt: todayDate
+                        gt: this._todayDate
                     },
                     ends_at: {
-                        lte: todayDate
+                        lte: this._todayDate
                     },
                     status: {
                         notIn: ['Ended', 'Archived', 'Draft']
@@ -333,13 +332,12 @@ class EventAPI extends RESTDataSource {
     }
 
     async passedEvents(prisma: PrismaClient) {
-        const todayDate = new Date(moment().format('Y-MM-DD'))
         const events = prisma.event.findMany({
             where: {
                 OR: [
                     {
                         ends_at: {
-                            gt: todayDate
+                            gt: this._todayDate
                         }
                     },
                     {
@@ -364,16 +362,19 @@ class EventAPI extends RESTDataSource {
             where: {
                 id: input.eventId,
                 ends_at: {
-                    gt: this.todayDate
+                    gt: this._todayDate
                 }
             },
-            select: {
-                tickets: true,
-                starts_at: true,
-                ends_at: true,
-                message: true,
-                name: true
-            }
+            include: {speakers: true, sponsors: true}
+            // select: {
+            //     tickets: true,
+            //     starts_at: true,
+            //     ends_at: true,
+            //     message: true,
+            //     name: true,
+            //     speakers: true,
+            //     sponsors: true
+            // }
         })
 
         if(event !== null && totalRegistration < Number(event?.tickets)) {
@@ -389,6 +390,7 @@ class EventAPI extends RESTDataSource {
                     ]
                 }
             })
+
             const registered = await prisma.eventRegistration.create({
                 data: {
                     eventId: input.eventId ?? null,
@@ -411,23 +413,31 @@ class EventAPI extends RESTDataSource {
                         eventRegistrationId: registered.id
                     }
                 })
+            }
 
-                try {
-                    sendEmail(
-                        input.registrantDetail.email, 
-                        'Event Registration', 
-                        event.message as string, {
-                            fullname: `${input.registrantDetail.first_name} ${input.registrantDetail.last_name}`,
-                            eventName: event.name,
-                            startDate: moment(event.starts_at).format('LL'),
-                            endDate: moment(event.ends_at).format('LL'),
-                            startTime: moment(event.starts_at).format('h:mm A'),
-                            endTime: moment(event.ends_at).format('h:mm A')
-                        }
-                    )
-                } catch (error: any) {
-                    console.log(error)
-                }
+            try {
+                sendEmail(
+                    input.registrantDetail.email, 
+                    'Event Registration', 
+                    event.message as string, 
+                    {
+                        fullname: `${input.registrantDetail.first_name} ${input.registrantDetail.last_name}`,
+                        eventName: event.name,
+                        startDate: moment(event.starts_at).format('LL'),
+                        endDate: moment(event.ends_at).format('LL'),
+                        startTime: moment(event.starts_at).format('h:mm A'),
+                        endTime: moment(event.ends_at).format('h:mm A'),
+                        speakers: event.speakers,
+                        sponsors: event.sponsors,
+                        address: event.address || event.link,
+                        email: input.registrantDetail.email,
+                        phone: input.registrantDetail.phoneNumber
+                    }
+                )
+
+                console.log('here')
+            } catch (error: any) {
+                console.log(error)
             }
 
             return registered

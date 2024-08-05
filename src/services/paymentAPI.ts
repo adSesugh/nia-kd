@@ -5,16 +5,31 @@ import { Member, PrismaClient } from "@prisma/client";
 class PaymentAPI extends RESTDataSource {
 
     async getPayments(prisma: PrismaClient, memberId?: string) {
+        console.log(memberId)
+        if(memberId !== undefined) {
+            const payments = await prisma.payment.findMany({
+                orderBy: {
+                    createdAt: 'desc'
+                },
+                include: { due: true, member: {
+                    include: {membershipType: true}
+                } },
+                where: {
+                    OR: [
+                        {memberId}
+                    ]
+                }
+            })
+
+            return payments
+        }
         const payments = await prisma.payment.findMany({
             orderBy: {
                 createdAt: 'desc'
             },
-            include: { due: true, member: true },
-            where: {
-                OR: [
-                    {memberId}
-                ]
-            }
+            include: { due: true, member: {
+                include: {membershipType: true}
+            } }
         })
 
         return payments

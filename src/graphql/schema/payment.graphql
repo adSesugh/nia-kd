@@ -1,5 +1,5 @@
-query GetPayments {
-  getPayments {
+query GetPayments($memberId: UUID) {
+  getPayments(memberId: $memberId) {
     id
     member {
       membershipType {

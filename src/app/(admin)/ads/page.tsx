@@ -2,7 +2,7 @@
 
 import React, { useEffect, useState } from 'react'
 import TitleHeader from '../TitleHeader'
-import {Modal, ModalContent, ModalHeader, ModalBody, ModalFooter, useDisclosure} from "@nextui-org/react"
+import {Modal, ModalContent, ModalHeader, ModalBody, ModalFooter, useDisclosure, Chip,  Button, Dropdown, DropdownItem, DropdownMenu, DropdownTrigger, Table, TableHeader, TableColumn, TableBody, Spinner, TableRow, TableCell} from "@nextui-org/react"
 import { Form, Formik } from 'formik'
 import SearhbarWithIcon from '@/components/searhbar-with-icon'
 import SelectFilter from '@/components/select-filter'
@@ -11,19 +11,130 @@ import PaidAds from '@/components/ads/PaidAds'
 import TextAreaField from '@/components/textarea-field'
 import TextField from '@/components/textfield'
 import { modelStatus } from '@/lib/common'
+import { DotsThree, DotsThreeVertical } from '@phosphor-icons/react'
+import moment from 'moment'
+import { Compaign, useDeleteCompaignMutation, useGetCompaignsLazyQuery, useStopCompaignMutation } from '@/graphql/__generated__/graphql'
+import Link from 'next/link'
+import { useRouter } from 'next/navigation'
+import { toast } from 'react-toastify'
 
 const AdvertPage = () => {
-    const [selectedTab, setSelectedTab] = useState('free')
-    const {isOpen, onOpen, onOpenChange} = useDisclosure();
+    const [compaigns, setCompaigns] = useState<any>([])
+    const [index, setIndex] = useState<number>(0)
+    const router = useRouter()
+
+    const [getCompaigns, {loading}] = useGetCompaignsLazyQuery({fetchPolicy: 'no-cache'})
+    const [switchCompaign, {loading: switchCompaignLoader}] = useStopCompaignMutation()
+    const [deleteCompaign] = useDeleteCompaignMutation()
 
     useEffect(() => {
-        document.title = `Ads | NIA-Kd`
+        document.title = `Campaign | NIA-Kd`;
+        (async() => {
+            const res = (await getCompaigns()).data
+            setCompaigns(res?.getCompaigns)
+        })()
     }, [])
+
+    const loadingState = loading || compaigns.length === 0 ? "loading" : "idle";
+
+    const switchCompaignStatus = async (compaignId: string, status: boolean) => {
+        const compaign = (await switchCompaign({
+            variables: {
+                compaignId,
+                status
+            }
+        })).data
+
+        if(compaign?.stopCompaign?.id){
+            const res = await getCompaigns()
+            if(res.error){
+                toast.error(res.error.message)
+            } else{
+                setCompaigns(res?.data?.getCompaigns)
+            }
+        }
+    }
+
+    const deletePublishedCompaign = async (compaignId: string) => {
+        const compaign = (await deleteCompaign({
+            variables: {
+                compaignId,
+            }
+        })).data
+
+        if(compaign?.deleteCompaign?.id){
+            const res = await getCompaigns()
+            if(res.error){
+                toast.error(res.error.message)
+            } else{
+                setCompaigns(res?.data?.getCompaigns)
+            }
+        }
+    }
+
+    const renderCell = React.useCallback((compaign: Compaign, columnKey: React.Key, index: number) => {
+        const cellValue = compaign[columnKey as keyof Compaign];
+        
+    
+        switch (columnKey) {
+            case "id":
+                return <span>{index++}</span>;
+            case "status":
+                return (
+                    <Chip className="capitalize" color={compaign.status ? 'success' : 'default'} size="sm" variant="flat">
+                        <span className='text-[#0A7535]'>{compaign.status ? 'Running' : 'Stopped'}</span>
+                    </Chip>
+                );
+            case "duration":
+                return (
+                    <Chip className="capitalize" color={compaign?.status ? 'success' : 'default'} size="sm" variant="flat">
+                        <span className='text-[#0A7535]'>{compaign.duration}</span>
+                    </Chip>
+                );
+            case "postedDate":
+                return (
+                    <div>{moment(compaign?.createdAt).format('LL')}</div>
+                );
+            case "performance":
+                return (
+                    <Chip className="capitalize" color={compaign.status ? 'success' : 'default'} size="sm" variant="flat">
+                        <span className='text-[#0A7535]'>{cellValue}</span>
+                    </Chip>
+                );
+            case "actions":
+                return (
+                    <div className="flex justify-end items-center gap-2">
+                        <Dropdown>
+                            <DropdownTrigger>
+                                <Button isIconOnly size="sm" variant="light">
+                                    <DotsThree size={24} color='#5C4D58' />
+                                </Button>
+                            </DropdownTrigger>
+                            <DropdownMenu>
+                                <DropdownItem onClick={() => router.push(`ads/${compaign?.id}/edit`)}>
+                                    Edit Compaign
+                                </DropdownItem>
+                                {compaign.status ? (
+                                    <DropdownItem onClick={() => switchCompaignStatus(compaign.id, compaign.status)}>Stop Compaign</DropdownItem>
+                                ): (
+                                    <DropdownItem onClick={() => switchCompaignStatus(compaign.id, compaign.status)}>Activate Compaign</DropdownItem>
+                                )}
+                                <DropdownItem onClick={() => deletePublishedCompaign(compaign.id)}>
+                                    Delete Compaign
+                                </DropdownItem>
+                            </DropdownMenu>
+                        </Dropdown>
+                    </div>
+                );
+            default:
+                return cellValue;
+        }
+    }, []);
 
     return (
         <div className='sm:px-12 xs:px-4'>
             <div className='flex justify-between items-center'>
-                <TitleHeader title='Ads' />
+                <TitleHeader title='Campaign' />
             </div>
             <div className='flex justify-between pt-6 pb-4'>
                <div>
@@ -44,51 +155,39 @@ const AdvertPage = () => {
                     </Formik>
                </div>
                <div>
-                    <button 
-                        onClick={onOpen}
+                    <Link 
+                        href={'/admin/ads/create'}
                         className='flex px-4 py-2 justify-center items-center text-white text-sm bg-[#161314] rounded-lg'
                     >
-                        Create Ad
-                    </button>
+                        New
+                    </Link>
                </div>
             </div>
-            <div className='pb-3'>
-                <div className='flex pb-2 border-b border-[#DBDBDB] w-full'>
-                    <div className='-mb-2.5 space-x-6'>
-                    <button className={selectedTab === 'free' ? 'text-[#161314] font-medium border-b-[3px] pb-1 border-[#161314] px-1 text-sm' : 'text-sm'} onClick={() => setSelectedTab('free')}>Free ads</button>
-                    <button className={selectedTab === 'paid' ? 'text-[#161314] font-medium border-b-[3px] pb-1 border-[#161314] px-1 text-sm' : 'text-sm'} onClick={() => setSelectedTab('paid')}>Paid ads</button>
-                    </div>
-                </div>
-                {selectedTab === 'free' && <FreeAds />}
-                {selectedTab === 'paid' && <PaidAds />}
+            <div className='pt-4 pb-3'>
+                <Table aria-label="">
+                    <TableHeader>
+                        <TableColumn key="id">S/N</TableColumn>
+                        <TableColumn key="name">Name</TableColumn>
+                        <TableColumn key="status">Status</TableColumn>
+                        <TableColumn key="duration">Duration</TableColumn>
+                        <TableColumn key="postedDate">Posted</TableColumn>
+                        <TableColumn key={'performance'}>Performance</TableColumn>
+                        <TableColumn key={'actions'}>.</TableColumn>
+                    </TableHeader>
+                    <TableBody
+                        items={compaigns ?? []}
+                        loadingContent={<Spinner />}
+                        loadingState={loadingState}
+                        emptyContent={"No free ads to display."}
+                    >
+                        {(item: any) => (
+                            <TableRow key={item?.id}>
+                                {(columnKey: React.Key) => <TableCell className='py-3'>{renderCell(item, columnKey, index)}</TableCell>}
+                            </TableRow>
+                        )}
+                    </TableBody>
+                </Table>
             </div>
-            <Modal isOpen={isOpen} onOpenChange={onOpenChange} isDismissable={false}>
-                <ModalContent>
-                    {(onClose) => (
-                        <>
-                            <ModalHeader className="flex flex-col gap-1 justify-center items-center text-lg">Create Ads</ModalHeader>
-                            <ModalBody>
-                                <Formik
-                                    initialValues={{name: '', starts_at:'', ends_at: '', amount: ''}}
-                                    onSubmit={async(values) => console.log(values)}
-                                >
-                                    {({values, handleBlur, handleChange, handleSubmit}) => (
-                                        <Form onSubmit={handleSubmit}>
-                                            <TextField label='Ad name' name='name' placeholder='A suitable name for the ad' />
-                                            <TextAreaField name='content' label='Ad content' placeholder='Type the content of your ad as it will appear on the website' />
-                                            <TextField label={`Link`} name='link' placeholder='A suitable url for the ad' />
-                                            <ModalFooter className='float-right w-full pr-0'>
-                                                <button className='border rounded-lg px-4 py-2 text-sm'>Save as draft</button>
-                                                <button className='bg-[#241F21] text-white rounded-lg px-6 py-2 text-sm'>Save</button>
-                                            </ModalFooter>
-                                        </Form>
-                                    )}
-                                </Formik>
-                            </ModalBody>
-                        </>
-                    )}
-                </ModalContent>
-            </Modal>
         </div>
     )
 }

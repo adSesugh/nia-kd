@@ -1,0 +1,86 @@
+query GetCompaigns {
+  getCompaigns {
+    id
+    name
+    duration
+    starts_at
+    ends_at
+    web_banner
+    mobile_banner
+    link
+    createdAt
+  }
+}
+
+query GetCompaign($compaignId: String!) {
+  getCompaign(compaignId: $compaignId) {
+    id
+    name
+    duration
+    starts_at
+    ends_at
+    web_banner
+    mobile_banner
+    link
+    createdAt
+  }
+}
+
+mutation CreateCompaign($input: CompaignInput!) {
+  createCompaign(input: $input) {
+    id
+    name
+    duration
+    starts_at
+    ends_at
+    web_banner
+    mobile_banner
+    link
+    createdAt
+  }
+}
+
+mutation DeleteCompaign($compaignId: String!) {
+  deleteCompaign(compaignId: $compaignId) {
+    id
+    name
+    duration
+    starts_at
+    ends_at
+    web_banner
+    mobile_banner
+    link
+    createdAt
+    deletedAt
+  }
+}
+
+mutation UpdateCompaign($compaignId: String!, $input: CompaignInput!) {
+  updateCompaign(compaignId: $compaignId, input: $input) {
+    id
+    name
+    duration
+    starts_at
+    ends_at
+    web_banner
+    mobile_banner
+    link
+    createdAt
+    updatedAt
+  }
+}
+
+mutation StopCompaign($compaignId: String!, $status: Boolean!) {
+  stopCompaign(compaignId: $compaignId, status: $status) {
+    id
+    name
+    duration
+    starts_at
+    ends_at
+    web_banner
+    mobile_banner
+    link
+    createdAt
+    updatedAt
+  }
+}

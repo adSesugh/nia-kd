@@ -29,8 +29,7 @@ const FreeAds = () => {
     
         switch (columnKey) {
             case "id":
-                setIndex(cur => cur + 1)
-                return <span>{index}</span>;
+                return <span>{index++}</span>;
             case "name":
                 return (
                     <div>{due.firstName} {due.lastName}</div>
@@ -82,7 +81,7 @@ const FreeAds = () => {
                 >
                     {(item: any) => (
                         <TableRow key={item?.id}>
-                            {(columnKey) => <TableCell>{renderCell(item, columnKey, index)}</TableCell>}
+                            {(columnKey) => <TableCell className='py-3'>{renderCell(item, columnKey, index)}</TableCell>}
                         </TableRow>
                     )}
                 </TableBody>

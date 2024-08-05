@@ -1,3 +1,5 @@
+
+
 export const getTotalDaysInYear = (year: number): number => {
     const isLeapYear: boolean = (year % 4 === 0 && year % 100 !== 0) || year % 400 === 0;
     return isLeapYear ? 366 : 365;

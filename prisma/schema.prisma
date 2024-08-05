@@ -6,6 +6,7 @@
 
 generator client {
   provider = "prisma-client-js"
+  binaryTargets = ["native", "debian-openssl-1.0.x"]
 }
 
 datasource db {
@@ -292,4 +293,21 @@ model Resource {
   deletedAt     DateTime?
 
   @@map("resources")
+}
+
+model Compaign {
+  id              String @id @default(uuid())
+  name            String @db.VarChar(191)
+  duration        String
+  starts_at       DateTime
+  ends_at         DateTime
+  web_banner      String
+  mobile_banner   String
+  link            String
+  status          Boolean @default(true)
+  createdAt       DateTime @default(now()) @map(name: "created_at")
+  updatedAt       DateTime @updatedAt @map(name: "updated_at")
+  deletedAt       DateTime?
+
+  @@map("compaigns")
 }

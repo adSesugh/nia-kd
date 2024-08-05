@@ -11,7 +11,7 @@ import { useSelector } from 'react-redux';
 import { toast } from 'react-toastify';
 import { PaystackButton } from 'react-paystack';
 import { HookConfig } from 'react-paystack/dist/types';
-import { Button } from '@nextui-org/react';
+import { Button, Spinner } from '@nextui-org/react';
 
 
 const EventRegistration = () => {
@@ -22,7 +22,7 @@ const EventRegistration = () => {
 		email: ''
 	})
 	const [amount, setAmount] = useState<number>(0)
-	const user = useSelector((state: RootState) => state?.auth?.userData.user)
+	const user = useSelector((state: RootState) => state?.auth.userData.user)
 	const {data } = useGetRegistrationFormQuery({
 		fetchPolicy: 'no-cache',
 		variables: {
@@ -151,36 +151,46 @@ const EventRegistration = () => {
 									type='reset' 
 									className='border border-gray-400 text-black/70 item-center rounded-xl text-sm w-28 h-11'
 								/>
-								{data?.getRegistrationForm?.paymentType === 'Free' || Number(data?.getRegistrationForm?.amount) === 0 ? (
-									<Button 
-										name='Register' 
-										type='submit' 
-										disabled={loading}
-										onClick={handleRegistration}
-										className='bg-black text-white item-center rounded-xl text-sm w-32 h-11'
-									>
-										Register
+								{loading ? (
+									<Button className='flex space-x-2 justify-center items-center px-4 bg-black text-white rounded-xl text-sm h-11'>
+										<Spinner size='sm' color='default' />
+										<span>Please wait...</span>
 									</Button>
 								):(
-									<Button 
-										name='Register' 
-										type='submit' 
-										onClick={() => {
-											const totalAmount = amount
-											setConfig({...config, email: formData.email, amount: totalAmount})
-										}}
-										className='bg-black text-white item-center rounded-xl text-sm w-32 h-11'
-										as={'div'}
-										disabled={formData.email !== undefined ? false : true}
-									>
-										<PaystackButton 
-											amount={amount} 
-											email={formData.email || user?.member?.email as string} 
-											reference={(new Date()).getTime().toString()}
-											{...componentProps} 
-										/>
-									</Button>
+									<>
+										{data?.getRegistrationForm?.paymentType === 'Free' || Number(data?.getRegistrationForm?.amount) === 0 ? (
+											<Button 
+												name='Register' 
+												type='submit' 
+												disabled={loading}
+												onClick={handleRegistration}
+												className='bg-black text-white item-center rounded-xl text-sm w-32 h-11'
+											>
+												Register
+											</Button>
+										):(
+											<Button 
+												name='Register' 
+												type='submit' 
+												onClick={() => {
+													const totalAmount = amount
+													setConfig({...config, email: formData.email, amount: totalAmount})
+												}}
+												className='bg-black text-white item-center rounded-xl text-sm w-32 h-11'
+												as={'div'}
+												disabled={formData.email !== undefined ? false : true}
+											>
+												<PaystackButton 
+													amount={amount} 
+													email={formData.email || user?.member?.email as string} 
+													reference={(new Date()).getTime().toString()}
+													{...componentProps} 
+												/>
+											</Button>
+										)}
+									</>
 								)}
+								
 							</div>
 						</div>
 					</div>

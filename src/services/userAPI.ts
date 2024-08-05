@@ -3,7 +3,7 @@ import { authenticateUser } from "@/lib/common";
 import { generateZerofillID } from "@/lib/helpers";
 import { RESTDataSource } from "@apollo/datasource-rest";
 import { PrismaClient } from "@prisma/client";
-import bcrypt from 'bcrypt'
+import bcrypt from 'bcryptjs'
 import { GraphQLError } from "graphql/error";
 import { ApolloServerErrorCode } from "@apollo/server/errors"
 

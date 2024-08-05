@@ -19,7 +19,8 @@ class MemberAPI extends RESTDataSource {
         const members = await prisma.member.findMany({
             orderBy: {
                 createdAt: 'desc'
-            }
+            },
+            include: {membershipType: true}
         })
         return members
     }

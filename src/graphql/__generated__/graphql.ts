@@ -67,6 +67,32 @@ export type BlogResponse = {
   success: Scalars['Boolean']['output'];
 };
 
+export type Compaign = {
+  __typename?: 'Compaign';
+  createdAt?: Maybe<Scalars['Time']['output']>;
+  deletedAt?: Maybe<Scalars['Time']['output']>;
+  duration: Scalars['String']['output'];
+  ends_at: Scalars['Time']['output'];
+  id: Scalars['UUID']['output'];
+  link: Scalars['String']['output'];
+  mobile_banner: Scalars['String']['output'];
+  name: Scalars['String']['output'];
+  starts_at: Scalars['Time']['output'];
+  status: Scalars['Boolean']['output'];
+  updatedAt?: Maybe<Scalars['Time']['output']>;
+  web_banner: Scalars['String']['output'];
+};
+
+export type CompaignInput = {
+  duration: Scalars['String']['input'];
+  ends_at: Scalars['Time']['input'];
+  link: Scalars['String']['input'];
+  mobile_banner: Scalars['String']['input'];
+  name: Scalars['String']['input'];
+  starts_at: Scalars['Time']['input'];
+  web_banner: Scalars['String']['input'];
+};
+
 export type CpdpPoint = {
   __typename?: 'CpdpPoint';
   eventId: Scalars['UUID']['output'];
@@ -220,7 +246,7 @@ export type Member = {
   joined?: Maybe<Scalars['Time']['output']>;
   lastName: Scalars['String']['output'];
   membershipId?: Maybe<Scalars['String']['output']>;
-  membershipType?: Maybe<MembershipType>;
+  membershipType: MembershipType;
   membershipTypeId: Scalars['UUID']['output'];
   phoneNumber: Scalars['String']['output'];
   photoURL?: Maybe<Scalars['String']['output']>;
@@ -266,11 +292,13 @@ export type Mutation = {
   archiveDue?: Maybe<Scalars['Boolean']['output']>;
   cancelEvent?: Maybe<Scalars['Boolean']['output']>;
   createBlog?: Maybe<BlogResponse>;
+  createCompaign?: Maybe<Compaign>;
   createDue?: Maybe<DueResponse>;
   createEvent?: Maybe<EventResponse>;
   createResources?: Maybe<ResourceResponse>;
   createUser?: Maybe<CreateUserResponse>;
   deactivateMember?: Maybe<Member>;
+  deleteCompaign?: Maybe<Compaign>;
   deleteEvent?: Maybe<Scalars['Boolean']['output']>;
   deleteResource?: Maybe<Scalars['Boolean']['output']>;
   login?: Maybe<AuthPayload>;
@@ -282,6 +310,8 @@ export type Mutation = {
   publishedBlog?: Maybe<BlogResponse>;
   resendEventMail?: Maybe<Scalars['Boolean']['output']>;
   resetPassword?: Maybe<ResetPasswordResponse>;
+  stopCompaign?: Maybe<Compaign>;
+  updateCompaign?: Maybe<Compaign>;
   updateDues?: Maybe<DueResponse>;
   watchEventViews?: Maybe<Scalars['Boolean']['output']>;
 };
@@ -300,6 +330,11 @@ export type MutationCancelEventArgs = {
 
 export type MutationCreateBlogArgs = {
   input: BlogInput;
+};
+
+
+export type MutationCreateCompaignArgs = {
+  input: CompaignInput;
 };
 
 
@@ -326,6 +361,11 @@ export type MutationCreateUserArgs = {
 export type MutationDeactivateMemberArgs = {
   memberId: Scalars['UUID']['input'];
   status: Scalars['String']['input'];
+};
+
+
+export type MutationDeleteCompaignArgs = {
+  compaignId: Scalars['String']['input'];
 };
 
 
@@ -387,6 +427,18 @@ export type MutationResetPasswordArgs = {
 };
 
 
+export type MutationStopCompaignArgs = {
+  compaignId: Scalars['String']['input'];
+  status: Scalars['Boolean']['input'];
+};
+
+
+export type MutationUpdateCompaignArgs = {
+  compaignId: Scalars['String']['input'];
+  input: CompaignInput;
+};
+
+
 export type MutationUpdateDuesArgs = {
   dueId: Scalars['UUID']['input'];
   input: DueUpdateInput;
@@ -423,6 +475,8 @@ export type Query = {
   getAdminDashboardStat?: Maybe<AdminDashboardStatResponse>;
   getBlog?: Maybe<Blog>;
   getBlogs?: Maybe<Array<Blog>>;
+  getCompaign?: Maybe<Compaign>;
+  getCompaigns?: Maybe<Array<Compaign>>;
   getDuePayment?: Maybe<MemberDueResponse>;
   getEvent?: Maybe<Event>;
   getEvents?: Maybe<Array<Event>>;
@@ -460,6 +514,11 @@ export type QueryGetBlogArgs = {
 
 export type QueryGetBlogsArgs = {
   status?: InputMaybe<Scalars['String']['input']>;
+};
+
+
+export type QueryGetCompaignArgs = {
+  compaignId: Scalars['String']['input'];
 };
 
 
@@ -773,7 +832,7 @@ export type UserLoginMutationVariables = Exact<{
 }>;
 
 
-export type UserLoginMutation = { __typename?: 'Mutation', login?: { __typename?: 'AuthPayload', token?: string | null, user?: { __typename?: 'UserPayload', id: any, regId: string, role: string, photoURL?: string | null, member?: { __typename?: 'Member', email: string, photoURL?: string | null, lastName: string, firstName: string, phoneNumber: string, id: any, membershipType?: { __typename?: 'MembershipType', id: any, name: string } | null } | null } | null } | null };
+export type UserLoginMutation = { __typename?: 'Mutation', login?: { __typename?: 'AuthPayload', token?: string | null, user?: { __typename?: 'UserPayload', id: any, regId: string, role: string, photoURL?: string | null, member?: { __typename?: 'Member', email: string, photoURL?: string | null, lastName: string, firstName: string, phoneNumber: string, id: any, membershipType: { __typename?: 'MembershipType', id: any, name: string } } | null } | null } | null };
 
 export type GetUsersQueryVariables = Exact<{ [key: string]: never; }>;
 
@@ -807,10 +866,52 @@ export type PublishedBlogMutationVariables = Exact<{
 
 export type PublishedBlogMutation = { __typename?: 'Mutation', publishedBlog?: { __typename?: 'BlogResponse', code: number, success: boolean, message: string, blog?: { __typename?: 'Blog', id: any, title: string, content: string, summary: string, featuredImage: string, status: string, createdAt?: any | null } | null } | null };
 
+export type GetCompaignsQueryVariables = Exact<{ [key: string]: never; }>;
+
+
+export type GetCompaignsQuery = { __typename?: 'Query', getCompaigns?: Array<{ __typename?: 'Compaign', id: any, name: string, duration: string, starts_at: any, ends_at: any, web_banner: string, mobile_banner: string, link: string, createdAt?: any | null }> | null };
+
+export type GetCompaignQueryVariables = Exact<{
+  compaignId: Scalars['String']['input'];
+}>;
+
+
+export type GetCompaignQuery = { __typename?: 'Query', getCompaign?: { __typename?: 'Compaign', id: any, name: string, duration: string, starts_at: any, ends_at: any, web_banner: string, mobile_banner: string, link: string, createdAt?: any | null } | null };
+
+export type CreateCompaignMutationVariables = Exact<{
+  input: CompaignInput;
+}>;
+
+
+export type CreateCompaignMutation = { __typename?: 'Mutation', createCompaign?: { __typename?: 'Compaign', id: any, name: string, duration: string, starts_at: any, ends_at: any, web_banner: string, mobile_banner: string, link: string, createdAt?: any | null } | null };
+
+export type DeleteCompaignMutationVariables = Exact<{
+  compaignId: Scalars['String']['input'];
+}>;
+
+
+export type DeleteCompaignMutation = { __typename?: 'Mutation', deleteCompaign?: { __typename?: 'Compaign', id: any, name: string, duration: string, starts_at: any, ends_at: any, web_banner: string, mobile_banner: string, link: string, createdAt?: any | null, deletedAt?: any | null } | null };
+
+export type UpdateCompaignMutationVariables = Exact<{
+  compaignId: Scalars['String']['input'];
+  input: CompaignInput;
+}>;
+
+
+export type UpdateCompaignMutation = { __typename?: 'Mutation', updateCompaign?: { __typename?: 'Compaign', id: any, name: string, duration: string, starts_at: any, ends_at: any, web_banner: string, mobile_banner: string, link: string, createdAt?: any | null, updatedAt?: any | null } | null };
+
+export type StopCompaignMutationVariables = Exact<{
+  compaignId: Scalars['String']['input'];
+  status: Scalars['Boolean']['input'];
+}>;
+
+
+export type StopCompaignMutation = { __typename?: 'Mutation', stopCompaign?: { __typename?: 'Compaign', id: any, name: string, duration: string, starts_at: any, ends_at: any, web_banner: string, mobile_banner: string, link: string, createdAt?: any | null, updatedAt?: any | null } | null };
+
 export type GetRecentRegistrationQueryVariables = Exact<{ [key: string]: never; }>;
 
 
-export type GetRecentRegistrationQuery = { __typename?: 'Query', getRecentRegistration?: Array<{ __typename?: 'Member', id: any, firstName: string, lastName: string, createdAt?: any | null, membershipType?: { __typename?: 'MembershipType', id: any, name: string } | null }> | null };
+export type GetRecentRegistrationQuery = { __typename?: 'Query', getRecentRegistration?: Array<{ __typename?: 'Member', id: any, firstName: string, lastName: string, createdAt?: any | null, membershipType: { __typename?: 'MembershipType', id: any, name: string } }> | null };
 
 export type GetAdminDashboardStatQueryVariables = Exact<{ [key: string]: never; }>;
 
@@ -1000,7 +1101,7 @@ export type MemberEventCheckinMutation = { __typename?: 'Mutation', memberEventC
 export type GetMembersQueryVariables = Exact<{ [key: string]: never; }>;
 
 
-export type GetMembersQuery = { __typename?: 'Query', members?: Array<{ __typename?: 'Member', id: any, regId: string, firstName: string, lastName: string, email: string, phoneNumber: string, photoURL?: string | null, joined?: any | null, membershipId?: string | null, status?: string | null, createdAt?: any | null, membershipType?: { __typename?: 'MembershipType', id: any, name: string } | null } | null> | null };
+export type GetMembersQuery = { __typename?: 'Query', members?: Array<{ __typename?: 'Member', id: any, regId: string, firstName: string, lastName: string, email: string, phoneNumber: string, photoURL?: string | null, joined?: any | null, membershipId?: string | null, status?: string | null, createdAt?: any | null, membershipType: { __typename?: 'MembershipType', id: any, name: string } } | null> | null };
 
 export type DeactivateMemberMutationVariables = Exact<{
   memberId: Scalars['UUID']['input'];
@@ -1008,14 +1109,14 @@ export type DeactivateMemberMutationVariables = Exact<{
 }>;
 
 
-export type DeactivateMemberMutation = { __typename?: 'Mutation', deactivateMember?: { __typename?: 'Member', id: any, regId: string, firstName: string, lastName: string, email: string, phoneNumber: string, photoURL?: string | null, workplace: string, userId: any, joined?: any | null, membershipId?: string | null, status?: string | null, createdAt?: any | null, updatedAt?: any | null, membershipType?: { __typename?: 'MembershipType', id: any, name: string } | null } | null };
+export type DeactivateMemberMutation = { __typename?: 'Mutation', deactivateMember?: { __typename?: 'Member', id: any, regId: string, firstName: string, lastName: string, email: string, phoneNumber: string, photoURL?: string | null, workplace: string, userId: any, joined?: any | null, membershipId?: string | null, status?: string | null, createdAt?: any | null, updatedAt?: any | null, membershipType: { __typename?: 'MembershipType', id: any, name: string } } | null };
 
 export type GetMemberQueryVariables = Exact<{
   memberId: Scalars['UUID']['input'];
 }>;
 
 
-export type GetMemberQuery = { __typename?: 'Query', getMember?: { __typename?: 'Member', id: any, regId: string, firstName: string, lastName: string, email: string, phoneNumber: string, photoURL?: string | null, workplace: string, userId: any, joined?: any | null, membershipId?: string | null, status?: string | null, createdAt?: any | null, updatedAt?: any | null, membershipType?: { __typename?: 'MembershipType', id: any, name: string } | null, cpdpPoints?: { __typename?: 'CpdpPoint', id: any, points: number } | null } | null };
+export type GetMemberQuery = { __typename?: 'Query', getMember?: { __typename?: 'Member', id: any, regId: string, firstName: string, lastName: string, email: string, phoneNumber: string, photoURL?: string | null, workplace: string, userId: any, joined?: any | null, membershipId?: string | null, status?: string | null, createdAt?: any | null, updatedAt?: any | null, membershipType: { __typename?: 'MembershipType', id: any, name: string }, cpdpPoints?: { __typename?: 'CpdpPoint', id: any, points: number } | null } | null };
 
 export type ProfilephotoUploadMutationVariables = Exact<{
   memberId: Scalars['UUID']['input'];
@@ -1025,17 +1126,19 @@ export type ProfilephotoUploadMutationVariables = Exact<{
 
 export type ProfilephotoUploadMutation = { __typename?: 'Mutation', profilephotoUpload?: { __typename?: 'UploadResponse', url: string } | null };
 
-export type GetPaymentsQueryVariables = Exact<{ [key: string]: never; }>;
+export type GetPaymentsQueryVariables = Exact<{
+  memberId?: InputMaybe<Scalars['UUID']['input']>;
+}>;
 
 
-export type GetPaymentsQuery = { __typename?: 'Query', getPayments?: Array<{ __typename?: 'Payment', id: any, amount: any, status: string, createdAt?: any | null, member?: { __typename?: 'Member', firstName: string, lastName: string, membershipType?: { __typename?: 'MembershipType', id: any, name: string } | null } | null, due?: { __typename?: 'Due', name?: string | null, amount?: any | null, startsAt?: any | null, endsAt?: any | null } | null }> | null };
+export type GetPaymentsQuery = { __typename?: 'Query', getPayments?: Array<{ __typename?: 'Payment', id: any, paymentRef?: string | null, amount: any, status: string, createdAt?: any | null, member?: { __typename?: 'Member', firstName: string, lastName: string, membershipType: { __typename?: 'MembershipType', id: any, name: string } } | null, due?: { __typename?: 'Due', name?: string | null, amount?: any | null, startsAt?: any | null, endsAt?: any | null } | null }> | null };
 
 export type GetPaymentQueryVariables = Exact<{
   paymentId: Scalars['UUID']['input'];
 }>;
 
 
-export type GetPaymentQuery = { __typename?: 'Query', getPayment?: { __typename?: 'Payment', id: any, paymentRef?: string | null, amount: any, status: string, createdAt?: any | null, updatedAt?: any | null, member?: { __typename?: 'Member', firstName: string, lastName: string, regId: string, membershipType?: { __typename?: 'MembershipType', id: any, name: string } | null } | null, due?: { __typename?: 'Due', name?: string | null, startsAt?: any | null, endsAt?: any | null, amount?: any | null } | null } | null };
+export type GetPaymentQuery = { __typename?: 'Query', getPayment?: { __typename?: 'Payment', id: any, paymentRef?: string | null, amount: any, status: string, createdAt?: any | null, updatedAt?: any | null, member?: { __typename?: 'Member', firstName: string, lastName: string, regId: string, membershipType: { __typename?: 'MembershipType', id: any, name: string } } | null, due?: { __typename?: 'Due', name?: string | null, startsAt?: any | null, endsAt?: any | null, amount?: any | null } | null } | null };
 
 export type PostPaymentMutationVariables = Exact<{
   input: PaymentInput;
@@ -1096,7 +1199,7 @@ export type GetUserQueryVariables = Exact<{
 }>;
 
 
-export type GetUserQuery = { __typename?: 'Query', getUser?: { __typename?: 'Member', id: any, regId: string, firstName: string, lastName: string, email: string, phoneNumber: string, photoURL?: string | null, workplace: string, userId: any, joined?: any | null, membershipId?: string | null, status?: string | null, createdAt?: any | null, updatedAt?: any | null, membershipType?: { __typename?: 'MembershipType', id: any, name: string } | null, cpdpPoints?: { __typename?: 'CpdpPoint', id: any, points: number } | null } | null };
+export type GetUserQuery = { __typename?: 'Query', getUser?: { __typename?: 'Member', id: any, regId: string, firstName: string, lastName: string, email: string, phoneNumber: string, photoURL?: string | null, workplace: string, userId: any, joined?: any | null, membershipId?: string | null, status?: string | null, createdAt?: any | null, updatedAt?: any | null, membershipType: { __typename?: 'MembershipType', id: any, name: string }, cpdpPoints?: { __typename?: 'CpdpPoint', id: any, points: number } | null } | null };
 
 export type ResetPasswordMutationVariables = Exact<{
   userId: Scalars['UUID']['input'];
@@ -1417,6 +1520,270 @@ export function usePublishedBlogMutation(baseOptions?: Apollo.MutationHookOption
 export type PublishedBlogMutationHookResult = ReturnType<typeof usePublishedBlogMutation>;
 export type PublishedBlogMutationResult = Apollo.MutationResult<PublishedBlogMutation>;
 export type PublishedBlogMutationOptions = Apollo.BaseMutationOptions<PublishedBlogMutation, PublishedBlogMutationVariables>;
+export const GetCompaignsDocument = gql`
+    query GetCompaigns {
+  getCompaigns {
+    id
+    name
+    duration
+    starts_at
+    ends_at
+    web_banner
+    mobile_banner
+    link
+    createdAt
+  }
+}
+    `;
+
+/**
+ * __useGetCompaignsQuery__
+ *
+ * To run a query within a React component, call `useGetCompaignsQuery` and pass it any options that fit your needs.
+ * When your component renders, `useGetCompaignsQuery` returns an object from Apollo Client that contains loading, error, and data properties
+ * you can use to render your UI.
+ *
+ * @param baseOptions options that will be passed into the query, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options;
+ *
+ * @example
+ * const { data, loading, error } = useGetCompaignsQuery({
+ *   variables: {
+ *   },
+ * });
+ */
+export function useGetCompaignsQuery(baseOptions?: Apollo.QueryHookOptions<GetCompaignsQuery, GetCompaignsQueryVariables>) {
+        const options = {...defaultOptions, ...baseOptions}
+        return Apollo.useQuery<GetCompaignsQuery, GetCompaignsQueryVariables>(GetCompaignsDocument, options);
+      }
+export function useGetCompaignsLazyQuery(baseOptions?: Apollo.LazyQueryHookOptions<GetCompaignsQuery, GetCompaignsQueryVariables>) {
+          const options = {...defaultOptions, ...baseOptions}
+          return Apollo.useLazyQuery<GetCompaignsQuery, GetCompaignsQueryVariables>(GetCompaignsDocument, options);
+        }
+export function useGetCompaignsSuspenseQuery(baseOptions?: Apollo.SuspenseQueryHookOptions<GetCompaignsQuery, GetCompaignsQueryVariables>) {
+          const options = {...defaultOptions, ...baseOptions}
+          return Apollo.useSuspenseQuery<GetCompaignsQuery, GetCompaignsQueryVariables>(GetCompaignsDocument, options);
+        }
+export type GetCompaignsQueryHookResult = ReturnType<typeof useGetCompaignsQuery>;
+export type GetCompaignsLazyQueryHookResult = ReturnType<typeof useGetCompaignsLazyQuery>;
+export type GetCompaignsSuspenseQueryHookResult = ReturnType<typeof useGetCompaignsSuspenseQuery>;
+export type GetCompaignsQueryResult = Apollo.QueryResult<GetCompaignsQuery, GetCompaignsQueryVariables>;
+export const GetCompaignDocument = gql`
+    query GetCompaign($compaignId: String!) {
+  getCompaign(compaignId: $compaignId) {
+    id
+    name
+    duration
+    starts_at
+    ends_at
+    web_banner
+    mobile_banner
+    link
+    createdAt
+  }
+}
+    `;
+
+/**
+ * __useGetCompaignQuery__
+ *
+ * To run a query within a React component, call `useGetCompaignQuery` and pass it any options that fit your needs.
+ * When your component renders, `useGetCompaignQuery` returns an object from Apollo Client that contains loading, error, and data properties
+ * you can use to render your UI.
+ *
+ * @param baseOptions options that will be passed into the query, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options;
+ *
+ * @example
+ * const { data, loading, error } = useGetCompaignQuery({
+ *   variables: {
+ *      compaignId: // value for 'compaignId'
+ *   },
+ * });
+ */
+export function useGetCompaignQuery(baseOptions: Apollo.QueryHookOptions<GetCompaignQuery, GetCompaignQueryVariables> & ({ variables: GetCompaignQueryVariables; skip?: boolean; } | { skip: boolean; }) ) {
+        const options = {...defaultOptions, ...baseOptions}
+        return Apollo.useQuery<GetCompaignQuery, GetCompaignQueryVariables>(GetCompaignDocument, options);
+      }
+export function useGetCompaignLazyQuery(baseOptions?: Apollo.LazyQueryHookOptions<GetCompaignQuery, GetCompaignQueryVariables>) {
+          const options = {...defaultOptions, ...baseOptions}
+          return Apollo.useLazyQuery<GetCompaignQuery, GetCompaignQueryVariables>(GetCompaignDocument, options);
+        }
+export function useGetCompaignSuspenseQuery(baseOptions?: Apollo.SuspenseQueryHookOptions<GetCompaignQuery, GetCompaignQueryVariables>) {
+          const options = {...defaultOptions, ...baseOptions}
+          return Apollo.useSuspenseQuery<GetCompaignQuery, GetCompaignQueryVariables>(GetCompaignDocument, options);
+        }
+export type GetCompaignQueryHookResult = ReturnType<typeof useGetCompaignQuery>;
+export type GetCompaignLazyQueryHookResult = ReturnType<typeof useGetCompaignLazyQuery>;
+export type GetCompaignSuspenseQueryHookResult = ReturnType<typeof useGetCompaignSuspenseQuery>;
+export type GetCompaignQueryResult = Apollo.QueryResult<GetCompaignQuery, GetCompaignQueryVariables>;
+export const CreateCompaignDocument = gql`
+    mutation CreateCompaign($input: CompaignInput!) {
+  createCompaign(input: $input) {
+    id
+    name
+    duration
+    starts_at
+    ends_at
+    web_banner
+    mobile_banner
+    link
+    createdAt
+  }
+}
+    `;
+export type CreateCompaignMutationFn = Apollo.MutationFunction<CreateCompaignMutation, CreateCompaignMutationVariables>;
+
+/**
+ * __useCreateCompaignMutation__
+ *
+ * To run a mutation, you first call `useCreateCompaignMutation` within a React component and pass it any options that fit your needs.
+ * When your component renders, `useCreateCompaignMutation` returns a tuple that includes:
+ * - A mutate function that you can call at any time to execute the mutation
+ * - An object with fields that represent the current status of the mutation's execution
+ *
+ * @param baseOptions options that will be passed into the mutation, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options-2;
+ *
+ * @example
+ * const [createCompaignMutation, { data, loading, error }] = useCreateCompaignMutation({
+ *   variables: {
+ *      input: // value for 'input'
+ *   },
+ * });
+ */
+export function useCreateCompaignMutation(baseOptions?: Apollo.MutationHookOptions<CreateCompaignMutation, CreateCompaignMutationVariables>) {
+        const options = {...defaultOptions, ...baseOptions}
+        return Apollo.useMutation<CreateCompaignMutation, CreateCompaignMutationVariables>(CreateCompaignDocument, options);
+      }
+export type CreateCompaignMutationHookResult = ReturnType<typeof useCreateCompaignMutation>;
+export type CreateCompaignMutationResult = Apollo.MutationResult<CreateCompaignMutation>;
+export type CreateCompaignMutationOptions = Apollo.BaseMutationOptions<CreateCompaignMutation, CreateCompaignMutationVariables>;
+export const DeleteCompaignDocument = gql`
+    mutation DeleteCompaign($compaignId: String!) {
+  deleteCompaign(compaignId: $compaignId) {
+    id
+    name
+    duration
+    starts_at
+    ends_at
+    web_banner
+    mobile_banner
+    link
+    createdAt
+    deletedAt
+  }
+}
+    `;
+export type DeleteCompaignMutationFn = Apollo.MutationFunction<DeleteCompaignMutation, DeleteCompaignMutationVariables>;
+
+/**
+ * __useDeleteCompaignMutation__
+ *
+ * To run a mutation, you first call `useDeleteCompaignMutation` within a React component and pass it any options that fit your needs.
+ * When your component renders, `useDeleteCompaignMutation` returns a tuple that includes:
+ * - A mutate function that you can call at any time to execute the mutation
+ * - An object with fields that represent the current status of the mutation's execution
+ *
+ * @param baseOptions options that will be passed into the mutation, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options-2;
+ *
+ * @example
+ * const [deleteCompaignMutation, { data, loading, error }] = useDeleteCompaignMutation({
+ *   variables: {
+ *      compaignId: // value for 'compaignId'
+ *   },
+ * });
+ */
+export function useDeleteCompaignMutation(baseOptions?: Apollo.MutationHookOptions<DeleteCompaignMutation, DeleteCompaignMutationVariables>) {
+        const options = {...defaultOptions, ...baseOptions}
+        return Apollo.useMutation<DeleteCompaignMutation, DeleteCompaignMutationVariables>(DeleteCompaignDocument, options);
+      }
+export type DeleteCompaignMutationHookResult = ReturnType<typeof useDeleteCompaignMutation>;
+export type DeleteCompaignMutationResult = Apollo.MutationResult<DeleteCompaignMutation>;
+export type DeleteCompaignMutationOptions = Apollo.BaseMutationOptions<DeleteCompaignMutation, DeleteCompaignMutationVariables>;
+export const UpdateCompaignDocument = gql`
+    mutation UpdateCompaign($compaignId: String!, $input: CompaignInput!) {
+  updateCompaign(compaignId: $compaignId, input: $input) {
+    id
+    name
+    duration
+    starts_at
+    ends_at
+    web_banner
+    mobile_banner
+    link
+    createdAt
+    updatedAt
+  }
+}
+    `;
+export type UpdateCompaignMutationFn = Apollo.MutationFunction<UpdateCompaignMutation, UpdateCompaignMutationVariables>;
+
+/**
+ * __useUpdateCompaignMutation__
+ *
+ * To run a mutation, you first call `useUpdateCompaignMutation` within a React component and pass it any options that fit your needs.
+ * When your component renders, `useUpdateCompaignMutation` returns a tuple that includes:
+ * - A mutate function that you can call at any time to execute the mutation
+ * - An object with fields that represent the current status of the mutation's execution
+ *
+ * @param baseOptions options that will be passed into the mutation, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options-2;
+ *
+ * @example
+ * const [updateCompaignMutation, { data, loading, error }] = useUpdateCompaignMutation({
+ *   variables: {
+ *      compaignId: // value for 'compaignId'
+ *      input: // value for 'input'
+ *   },
+ * });
+ */
+export function useUpdateCompaignMutation(baseOptions?: Apollo.MutationHookOptions<UpdateCompaignMutation, UpdateCompaignMutationVariables>) {
+        const options = {...defaultOptions, ...baseOptions}
+        return Apollo.useMutation<UpdateCompaignMutation, UpdateCompaignMutationVariables>(UpdateCompaignDocument, options);
+      }
+export type UpdateCompaignMutationHookResult = ReturnType<typeof useUpdateCompaignMutation>;
+export type UpdateCompaignMutationResult = Apollo.MutationResult<UpdateCompaignMutation>;
+export type UpdateCompaignMutationOptions = Apollo.BaseMutationOptions<UpdateCompaignMutation, UpdateCompaignMutationVariables>;
+export const StopCompaignDocument = gql`
+    mutation StopCompaign($compaignId: String!, $status: Boolean!) {
+  stopCompaign(compaignId: $compaignId, status: $status) {
+    id
+    name
+    duration
+    starts_at
+    ends_at
+    web_banner
+    mobile_banner
+    link
+    createdAt
+    updatedAt
+  }
+}
+    `;
+export type StopCompaignMutationFn = Apollo.MutationFunction<StopCompaignMutation, StopCompaignMutationVariables>;
+
+/**
+ * __useStopCompaignMutation__
+ *
+ * To run a mutation, you first call `useStopCompaignMutation` within a React component and pass it any options that fit your needs.
+ * When your component renders, `useStopCompaignMutation` returns a tuple that includes:
+ * - A mutate function that you can call at any time to execute the mutation
+ * - An object with fields that represent the current status of the mutation's execution
+ *
+ * @param baseOptions options that will be passed into the mutation, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options-2;
+ *
+ * @example
+ * const [stopCompaignMutation, { data, loading, error }] = useStopCompaignMutation({
+ *   variables: {
+ *      compaignId: // value for 'compaignId'
+ *      status: // value for 'status'
+ *   },
+ * });
+ */
+export function useStopCompaignMutation(baseOptions?: Apollo.MutationHookOptions<StopCompaignMutation, StopCompaignMutationVariables>) {
+        const options = {...defaultOptions, ...baseOptions}
+        return Apollo.useMutation<StopCompaignMutation, StopCompaignMutationVariables>(StopCompaignDocument, options);
+      }
+export type StopCompaignMutationHookResult = ReturnType<typeof useStopCompaignMutation>;
+export type StopCompaignMutationResult = Apollo.MutationResult<StopCompaignMutation>;
+export type StopCompaignMutationOptions = Apollo.BaseMutationOptions<StopCompaignMutation, StopCompaignMutationVariables>;
 export const GetRecentRegistrationDocument = gql`
     query GetRecentRegistration {
   getRecentRegistration {
@@ -2909,8 +3276,8 @@ export type ProfilephotoUploadMutationHookResult = ReturnType<typeof useProfilep
 export type ProfilephotoUploadMutationResult = Apollo.MutationResult<ProfilephotoUploadMutation>;
 export type ProfilephotoUploadMutationOptions = Apollo.BaseMutationOptions<ProfilephotoUploadMutation, ProfilephotoUploadMutationVariables>;
 export const GetPaymentsDocument = gql`
-    query GetPayments {
-  getPayments {
+    query GetPayments($memberId: UUID) {
+  getPayments(memberId: $memberId) {
     id
     member {
       membershipType {
@@ -2926,6 +3293,7 @@ export const GetPaymentsDocument = gql`
       startsAt
       endsAt
     }
+    paymentRef
     amount
     status
     createdAt
@@ -2945,6 +3313,7 @@ export const GetPaymentsDocument = gql`
  * @example
  * const { data, loading, error } = useGetPaymentsQuery({
  *   variables: {
+ *      memberId: // value for 'memberId'
  *   },
  * });
  */
@@ -3522,6 +3891,8 @@ export type ResolversTypes = ResolversObject<{
   Blog: ResolverTypeWrapper<BlogModel>;
   BlogResponse: ResolverTypeWrapper<Omit<BlogResponse, 'blog'> & { blog?: Maybe<ResolversTypes['Blog']> }>;
   Boolean: ResolverTypeWrapper<Scalars['Boolean']['output']>;
+  Compaign: ResolverTypeWrapper<Compaign>;
+  CompaignInput: CompaignInput;
   CpdpPoint: ResolverTypeWrapper<Omit<CpdpPoint, 'member'> & { member?: Maybe<ResolversTypes['Member']> }>;
   CreateUserResponse: ResolverTypeWrapper<CreateUserResponse>;
   Decimal: ResolverTypeWrapper<Scalars['Decimal']['output']>;
@@ -3580,6 +3951,8 @@ export type ResolversParentTypes = ResolversObject<{
   Blog: BlogModel;
   BlogResponse: Omit<BlogResponse, 'blog'> & { blog?: Maybe<ResolversParentTypes['Blog']> };
   Boolean: Scalars['Boolean']['output'];
+  Compaign: Compaign;
+  CompaignInput: CompaignInput;
   CpdpPoint: Omit<CpdpPoint, 'member'> & { member?: Maybe<ResolversParentTypes['Member']> };
   CreateUserResponse: CreateUserResponse;
   Decimal: Scalars['Decimal']['output'];
@@ -3676,6 +4049,22 @@ export type BlogResponseResolvers<ContextType = GraphQLContext, ParentType exten
   code?: Resolver<ResolversTypes['Int'], ParentType, ContextType>;
   message?: Resolver<ResolversTypes['String'], ParentType, ContextType>;
   success?: Resolver<ResolversTypes['Boolean'], ParentType, ContextType>;
+  __isTypeOf?: IsTypeOfResolverFn<ParentType, ContextType>;
+}>;
+
+export type CompaignResolvers<ContextType = GraphQLContext, ParentType extends ResolversParentTypes['Compaign'] = ResolversParentTypes['Compaign']> = ResolversObject<{
+  createdAt?: Resolver<Maybe<ResolversTypes['Time']>, ParentType, ContextType>;
+  deletedAt?: Resolver<Maybe<ResolversTypes['Time']>, ParentType, ContextType>;
+  duration?: Resolver<ResolversTypes['String'], ParentType, ContextType>;
+  ends_at?: Resolver<ResolversTypes['Time'], ParentType, ContextType>;
+  id?: Resolver<ResolversTypes['UUID'], ParentType, ContextType>;
+  link?: Resolver<ResolversTypes['String'], ParentType, ContextType>;
+  mobile_banner?: Resolver<ResolversTypes['String'], ParentType, ContextType>;
+  name?: Resolver<ResolversTypes['String'], ParentType, ContextType>;
+  starts_at?: Resolver<ResolversTypes['Time'], ParentType, ContextType>;
+  status?: Resolver<ResolversTypes['Boolean'], ParentType, ContextType>;
+  updatedAt?: Resolver<Maybe<ResolversTypes['Time']>, ParentType, ContextType>;
+  web_banner?: Resolver<ResolversTypes['String'], ParentType, ContextType>;
   __isTypeOf?: IsTypeOfResolverFn<ParentType, ContextType>;
 }>;
 
@@ -3830,7 +4219,7 @@ export type MemberResolvers<ContextType = GraphQLContext, ParentType extends Res
   joined?: Resolver<Maybe<ResolversTypes['Time']>, ParentType, ContextType>;
   lastName?: Resolver<ResolversTypes['String'], ParentType, ContextType>;
   membershipId?: Resolver<Maybe<ResolversTypes['String']>, ParentType, ContextType>;
-  membershipType?: Resolver<Maybe<ResolversTypes['MembershipType']>, ParentType, ContextType>;
+  membershipType?: Resolver<ResolversTypes['MembershipType'], ParentType, ContextType>;
   membershipTypeId?: Resolver<ResolversTypes['UUID'], ParentType, ContextType>;
   phoneNumber?: Resolver<ResolversTypes['String'], ParentType, ContextType>;
   photoURL?: Resolver<Maybe<ResolversTypes['String']>, ParentType, ContextType>;
@@ -3876,11 +4265,13 @@ export type MutationResolvers<ContextType = GraphQLContext, ParentType extends R
   archiveDue?: Resolver<Maybe<ResolversTypes['Boolean']>, ParentType, ContextType, RequireFields<MutationArchiveDueArgs, 'dueId'>>;
   cancelEvent?: Resolver<Maybe<ResolversTypes['Boolean']>, ParentType, ContextType, RequireFields<MutationCancelEventArgs, 'eventId' | 'status'>>;
   createBlog?: Resolver<Maybe<ResolversTypes['BlogResponse']>, ParentType, ContextType, RequireFields<MutationCreateBlogArgs, 'input'>>;
+  createCompaign?: Resolver<Maybe<ResolversTypes['Compaign']>, ParentType, ContextType, RequireFields<MutationCreateCompaignArgs, 'input'>>;
   createDue?: Resolver<Maybe<ResolversTypes['DueResponse']>, ParentType, ContextType, RequireFields<MutationCreateDueArgs, 'input'>>;
   createEvent?: Resolver<Maybe<ResolversTypes['EventResponse']>, ParentType, ContextType, RequireFields<MutationCreateEventArgs, 'input'>>;
   createResources?: Resolver<Maybe<ResolversTypes['ResourceResponse']>, ParentType, ContextType, RequireFields<MutationCreateResourcesArgs, 'input'>>;
   createUser?: Resolver<Maybe<ResolversTypes['CreateUserResponse']>, ParentType, ContextType, RequireFields<MutationCreateUserArgs, 'input'>>;
   deactivateMember?: Resolver<Maybe<ResolversTypes['Member']>, ParentType, ContextType, RequireFields<MutationDeactivateMemberArgs, 'memberId' | 'status'>>;
+  deleteCompaign?: Resolver<Maybe<ResolversTypes['Compaign']>, ParentType, ContextType, RequireFields<MutationDeleteCompaignArgs, 'compaignId'>>;
   deleteEvent?: Resolver<Maybe<ResolversTypes['Boolean']>, ParentType, ContextType, RequireFields<MutationDeleteEventArgs, 'eventId'>>;
   deleteResource?: Resolver<Maybe<ResolversTypes['Boolean']>, ParentType, ContextType, RequireFields<MutationDeleteResourceArgs, 'resourceId'>>;
   login?: Resolver<Maybe<ResolversTypes['AuthPayload']>, ParentType, ContextType, RequireFields<MutationLoginArgs, 'input'>>;
@@ -3892,6 +4283,8 @@ export type MutationResolvers<ContextType = GraphQLContext, ParentType extends R
   publishedBlog?: Resolver<Maybe<ResolversTypes['BlogResponse']>, ParentType, ContextType, RequireFields<MutationPublishedBlogArgs, 'blogId' | 'status'>>;
   resendEventMail?: Resolver<Maybe<ResolversTypes['Boolean']>, ParentType, ContextType, RequireFields<MutationResendEventMailArgs, 'input'>>;
   resetPassword?: Resolver<Maybe<ResolversTypes['ResetPasswordResponse']>, ParentType, ContextType, RequireFields<MutationResetPasswordArgs, 'password' | 'userId'>>;
+  stopCompaign?: Resolver<Maybe<ResolversTypes['Compaign']>, ParentType, ContextType, RequireFields<MutationStopCompaignArgs, 'compaignId' | 'status'>>;
+  updateCompaign?: Resolver<Maybe<ResolversTypes['Compaign']>, ParentType, ContextType, RequireFields<MutationUpdateCompaignArgs, 'compaignId' | 'input'>>;
   updateDues?: Resolver<Maybe<ResolversTypes['DueResponse']>, ParentType, ContextType, RequireFields<MutationUpdateDuesArgs, 'dueId' | 'input'>>;
   watchEventViews?: Resolver<Maybe<ResolversTypes['Boolean']>, ParentType, ContextType, RequireFields<MutationWatchEventViewsArgs, 'eventId'>>;
 }>;
@@ -3921,6 +4314,8 @@ export type QueryResolvers<ContextType = GraphQLContext, ParentType extends Reso
   getAdminDashboardStat?: Resolver<Maybe<ResolversTypes['AdminDashboardStatResponse']>, ParentType, ContextType>;
   getBlog?: Resolver<Maybe<ResolversTypes['Blog']>, ParentType, ContextType, RequireFields<QueryGetBlogArgs, 'blogId'>>;
   getBlogs?: Resolver<Maybe<Array<ResolversTypes['Blog']>>, ParentType, ContextType, Partial<QueryGetBlogsArgs>>;
+  getCompaign?: Resolver<Maybe<ResolversTypes['Compaign']>, ParentType, ContextType, RequireFields<QueryGetCompaignArgs, 'compaignId'>>;
+  getCompaigns?: Resolver<Maybe<Array<ResolversTypes['Compaign']>>, ParentType, ContextType>;
   getDuePayment?: Resolver<Maybe<ResolversTypes['MemberDueResponse']>, ParentType, ContextType, RequireFields<QueryGetDuePaymentArgs, 'memberId'>>;
   getEvent?: Resolver<Maybe<ResolversTypes['Event']>, ParentType, ContextType, RequireFields<QueryGetEventArgs, 'eventId'>>;
   getEvents?: Resolver<Maybe<Array<ResolversTypes['Event']>>, ParentType, ContextType>;
@@ -4058,6 +4453,7 @@ export type Resolvers<ContextType = GraphQLContext> = ResolversObject<{
   AuthPayload?: AuthPayloadResolvers<ContextType>;
   Blog?: BlogResolvers<ContextType>;
   BlogResponse?: BlogResponseResolvers<ContextType>;
+  Compaign?: CompaignResolvers<ContextType>;
   CpdpPoint?: CpdpPointResolvers<ContextType>;
   CreateUserResponse?: CreateUserResponseResolvers<ContextType>;
   Decimal?: GraphQLScalarType;

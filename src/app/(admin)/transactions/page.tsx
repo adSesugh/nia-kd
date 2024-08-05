@@ -1,7 +1,7 @@
 'use client'
 
 import { RootState } from '@/features/store'
-import { Payment, useGetMemberPaymentsLazyQuery, useGetPaymentLazyQuery, useGetPaymentsLazyQuery } from '@/graphql/__generated__/graphql'
+import { Payment, useGetMemberLazyQuery, useGetMemberPaymentsLazyQuery, useGetPaymentLazyQuery, useGetPaymentsLazyQuery } from '@/graphql/__generated__/graphql'
 import { Chip, Spinner, Table, TableBody, TableCell, TableColumn, TableHeader, TableRow } from '@nextui-org/react'
 import { DotsThree } from '@phosphor-icons/react'
 import { SearchNormal } from 'iconsax-react'
@@ -37,6 +37,7 @@ const Transaction = () => {
   useEffect(()=>{
       ;(async () => {
           const res = await getPayments()
+          console.log(res)
           setPayments(res.data?.getPayments)
           setPaymentsHolder(res.data?.getPayments)
       })()
@@ -83,7 +84,7 @@ const Transaction = () => {
       setPayments(paymentsHolder)
     } else {
       const filteredEvents = payments?.filter((payment: Payment) => {
-        return payment.description.toLowerCase().includes(query)
+        return payment.description.toLowerCase().includes(query) || payment.amount === Number(query) || payment.paymentRef?.includes(query)
       })
       setPayments(filteredEvents)
     }
@@ -128,7 +129,7 @@ const Transaction = () => {
           >
               {(item: any) => (
                   <TableRow key={item?.id} className='border-b last:border-b-0'>
-                      {(columnKey) => <TableCell>{renderCell(item, columnKey)}</TableCell>}
+                      {(columnKey) => <TableCell className='py-3'>{renderCell(item, columnKey)}</TableCell>}
                   </TableRow>
               )}
           </TableBody>

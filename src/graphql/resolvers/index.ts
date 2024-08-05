@@ -24,7 +24,11 @@ export const resolvers: Resolvers = {
         createResources: (_, {input}, {prisma, dataSources, userId}) => dataSources.resourceAPI.createResources(prisma, input, userId),
         deleteResource: (_, {resourceId}, {prisma, dataSources}) => dataSources.resourceAPI.deleteResource(prisma, resourceId),
         resendEventMail: (_, {input}, {prisma, dataSources}) => dataSources.eventAPI.resendEventMail(prisma, input),
-        memberEventCheckin: (_, {id}, {prisma, dataSources}) => dataSources.eventAPI.memberEventCheckin(prisma, id)
+        memberEventCheckin: (_, {id}, {prisma, dataSources}) => dataSources.eventAPI.memberEventCheckin(prisma, id),
+        createCompaign: (_, {input}, {prisma, dataSources}) => dataSources.compaignAPI.createCompaign(prisma, input),
+        deleteCompaign: (_, {compaignId}, {prisma, dataSources}) => dataSources.compaignAPI.deleteCompaign(prisma, compaignId),
+        updateCompaign: (_, {compaignId, input}, {prisma, dataSources}) => dataSources.compaignAPI.updateCompaign(prisma, compaignId, input),
+        stopCompaign: (_, {compaignId, status}, {prisma, dataSources}) => dataSources.compaignAPI.stopCompaign(prisma, compaignId, status)
     },
     Query: {
         members: (_, __, { prisma, dataSources, userId }) => dataSources.memberAPI.getMembers(prisma, userId),
@@ -57,6 +61,8 @@ export const resolvers: Resolvers = {
         getUser: (_, {userId}, {prisma, dataSources}) => dataSources.userAPI.getUser(prisma, userId),
         getResources: (_, __, {prisma, dataSources}) => dataSources.resourceAPI.getResources(prisma),
         getResource: (_, {resourceId}, {prisma, dataSources}) => dataSources.resourceAPI.getResource(prisma, resourceId),
-        revenueByCategory: (_, {duration}, {prisma, dataSources}) => dataSources.dashboardAPI.revenueByCategory(prisma, duration)
+        revenueByCategory: (_, {duration}, {prisma, dataSources}) => dataSources.dashboardAPI.revenueByCategory(prisma, duration),
+        getCompaigns: (_, __, {prisma, dataSources}) => dataSources.compaignAPI.getCompaigns(prisma),
+        getCompaign: (_, {compaignId}, {prisma, dataSources}) => dataSources.compaignAPI.getCompaign(prisma, compaignId),
     },
 };

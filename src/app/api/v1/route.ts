@@ -14,6 +14,7 @@ import DashboardAPI from '@/services/dashboardAPI';
 import BlogAPI from '@/services/blogAPI';
 import EventAPI from '@/services/eventAPI';
 import ResourceAPI from '@/services/resourceAPI';
+import CompaignAPI from '@/services/compaignAPI';
 
 const server = new ApolloServer({
     resolvers,
@@ -41,7 +42,8 @@ const handler = startServerAndCreateNextHandler<NextRequest>(server, {
                 dashboardAPI: new DashboardAPI({ cache }),
                 blogAPI: new BlogAPI({ cache }),
                 eventAPI: new EventAPI({ cache }),
-                resourceAPI: new ResourceAPI({ cache })
+                resourceAPI: new ResourceAPI({ cache }),
+                compaignAPI: new CompaignAPI({ cache })
             },
         }
     },

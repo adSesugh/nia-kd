@@ -8,6 +8,7 @@ import DashboardAPI from "@/services/dashboardAPI";
 import BlogAPI from "@/services/blogAPI";
 import EventAPI from "@/services/eventAPI";
 import ResourceAPI from "@/services/resourceAPI";
+import CompaignAPI from "@/services/compaignAPI";
 
 export type GraphQLContext = {
     prisma: PrismaClient,
@@ -22,6 +23,7 @@ export type GraphQLContext = {
         dashboardAPI: DashboardAPI,
         blogAPI: BlogAPI,
         eventAPI: EventAPI,
-        resourceAPI: ResourceAPI
+        resourceAPI: ResourceAPI,
+        compaignAPI: CompaignAPI
     };
 }

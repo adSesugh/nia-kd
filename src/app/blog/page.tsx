@@ -1,94 +1,30 @@
 'use client'
 
-import NIAFooter from '@/components/footer';
 import SubHeader from '@/components/sub-header';
 import { NextPage } from 'next';
 import Image from 'next/image';
-import React from 'react'
+import React, { useEffect, useState } from 'react'
 import Link from 'next/link'
 import FeaturedImage from '@/assets/blog/feature.svg'
 import { ArrowRight } from 'iconsax-react';
 import { BlogCardType } from '@/types/blog';
-import Blog1 from '@/assets/blog/archi.svg'
-import Blog2 from '@/assets/blog/nav.svg'
 import BlogCard from '@/components/blog/BlogCard';
-
-const blogs: BlogCardType[] = [
-  {
-    id: 'sfsa',
-    title: "Navigating the architectural maze",
-    photoUrl: Blog2,
-    summary: 'The architectural space can be quite complex and daunting if there is no one to properly guide and...',
-    published: 'Oct 20, 2023',
-    readTime: '5 mins read'
-  },
-  {
-    id: 'sfsayr',
-    title: "Archi’ 101: From Plan to building",
-    photoUrl: Blog1,
-    summary: 'The architectural space can be quite complex and daunting if there is no one to properly guide and...',
-    published: 'Oct 20, 2023',
-    readTime: '5 mins read'
-  },
-  {
-    id: 'sfsahfj',
-    title: "Navigating the architectural maze",
-    photoUrl: Blog2,
-    summary: 'The architectural space can be quite complex and daunting if there is no one to properly guide and...',
-    published: 'Oct 20, 2023',
-    readTime: '5 mins read'
-  },
-  {
-    id: 'sfsssda',
-    title: "Archi’ 101: From Plan to building",
-    photoUrl: Blog1,
-    summary: 'The architectural space can be quite complex and daunting if there is no one to properly guide and...',
-    published: 'Oct 20, 2023',
-    readTime: '5 mins read'
-  },
-  {
-    id: 'sfsaou',
-    title: "Navigating the architectural maze",
-    photoUrl: Blog2,
-    summary: 'The architectural space can be quite complex and daunting if there is no one to properly guide and...',
-    published: 'Oct 20, 2023',
-    readTime: '5 mins read'
-  },
-  {
-    id: 'sfswawa',
-    title: "Archi’ 101: From Plan to building",
-    photoUrl: Blog1,
-    summary: 'The architectural space can be quite complex and daunting if there is no one to properly guide and...',
-    published: 'Oct 20, 2023',
-    readTime: '5 mins read'
-  },
-  {
-    id: 'sfsawda',
-    title: "Navigating the architectural maze",
-    photoUrl: Blog2,
-    summary: 'The architectural space can be quite complex and daunting if there is no one to properly guide and...',
-    published: 'Oct 20, 2023',
-    readTime: '5 mins read'
-  },
-  {
-    id: 'sfspioa',
-    title: "Archi’ 101: From Plan to building",
-    photoUrl: Blog1,
-    summary: 'The architectural space can be quite complex and daunting if there is no one to properly guide and...',
-    published: 'Oct 20, 2023',
-    readTime: '5 mins read'
-  },
-  {
-    id: 'sfsaug',
-    title: "Navigating the architectural maze",
-    photoUrl: Blog2,
-    summary: 'The architectural space can be quite complex and daunting if there is no one to properly guide and...',
-    published: 'Oct 20, 2023',
-    readTime: '5 mins read'
-  }
-]
+import { useGetBlogsLazyQuery } from '@/graphql/__generated__/graphql';
+import moment from 'moment';
 
 const Blog: NextPage = () => {
+  const [blogs, setBlogs] = useState<any>([])
+
+  const [getBlogs, {loading}] = useGetBlogsLazyQuery({fetchPolicy: 'no-cache'})
+
+  useEffect(()=> {
+    document.title = 'Blogs | NIA-Kd';
+    (async() => {
+      const blogRes = (await getBlogs()).data
+      setBlogs(blogRes?.getBlogs)
+    })()
+  }, [])
+
   return (
     <div>
       <SubHeader title='Blog' subtitle={''} />
@@ -96,24 +32,20 @@ const Blog: NextPage = () => {
         <h1 className='sm:text-[28px] xs:text-[20px] font-bold'>Featured Update</h1> 
         <div className='flex sm:flex-row xs:flex-col py-2'>
           <div className='sm:w-8/12 xs:w-full'>
-            <Image 
-              src={FeaturedImage} 
-              alt='Featured'
-              width={100}
-              height={100}
-              sizes='100vw'
-              className='w-full rounded-2xl'
-              style={{
-                width: '100%',
-                height: 'auto'
-              }} 
-            />
+            <div className='w-full h-full'>
+              <img 
+                src={blogs?.[0]?.featuredImage || FeaturedImage}  
+                alt="Featured" 
+                sizes="100vw" 
+                className='sm:h-[33rem] xs:h-[20rem] w-full rounded-2xl object-fit'
+              />
+            </div>
           </div>
           <div className='sm:w-4/12 xs:w-full sm:px-6 xs:px-0'>
-            <p className='text-[14px] sm:space-x-2 xs:space-x-0 xs:pt-3 sm:pt-0'><span>Oct 20, 2023</span><span className='bg-[#F3ECE2] rounded-md py-1 px-1.5'>5 mins</span></p>
-            <h1 className='sm:text-[28px] xs:text-[20px] font-semibold'>The role of nature in Architecture</h1>
-            <p className='leading-2 text-[14px] py-2'>The Nigerian Institute of Architects (NIA) was founded on the 1st of April 1960 as an association of independent professional architects with the aims and objectives of...</p>
-            <Link href={'/'} className='flex space-x-2 items-center'>
+            <p className='text-[14px] sm:space-x-2 xs:space-x-0 xs:pt-3 sm:pt-0'><span>{moment(blogs?.[0]?.createdAt).format('LL')}</span><span className='bg-[#F3ECE2] rounded-md py-1 px-1.5'>5 mins</span></p>
+            <h1 className='sm:text-[28px] xs:text-[20px] font-semibold'>{blogs?.[0]?.title || 'The role of nature in Architecture'}</h1>
+            <p className='leading-2 text-[14px] py-2' dangerouslySetInnerHTML={{ __html: blogs?.[0]?.summary}}>{}</p>
+            <Link href={`/blog/${blogs?.[0]?.id}`} className='flex space-x-2 items-center'>
               <span className='font-medium text-[14px]'>Read more</span>
               <ArrowRight variant='Outline' size={16} color='black' />
             </Link>
@@ -122,12 +54,12 @@ const Blog: NextPage = () => {
         <div className='py-3 mt-4'>
           <h1 className='text-[24px] font-semibold'>Other posts</h1>
           <div className='grid sm:grid-cols-3 xs:grid-cols-1 gap-8'>
-              {blogs.map((blog: BlogCardType, index: number) => (
+              {blogs?.map((blog: BlogCardType, index: number) => (
                 <BlogCard 
                   id={blog.id}
-                  photoUrl={blog.photoUrl}
+                  featuredImage={blog.featuredImage as string}
                   title={blog.title}
-                  published={blog.published}
+                  createdAt={blog.createdAt}
                   readTime={blog.readTime}
                   summary={blog.summary}
                   key={index}

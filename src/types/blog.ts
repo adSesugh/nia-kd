@@ -1,8 +1,8 @@
 export type BlogCardType = {
     id: string
-    photoUrl: string
+    featuredImage: string
     title: string
     summary: string
-    published: string
-    readTime: string
+    createdAt: string
+    readTime?: string
 }

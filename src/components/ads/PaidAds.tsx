@@ -82,7 +82,7 @@ const PaidAds = () => {
                 >
                     {(item: any) => (
                         <TableRow key={item?.id}>
-                            {(columnKey) => <TableCell>{renderCell(item, columnKey, index)}</TableCell>}
+                            {(columnKey) => <TableCell className='py-3'>{renderCell(item, columnKey, index)}</TableCell>}
                         </TableRow>
                     )}
                 </TableBody>

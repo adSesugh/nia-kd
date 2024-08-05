@@ -50,20 +50,25 @@ const CreateBlog = () => {
                     featuredImage: '',
                 }}
                 onSubmit={async(values) => {
-                    const res = await createBlog({
-                        variables: {
-                            input: {
-                                title: values.title,
-                                content: values.content,
-                                summary: values.summary,
-                                featuredImage: values.featuredImage,
-                                tags: tags
+                    try {
+                        const res = await createBlog({
+                            variables: {
+                                input: {
+                                    title: values.title,
+                                    content: values.content,
+                                    summary: values.summary,
+                                    featuredImage: values.featuredImage,
+                                    tags: tags
+                                },
                             }
+                        })
+                        if(res.data?.createBlog?.success){
+                            toast.success("Blog created")
+                            return router.back()
                         }
-                    })
-                    if(res.data?.createBlog?.success){
-                        toast.success("Blog created")
-                        return router.back()
+                    } catch (error: any) {
+                        console.log(error)
+                        toast.error(error)
                     }
                 }}
             >

@@ -67,7 +67,7 @@ const MemberList = () => {
                 )
             case "membershipType":
                 return (
-                    <div>{member.membershipType?.name}</div>
+                    <div>{member.membershipType.name}</div>
                 )
             case "joined": 
                 return (
@@ -182,7 +182,7 @@ const MemberList = () => {
                     >
                         {(item: Member) => (
                             <TableRow key={item?.id} className='border-b last:border-b-0'>
-                                {(columnKey) => <TableCell>{renderCell(item, columnKey)}</TableCell>}
+                                {(columnKey) => <TableCell className='py-3'>{renderCell(item, columnKey)}</TableCell>}
                             </TableRow>
                         )}
                     </TableBody>
