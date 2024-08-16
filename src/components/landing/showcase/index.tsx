@@ -28,6 +28,17 @@ const Showcase = () => {
               prevEl: '.prev',
               nextEl: '.next',
             }}
+            breakpoints={{
+              375: {
+                slidesPerView: 1
+              },
+              768: {
+                slidesPerView: 3,
+              },
+              1200: {
+                slidesPerView: 4,
+              },
+            }}
           >
             <SwiperSlide>
               <ShowcaseCard photoUrl={'/assets/showcase/1.jpeg'} />

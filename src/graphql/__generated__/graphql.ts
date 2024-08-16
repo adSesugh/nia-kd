@@ -866,6 +866,13 @@ export type PublishedBlogMutationVariables = Exact<{
 
 export type PublishedBlogMutation = { __typename?: 'Mutation', publishedBlog?: { __typename?: 'BlogResponse', code: number, success: boolean, message: string, blog?: { __typename?: 'Blog', id: any, title: string, content: string, summary: string, featuredImage: string, status: string, createdAt?: any | null } | null } | null };
 
+export type GetBlogQueryVariables = Exact<{
+  blogId: Scalars['UUID']['input'];
+}>;
+
+
+export type GetBlogQuery = { __typename?: 'Query', getBlog?: { __typename?: 'Blog', id: any, title: string, content: string, summary: string, featuredImage: string, status: string, createdAt?: any | null, updatedAt?: any | null, user?: { __typename?: 'User', member?: { __typename?: 'Member', firstName: string, lastName: string, membershipType: { __typename?: 'MembershipType', name: string } } | null } | null } | null };
+
 export type GetCompaignsQueryVariables = Exact<{ [key: string]: never; }>;
 
 
@@ -1520,6 +1527,62 @@ export function usePublishedBlogMutation(baseOptions?: Apollo.MutationHookOption
 export type PublishedBlogMutationHookResult = ReturnType<typeof usePublishedBlogMutation>;
 export type PublishedBlogMutationResult = Apollo.MutationResult<PublishedBlogMutation>;
 export type PublishedBlogMutationOptions = Apollo.BaseMutationOptions<PublishedBlogMutation, PublishedBlogMutationVariables>;
+export const GetBlogDocument = gql`
+    query GetBlog($blogId: UUID!) {
+  getBlog(blogId: $blogId) {
+    id
+    title
+    content
+    summary
+    featuredImage
+    status
+    user {
+      member {
+        firstName
+        lastName
+        membershipType {
+          name
+        }
+      }
+    }
+    createdAt
+    updatedAt
+  }
+}
+    `;
+
+/**
+ * __useGetBlogQuery__
+ *
+ * To run a query within a React component, call `useGetBlogQuery` and pass it any options that fit your needs.
+ * When your component renders, `useGetBlogQuery` returns an object from Apollo Client that contains loading, error, and data properties
+ * you can use to render your UI.
+ *
+ * @param baseOptions options that will be passed into the query, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options;
+ *
+ * @example
+ * const { data, loading, error } = useGetBlogQuery({
+ *   variables: {
+ *      blogId: // value for 'blogId'
+ *   },
+ * });
+ */
+export function useGetBlogQuery(baseOptions: Apollo.QueryHookOptions<GetBlogQuery, GetBlogQueryVariables> & ({ variables: GetBlogQueryVariables; skip?: boolean; } | { skip: boolean; }) ) {
+        const options = {...defaultOptions, ...baseOptions}
+        return Apollo.useQuery<GetBlogQuery, GetBlogQueryVariables>(GetBlogDocument, options);
+      }
+export function useGetBlogLazyQuery(baseOptions?: Apollo.LazyQueryHookOptions<GetBlogQuery, GetBlogQueryVariables>) {
+          const options = {...defaultOptions, ...baseOptions}
+          return Apollo.useLazyQuery<GetBlogQuery, GetBlogQueryVariables>(GetBlogDocument, options);
+        }
+export function useGetBlogSuspenseQuery(baseOptions?: Apollo.SuspenseQueryHookOptions<GetBlogQuery, GetBlogQueryVariables>) {
+          const options = {...defaultOptions, ...baseOptions}
+          return Apollo.useSuspenseQuery<GetBlogQuery, GetBlogQueryVariables>(GetBlogDocument, options);
+        }
+export type GetBlogQueryHookResult = ReturnType<typeof useGetBlogQuery>;
+export type GetBlogLazyQueryHookResult = ReturnType<typeof useGetBlogLazyQuery>;
+export type GetBlogSuspenseQueryHookResult = ReturnType<typeof useGetBlogSuspenseQuery>;
+export type GetBlogQueryResult = Apollo.QueryResult<GetBlogQuery, GetBlogQueryVariables>;
 export const GetCompaignsDocument = gql`
     query GetCompaigns {
   getCompaigns {

@@ -13,21 +13,21 @@ const Contact = () => {
             <h1 className='font-semibold xs:pt-4 sm:pt-0'>Physical address</h1>
             <div className='flex gap-4 pt-3'>
                 <Image src={'/assets/icons/location.svg'} alt='address' height={24} width={24} />
-                <span className='text-[15px] sm:w-8/12 xs:w-full'>24, Magaji Muazu Crescent, Katampe Extension, FCT - Abuja Nigeria</span>
+                <span className='text-[15px] sm:w-8/12 xs:w-full'>No. 8 Giwa Road, Abakpa, Kaduna. P.O. BOX 4204 Kaduna</span>
             </div>
           </div>
           <div className='mb-8'>
             <h1 className='font-semibold'>Phone number</h1>
             <div className='flex gap-4 pt-3'>
                 <Image src={'/assets/icons/phone.svg'} alt='phone' height={24} width={24} />
-                <span className='text-[15px]'>+234 9-2900081 or +234 9-2900082</span>
+                <span className='text-[15px]'>+234 803 361 9153 or +234 811 813 7414</span>
             </div>
           </div>
           <div className='mb-8'>
             <h1 className='font-semibold'>Email address</h1>
             <div className='flex gap-4 pt-3'>
               <Image src={'/assets/icons/mail.svg'} alt='mail' height={24} width={24} />
-              <span className='text-[15px]'><Link href={'mailto://organization@gmail.com'}>organization@gmail.com</Link></span>
+              <span className='text-[15px] sm:w-8/12 xs:w-full'><Link href={'mailto://info@myniakaduna.com'}>info@myniakaduna.com, niakad@yahoo.com, niakadunachapter2@gmail.com</Link></span>
             </div>
           </div>
         </div>

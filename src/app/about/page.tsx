@@ -17,20 +17,20 @@ const teams: TeamCardProps[] = [
     }
   },
   {
-      imageUrl: '/assets/team/2.jpeg',
-      name: 'Danjuma Sokolayam Ageni',
-      designation: 'Chapter Secretary',
-      social_media: {
-          twitter: '',
-          linkedin: ''
-      }
+    imageUrl: '/assets/team/2.jpeg',
+    name: 'Danjuma Sokolayam Ageni',
+    designation: 'Chapter Secretary',
+    social_media: {
+      twitter: 'https://x.com/DanjAgeni',
+      linkedin: 'https://www.linkedin.com/in/danjuma-ageni-mpm-mnia-173b7279'
+    }
   },
   {
       imageUrl: '/assets/team/1.jpeg',
       name: 'Bawa Y. Chindo',
       designation: 'Assistant Secretary',
       social_media: {
-          twitter: '',
+          twitter: 'https://x.com/bawa_chindo',
           linkedin: ''
       }
   },
@@ -44,12 +44,12 @@ const teams: TeamCardProps[] = [
       }
   },
   {
-    imageUrl: '/assets/team/1.jpeg',
-    name: 'Jimoh Abdulrazak',
-    designation: 'President',
+    imageUrl: '/assets/team/5.jpg',
+    name: 'Lut Adinoyi Abdulazeez',
+    designation: 'Assistant PRO',
     social_media: {
-      linkedin: '',
-      twitter: '',
+      linkedin: 'https://www.linkedin.com/in/abdulazeez-lut-adinoyi-992210139',
+      twitter: 'https://x.com/Lut95566869',
     }
   },
   {
@@ -76,9 +76,18 @@ const About = () => {
       <div className='flex justify-center py-12 xs:px-6 sm:px-0'>
         <div className='sm:w-6/12 xs:w-full'>
           <h1 className='pb-2 sm:text-[40px] xs:text-[20px] font-bold'>Brief History</h1>
-          <p className='text-[15px] pb-2'>The Nigerian Institute of Architects (NIA) was founded on the 1st of April 1960 as an association of independent professional architects with the aims and objectives of fostering friendship amongst members, cater for their welfare and establish mutual support and cooperation amongst them.</p>
-          <p className='text-[15px] pb-2'>The idea for the formation of an independent professional architect’s organization in Nigeria was first conceived and motivated by three Nigerian architects while still pursuing their training in England in the early fifties.</p>
-          <p className='text-[15px]'>In 1958, an 8-member study group was formed to carry out the detailed planning for the establishment of the Institute which ultimately culminated in inauguration of the Institute. From a modest 13 members at inauguration, the Institute has experienced a phenomenal growth in its membership, activities, stature and influence both at national and international levels. Total membership today stands at about 12000 in 5 classes of membership including Fellows, Full members, Associates, Graduates _ Students members spread across 31 Chapters and the Federal Capital...</p>
+          <p className='pb-2'>{'The Nigeria Institute of Architects (NIA) Kaduna State Chapter was inaugurated on 11 of November 1972 as the then Northern Central State Chapter with a membership of 24, in line with the Vision of the Institute which is to attain excellence in the creative management of the physical environment and the Mission which is to mobilize informed membership for quickly service.'}</p>
+          <p className='pb-2'>{"The first election of Executive took place on 2nd September of 1973 which saw late Arc. Adeyemi I. Bilewu of the then Ministry of Works and Transport as the Chairman and Arc. Fola Adeyemi of Niger Consultants as the Secretary. Shortly after the first Exco come on board, the Chapter went dormant for some few years, after co-opting active Architect into the Exco, the chapter was reactivated in 1983."}</p>
+          <p className='pb-2'>{"On 23rd February 1984 a new Executive was elected with Arc. (Chief) Gabriel Yakubu Audu of Archon Nigeria Limited as the Chairman and Arc. Daniel Attah Agamba as the Secretary. The Chapter's Bye-law was formerly ratified in April 1984 and four standing Committees were constituted to undertake special assignments and to generate activities for the Chapter. The monthly general meetings then held in members' houses, guest houses or offices on rotational basis were now held bi-monthly in line with the provision of the bye-law."}</p>
+          <p className='pb-2'>{"In 1988, Arc. (Obong) Victor Bassey Attah of Inter Design Partnership became the Chairman and in 1990 another election was held with late Arc. Samuel A. Alabi of Habitat Associates elected Chairman with Arc. D.A. Agamah of Archon Nigeria Limited as the Secretary."}</p>
+          <p className='pb-2'>{"In 1994 a new Executive was elected with Late Arc. Nuhu Nahiwda of New Method Design Associates and Late Arc. Thomas O. Adekunle of NBTE emerging as Chairman and Secretary respectively."}</p>
+          <p className='pb-2'>{"In 1999, Late Arc. Umaru B. Kubau of the Kaduna State Ministry of Works and Transport and Arc. Ayuba Nasia of Archon Nigeria Limited emerged as Chairman and Secretary."}</p>
+          <p className='pb-2'>{"In 2002, Late Arc. Ibraheem Aliyu Arab of Anjias Resources and Arc. Matthew Giwa Rwauan of Kaduna Polytechnic emerged as Chairman and Secretary."}</p>
+          <p className='pb-2'>{"In 2009, Arc. Akinlolu O. Odeyemi of Ackod Presentation and Arc. Samuel A. Obaje of Archon Nigeria Limited emerged as Chairman and Secretary. Arc. Josiah G. Dziniga of Kaduna State Ministry of Land and Survey became the Chairman and Arc. Stephen Jatau Filya of Altigra Nigeria Limited became the Secretary in 2015."}</p>
+          <p className='pb-2'>{"2017 saw the emergence of Arc. Ja'afaru Saidu of the Ministry of Works and Housing and Transport as the Chairman and Arc. Stephen J. Filya retained the position of the Secretary."}</p>
+          <p className='pb-2'>{"In 2019, Arc. Samuel A. Obaje of Archon Nigeria Limited became the Chairman and Arc. Binta Othman Danmallki of Systems Property Consult as the Secretary."}</p>
+          <p className='pb-2'>{"The NIA Kaduna State Chapter has produced two Presidents of the Nigerian Institute of Architects; the 14th President Arc. (Chief) Gabriel Yakubu Audu, FNIA, PPNIA, OON, who is the current Chairman Board of Trustee of the Institute and Arc. (Obong) Victor Bassey Attah FNIA, PPNIA, who became the 17th President at the 1997 Bi-Annual General Meeting (BGM) held in Kaduna and also currently a member of the Board of Trustee of the Institute."}</p>
+          <p className='pb-2'>{"In 2008, the Institute's Annual General Meeting (AGM) was held at the Hamdala Hotel in Kaduna, at the meeting then Governor of Kaduna State, His Excellency, Arc. Namadi Sambo, FNIA, GCON who later became the Vice President of the Federal Republic of Nigeria was elevated to the Fellowship Membership Class. The Chapter has a membership toll of over 200."}</p>
         </div>
       </div>
       <div className='flex flex-col sm:px-28 xs:px-6 bg-[#1E1A1C] py-20 items-center justify-center'>

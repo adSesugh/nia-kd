@@ -17,8 +17,8 @@ const members = [
         name: 'Danjuma Sokolayam Ageni',
         designation: 'Chapter Secretary',
         social_media: {
-            twitter: '',
-            linkedin: ''
+            twitter: 'https://x.com/DanjAgeni',
+            linkedin: 'https://www.linkedin.com/in/danjuma-ageni-mpm-mnia-173b7279'
         }
     },
     {
@@ -26,7 +26,7 @@ const members = [
         name: 'Bawa Y. Chindo',
         designation: 'Assistant Secretary',
         social_media: {
-            twitter: '',
+            twitter: 'https://x.com/bawa_chindo',
             linkedin: ''
         }
     },

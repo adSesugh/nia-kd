@@ -47,3 +47,25 @@ mutation PublishedBlog($blogId: UUID!, $status: String!) {
     }
   }
 }
+
+query GetBlog($blogId: UUID!) {
+  getBlog(blogId: $blogId) {
+    id
+    title
+    content
+    summary
+    featuredImage
+    status
+    user {
+      member {
+        firstName,
+        lastName,
+        membershipType {
+          name
+        }
+      }
+    }
+    createdAt
+    updatedAt
+  }
+}

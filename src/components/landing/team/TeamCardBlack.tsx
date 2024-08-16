@@ -7,7 +7,7 @@ import { TeamCardProps } from '@/types/common'
 const TeamCardBlack: React.FC<TeamCardProps> = ({imageUrl, name, designation, social_media }) => {
     return (
         <div className={styles.memberCard}>
-            <Image src={imageUrl || '/assets/images/team.png'} alt={name} width={281} height={330} className='h-80' />
+            <Image src={imageUrl || '/assets/images/team.png'} alt={name} width={281} height={330} className='h-80 w-full' />
             <div className={'flex flex-col pt-2 justify-center items-center'}>
                 <h1 className='text-white'>{name}</h1>
                 <h6 className='text-[#666666] text-[14px]'>{designation}</h6>

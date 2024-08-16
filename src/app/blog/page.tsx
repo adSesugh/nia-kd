@@ -44,7 +44,7 @@ const Blog: NextPage = () => {
           <div className='sm:w-4/12 xs:w-full sm:px-6 xs:px-0'>
             <p className='text-[14px] sm:space-x-2 xs:space-x-0 xs:pt-3 sm:pt-0'><span>{moment(blogs?.[0]?.createdAt).format('LL')}</span><span className='bg-[#F3ECE2] rounded-md py-1 px-1.5'>5 mins</span></p>
             <h1 className='sm:text-[28px] xs:text-[20px] font-semibold'>{blogs?.[0]?.title || 'The role of nature in Architecture'}</h1>
-            <p className='leading-2 text-[14px] py-2' dangerouslySetInnerHTML={{ __html: blogs?.[0]?.summary}}>{}</p>
+            <p className='leading-2 text-[14px] py-2' dangerouslySetInnerHTML={{ __html: blogs?.[0]?.summary}}></p>
             <Link href={`/blog/${blogs?.[0]?.id}`} className='flex space-x-2 items-center'>
               <span className='font-medium text-[14px]'>Read more</span>
               <ArrowRight variant='Outline' size={16} color='black' />
