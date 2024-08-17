@@ -97,9 +97,16 @@ const AdvertPage = () => {
                 );
             case "performance":
                 return (
-                    <Chip className="capitalize" color={compaign.status ? 'success' : 'default'} size="sm" variant="flat">
-                        <span className='text-[#0A7535]'>{cellValue}</span>
-                    </Chip>
+                    <div className='flex flex-row'>
+                        <div>
+                            <h4>24</h4>
+                            <span>Views</span>
+                        </div>
+                        <div>
+                            <h4>4</h4>
+                            <span>Clicks</span>
+                        </div>
+                    </div>
                 );
             case "actions":
                 return (

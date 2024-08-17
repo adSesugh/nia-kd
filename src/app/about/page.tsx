@@ -60,6 +60,24 @@ const teams: TeamCardProps[] = [
       linkedin: '',
       twitter: '',
     }
+  },
+  {
+    imageUrl: '/assets/team/6.jpeg',
+    name: 'MICHAEL OKHUMEODE',
+    designation: 'Admin Secretary',
+    social_media: {
+      linkedin: 'https://www.linkedin.com/in/abdulazeez-lut-adinoyi-992210139',
+      twitter: 'https://x.com/okhumeodemich1',
+    }
+  },
+  {
+    imageUrl: '/assets/team/7.jpeg',
+    name: 'Arc Fatima  Baba  Ciroma',
+    designation: 'Students Affairs Officer',
+    social_media: {
+      linkedin: 'http://www.linkedin.com/in/fatima-baba-ciroma-88b961226',
+      twitter: '',
+    }
   }
 ]
 
