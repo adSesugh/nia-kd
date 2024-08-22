@@ -71,26 +71,28 @@ export type Compaign = {
   __typename?: 'Compaign';
   createdAt?: Maybe<Scalars['Time']['output']>;
   deletedAt?: Maybe<Scalars['Time']['output']>;
-  duration: Scalars['String']['output'];
+  duration: Scalars['Int']['output'];
   ends_at: Scalars['Time']['output'];
   id: Scalars['UUID']['output'];
-  link: Scalars['String']['output'];
-  mobile_banner: Scalars['String']['output'];
+  link?: Maybe<Scalars['String']['output']>;
+  mobile_banner?: Maybe<Scalars['String']['output']>;
   name: Scalars['String']['output'];
+  start_time: Scalars['Time']['output'];
   starts_at: Scalars['Time']['output'];
-  status: Scalars['Boolean']['output'];
+  status?: Maybe<Scalars['Boolean']['output']>;
   updatedAt?: Maybe<Scalars['Time']['output']>;
-  web_banner: Scalars['String']['output'];
+  web_banner?: Maybe<Scalars['String']['output']>;
 };
 
 export type CompaignInput = {
-  duration: Scalars['String']['input'];
+  duration: Scalars['Int']['input'];
   ends_at: Scalars['Time']['input'];
-  link: Scalars['String']['input'];
-  mobile_banner: Scalars['String']['input'];
+  link?: InputMaybe<Scalars['String']['input']>;
+  mobile_banner?: InputMaybe<Scalars['String']['input']>;
   name: Scalars['String']['input'];
+  start_time: Scalars['Time']['input'];
   starts_at: Scalars['Time']['input'];
-  web_banner: Scalars['String']['input'];
+  web_banner?: InputMaybe<Scalars['String']['input']>;
 };
 
 export type CpdpPoint = {
@@ -180,6 +182,7 @@ export type EventForm = {
   id: Scalars['UUID']['output'];
   label: Scalars['String']['output'];
   name: Scalars['String']['output'];
+  priority?: Maybe<Scalars['Int']['output']>;
   required?: Maybe<Scalars['Boolean']['output']>;
   type: Scalars['String']['output'];
 };
@@ -876,28 +879,28 @@ export type GetBlogQuery = { __typename?: 'Query', getBlog?: { __typename?: 'Blo
 export type GetCompaignsQueryVariables = Exact<{ [key: string]: never; }>;
 
 
-export type GetCompaignsQuery = { __typename?: 'Query', getCompaigns?: Array<{ __typename?: 'Compaign', id: any, name: string, duration: string, starts_at: any, ends_at: any, web_banner: string, mobile_banner: string, link: string, createdAt?: any | null }> | null };
+export type GetCompaignsQuery = { __typename?: 'Query', getCompaigns?: Array<{ __typename?: 'Compaign', id: any, name: string, duration: number, starts_at: any, ends_at: any, web_banner?: string | null, mobile_banner?: string | null, link?: string | null, createdAt?: any | null }> | null };
 
 export type GetCompaignQueryVariables = Exact<{
   compaignId: Scalars['String']['input'];
 }>;
 
 
-export type GetCompaignQuery = { __typename?: 'Query', getCompaign?: { __typename?: 'Compaign', id: any, name: string, duration: string, starts_at: any, ends_at: any, web_banner: string, mobile_banner: string, link: string, createdAt?: any | null } | null };
+export type GetCompaignQuery = { __typename?: 'Query', getCompaign?: { __typename?: 'Compaign', id: any, name: string, duration: number, starts_at: any, ends_at: any, web_banner?: string | null, mobile_banner?: string | null, link?: string | null, createdAt?: any | null } | null };
 
 export type CreateCompaignMutationVariables = Exact<{
   input: CompaignInput;
 }>;
 
 
-export type CreateCompaignMutation = { __typename?: 'Mutation', createCompaign?: { __typename?: 'Compaign', id: any, name: string, duration: string, starts_at: any, ends_at: any, web_banner: string, mobile_banner: string, link: string, createdAt?: any | null } | null };
+export type CreateCompaignMutation = { __typename?: 'Mutation', createCompaign?: { __typename?: 'Compaign', id: any, name: string, duration: number, starts_at: any, ends_at: any, start_time: any, web_banner?: string | null, mobile_banner?: string | null, link?: string | null, createdAt?: any | null } | null };
 
 export type DeleteCompaignMutationVariables = Exact<{
   compaignId: Scalars['String']['input'];
 }>;
 
 
-export type DeleteCompaignMutation = { __typename?: 'Mutation', deleteCompaign?: { __typename?: 'Compaign', id: any, name: string, duration: string, starts_at: any, ends_at: any, web_banner: string, mobile_banner: string, link: string, createdAt?: any | null, deletedAt?: any | null } | null };
+export type DeleteCompaignMutation = { __typename?: 'Mutation', deleteCompaign?: { __typename?: 'Compaign', id: any, name: string, duration: number, starts_at: any, ends_at: any, web_banner?: string | null, mobile_banner?: string | null, link?: string | null, createdAt?: any | null, deletedAt?: any | null } | null };
 
 export type UpdateCompaignMutationVariables = Exact<{
   compaignId: Scalars['String']['input'];
@@ -905,7 +908,7 @@ export type UpdateCompaignMutationVariables = Exact<{
 }>;
 
 
-export type UpdateCompaignMutation = { __typename?: 'Mutation', updateCompaign?: { __typename?: 'Compaign', id: any, name: string, duration: string, starts_at: any, ends_at: any, web_banner: string, mobile_banner: string, link: string, createdAt?: any | null, updatedAt?: any | null } | null };
+export type UpdateCompaignMutation = { __typename?: 'Mutation', updateCompaign?: { __typename?: 'Compaign', id: any, name: string, duration: number, starts_at: any, ends_at: any, web_banner?: string | null, mobile_banner?: string | null, link?: string | null, createdAt?: any | null, updatedAt?: any | null } | null };
 
 export type StopCompaignMutationVariables = Exact<{
   compaignId: Scalars['String']['input'];
@@ -913,7 +916,7 @@ export type StopCompaignMutationVariables = Exact<{
 }>;
 
 
-export type StopCompaignMutation = { __typename?: 'Mutation', stopCompaign?: { __typename?: 'Compaign', id: any, name: string, duration: string, starts_at: any, ends_at: any, web_banner: string, mobile_banner: string, link: string, createdAt?: any | null, updatedAt?: any | null } | null };
+export type StopCompaignMutation = { __typename?: 'Mutation', stopCompaign?: { __typename?: 'Compaign', id: any, name: string, duration: number, starts_at: any, ends_at: any, web_banner?: string | null, mobile_banner?: string | null, link?: string | null, createdAt?: any | null, updatedAt?: any | null } | null };
 
 export type GetRecentRegistrationQueryVariables = Exact<{ [key: string]: never; }>;
 
@@ -1082,7 +1085,7 @@ export type GetRegistrationFormQueryVariables = Exact<{
 }>;
 
 
-export type GetRegistrationFormQuery = { __typename?: 'Query', getRegistrationForm?: { __typename?: 'Event', name: string, amount: any, formTitle: string, instructions: string, status: string, paymentType: string, eventForms?: Array<{ __typename?: 'EventForm', id: any, name: string, label: string, type: string, required?: boolean | null } | null> | null } | null };
+export type GetRegistrationFormQuery = { __typename?: 'Query', getRegistrationForm?: { __typename?: 'Event', name: string, amount: any, formTitle: string, instructions: string, status: string, paymentType: string, eventForms?: Array<{ __typename?: 'EventForm', id: any, name: string, label: string, type: string, required?: boolean | null, priority?: number | null } | null> | null } | null };
 
 export type PostEventRegistrationMutationVariables = Exact<{
   input: EventRegistrationInput;
@@ -1686,6 +1689,7 @@ export const CreateCompaignDocument = gql`
     duration
     starts_at
     ends_at
+    start_time
     web_banner
     mobile_banner
     link
@@ -3000,6 +3004,7 @@ export const GetRegistrationFormDocument = gql`
       label
       type
       required
+      priority
     }
   }
 }
@@ -4118,16 +4123,17 @@ export type BlogResponseResolvers<ContextType = GraphQLContext, ParentType exten
 export type CompaignResolvers<ContextType = GraphQLContext, ParentType extends ResolversParentTypes['Compaign'] = ResolversParentTypes['Compaign']> = ResolversObject<{
   createdAt?: Resolver<Maybe<ResolversTypes['Time']>, ParentType, ContextType>;
   deletedAt?: Resolver<Maybe<ResolversTypes['Time']>, ParentType, ContextType>;
-  duration?: Resolver<ResolversTypes['String'], ParentType, ContextType>;
+  duration?: Resolver<ResolversTypes['Int'], ParentType, ContextType>;
   ends_at?: Resolver<ResolversTypes['Time'], ParentType, ContextType>;
   id?: Resolver<ResolversTypes['UUID'], ParentType, ContextType>;
-  link?: Resolver<ResolversTypes['String'], ParentType, ContextType>;
-  mobile_banner?: Resolver<ResolversTypes['String'], ParentType, ContextType>;
+  link?: Resolver<Maybe<ResolversTypes['String']>, ParentType, ContextType>;
+  mobile_banner?: Resolver<Maybe<ResolversTypes['String']>, ParentType, ContextType>;
   name?: Resolver<ResolversTypes['String'], ParentType, ContextType>;
+  start_time?: Resolver<ResolversTypes['Time'], ParentType, ContextType>;
   starts_at?: Resolver<ResolversTypes['Time'], ParentType, ContextType>;
-  status?: Resolver<ResolversTypes['Boolean'], ParentType, ContextType>;
+  status?: Resolver<Maybe<ResolversTypes['Boolean']>, ParentType, ContextType>;
   updatedAt?: Resolver<Maybe<ResolversTypes['Time']>, ParentType, ContextType>;
-  web_banner?: Resolver<ResolversTypes['String'], ParentType, ContextType>;
+  web_banner?: Resolver<Maybe<ResolversTypes['String']>, ParentType, ContextType>;
   __isTypeOf?: IsTypeOfResolverFn<ParentType, ContextType>;
 }>;
 
@@ -4221,6 +4227,7 @@ export type EventFormResolvers<ContextType = GraphQLContext, ParentType extends 
   id?: Resolver<ResolversTypes['UUID'], ParentType, ContextType>;
   label?: Resolver<ResolversTypes['String'], ParentType, ContextType>;
   name?: Resolver<ResolversTypes['String'], ParentType, ContextType>;
+  priority?: Resolver<Maybe<ResolversTypes['Int']>, ParentType, ContextType>;
   required?: Resolver<Maybe<ResolversTypes['Boolean']>, ParentType, ContextType>;
   type?: Resolver<ResolversTypes['String'], ParentType, ContextType>;
   __isTypeOf?: IsTypeOfResolverFn<ParentType, ContextType>;

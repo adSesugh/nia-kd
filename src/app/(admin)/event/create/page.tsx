@@ -330,7 +330,7 @@ const CreateEvent = () => {
                             {steps[currentIndex] === 'details' && (
                                 <>
                                     <div className='bg-white px-4 pb-3'>
-                                        <NIAFileInput name='coverPhoto' label='Cover photo' subtitle='Add a cover photo to make your event pop out.' handleFileChange={function (e: React.ChangeEvent<HTMLInputElement>): void {
+                                        <NIAFileInput name='coverPhoto' id='coverPhoto' label='Cover photo' subtitle='Add a cover photo to make your event pop out.' handleFileChange={function (e: React.ChangeEvent<HTMLInputElement>): void {
                                             const file = e.currentTarget.files?.[0];
                                             if (file) {
                                                 const reader = new FileReader();

@@ -33,6 +33,7 @@ mutation CreateCompaign($input: CompaignInput!) {
     duration
     starts_at
     ends_at
+    start_time
     web_banner
     mobile_banner
     link

@@ -298,12 +298,13 @@ model Resource {
 model Compaign {
   id              String @id @default(uuid())
   name            String @db.VarChar(191)
-  duration        String
+  duration        Int
   starts_at       DateTime
   ends_at         DateTime
-  web_banner      String
-  mobile_banner   String
-  link            String
+  start_time      DateTime
+  web_banner      String?
+  mobile_banner   String?
+  link            String?
   status          Boolean @default(true)
   createdAt       DateTime @default(now()) @map(name: "created_at")
   updatedAt       DateTime @updatedAt @map(name: "updated_at")

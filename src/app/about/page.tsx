@@ -8,6 +8,105 @@ import TeamCardBlack from '@/components/landing/team/TeamCardBlack'
 
 const teams: TeamCardProps[] = [
   {
+    imageUrl: '/assets/team/avatar.jpeg',
+    name: 'Arc. S. J. Filiya',
+    designation: 'Chairman',
+    social_media: {
+      twitter: '',
+      linkedin: ''
+    }
+  },
+  {
+    imageUrl: '/assets/team/avatar.jpeg',
+    name: 'Arc. Binta Danmaliki',
+    designation: 'Vice Chairman',
+    social_media: {
+      twitter: '',
+      linkedin: ''
+    }
+  },
+  {
+    imageUrl: '/assets/team/avatar.jpeg',
+    name: 'Arc. Dimeji Adene',
+    designation: 'Ex-Officio',
+    social_media: {
+      twitter: '',
+      linkedin: ''
+    }
+  },
+  {
+    imageUrl: '/assets/team/avatar.jpeg',
+    name: 'Arc. Tech. Umar S. Fatika',
+    designation: 'Assistant Secretary II',
+    social_media: {
+      twitter: '',
+      linkedin: ''
+    }
+  },
+  {
+    imageUrl: '/assets/team/avatar.jpeg',
+    name: 'Arc. Micheal Okhumeode',
+    designation: 'Admin. Secretary',
+    social_media: {
+      twitter: '',
+      linkedin: ''
+    }
+  },
+  {
+    imageUrl: '/assets/team/avatar.jpeg',
+    name: 'Arc. (Dr) Juliet A. Obaje',
+    designation: 'PRO',
+    social_media: {
+      twitter: '',
+      linkedin: ''
+    }
+  },
+  {
+    imageUrl: '/assets/team/avatar.jpeg',
+    name: 'Arc. Deborah Sabo',
+    designation: 'Fin Sec.',
+    social_media: {
+      twitter: '',
+      linkedin: ''
+    }
+  },
+  {
+    imageUrl: '/assets/team/avatar.jpeg',
+    name: 'Arc. (Dr.) K. S. Daroda',
+    designation: 'Chair Ethics',
+    social_media: {
+      twitter: '',
+      linkedin: ''
+    }
+  },
+  {
+    imageUrl: '/assets/team/avatar.jpeg',
+    name: 'Arc. Dr. Abbas Muazu',
+    designation: 'Chair Practice',
+    social_media: {
+      twitter: '',
+      linkedin: ''
+    }
+  },
+  {
+    imageUrl: '/assets/team/avatar.jpeg',
+    name: 'Arc. Samuel Obaje',
+    designation: 'Past Chairman',
+    social_media: {
+      twitter: '',
+      linkedin: ''
+    }
+  },
+  {
+    imageUrl: '/assets/team/avatar.jpeg',
+    name: 'Arc. Caleb M. Gaiya',
+    designation: 'ARCON Rep.',
+    social_media: {
+      twitter: '',
+      linkedin: ''
+    }
+  },
+  {
     imageUrl: '/assets/team/3.jpeg',
     name: 'Arc. Olulaja M. Balogun',
     designation: 'Ex Officio Member, ECNIAK',
@@ -50,15 +149,6 @@ const teams: TeamCardProps[] = [
     social_media: {
       linkedin: 'https://www.linkedin.com/in/abdulazeez-lut-adinoyi-992210139',
       twitter: 'https://x.com/Lut95566869',
-    }
-  },
-  {
-    imageUrl: '/assets/team/3.jpeg',
-    name: 'Jimoh Abdulrazak',
-    designation: 'President',
-    social_media: {
-      linkedin: '',
-      twitter: '',
     }
   },
   {

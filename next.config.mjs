@@ -22,6 +22,11 @@ const nextConfig = {
     },
     webpack: (config) => {
         config.resolve.alias.canvas = false;
+
+        // config.module.rules.push({
+        //     test: /\.js.map$/,
+        //     use: 'ignore-loader',
+        // });
         
         return config;
     },

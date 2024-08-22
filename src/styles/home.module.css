@@ -14,7 +14,7 @@
 }
 
 .timerSection {
-    @apply flex sm:pt-28 xs:pt-10 items-center gap-[12px] text-white
+    @apply flex sm:pt-28 xs:pt-6 items-center gap-[12px] text-white
 }
 
 .breadcrumb {

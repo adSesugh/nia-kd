@@ -127,6 +127,7 @@ export const typeDefs = `#graphql
     label: String!
     type: String!
     required: Boolean
+    priority: Int
     event: Event
     eventId: UUID
   }
@@ -216,13 +217,14 @@ export const typeDefs = `#graphql
   type Compaign {
   id: UUID!
   name: String!
-  duration: String!
+  duration: Int!
   starts_at: Time!
   ends_at: Time!
-  web_banner: String!
-  mobile_banner: String!
-  link: String!
-  status: Boolean!
+  start_time: Time!
+  web_banner: String
+  mobile_banner: String
+  link: String
+  status: Boolean
   createdAt: Time
   updatedAt: Time
   deletedAt: Time
@@ -363,12 +365,13 @@ export const typeDefs = `#graphql
 
   input CompaignInput {
   name: String!
-  duration: String!
+  duration: Int!
   starts_at: Time!
   ends_at: Time!
-  web_banner: String!
-  mobile_banner: String!
-  link: String!
+  start_time: Time!
+  web_banner: String
+  mobile_banner: String
+  link: String
 }
 
   ## ------------------------------------- Type Response ---------------------------------------------------##

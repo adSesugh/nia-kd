@@ -335,23 +335,25 @@ class EventAPI extends RESTDataSource {
         const events = prisma.event.findMany({
             where: {
                 OR: [
-                    {
-                        ends_at: {
-                            gt: this._todayDate
-                        }
-                    },
+                    // {
+                    //     ends_at: {
+                    //         gt: this._todayDate
+                    //     }
+                    // },
                     {
                         status: 'Ended'
                     }
                 ]
             },
-            include: {eventRegistrations: true}
+            include: {eventRegistrations: true},
+            take: 0
         })
 
         return events
     }
 
     async postRegistration(prisma: PrismaClient, input: EventRegistrationInput) {
+        console.log("payload => ", input)
         const totalRegistration = await prisma.eventRegistration.count({
             where: {
                 eventId: input.eventId
@@ -361,9 +363,9 @@ class EventAPI extends RESTDataSource {
         const event = await prisma.event.findFirst({
             where: {
                 id: input.eventId,
-                ends_at: {
-                    gt: this._todayDate
-                }
+                // ends_at: {
+                //     gt: this._todayDate
+                // }
             },
             include: {speakers: true, sponsors: true}
             // select: {
@@ -376,6 +378,8 @@ class EventAPI extends RESTDataSource {
             //     sponsors: true
             // }
         })
+
+        console.log("Event selected => ", event)
 
         if(event !== null && totalRegistration < Number(event?.tickets)) {
             const member = await prisma.member.findFirst({
@@ -399,8 +403,11 @@ class EventAPI extends RESTDataSource {
                 }
             })
 
+
+            console.log('registration done => ', registered)
+
             if(input.payment) {
-                await prisma.payment.create({
+                const payment = await prisma.payment.create({
                     data: {
                         eventId: input.eventId ?? null,
                         paymentType: input.payment.paymentType,
@@ -413,6 +420,8 @@ class EventAPI extends RESTDataSource {
                         eventRegistrationId: registered.id
                     }
                 })
+
+                console.log("payment made => ", payment)
             }
 
             try {
@@ -421,7 +430,8 @@ class EventAPI extends RESTDataSource {
                     'Event Registration', 
                     event.message as string, 
                     {
-                        fullname: `${input.registrantDetail.first_name} ${input.registrantDetail.last_name}`,
+                        eventId: event.id,
+                        fullname: `${input.registrantDetail.firstName} ${input.registrantDetail.lastName}`,
                         eventName: event.name,
                         startDate: moment(event.starts_at).format('LL'),
                         endDate: moment(event.ends_at).format('LL'),

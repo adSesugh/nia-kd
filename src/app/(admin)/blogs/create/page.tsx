@@ -15,7 +15,7 @@ import { useRouter } from 'next/navigation'
 
 const CreateBlog = () => {
     const router = useRouter()
-     const [tags, setTags] = useState<string[]>([])
+    const [tags, setTags] = useState<string[]>([])
     const [tag, setTag] = useState<string>('')
     const [base64, setBase64] = useState<string>()
     const [createBlog, { loading }] = useCreateBlogMutation() 
@@ -92,7 +92,7 @@ const CreateBlog = () => {
                             </div>
                             <div className='sm:w-2/6 xs:w-full'>
                                 <div className='w-full h-ful border-t'>
-                                    <NIAFileInput name='coverImg' label='Feature Image' handleFileChange={function (e: React.ChangeEvent<HTMLInputElement>): void {
+                                    <NIAFileInput name='blogImg' id='blogImg' label='Feature Image' handleFileChange={function (e: React.ChangeEvent<HTMLInputElement>): void {
                                         const file = e.currentTarget.files?.[0];
                                         if (file) {
                                             const reader = new FileReader();

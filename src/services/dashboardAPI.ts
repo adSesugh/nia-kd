@@ -211,12 +211,18 @@ class DashboardAPI extends RESTDataSource {
             }
         })
 
+        const ads_count = await prisma.compaign.count({
+            where: {
+                deletedAt: null
+            }
+        })
+
         return {
             members: members,
             events: events._count._all,
             blogs,
             resources: resources,
-            ads: 0
+            ads: ads_count
         }
     }
 

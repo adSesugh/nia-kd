@@ -1,4 +1,5 @@
 import { CompaignInput } from "@/graphql/__generated__/graphql";
+import { s3FileUpload } from "@/lib/s3Client";
 import { RESTDataSource } from "@apollo/datasource-rest";
 import { PrismaClient } from "@prisma/client";
 import moment from "moment";
@@ -9,18 +10,56 @@ class CompaignAPI extends RESTDataSource {
     private _endOfYear = new Date(moment().endOf('year').format("Y-MM-D"))
     
     async createCompaign(prisma: PrismaClient, input: CompaignInput) {
-        return await prisma.compaign.create({
+        const bufferWeb = input.web_banner ? Buffer.from(input.web_banner.split(',')[1], 'base64') : '';
+        const bufferMobile = input.mobile_banner ? Buffer.from(input.mobile_banner.split(',')[1], 'base64') : '';
+
+        const compaign = await prisma.compaign.create({
             data: {
                 name: input.name,
                 duration: input.duration,
-                starts_at: new Date(input.starts_at),
-                ends_at: new Date(input.ends_at),
-                link: input.link,
-                web_banner: input.web_banner,
-                mobile_banner: input.mobile_banner,
-                status: true
+                starts_at: input.starts_at,
+                ends_at: input.ends_at,
+                start_time: input.start_time,
+                link: input.link
             }
         })
+
+
+        console.log(compaign)
+
+        if (input.web_banner){
+            const url: string = bufferWeb ? `https://${process.env.NEXT_PUBLIC_AWS_BUCKET_NAME}.s3.${process.env.NEXT_PUBLIC_AWS_REGION}.amazonaws.com/events/${compaign.id}/${input.name.toLowerCase().replaceAll(' ', '-')}-web` : ''
+
+            const res =  await s3FileUpload(`events/${compaign.id}/${input.name.toLowerCase().replaceAll(' ', '-')}`, 'image/png', bufferWeb)
+            if(res.httpStatusCode === 200){
+                await prisma.compaign.update({
+                    where: {
+                        id: compaign.id
+                    },
+                    data: {
+                        web_banner: url
+                    }
+                })
+            }
+        }
+
+        if (input.mobile_banner){
+            const url: string = bufferMobile ? `https://${process.env.NEXT_PUBLIC_AWS_BUCKET_NAME}.s3.${process.env.NEXT_PUBLIC_AWS_REGION}.amazonaws.com/events/${compaign.id}/${input.name.toLowerCase().replaceAll(' ', '-')}-mobile` : ''
+
+            const res =  await s3FileUpload(`events/${compaign.id}/${compaign.name.toLowerCase().replaceAll(' ', '-')}`, 'image/png', bufferMobile)
+            if(res.httpStatusCode === 200){
+                await prisma.compaign.update({
+                    where: {
+                        id: compaign.id
+                    },
+                    data: {
+                        mobile_banner: url
+                    }
+                })
+            }
+        }
+
+        return compaign
     }
 
     async getCompaigns(prisma: PrismaClient) {
@@ -81,6 +120,7 @@ class CompaignAPI extends RESTDataSource {
                 duration: input.duration,
                 starts_at: new Date(input.starts_at),
                 ends_at: new Date(input.ends_at),
+                start_time: new Date(input.start_time),
                 link: input.link,
                 web_banner: input.web_banner,
                 mobile_banner: input.mobile_banner

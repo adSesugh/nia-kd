@@ -58,7 +58,7 @@ const MemberLayout: React.FC<LayoutProps> = ({ children }) => {
               <div className='flex flex-col pl-7 text-white justify-center w-full h-28'>
                 <Image
                     alt='NIA-Kd'
-                    src={'/assets/images/logo.svg'}
+                    src={'/assets/logo.png'}
                     sizes='100vw'
                     width={50}
                     height={60}
@@ -67,7 +67,6 @@ const MemberLayout: React.FC<LayoutProps> = ({ children }) => {
                         height: 'auto'
                     }} 
                 />
-                <span className='text-[12px]'>Kaduna State Chapter</span>
               </div>
               <div className='py-3 w-full'>
                 <Menu

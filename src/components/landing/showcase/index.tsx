@@ -29,14 +29,17 @@ const Showcase = () => {
               nextEl: '.next',
             }}
             breakpoints={{
+              0: {
+                slidesPerView: 1
+              },
               375: {
                 slidesPerView: 1
               },
               768: {
-                slidesPerView: 3,
+                slidesPerView: 2,
               },
               1200: {
-                slidesPerView: 4,
+                slidesPerView: 3,
               },
             }}
           >

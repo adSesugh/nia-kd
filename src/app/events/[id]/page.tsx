@@ -61,14 +61,15 @@ const EventDetail = () => {
                             </button>
                         </div>
                     </div>
-                    <div className='flex h-[20%] w-full overflow-hidden'>
+                    <div className='relative h-[20%] w-full overflow-hidden'>
                         <Image 
                             src={data?.getEvent?.coverPhoto || '/assets/events/event-detail.svg'} 
                             alt={data?.getEvent?.name as string || 'event cover'}
-                            className='flex w-full rounded-[25px] object-contain'
+                            className='h-full w-full rounded-[25px]'
+                            //layout='fill'
+                            //objectFit='contain'
                             height={250}
                             width={250}
-                            sizes='100vw'
                         />
                     </div>
                 </div>
@@ -81,11 +82,11 @@ const EventDetail = () => {
                         {data?.getEvent?.speakers?.length !== 0 && (
                             <div className='my-4 p-4 w-full'>
                                 <h1 className='font-semibold text-[18px]'>Speakers</h1>
-                                <div className='grid sm:grid-cols-3 gap-x-12 gap-y-6 space-y-3 mt-3'>
+                                <div className='grid sm:grid-cols-4 xs:grid-cols-1 gap-4 space-y-3 mt-3'>
                                     {data?.getEvent?.speakers?.map((speaker) => (
-                                        <div key={speaker?.id} className='space-y-3 items-center'>
-                                            <div><img src={speaker?.avatar || '/assets/profile.png'} className='h-48 rounded-[25px] w-48' alt={speaker?.name} /></div>
-                                            <div className='flex flex-col items-center justify-center'>
+                                        <div key={speaker?.id} className='flex flex-col space-y-3'>
+                                            <div><img src={speaker?.avatar || '/assets/profile.png'} className='h-56 rounded-[25px] w-full' alt={speaker?.name} /></div>
+                                            <div className='flex items-center flex-col w-full'>
                                                 <h2 className='font-semibold'>{speaker?.name}</h2>
                                                 <span className='text-[12px] text-[#6F6F6F]'>{speaker?.title}</span>
                                             </div>

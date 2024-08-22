@@ -3,7 +3,7 @@
 
 import { FileInput, Label } from "flowbite-react";
 import { ErrorMessage, Field, useField } from "formik";
-import React from "react";
+import React, { forwardRef } from "react";
 
 type FileInputProps = {
     name: string
@@ -14,11 +14,13 @@ type FileInputProps = {
     label?: string
     subtitle?: string
     base64?: string
+    id: string
     handleFileChange: (e: React.ChangeEvent<HTMLInputElement>) => void
 }
 
-const NIAFileInput: React.FC<FileInputProps> = ({ name, label, subtitle, showError, base64, handleFileChange}) => {
-    return (
+const NIAFileInput: React.FC<FileInputProps> = (props, ref) => {
+    const { name, label, subtitle, showError, base64, handleFileChange, className, id} = props
+     return (
         <div className={`mb-2 text-[14px] ${showError && 'text-red-500'} border-t`}>
             {label && (
                 <div className='flex flex-col justify-center py-3 w-full bg-white'>
@@ -28,8 +30,8 @@ const NIAFileInput: React.FC<FileInputProps> = ({ name, label, subtitle, showErr
             )}
             <div className="flex w-full items-center justify-center">
                 <Label
-                    htmlFor="dropzone-file"
-                    className="flex h-64 w-full cursor-pointer flex-col items-center justify-center rounded-lg border-2 border-dashed border-gray-300 bg-gray-50 hover:bg-gray-100 dark:border-gray-600 dark:bg-gray-700 dark:hover:border-gray-500 dark:hover:bg-gray-600"
+                    htmlFor={id}
+                    className={`flex h-64 ${className} w-full cursor-pointer flex-col items-center justify-center rounded-lg border-2 border-dashed border-gray-300 bg-gray-50 hover:bg-gray-100 dark:border-gray-600 dark:bg-gray-700 dark:hover:border-gray-500 dark:hover:bg-gray-600`}
                 >
                     {base64 ? (
                         // eslint-disable-next-line @next/next/no-img-element
@@ -58,8 +60,8 @@ const NIAFileInput: React.FC<FileInputProps> = ({ name, label, subtitle, showErr
                         </div>
                     )}
                     <FileInput
-                        name="fileUpload"
-                        id="dropzone-file"
+                        name={name}
+                        id={id}
                         className="hidden"
                         accept="image/.gif,.png,.jpeg,.jpg"
                         onChange={handleFileChange} 

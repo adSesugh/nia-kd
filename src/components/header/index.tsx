@@ -22,7 +22,7 @@ const Header = () => {
     <header className={styles.header}>
       <div className={styles.menubarWrapper}>
         <Link href={'/'}>
-         <Image alt='NIA-Kd' src={'/assets/images/nia_logo_white.svg'} width={132} height={46.08} />
+         <Image alt='NIA-Kd' src={'/assets/logo.png'} width={132} height={46.08} />
         </Link>
         <div className='xs:hidden sm:block'>
           <ul className={styles.menubar}>

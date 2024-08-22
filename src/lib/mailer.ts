@@ -1,4 +1,5 @@
 import * as puppeteer from 'puppeteer';
+import chromium from '@sparticuz/chromium'
 import * as nodemailer from 'nodemailer';
 import * as fs from 'fs';
 import * as path from 'path';
@@ -22,6 +23,7 @@ function replacePlaceholders(template: string, replacements: { [key: string]: st
 //     }
 //     return result;
 // }
+
 async function generateQRCode(text: string): Promise<string> {
     return await QRCode.toDataURL(text, {
         width: 100,
@@ -29,7 +31,7 @@ async function generateQRCode(text: string): Promise<string> {
 }
 
 async function generateNameTagHtml(data: any) {
-    const qrCodeDataUrl = await generateQRCode(data);
+    const qrCodeDataUrl = await generateQRCode(data?.eventId);
 
     return `
         <!DOCTYPE html>
@@ -202,11 +204,19 @@ async function generateNameTagHtml(data: any) {
 }
 
 export async function sendEmail(to: string, subject: string, content: string, data: any) {
+    console.log("Data sent => ", data)
+    console.log("to =>", to)
     const nameTagHtml = await generateNameTagHtml(data);
 
     // Launch puppeteer and generate the PDF
-    const browser = await puppeteer.launch();
+    const browser = await puppeteer.launch({
+        // args: chromium.args,
+        // defaultViewport: chromium.defaultViewport,
+        // executablePath: await chromium.executablePath()
+    });
+
     const page = await browser.newPage();
+    
     await page.setContent(nameTagHtml);
     const pdfPath = path.resolve(__dirname, 'name_tag.pdf');
     //await page.pdf({ path: pdfPath, format: 'A4' });

@@ -35,7 +35,9 @@ const AdvertPage = () => {
         })()
     }, [])
 
-    const loadingState = loading || compaigns.length === 0 ? "loading" : "idle";
+    console.log(compaigns)
+
+    const loadingState = loading || compaigns === 0 ? "loading" : "idle";
 
     const switchCompaignStatus = async (compaignId: string, status: boolean) => {
         const compaign = (await switchCompaign({
@@ -122,9 +124,9 @@ const AdvertPage = () => {
                                     Edit Compaign
                                 </DropdownItem>
                                 {compaign.status ? (
-                                    <DropdownItem onClick={() => switchCompaignStatus(compaign.id, compaign.status)}>Stop Compaign</DropdownItem>
+                                    <DropdownItem onClick={() => switchCompaignStatus(compaign.id, compaign.status as boolean)}>Stop Compaign</DropdownItem>
                                 ): (
-                                    <DropdownItem onClick={() => switchCompaignStatus(compaign.id, compaign.status)}>Activate Compaign</DropdownItem>
+                                    <DropdownItem onClick={() => switchCompaignStatus(compaign.id, compaign.status as boolean)}>Activate Compaign</DropdownItem>
                                 )}
                                 <DropdownItem onClick={() => deletePublishedCompaign(compaign.id)}>
                                     Delete Compaign
@@ -163,7 +165,7 @@ const AdvertPage = () => {
                </div>
                <div>
                     <Link 
-                        href={'/admin/ads/create'}
+                        href={'/ads/create'}
                         className='flex px-4 py-2 justify-center items-center text-white text-sm bg-[#161314] rounded-lg'
                     >
                         New

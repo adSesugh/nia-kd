@@ -30,6 +30,8 @@ const EventRegistration = () => {
 		}
 	})
 
+	console.log(data?.getRegistrationForm)
+
 	useEffect(() => {
 		if(data?.getRegistrationForm) {
 			const amount = Number(data?.getRegistrationForm?.amount) * 100
@@ -102,6 +104,7 @@ const EventRegistration = () => {
 				}
 			}
 			})
+			
 			if(res.data?.postEventRegistration?.id){
 				toast.success('Event registered')
 				return router.push('/events')

@@ -14,7 +14,7 @@ const NIAFooter = () => {
             <div id='footer' className='sm:px-28 xs:px-6'>
                 <div className='grid sm:grid-cols-3 xs:grid-cols-1 gap-16 pt-20'>
                     <div className='flex flex-col gap-3 text-white'>
-                        <Image alt='NIA-Kd' src={'/assets/images/nia_logo_white.svg'} width={175} height={66.08} />
+                        <Image alt='NIA-Kd' src={'/assets/logo.png'} width={175} height={66.08} />
                         <p className='pt-2 font-normal text-[15px]'>The Nigerian Institute of Architects Kaduna Chapter was founded on the 1st of April 1960, as an association of independent professional architects with the aim of fostering friendship.</p>
                         <div className='flex items-center gap-4 pt-4'>
                             <Link href={'https://www.instagram.com/nia_kaduna_chapter?igsh=NWt6bDN6NTk4Njlj'} target='_blank'>
