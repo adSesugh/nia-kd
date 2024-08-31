@@ -224,6 +224,8 @@ export const typeDefs = `#graphql
   web_banner: String
   mobile_banner: String
   link: String
+  clicks: Int
+  views: Int
   status: Boolean
   createdAt: Time
   updatedAt: Time

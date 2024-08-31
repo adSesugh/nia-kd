@@ -2,16 +2,12 @@
 
 import React, { useEffect, useState } from 'react'
 import TitleHeader from '../TitleHeader'
-import {Modal, ModalContent, ModalHeader, ModalBody, ModalFooter, useDisclosure, Chip,  Button, Dropdown, DropdownItem, DropdownMenu, DropdownTrigger, Table, TableHeader, TableColumn, TableBody, Spinner, TableRow, TableCell} from "@nextui-org/react"
+import {Chip,  Button, Dropdown, DropdownItem, DropdownMenu, DropdownTrigger, Table, TableHeader, TableColumn, TableBody, Spinner, TableRow, TableCell} from "@nextui-org/react"
 import { Form, Formik } from 'formik'
 import SearhbarWithIcon from '@/components/searhbar-with-icon'
 import SelectFilter from '@/components/select-filter'
-import FreeAds from '@/components/ads/FreeAds'
-import PaidAds from '@/components/ads/PaidAds'
-import TextAreaField from '@/components/textarea-field'
-import TextField from '@/components/textfield'
 import { modelStatus } from '@/lib/common'
-import { DotsThree, DotsThreeVertical } from '@phosphor-icons/react'
+import { DotsThree } from '@phosphor-icons/react'
 import moment from 'moment'
 import { Compaign, useDeleteCompaignMutation, useGetCompaignsLazyQuery, useStopCompaignMutation } from '@/graphql/__generated__/graphql'
 import Link from 'next/link'
@@ -20,7 +16,7 @@ import { toast } from 'react-toastify'
 
 const AdvertPage = () => {
     const [compaigns, setCompaigns] = useState<any>([])
-    const [index, setIndex] = useState<number>(0)
+    let [index, setIndex] = useState<number>(0)
     const router = useRouter()
 
     const [getCompaigns, {loading}] = useGetCompaignsLazyQuery({fetchPolicy: 'no-cache'})
@@ -52,6 +48,7 @@ const AdvertPage = () => {
             if(res.error){
                 toast.error(res.error.message)
             } else{
+                setIndex(0)
                 setCompaigns(res?.data?.getCompaigns)
             }
         }
@@ -69,28 +66,28 @@ const AdvertPage = () => {
             if(res.error){
                 toast.error(res.error.message)
             } else{
+                setIndex(0)
                 setCompaigns(res?.data?.getCompaigns)
             }
         }
     }
 
-    const renderCell = React.useCallback((compaign: Compaign, columnKey: React.Key, index: number) => {
+    const renderCell = React.useCallback((compaign: Compaign, columnKey: React.Key) => {
         const cellValue = compaign[columnKey as keyof Compaign];
         
-    
         switch (columnKey) {
             case "id":
-                return <span>{index++}</span>;
+                return <span>{++index}</span>;
             case "status":
                 return (
                     <Chip className="capitalize" color={compaign.status ? 'success' : 'default'} size="sm" variant="flat">
-                        <span className='text-[#0A7535]'>{compaign.status ? 'Running' : 'Stopped'}</span>
+                        <span className={`${compaign.status ? 'text-[#0A7535]' : 'text-[#c03030]'}`}>{compaign.status ? 'Running' : 'Stopped'}</span>
                     </Chip>
                 );
             case "duration":
                 return (
                     <Chip className="capitalize" color={compaign?.status ? 'success' : 'default'} size="sm" variant="flat">
-                        <span className='text-[#0A7535]'>{compaign.duration}</span>
+                        <span className={`${compaign.status ? 'text-[#0A7535]' : 'text-[#c03030]'}`}>{compaign.duration}</span>
                     </Chip>
                 );
             case "postedDate":
@@ -99,13 +96,13 @@ const AdvertPage = () => {
                 );
             case "performance":
                 return (
-                    <div className='flex flex-row'>
-                        <div>
-                            <h4>24</h4>
+                    <div className='grid grid-cols-2 gap-6'>
+                        <div className=''>
+                            <h4>{compaign.views ?? 0}</h4>
                             <span>Views</span>
                         </div>
                         <div>
-                            <h4>4</h4>
+                            <h4>{compaign.clicks ?? 0}</h4>
                             <span>Clicks</span>
                         </div>
                     </div>
@@ -185,13 +182,13 @@ const AdvertPage = () => {
                     </TableHeader>
                     <TableBody
                         items={compaigns ?? []}
-                        loadingContent={<Spinner />}
+                        loadingContent={<Spinner color='default' />}
                         loadingState={loadingState}
                         emptyContent={"No free ads to display."}
                     >
                         {(item: any) => (
                             <TableRow key={item?.id}>
-                                {(columnKey: React.Key) => <TableCell className='py-3'>{renderCell(item, columnKey, index)}</TableCell>}
+                                {(columnKey: React.Key) => <TableCell className='py-3'>{renderCell(item, columnKey)}</TableCell>}
                             </TableRow>
                         )}
                     </TableBody>

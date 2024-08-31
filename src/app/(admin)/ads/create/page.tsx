@@ -65,7 +65,7 @@ const Page = () => {
                 }}
             >
                 {({values, handleSubmit, isSubmitting, setFieldValue}) => (
-                    <Form onSubmit={handleSubmit}>
+                    <Form onSubmit={handleSubmit} className='mb-10'>
                         <div className='w-full bg-white py-6 border-t px-4 mt-4'>
                             <TextField 
                                 name='name' 

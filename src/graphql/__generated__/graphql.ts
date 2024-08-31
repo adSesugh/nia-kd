@@ -69,6 +69,7 @@ export type BlogResponse = {
 
 export type Compaign = {
   __typename?: 'Compaign';
+  clicks?: Maybe<Scalars['Int']['output']>;
   createdAt?: Maybe<Scalars['Time']['output']>;
   deletedAt?: Maybe<Scalars['Time']['output']>;
   duration: Scalars['Int']['output'];
@@ -81,6 +82,7 @@ export type Compaign = {
   starts_at: Scalars['Time']['output'];
   status?: Maybe<Scalars['Boolean']['output']>;
   updatedAt?: Maybe<Scalars['Time']['output']>;
+  views?: Maybe<Scalars['Int']['output']>;
   web_banner?: Maybe<Scalars['String']['output']>;
 };
 
@@ -879,7 +881,7 @@ export type GetBlogQuery = { __typename?: 'Query', getBlog?: { __typename?: 'Blo
 export type GetCompaignsQueryVariables = Exact<{ [key: string]: never; }>;
 
 
-export type GetCompaignsQuery = { __typename?: 'Query', getCompaigns?: Array<{ __typename?: 'Compaign', id: any, name: string, duration: number, starts_at: any, ends_at: any, web_banner?: string | null, mobile_banner?: string | null, link?: string | null, createdAt?: any | null }> | null };
+export type GetCompaignsQuery = { __typename?: 'Query', getCompaigns?: Array<{ __typename?: 'Compaign', id: any, name: string, duration: number, starts_at: any, ends_at: any, web_banner?: string | null, mobile_banner?: string | null, link?: string | null, status?: boolean | null, views?: number | null, clicks?: number | null, createdAt?: any | null }> | null };
 
 export type GetCompaignQueryVariables = Exact<{
   compaignId: Scalars['String']['input'];
@@ -1597,6 +1599,9 @@ export const GetCompaignsDocument = gql`
     web_banner
     mobile_banner
     link
+    status
+    views
+    clicks
     createdAt
   }
 }
@@ -4121,6 +4126,7 @@ export type BlogResponseResolvers<ContextType = GraphQLContext, ParentType exten
 }>;
 
 export type CompaignResolvers<ContextType = GraphQLContext, ParentType extends ResolversParentTypes['Compaign'] = ResolversParentTypes['Compaign']> = ResolversObject<{
+  clicks?: Resolver<Maybe<ResolversTypes['Int']>, ParentType, ContextType>;
   createdAt?: Resolver<Maybe<ResolversTypes['Time']>, ParentType, ContextType>;
   deletedAt?: Resolver<Maybe<ResolversTypes['Time']>, ParentType, ContextType>;
   duration?: Resolver<ResolversTypes['Int'], ParentType, ContextType>;
@@ -4133,6 +4139,7 @@ export type CompaignResolvers<ContextType = GraphQLContext, ParentType extends R
   starts_at?: Resolver<ResolversTypes['Time'], ParentType, ContextType>;
   status?: Resolver<Maybe<ResolversTypes['Boolean']>, ParentType, ContextType>;
   updatedAt?: Resolver<Maybe<ResolversTypes['Time']>, ParentType, ContextType>;
+  views?: Resolver<Maybe<ResolversTypes['Int']>, ParentType, ContextType>;
   web_banner?: Resolver<Maybe<ResolversTypes['String']>, ParentType, ContextType>;
   __isTypeOf?: IsTypeOfResolverFn<ParentType, ContextType>;
 }>;

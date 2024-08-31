@@ -8,6 +8,9 @@ query GetCompaigns {
     web_banner
     mobile_banner
     link
+    status
+    views
+    clicks
     createdAt
   }
 }

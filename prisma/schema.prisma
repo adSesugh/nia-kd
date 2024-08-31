@@ -305,6 +305,8 @@ model Compaign {
   web_banner      String?
   mobile_banner   String?
   link            String?
+  views           Int @default(0)
+  clicks          Int @default(0)
   status          Boolean @default(true)
   createdAt       DateTime @default(now()) @map(name: "created_at")
   updatedAt       DateTime @updatedAt @map(name: "updated_at")

@@ -13,6 +13,8 @@ class CompaignAPI extends RESTDataSource {
         const bufferWeb = input.web_banner ? Buffer.from(input.web_banner.split(',')[1], 'base64') : '';
         const bufferMobile = input.mobile_banner ? Buffer.from(input.mobile_banner.split(',')[1], 'base64') : '';
 
+        console.log(input)
+
         const compaign = await prisma.compaign.create({
             data: {
                 name: input.name,
