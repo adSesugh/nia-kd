@@ -8,9 +8,9 @@ import { Instagram } from 'iconsax-react'
 const NIAFooter = () => {
     return (
         <div className={styles.footer}>
-            <div className='flex items-center justify-center'>
+            {/* <div className='flex items-center justify-center'>
                 <Image src={'/assets/images/pattern.svg'} alt='pattern' width={1440} height={93.32} />
-            </div>
+            </div> */}
             <div id='footer' className='sm:px-28 xs:px-6'>
                 <div className='grid sm:grid-cols-3 xs:grid-cols-1 gap-16 pt-20'>
                     <div className='flex flex-col gap-3 text-white'>

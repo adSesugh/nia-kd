@@ -18,18 +18,17 @@ const AuthLayout: React.FC<LayoutProps> = ({ children }) => {
                     <div>
                         <Link href={'/'}>
                             <Image 
-                                src={'/assets/images/logo.svg'} 
+                                src={'/assets/logo.png'} 
                                 alt='NIA-Kd' 
-                                width={30} 
-                                height={10} 
+                                width={250} 
+                                height={150} 
                                 sizes='100vw'
-                                style={{
-                                    width: '100%',
-                                    height: 'auto'
-                                }} 
+                                // style={{
+                                //     width: '100%',
+                                //     height: 'auto'
+                                // }} 
                             />
                         </Link>
-                        <h1 className='text-white text-[26px] px-2'>Kaduna State Chapter</h1>
                     </div>
                 </div>
                 <div className={styles.authPanel}>

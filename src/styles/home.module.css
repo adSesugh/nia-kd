@@ -41,7 +41,7 @@
 }
 
 .teamHeader {
-    @apply text-[40px] text-center w-full font-semibold
+    @apply text-[32px] text-center w-full font-semibold
 }
 
 .teamMember {

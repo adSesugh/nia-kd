@@ -26,28 +26,35 @@ const Home = () => {
         <Mission />
         <NIAVision />
       </div>
-      <div className={styles.videoSection} data-aos="fade-left">
-
+      <div className='grid sm:grid-cols-4 xs:grid-cols-2 sm:h-36 xs:h-44 bg-[#F3ECE2] py-6 my-16 divide divide-x-2'>
+        <div className='flex flex-col items-center justify-center h-full'>
+          <h1 className='sm:text-[48px] xs:text-[20x] font-semibold'>230</h1>
+          <h6>Total members</h6>
+        </div>
+        <div className='flex flex-col items-center justify-center h-full'>
+          <h1 className='sm:text-[48px] xs:text-[20x] font-semibold'>230</h1>
+          <h6>Total members</h6>
+        </div>
+        <div className='flex flex-col items-center justify-center h-full'>
+          <h1 className='sm:text-[48px] xs:text-[20x] font-semibold'>230</h1>
+          <h6>Total members</h6>
+        </div>
+        <div className='flex flex-col items-center justify-center h-full'>
+          <h1 className='sm:text-[48px] xs:text-[20x] font-semibold'>230</h1>
+          <h6>Total members</h6>
+        </div>
+      </div>
+      <div className={`px-32 py-8`} data-aos="fade-left">
+        <p className='text-center mb-6'><span className='text-3xl font-semibold'>Event Highlight</span></p>
+        <iframe className='w-full h-[600px] rounded-2xl'
+          src="https://www.youtube.com/embed/N2z5wgeouNA?si=Whe8_wDbPS1J2fKV" 
+          title="YouTube video player" 
+          frameborder={'0'} 
+          allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share" 
+          allowfullscreen>
+        </iframe>
       </div>
       <NIATeam />
-      <div className='grid sm:grid-cols-4 xs:grid-cols-2 sm:h-36 xs:h-44 bg-[#F3ECE2] py-6 divide divide-x-2'>
-        <div className='flex flex-col items-center justify-center h-full'>
-          <h1 className='sm:text-[48px] xs:text-[20x] font-semibold'>230</h1>
-          <h6>Total members</h6>
-        </div>
-        <div className='flex flex-col items-center justify-center h-full'>
-          <h1 className='sm:text-[48px] xs:text-[20x] font-semibold'>230</h1>
-          <h6>Total members</h6>
-        </div>
-        <div className='flex flex-col items-center justify-center h-full'>
-          <h1 className='sm:text-[48px] xs:text-[20x] font-semibold'>230</h1>
-          <h6>Total members</h6>
-        </div>
-        <div className='flex flex-col items-center justify-center h-full'>
-          <h1 className='sm:text-[48px] xs:text-[20x] font-semibold'>230</h1>
-          <h6>Total members</h6>
-        </div>
-      </div>
       <Showcase />
       <BlogUpdate />
       <NIAFooter />

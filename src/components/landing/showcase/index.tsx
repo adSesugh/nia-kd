@@ -6,16 +6,15 @@ import ShowcaseCard from './ShowcaseCard'
 import { ArrowLeft, ArrowRight } from 'iconsax-react'
 import { Swiper, SwiperSlide } from 'swiper/react';
 import { Autoplay, Navigation, Pagination } from "swiper/modules";
+import { PRIMARY_ONE } from '@/constant/Colors'
 
 
 const Showcase = () => {
   
   return (
     <div className={styles.showcase}>
-        <h1>Showcase</h1>
-        <div>
-            <h2>One platform to unite Us all.</h2>
-        </div>
+        <p className='text-center text-lg'><span className={`text-[#D99A3F]`}>Gallery</span></p>
+        <p className='text-center mb-8'><span className='text-white text-3xl text-center font-bold'>One platform to unite Us all.</span></p>
         <div className='gap-8 overflow-hidden'>
           <Swiper
             spaceBetween={30}

@@ -45,7 +45,7 @@ const NIATeam = () => {
     return (
         <div className={`${styles.teamSection}`}>
             <div className={styles.teamHeader}>
-                <h1>Team</h1>
+                <h1>Meet Our Team</h1>
             </div>
             <div className={styles.teamMember}>
                 {members.map((member, index) => (
