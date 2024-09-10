@@ -7,7 +7,7 @@ const nextConfig = {
         remotePatterns: [
             {
                 protocol: 'https',
-                hostname: 'nia-kd.s3.us-east-1.amazonaws.com'
+                hostname: 'nia-kd-prod.s3.eu-north-1.amazonaws.com'
             },
         ],
     },

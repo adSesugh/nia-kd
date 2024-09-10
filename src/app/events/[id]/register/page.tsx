@@ -53,7 +53,6 @@ const EventRegistration = () => {
 				return router.push('/events')
 			}
 		} catch (error: any) {
-			console.log(error.message)
 			toast.error(error.messge)
 		}
 	}

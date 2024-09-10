@@ -27,6 +27,13 @@ const EventDetail = () => {
         })()
     }, [getEvent, id])
 
+    const computeTickets = () => {
+        const tickets : number = event?.eventPlanPrices?.reduce((acc: number, curr: any) => {
+            return acc + Number(curr?.tickets);
+        }, 0) ?? 0
+        return Number(event?.tickets) + tickets
+    }
+
     return (
         <div className='h-full overflow-y-auto mt-10 pb-10'>
             <div className='flex h-20 bg-white pt-2 justify-between items-center sm:px-12 xs:px-4'>
@@ -64,7 +71,7 @@ const EventDetail = () => {
                         <div className='flex bg-white h-32 rounded-xl shadow-sm border'>
                             <div className='w-full h-full px-8 py-4'>
                                 <h1 className='pb-3 text-sm'>Registrations</h1>
-                                <h1 className='text-xl font-medium'>{Number(event?.eventRegistrations.length) || 0}<small className='text-[#6D6D6D] text-[13px]'>/{event?.isInfinity || event?.tickets === 0 ? '\u221E' : event?.tickets}</small></h1>
+                                <h1 className='text-xl font-medium'>{Number(event?.eventRegistrations.length) || 0}<small className='text-[#6D6D6D] text-[13px]'>/{event?.isInfinity || event?.tickets === 0 ? '\u221E' : computeTickets()}</small></h1>
                             </div>
                         </div>
                         <div className='flex bg-white h-32 rounded-xl shadow-sm border'>

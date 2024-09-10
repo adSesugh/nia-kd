@@ -1040,14 +1040,14 @@ export type CreateEventMutation = { __typename?: 'Mutation', createEvent?: { __t
 export type GetEventsQueryVariables = Exact<{ [key: string]: never; }>;
 
 
-export type GetEventsQuery = { __typename?: 'Query', getEvents?: Array<{ __typename?: 'Event', coverPhoto?: string | null, amount: any, tickets?: number | null, address?: string | null, id: any, name: string, theme?: string | null, type: string, status: string, starts_at: any, eventRegistrations?: Array<{ __typename?: 'EventRegistration', id: any } | null> | null }> | null };
+export type GetEventsQuery = { __typename?: 'Query', getEvents?: Array<{ __typename?: 'Event', coverPhoto?: string | null, amount: any, tickets?: number | null, address?: string | null, id: any, name: string, theme?: string | null, type: string, status: string, starts_at: any, eventRegistrations?: Array<{ __typename?: 'EventRegistration', id: any } | null> | null, eventPlanPrices?: Array<{ __typename?: 'EventPlanPrice', tickets?: number | null } | null> | null }> | null };
 
 export type GetEventQueryVariables = Exact<{
   eventId: Scalars['UUID']['input'];
 }>;
 
 
-export type GetEventQuery = { __typename?: 'Query', getEvent?: { __typename?: 'Event', id: any, name: string, theme?: string | null, amount: any, tickets?: number | null, isInfinity?: boolean | null, formTitle: string, message: string, views?: number | null, eventRegistrations?: Array<{ __typename?: 'EventRegistration', id: any } | null> | null } | null };
+export type GetEventQuery = { __typename?: 'Query', getEvent?: { __typename?: 'Event', id: any, name: string, theme?: string | null, amount: any, tickets?: number | null, isInfinity?: boolean | null, formTitle: string, message: string, views?: number | null, eventRegistrations?: Array<{ __typename?: 'EventRegistration', id: any } | null> | null, eventPlanPrices?: Array<{ __typename?: 'EventPlanPrice', tickets?: number | null, charge?: any | null } | null> | null } | null };
 
 export type CancelEventMutationVariables = Exact<{
   eventId: Scalars['UUID']['input'];
@@ -1088,14 +1088,14 @@ export type GetMembersAttendanceQuery = { __typename?: 'Query', getMembersAttend
 export type GetEventsForPublicQueryVariables = Exact<{ [key: string]: never; }>;
 
 
-export type GetEventsForPublicQuery = { __typename?: 'Query', getEventsForPublic?: Array<{ __typename?: 'Event', id: any, type: string, status: string, starts_at: any, starts_time: string, paymentType: string, name: string, theme?: string | null, coverPhoto?: string | null, createdAt?: any | null, amount: any, tickets?: number | null, eventRegistrations?: Array<{ __typename?: 'EventRegistration', id: any } | null> | null }> | null };
+export type GetEventsForPublicQuery = { __typename?: 'Query', getEventsForPublic?: Array<{ __typename?: 'Event', id: any, type: string, status: string, starts_at: any, starts_time: string, paymentType: string, name: string, theme?: string | null, coverPhoto?: string | null, createdAt?: any | null, amount: any, tickets?: number | null, eventRegistrations?: Array<{ __typename?: 'EventRegistration', id: any } | null> | null, eventPlanPrices?: Array<{ __typename?: 'EventPlanPrice', tickets?: number | null, charge?: any | null } | null> | null }> | null };
 
 export type GetEventForPublicQueryVariables = Exact<{
   eventId: Scalars['UUID']['input'];
 }>;
 
 
-export type GetEventForPublicQuery = { __typename?: 'Query', getEvent?: { __typename?: 'Event', address?: string | null, amount: any, coverPhoto?: string | null, description?: string | null, id: any, name: string, theme?: string | null, paymentType: string, starts_at: any, starts_time: string, status: string, type: string, sponsors?: Array<{ __typename?: 'Sponsor', id: any, logo: string } | null> | null, eventResources?: Array<{ __typename?: 'EventResource', id: any, resourceUrl: string, name: string } | null> | null, speakers?: Array<{ __typename?: 'Speaker', about: string, avatar: string, id: any, name: string, title: string } | null> | null } | null };
+export type GetEventForPublicQuery = { __typename?: 'Query', getEvent?: { __typename?: 'Event', address?: string | null, amount: any, coverPhoto?: string | null, description?: string | null, id: any, name: string, theme?: string | null, paymentType: string, starts_at: any, starts_time: string, status: string, type: string, sponsors?: Array<{ __typename?: 'Sponsor', id: any, logo: string } | null> | null, eventResources?: Array<{ __typename?: 'EventResource', id: any, resourceUrl: string, name: string } | null> | null, speakers?: Array<{ __typename?: 'Speaker', about: string, avatar: string, id: any, name: string, title: string } | null> | null, eventPlanPrices?: Array<{ __typename?: 'EventPlanPrice', tickets?: number | null } | null> | null } | null };
 
 export type GetUpComingEventsQueryVariables = Exact<{
   memberId: Scalars['UUID']['input'];
@@ -2552,6 +2552,9 @@ export const GetEventsDocument = gql`
     eventRegistrations {
       id
     }
+    eventPlanPrices {
+      tickets
+    }
   }
 }
     `;
@@ -2601,6 +2604,10 @@ export const GetEventDocument = gql`
     views
     eventRegistrations {
       id
+    }
+    eventPlanPrices {
+      tickets
+      charge
     }
   }
 }
@@ -2832,6 +2839,10 @@ export const GetEventsForPublicDocument = gql`
     eventRegistrations {
       id
     }
+    eventPlanPrices {
+      tickets
+      charge
+    }
     coverPhoto
     createdAt
     amount
@@ -2899,6 +2910,9 @@ export const GetEventForPublicDocument = gql`
       id
       name
       title
+    }
+    eventPlanPrices {
+      tickets
     }
     status
     type

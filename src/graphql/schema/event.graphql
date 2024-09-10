@@ -65,6 +65,9 @@ query GetEvents {
     eventRegistrations {
       id
     }
+    eventPlanPrices {
+      tickets
+    }
   }
 }
 
@@ -81,6 +84,10 @@ query GetEvent($eventId: UUID!) {
     views
     eventRegistrations {
       id
+    }
+    eventPlanPrices {
+      tickets
+      charge
     }
   }
 }
@@ -128,6 +135,10 @@ query GetEventsForPublic {
     eventRegistrations {
       id
     }
+    eventPlanPrices {
+      tickets
+      charge
+    }
     coverPhoto
     createdAt
     amount
@@ -162,6 +173,9 @@ query GetEventForPublic($eventId: UUID!) {
       id
       name
       title
+    }
+    eventPlanPrices {
+      tickets
     }
     status
     type

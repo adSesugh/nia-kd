@@ -188,13 +188,14 @@ class EventAPI extends RESTDataSource {
             include: { 
                 user: { 
                     include: { 
-                        member: true 
+                        member: true
                     } 
                 }, 
                 speakers: true, 
                 eventResources: true,
                 eventRegistrations: true,
-                sponsors: true
+                sponsors: true,
+                eventPlanPrices: true
             },
         })
 
@@ -213,6 +214,7 @@ class EventAPI extends RESTDataSource {
                 _count: {
                     select: { eventRegistrations: true },
                 },
+                eventPlanPrices: true
             },
             where: {
                 deletedAt: null
@@ -319,6 +321,7 @@ class EventAPI extends RESTDataSource {
                     } 
                 }, 
                 eventForms: true,
+                eventPlanPrices: true,
                 _count: {
                     select: { eventRegistrations: true },
                 },

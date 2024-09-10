@@ -12,6 +12,14 @@ type EventCardProps = {
 }
 
 const EventCard: React.FC<EventCardProps> = ({href = '/', event }) => {
+
+    const computeTickets = () => {
+        const tickets : number = event?.eventPlanPrices?.reduce((acc, curr) => {
+            return acc + Number(curr?.tickets);
+        }, 0) ?? 0
+        return Number(event?.tickets) + tickets
+    }
+
     return (
         <Link href={`/events/${event.id}`} className='rounded-2xl shadow-sm overflow-hidden w-full bg-white'>
             <figure className='w-full'>
@@ -32,7 +40,7 @@ const EventCard: React.FC<EventCardProps> = ({href = '/', event }) => {
                         <Badge label={event?.status === 'Published' ? 'Open': 'Closed'} className={`flex justify-center items-center rounded-2xl ${event?.status === 'Published' ? 'bg-[#E2F3E6]' : ' bg-[#F3E2E2]'} px-3`} labelStyle='text-[12px]' />
                     </div>
                     <div>
-                        <span className='text-[12px]'>{event?.eventRegistrations?.length || 0}{((Number(event?.tickets) - Number(event?.eventRegistrations?.length)) === 0 && event?.eventRegistrations?.length) === 0 ? '' : '+'} already registered</span>
+                        <span className='text-[12px]'>{event?.eventRegistrations?.length || 0}{((Number(computeTickets()) - Number(event?.eventRegistrations?.length)) === 0 && event?.eventRegistrations?.length) === 0 ? '' : '+'} already registered</span>
                     </div>
                 </div>
                 <div className='py-2'>

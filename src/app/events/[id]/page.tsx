@@ -35,7 +35,7 @@ const EventDetail = () => {
     const registerForEvent = () =>  redirect(`/events/${id}/register`)
     
     return (
-        <div>
+        <div className='z-0'>
             <div className='sm:py-20 sm:px-40 xs:px-6 pt-20'>
                 <div className='flex justify-between items-center pt-6 w-full pb-6'>
                     <Link href={'/events'} className='flex items-center space-x-2 '>
@@ -61,7 +61,7 @@ const EventDetail = () => {
                             </button>
                         </div>
                     </div>
-                    <div className='relative h-[20%] w-full overflow-hidden'>
+                    <div className='h-[20%] w-full overflow-hidden'>
                         <Image 
                             src={data?.getEvent?.coverPhoto || '/assets/events/event-detail.svg'} 
                             alt={data?.getEvent?.name as string || 'event cover'}

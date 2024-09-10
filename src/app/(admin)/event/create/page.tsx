@@ -257,7 +257,7 @@ const CreateEvent = () => {
     }, []); 
 
     return (
-        <div className='pb-5 bg-[#F5F5F5] h-full overflow-y-auto'>
+        <div className='pb-5 bg-[#F5F5F5] h-full overflow-y-auto mb-16'>
             <div className='flex sm:flex-row xs:flex-col sm:h-[65px] xs:py-3 sm:justify-between xs:space-y-2 sm:space-x-0 sm:px-16 xs:px-3 sm:items-center xs:justify-center xs:items-start bg-white shadow-sm pt-1.5 xs:overflow-x-hidden'>
                 <h1 className='font-semibold'>Create Event</h1>
                 <div className='flex items-center gap-5'>
@@ -924,7 +924,7 @@ const CreateEvent = () => {
                                     </div>
                                 </div>
                             )}
-                            <div className='flex pt-8 gap-4 float-end mb-8'>
+                            <div className='flex pt-8 gap-4 float-end pb-16'>
                                 {(currentIndex === 0 && nextIndex === 0) ? (
                                     <Link href={'/event/list'} className='px-4 py-2 border border-[#161314] rounded-xl'>
                                         <span className='text-[#161314] text-sm'>Cancel</span>

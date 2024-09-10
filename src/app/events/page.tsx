@@ -16,7 +16,6 @@ const Events = () => {
   const [selectedSearch, setSelectedSearch] = useState('all')
   const [getEvents, {loading}] = useGetEventsForPublicLazyQuery({fetchPolicy: 'no-cache'})
 
-
   useEffect(() => {
     getAllEvents()
   }, [])

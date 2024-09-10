@@ -21,9 +21,9 @@ const Page = () => {
     const {isOpen, onOpen, onClose} = useDisclosure();
     const [trxRef, setTrxRef] = useState<any>()
     const [amount, setAmount] = useState<number>(0)
-    const [regData] = useState<Record<string, any> | null>(JSON.parse(window.localStorage.getItem('regData') || ''));
-    const [event, setEvent] = useState<any>()
     const user = useAppSelector((state) => state?.auth.userData.user)
+    const [regData] = useState<Record<string, any>>(JSON.parse(window.localStorage.getItem('regData') || '') || user);
+    const [event, setEvent] = useState<any>()
     const [getFormDetails] = useGetRegistrationFormDetailsLazyQuery()
 
     useEffect(() => {

@@ -53,10 +53,18 @@ const Events = () => {
     })()
   }, [getEventList])
 
+
   const renderCell = React.useCallback((event: Event, columnKey: React.Key) => {
       const cellValue = event[columnKey as keyof Event];
       const state = event.address?.split(',')[event.address.split(',').length - 2]
       const country = event.address?.split(',')[event.address.split(',').length - 1]
+
+      const computeTickets = (event: Event) => {
+        const tickets : number = event?.eventPlanPrices?.reduce((acc, curr) => {
+            return acc + Number(curr?.tickets);
+        }, 0) ?? 0
+        return Number(event?.tickets) + tickets
+      }
       
       switch (columnKey) {
           case "id":
@@ -92,7 +100,7 @@ const Events = () => {
               )
           case "tickets":
             return (
-              <span>{Number(event.eventRegistrations?.length) || 0}/{event.isInfinity || event.tickets === 0 ? '\u221E' : event.tickets}</span>
+              <span>{Number(event.eventRegistrations?.length) || 0}/{event.isInfinity || event.tickets === 0 ? '\u221E' : computeTickets(event)}</span>
             )
           case "status":
               return (
