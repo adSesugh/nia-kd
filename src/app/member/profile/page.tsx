@@ -24,8 +24,6 @@ const Profile = () => {
     })()
   }, [])
 
-  console.log(userDetail)
-
   return (
     <div className='w-full'>
       <ProfileScreen data={userDetail} loading={loading} />

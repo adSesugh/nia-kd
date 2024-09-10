@@ -16,6 +16,7 @@ mutation CreateEvent($input: eventInput!) {
     event {
       id
       name
+      theme
       description
       type
       link
@@ -57,6 +58,7 @@ query GetEvents {
     address
     id
     name
+    theme
     type
     status
     starts_at
@@ -70,6 +72,7 @@ query GetEvent($eventId: UUID!) {
   getEvent(eventId: $eventId) {
     id
     name
+    theme
     amount
     tickets
     isInfinity
@@ -121,6 +124,7 @@ query GetEventsForPublic {
     starts_time
     paymentType
     name
+    theme
     eventRegistrations {
       id
     }
@@ -139,6 +143,7 @@ query GetEventForPublic($eventId: UUID!) {
     description
     id
     name
+    theme
     paymentType
     starts_at
     starts_time
@@ -183,6 +188,7 @@ query GetPastEvents {
     starts_at
     starts_time
     name
+    theme
     coverPhoto
     eventRegistrations {
       createdAt
@@ -195,11 +201,13 @@ query GetPastEvents {
 query GetRegistrationForm($eventId: UUID!) {
   getRegistrationForm(eventId: $eventId) {
     name
+    theme
     amount
     formTitle
     instructions
     status
     paymentType
+    coverPhoto
     eventForms {
       id
       name
@@ -207,6 +215,23 @@ query GetRegistrationForm($eventId: UUID!) {
       type
       required
       priority
+    }
+  }
+}
+
+query GetRegistrationFormDetails($eventId: UUID!) {
+  getRegistrationForm(eventId: $eventId) {
+    id
+    name
+    theme
+    amount
+    status
+    paymentType
+    eventPlanPrices {
+      eventId
+      membershipTypeId
+      charge
+      tickets
     }
   }
 }

@@ -1,3 +1,4 @@
+import NIAFooter from '@/components/footer';
 import Header from '@/components/header'
 import { LayoutProps } from '@/types/common';
 import { Metadata } from 'next';
@@ -10,9 +11,10 @@ export const metadata: Metadata = {
 
 const EventLayout: React.FC<LayoutProps> = ({ children }) => {
   return (
-    <div>
+    <div className=''>
         <Header />
         {children}
+        <NIAFooter />
     </div>
   )
 }

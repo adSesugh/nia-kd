@@ -2,7 +2,7 @@
 
 import React, { useEffect } from 'react'
 import styles from '@/styles/auth.module.css'
-import { Form, Formik, FormikHelpers } from 'formik';
+import { Field, Form, Formik, FormikHelpers } from 'formik';
 import { RegisterForm } from '@/types/auth';
 import { Eye, EyeSlash } from 'iconsax-react';
 import Link from 'next/link';
@@ -14,6 +14,7 @@ import { useCreateUserMutation, useGetMembershipTypesQuery } from '@/graphql/__g
 import { useRouter } from 'next/navigation';
 import { toast } from 'react-toastify';
 import { RegisterSchema } from '@/lib/validations';
+import { Label } from 'flowbite-react';
 
 
 const RegisterPage: React.FC<{}> = () => {
@@ -26,7 +27,9 @@ const RegisterPage: React.FC<{}> = () => {
     membershipId: '', 
     workplace: '',
     password: '',
-    confirmPassword: '' 
+    confirmPassword: '',
+    checkMember: '',
+    membershipSlip: ''
   };
   const [show, setShow] = React.useState<boolean>(false)
   const [createUser, {loading, error}] = useCreateUserMutation()
@@ -58,35 +61,39 @@ const RegisterPage: React.FC<{}> = () => {
                   email: values.email,
                   phoneNumber: values.phoneNumber,
                   workplace: values.workplace,
-                  password: values.password
+                  password: values.password,
+                  proofDocument: values.membershipSlip
                 }
               }
             })
             
-            setSubmitting(false)
-            toast.success("Created successfully")
             if(res.data?.createUser?.success){
+              setSubmitting(false)
+              toast.success(res.data?.createUser?.message)
+
               return router.push('/auth/login')
             }
           } catch (error: any) {
             console.log(error.message)
-            toast.error("Whoops! error occurred")
+            toast.error(error.message)
             setSubmitting(false)
           }
         }}
       >
-        {({ values, errors, touched, handleSubmit, handleChange, isSubmitting, }) => (
+        {({ values, errors, touched, handleSubmit, handleChange, isSubmitting, setFieldValue}) => (
           <Form onSubmit={handleSubmit}>
-            <TextField
-              name='firstName'
-              placeholder='First name' 
-              className={`${errors.firstName && touched.firstName ? 'ring-red-500': ''} pr-10`}
-            />
-            <TextField
-              name='lastName'
-              placeholder='Last name' 
-              className={`${errors.lastName && touched.lastName ? 'ring-red-500': ''} pr-10`}
-            />
+            <div className='grid sm:grid-cols-2 xs:grid-cols-1 gap-4'>
+              <TextField
+                name='firstName'
+                placeholder='First name' 
+                className={`${errors.firstName && touched.firstName ? 'ring-red-500': ''} pr-10`}
+              />
+              <TextField
+                name='lastName'
+                placeholder='Last name' 
+                className={`${errors.lastName && touched.lastName ? 'ring-red-500': ''} pr-10`}
+              />
+            </div>
             <TextField
               name='email'
               placeholder='Email Address' 
@@ -104,11 +111,22 @@ const RegisterPage: React.FC<{}> = () => {
               onChange={handleChange}
               placeholder='Select membership type'
             />
-            <TextField
-              name='membershipId'
-              placeholder='Membership ID (Optional)' 
-              className={`${errors.membershipId && touched.membershipId ? 'ring-red-500': ''} pr-10`}
-            />
+            <div className={`grid sm:${values.checkMember === 'yes' ? 'grid-cols-2' : 'grid-cols-1'} xs:grid-cols-1 gap-4`}>
+              <DefaultSelect
+                data={[{id: 'no', name: 'No'}, {id: 'yes', name: 'Yes'}]}
+                name='checkMember'
+                error={errors.checkMember}
+                onChange={handleChange}
+                placeholder='Registered Member?'
+              />
+              {values.checkMember === 'yes' && (
+                <TextField
+                  name='membershipId'
+                  placeholder={`Membership ID (${values.checkMember === 'yes' && values.membershipSlip === '' ? 'Required' : 'Optional'})`} 
+                  className={`${errors.membershipId && touched.membershipId ? 'ring-red-500': ''} pr-10`}
+                />
+              )}
+            </div>
             <TextField
               name='workplace'
               placeholder='Workplace'
@@ -128,6 +146,31 @@ const RegisterPage: React.FC<{}> = () => {
               showError={true}
               className={errors.confirmPassword && touched.confirmPassword ? 'ring-red-500 pr-10 mt-4': 'pr-10 mt-4'}
             />
+            {values.checkMember === 'no' && (
+              <Field name="file">
+                {() => (
+                  <>
+                    <Label className='text-gray-500'>Upload proof of membership (Required)</Label>
+                    <input
+                      type="file"
+                      name="membershipSlip"
+                      onChange={(event) => {
+                        const file = event.currentTarget.files?.[0];
+                        if (file) {
+                            const reader = new FileReader();
+                            reader.onloadend = () => {
+                                setFieldValue('membershipSlip', reader.result as string);
+                            };
+                            reader.readAsDataURL(file);
+                        }
+                      }}
+                      className={`${errors.membershipSlip && touched.membershipSlip ? 'ring-red-500 pr-10': 'pr-10'} block w-full rounded-md h-11 border-0 focus:border focus:border-gray-400 pl-3 text-gray-900 ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-gray-200 sm:text-sm sm:leading-6`}
+                    />
+                  </>
+                )}
+              </Field>
+            )}
+            
             <SubmitButton 
                 name={isSubmitting || loading ? "Please wait..." : 'Register'} 
                 type='submit' 

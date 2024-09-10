@@ -45,10 +45,11 @@ model User {
 }
 
 model MembershipType {
-  id        String @id @default(uuid())
-  name      String @unique @db.VarChar(30) 
-  members   Member[]
-  dues      Dues[]
+  id                String @id @default(uuid())
+  name              String @unique @db.VarChar(30) 
+  members           Member[]
+  dues              Dues[]
+  eventPlanPrices   EventPlanPrice[]
 }
 
 model Member {
@@ -68,6 +69,7 @@ model Member {
   membershipTypeId    String
   membershipType      MembershipType     @relation(fields: [membershipTypeId], references: [id])
   status              String              @default("Active") @db.VarChar(191)
+  proofDocument       String?
   //cpdpPoints        Int                 @default(0)
   createdAt           DateTime            @default(now()) @map(name: "created_at")
   updatedAt           DateTime            @updatedAt @map(name: "updated_at")
@@ -137,6 +139,7 @@ model TagOnPosts {
 model Event {
   id                 String              @id @default(uuid())
   name               String
+  theme              String?              @default("event theme")
   description        String              @db.Text
   type               String
   cpdp_points        Int                 @default(0)
@@ -166,6 +169,7 @@ model Event {
   eventResources     EventResource[]
   speakers           Speaker[]
   sponsors           Sponsor[]
+  eventPlanPrices     EventPlanPrice[]
   sendTag            Boolean             @default(false)
 
   createdAt          DateTime     @default(now())
@@ -212,6 +216,22 @@ model EventResource {
   event       Event?  @relation(fields: [eventId], references: [id])
 
   @@map("event_resources")
+}
+
+model EventPlanPrice {
+  id                String @id @default(uuid())
+  eventId           String
+  event             Event  @relation(fields: [eventId], references: [id])
+  name              String
+  membershipTypeId  String
+  membershipType    MembershipType  @relation(fields: [membershipTypeId], references: [id])
+  tickets           Int
+  charge            Decimal
+
+  createdAt         DateTime @default(now()) @map(name: "created_at")
+  updatedAt         DateTime @updatedAt @map(name: "updated_at")
+
+  @@map("event_plan_prices")
 }
 
 model EventRegistration {

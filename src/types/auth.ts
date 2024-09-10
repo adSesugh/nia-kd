@@ -13,6 +13,8 @@ export type RegisterForm = {
     workplace: string
     password: string
     confirmPassword: string
+    checkMember?: string
+    membershipSlip?: any
 }
 
 export type MemberForm = {

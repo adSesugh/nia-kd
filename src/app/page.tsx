@@ -44,14 +44,12 @@ const Home = () => {
           <h6>Total members</h6>
         </div>
       </div>
-      <div className={`px-32 py-8`} data-aos="fade-left">
+      <div className={`sm:px-32 xs:px-6 py-8`} data-aos="fade-left">
         <p className='text-center mb-6'><span className='text-3xl font-semibold'>Event Highlight</span></p>
         <iframe className='w-full h-[600px] rounded-2xl'
           src="https://www.youtube.com/embed/N2z5wgeouNA?si=Whe8_wDbPS1J2fKV" 
           title="YouTube video player" 
-          frameborder={'0'} 
-          allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share" 
-          allowfullscreen>
+          allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share">
         </iframe>
       </div>
       <NIATeam />

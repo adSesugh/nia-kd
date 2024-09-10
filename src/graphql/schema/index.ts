@@ -42,6 +42,7 @@ export const typeDefs = `#graphql
     membershipTypeId: UUID!
     membershipType: MembershipType!
     membershipId: String
+    proofDocument: String
     status: String @uppercase
     cpdpPoints: CpdpPoint
     createdAt: Time
@@ -86,6 +87,7 @@ export const typeDefs = `#graphql
   type Event {
     id: UUID!
     name: String!
+    theme: String
     description: String
     type: String!
     link: String
@@ -113,6 +115,7 @@ export const typeDefs = `#graphql
     eventPayments: [Payment]
     eventRegistrations: [EventRegistration]
     eventResources: [EventResource]
+    eventPlanPrices: [EventPlanPrice]
     speakers: [Speaker]
     sponsors: [Sponsor]
     sendTag: Boolean
@@ -160,6 +163,20 @@ export const typeDefs = `#graphql
     createdAt:  Time
     updatedAt:  Time
   }  
+  
+  type EventPlanPrice {
+    id:               UUID!
+    eventId:          String!
+    membershipTypeId: UUID!
+    membershipType:   MembershipType
+    event:            Event
+    name:             String!
+    tickets:          Int
+    charge:           Decimal
+    createdAt:        Time
+    updatedAt:        Time 
+  }
+
 
   type EventResource {
     id: UUID!
@@ -248,6 +265,7 @@ export const typeDefs = `#graphql
     email: String!
     phoneNumber: String!
     workplace: String!
+    proofDocument: String
     password: String!
   }
 
@@ -318,6 +336,7 @@ export const typeDefs = `#graphql
 
   input eventInput {
     name: String!
+    theme: String!
     description: String
     cpdpPoint: Int
     type: String!
@@ -340,8 +359,16 @@ export const typeDefs = `#graphql
     certificate: String
     hasCertificate: Boolean
     speakers: [SpeakerFormInput!]
+    eventPlanPrices: [EventPlanPriceInput]
     sponsors: [String!]
     sendTag: Boolean
+  }
+  
+  input EventPlanPriceInput {
+    membershipTypeId: UUID!
+    name:             String!
+    tickets:          Int
+    charge:           Decimal
   }
   
   input eventRegistrationInput {

@@ -6,6 +6,7 @@ import { PrismaClient } from "@prisma/client";
 import bcrypt from 'bcryptjs'
 import { GraphQLError } from "graphql/error";
 import { ApolloServerErrorCode } from "@apollo/server/errors"
+import { s3FileUpload } from "@/lib/s3Client";
 
 class UserAPI extends RESTDataSource {
     async getUsers(prisma: PrismaClient) {
@@ -46,6 +47,18 @@ class UserAPI extends RESTDataSource {
             }
         }))
 
+        const EmailExists = (await prisma.member.findFirst({
+            where: {
+                email: input.email
+            }
+        }))
+
+        const PhoneExists = (await prisma.member.findFirst({
+            where: {
+                phoneNumber: input.phoneNumber
+            }
+        }))
+
         const memberType = await prisma.membershipType.findFirst({
             where: {
                 id: input.membershipType
@@ -53,7 +66,7 @@ class UserAPI extends RESTDataSource {
             select: { name: true}
         })
 
-        if (userExists) {
+        if (userExists || EmailExists || PhoneExists) {
             throw new GraphQLError("Account already exists", {
                 extensions: {
                     code: ApolloServerErrorCode.GRAPHQL_PARSE_FAILED,
@@ -71,7 +84,7 @@ class UserAPI extends RESTDataSource {
         const newNumber = generateZerofillID(Number(counter))
         const registrationId = `NIA/KD/${currentYear}/${newNumber}`
 
-        await prisma.$transaction(async (tx) => {
+        const {user} = await prisma.$transaction(async (tx) => {
             const user = await tx.user.create({
                 data: {
                     regId: registrationId,
@@ -87,7 +100,7 @@ class UserAPI extends RESTDataSource {
                             lastName: input.lastName,
                             email: input.email,
                             phoneNumber: input.phoneNumber,
-                            workplace: input.workplace
+                            workplace: input.workplace,
                         }
                     }
                 },
@@ -107,6 +120,24 @@ class UserAPI extends RESTDataSource {
 
             return { user, nextCounter }
         });
+
+        if(input.proofDocument) {
+            const buffer = input.proofDocument ? Buffer.from(input.proofDocument.split(',')[1], 'base64') : '';
+
+            const url: string = buffer ? `https://${process.env.NEXT_PUBLIC_AWS_BUCKET_NAME}.s3.${process.env.NEXT_PUBLIC_AWS_REGION}.amazonaws.com/proofs/${user.member?.id}/${user.member?.id}-proof-doc` : ''
+
+            const res =  await s3FileUpload(`proofs/${user.member?.id}/${user.member?.id}-proof-doc`, 'image/png', buffer)
+            if(res.httpStatusCode === 200){
+                await prisma.member.update({
+                    where: {
+                        id: user.member?.id
+                    },
+                    data: {
+                        proofDocument: url
+                    }
+                })
+            }
+        }
 
         return {
             code: 201,

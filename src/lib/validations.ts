@@ -11,16 +11,29 @@ export const RegisterSchema = Yup.object().shape({
     lastName: Yup.string().required('Last name is required'),
     email: Yup.string().email().required('Email Address is required'),
     phoneNumber: Yup.string().required('Phone number is required'),
-    membershipId: Yup.string().nullable(),
+    checkMember: Yup.string().required('This field is required'),
+    membershipId: Yup.string().when('checkMember', (checkValues, schema) => {
+        if (checkValues.includes('yes')) {
+            return schema.required('This field is required for registered member');
+        }
+        return schema.nullable(); 
+    }),
     membershipType: Yup.string().nullable(),
     workplace: Yup.string().required('Workplace is required'),
     password: Yup.string().required('Password is required').min(6, 'Password must be 6 or more characters long'),
     confirmPassword: Yup.string()
-      .oneOf([Yup.ref('password')], 'Password must match')
+      .oneOf([Yup.ref('password')], 'Password must match'),
+    membershipSlip: Yup.string().when('checkMember', (checkValues, schema) => {
+        if (checkValues.includes('no')) {
+            return schema.required('This field is required for non-registered member');
+        }
+        return schema.nullable(); 
+    }),
 });
 
 export const EventSchema = Yup.object().shape({
     name: Yup.string().required('Event name is required'),
+    theme: Yup.string().required('Event theme is required'),
     description: Yup.string().required('Event description is required'),
     cpdpPoint: Yup.number().min(0),
     type: Yup.string().required('Meeting mode is required'),

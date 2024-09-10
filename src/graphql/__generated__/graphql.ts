@@ -152,6 +152,7 @@ export type Event = {
   ends_time: Scalars['String']['output'];
   eventForms?: Maybe<Array<Maybe<EventForm>>>;
   eventPayments?: Maybe<Array<Maybe<Payment>>>;
+  eventPlanPrices?: Maybe<Array<Maybe<EventPlanPrice>>>;
   eventRegistrations?: Maybe<Array<Maybe<EventRegistration>>>;
   eventResources?: Maybe<Array<Maybe<EventResource>>>;
   formTitle: Scalars['String']['output'];
@@ -169,6 +170,7 @@ export type Event = {
   starts_at: Scalars['Time']['output'];
   starts_time: Scalars['String']['output'];
   status: Scalars['String']['output'];
+  theme?: Maybe<Scalars['String']['output']>;
   tickets?: Maybe<Scalars['Int']['output']>;
   type: Scalars['String']['output'];
   updatedAt?: Maybe<Scalars['Time']['output']>;
@@ -196,6 +198,27 @@ export type EventFormInput = {
   priority?: InputMaybe<Scalars['Int']['input']>;
   required?: InputMaybe<Scalars['Boolean']['input']>;
   type: Scalars['String']['input'];
+};
+
+export type EventPlanPrice = {
+  __typename?: 'EventPlanPrice';
+  charge?: Maybe<Scalars['Decimal']['output']>;
+  createdAt?: Maybe<Scalars['Time']['output']>;
+  event?: Maybe<Event>;
+  eventId: Scalars['String']['output'];
+  id: Scalars['UUID']['output'];
+  membershipType?: Maybe<MembershipType>;
+  membershipTypeId: Scalars['UUID']['output'];
+  name: Scalars['String']['output'];
+  tickets?: Maybe<Scalars['Int']['output']>;
+  updatedAt?: Maybe<Scalars['Time']['output']>;
+};
+
+export type EventPlanPriceInput = {
+  charge?: InputMaybe<Scalars['Decimal']['input']>;
+  membershipTypeId: Scalars['UUID']['input'];
+  name: Scalars['String']['input'];
+  tickets?: InputMaybe<Scalars['Int']['input']>;
 };
 
 export type EventRegistration = {
@@ -255,6 +278,7 @@ export type Member = {
   membershipTypeId: Scalars['UUID']['output'];
   phoneNumber: Scalars['String']['output'];
   photoURL?: Maybe<Scalars['String']['output']>;
+  proofDocument?: Maybe<Scalars['String']['output']>;
   regId: Scalars['String']['output'];
   status?: Maybe<Scalars['String']['output']>;
   updatedAt?: Maybe<Scalars['Time']['output']>;
@@ -746,6 +770,7 @@ export type EventInput = {
   description?: InputMaybe<Scalars['String']['input']>;
   ends_at: Scalars['Time']['input'];
   ends_time: Scalars['String']['input'];
+  eventPlanPrices?: InputMaybe<Array<InputMaybe<EventPlanPriceInput>>>;
   form?: InputMaybe<Array<EventFormInput>>;
   formTitle: Scalars['String']['input'];
   hasCertificate?: InputMaybe<Scalars['Boolean']['input']>;
@@ -761,6 +786,7 @@ export type EventInput = {
   sponsors?: InputMaybe<Array<Scalars['String']['input']>>;
   starts_at: Scalars['Time']['input'];
   starts_time: Scalars['String']['input'];
+  theme: Scalars['String']['input'];
   tickets?: InputMaybe<Scalars['Int']['input']>;
   type: Scalars['String']['input'];
 };
@@ -797,6 +823,7 @@ export type NewMember = {
   membershipType: Scalars['UUID']['input'];
   password: Scalars['String']['input'];
   phoneNumber: Scalars['String']['input'];
+  proofDocument?: InputMaybe<Scalars['String']['input']>;
   workplace: Scalars['String']['input'];
 };
 
@@ -837,7 +864,7 @@ export type UserLoginMutationVariables = Exact<{
 }>;
 
 
-export type UserLoginMutation = { __typename?: 'Mutation', login?: { __typename?: 'AuthPayload', token?: string | null, user?: { __typename?: 'UserPayload', id: any, regId: string, role: string, photoURL?: string | null, member?: { __typename?: 'Member', email: string, photoURL?: string | null, lastName: string, firstName: string, phoneNumber: string, id: any, membershipType: { __typename?: 'MembershipType', id: any, name: string } } | null } | null } | null };
+export type UserLoginMutation = { __typename?: 'Mutation', login?: { __typename?: 'AuthPayload', token?: string | null, user?: { __typename?: 'UserPayload', id: any, regId: string, role: string, photoURL?: string | null, member?: { __typename?: 'Member', membershipTypeId: any, email: string, photoURL?: string | null, lastName: string, firstName: string, phoneNumber: string, id: any, membershipType: { __typename?: 'MembershipType', id: any, name: string } } | null } | null } | null };
 
 export type GetUsersQueryVariables = Exact<{ [key: string]: never; }>;
 
@@ -1008,19 +1035,19 @@ export type CreateEventMutationVariables = Exact<{
 }>;
 
 
-export type CreateEventMutation = { __typename?: 'Mutation', createEvent?: { __typename?: 'EventResponse', code: number, success: boolean, message: string, event?: { __typename?: 'Event', id: any, name: string, description?: string | null, type: string, link?: string | null, address?: string | null, starts_at: any, ends_at: any, paymentType: string, amount: any, tickets?: number | null, isInfinity?: boolean | null, coverPhoto?: string | null, userId?: any | null, formTitle: string, instructions: string, message: string, createdAt?: any | null, status: string, user?: { __typename?: 'User', member?: { __typename?: 'Member', firstName: string, lastName: string } | null } | null, eventForms?: Array<{ __typename?: 'EventForm', id: any, name: string, type: string, required?: boolean | null } | null> | null } | null } | null };
+export type CreateEventMutation = { __typename?: 'Mutation', createEvent?: { __typename?: 'EventResponse', code: number, success: boolean, message: string, event?: { __typename?: 'Event', id: any, name: string, theme?: string | null, description?: string | null, type: string, link?: string | null, address?: string | null, starts_at: any, ends_at: any, paymentType: string, amount: any, tickets?: number | null, isInfinity?: boolean | null, coverPhoto?: string | null, userId?: any | null, formTitle: string, instructions: string, message: string, createdAt?: any | null, status: string, user?: { __typename?: 'User', member?: { __typename?: 'Member', firstName: string, lastName: string } | null } | null, eventForms?: Array<{ __typename?: 'EventForm', id: any, name: string, type: string, required?: boolean | null } | null> | null } | null } | null };
 
 export type GetEventsQueryVariables = Exact<{ [key: string]: never; }>;
 
 
-export type GetEventsQuery = { __typename?: 'Query', getEvents?: Array<{ __typename?: 'Event', coverPhoto?: string | null, amount: any, tickets?: number | null, address?: string | null, id: any, name: string, type: string, status: string, starts_at: any, eventRegistrations?: Array<{ __typename?: 'EventRegistration', id: any } | null> | null }> | null };
+export type GetEventsQuery = { __typename?: 'Query', getEvents?: Array<{ __typename?: 'Event', coverPhoto?: string | null, amount: any, tickets?: number | null, address?: string | null, id: any, name: string, theme?: string | null, type: string, status: string, starts_at: any, eventRegistrations?: Array<{ __typename?: 'EventRegistration', id: any } | null> | null }> | null };
 
 export type GetEventQueryVariables = Exact<{
   eventId: Scalars['UUID']['input'];
 }>;
 
 
-export type GetEventQuery = { __typename?: 'Query', getEvent?: { __typename?: 'Event', id: any, name: string, amount: any, tickets?: number | null, isInfinity?: boolean | null, formTitle: string, message: string, views?: number | null, eventRegistrations?: Array<{ __typename?: 'EventRegistration', id: any } | null> | null } | null };
+export type GetEventQuery = { __typename?: 'Query', getEvent?: { __typename?: 'Event', id: any, name: string, theme?: string | null, amount: any, tickets?: number | null, isInfinity?: boolean | null, formTitle: string, message: string, views?: number | null, eventRegistrations?: Array<{ __typename?: 'EventRegistration', id: any } | null> | null } | null };
 
 export type CancelEventMutationVariables = Exact<{
   eventId: Scalars['UUID']['input'];
@@ -1061,14 +1088,14 @@ export type GetMembersAttendanceQuery = { __typename?: 'Query', getMembersAttend
 export type GetEventsForPublicQueryVariables = Exact<{ [key: string]: never; }>;
 
 
-export type GetEventsForPublicQuery = { __typename?: 'Query', getEventsForPublic?: Array<{ __typename?: 'Event', id: any, type: string, status: string, starts_at: any, starts_time: string, paymentType: string, name: string, coverPhoto?: string | null, createdAt?: any | null, amount: any, tickets?: number | null, eventRegistrations?: Array<{ __typename?: 'EventRegistration', id: any } | null> | null }> | null };
+export type GetEventsForPublicQuery = { __typename?: 'Query', getEventsForPublic?: Array<{ __typename?: 'Event', id: any, type: string, status: string, starts_at: any, starts_time: string, paymentType: string, name: string, theme?: string | null, coverPhoto?: string | null, createdAt?: any | null, amount: any, tickets?: number | null, eventRegistrations?: Array<{ __typename?: 'EventRegistration', id: any } | null> | null }> | null };
 
 export type GetEventForPublicQueryVariables = Exact<{
   eventId: Scalars['UUID']['input'];
 }>;
 
 
-export type GetEventForPublicQuery = { __typename?: 'Query', getEvent?: { __typename?: 'Event', address?: string | null, amount: any, coverPhoto?: string | null, description?: string | null, id: any, name: string, paymentType: string, starts_at: any, starts_time: string, status: string, type: string, sponsors?: Array<{ __typename?: 'Sponsor', id: any, logo: string } | null> | null, eventResources?: Array<{ __typename?: 'EventResource', id: any, resourceUrl: string, name: string } | null> | null, speakers?: Array<{ __typename?: 'Speaker', about: string, avatar: string, id: any, name: string, title: string } | null> | null } | null };
+export type GetEventForPublicQuery = { __typename?: 'Query', getEvent?: { __typename?: 'Event', address?: string | null, amount: any, coverPhoto?: string | null, description?: string | null, id: any, name: string, theme?: string | null, paymentType: string, starts_at: any, starts_time: string, status: string, type: string, sponsors?: Array<{ __typename?: 'Sponsor', id: any, logo: string } | null> | null, eventResources?: Array<{ __typename?: 'EventResource', id: any, resourceUrl: string, name: string } | null> | null, speakers?: Array<{ __typename?: 'Speaker', about: string, avatar: string, id: any, name: string, title: string } | null> | null } | null };
 
 export type GetUpComingEventsQueryVariables = Exact<{
   memberId: Scalars['UUID']['input'];
@@ -1080,14 +1107,21 @@ export type GetUpComingEventsQuery = { __typename?: 'Query', getUpComingEvents?:
 export type GetPastEventsQueryVariables = Exact<{ [key: string]: never; }>;
 
 
-export type GetPastEventsQuery = { __typename?: 'Query', getPastEvents?: Array<{ __typename?: 'Event', id: any, starts_at: any, starts_time: string, name: string, coverPhoto?: string | null, eventRegistrations?: Array<{ __typename?: 'EventRegistration', createdAt?: any | null, memberId?: any | null, id: any } | null> | null }> | null };
+export type GetPastEventsQuery = { __typename?: 'Query', getPastEvents?: Array<{ __typename?: 'Event', id: any, starts_at: any, starts_time: string, name: string, theme?: string | null, coverPhoto?: string | null, eventRegistrations?: Array<{ __typename?: 'EventRegistration', createdAt?: any | null, memberId?: any | null, id: any } | null> | null }> | null };
 
 export type GetRegistrationFormQueryVariables = Exact<{
   eventId: Scalars['UUID']['input'];
 }>;
 
 
-export type GetRegistrationFormQuery = { __typename?: 'Query', getRegistrationForm?: { __typename?: 'Event', name: string, amount: any, formTitle: string, instructions: string, status: string, paymentType: string, eventForms?: Array<{ __typename?: 'EventForm', id: any, name: string, label: string, type: string, required?: boolean | null, priority?: number | null } | null> | null } | null };
+export type GetRegistrationFormQuery = { __typename?: 'Query', getRegistrationForm?: { __typename?: 'Event', name: string, theme?: string | null, amount: any, formTitle: string, instructions: string, status: string, paymentType: string, coverPhoto?: string | null, eventForms?: Array<{ __typename?: 'EventForm', id: any, name: string, label: string, type: string, required?: boolean | null, priority?: number | null } | null> | null } | null };
+
+export type GetRegistrationFormDetailsQueryVariables = Exact<{
+  eventId: Scalars['UUID']['input'];
+}>;
+
+
+export type GetRegistrationFormDetailsQuery = { __typename?: 'Query', getRegistrationForm?: { __typename?: 'Event', id: any, name: string, theme?: string | null, amount: any, status: string, paymentType: string, eventPlanPrices?: Array<{ __typename?: 'EventPlanPrice', eventId: string, membershipTypeId: any, charge?: any | null, tickets?: number | null } | null> | null } | null };
 
 export type PostEventRegistrationMutationVariables = Exact<{
   input: EventRegistrationInput;
@@ -1267,6 +1301,7 @@ export const UserLoginDocument = gql`
       role
       photoURL
       member {
+        membershipTypeId
         membershipType {
           id
           name
@@ -2441,6 +2476,7 @@ export const CreateEventDocument = gql`
     event {
       id
       name
+      theme
       description
       type
       link
@@ -2509,6 +2545,7 @@ export const GetEventsDocument = gql`
     address
     id
     name
+    theme
     type
     status
     starts_at
@@ -2555,6 +2592,7 @@ export const GetEventDocument = gql`
   getEvent(eventId: $eventId) {
     id
     name
+    theme
     amount
     tickets
     isInfinity
@@ -2790,6 +2828,7 @@ export const GetEventsForPublicDocument = gql`
     starts_time
     paymentType
     name
+    theme
     eventRegistrations {
       id
     }
@@ -2841,6 +2880,7 @@ export const GetEventForPublicDocument = gql`
     description
     id
     name
+    theme
     paymentType
     starts_at
     starts_time
@@ -2953,6 +2993,7 @@ export const GetPastEventsDocument = gql`
     starts_at
     starts_time
     name
+    theme
     coverPhoto
     eventRegistrations {
       createdAt
@@ -2998,11 +3039,13 @@ export const GetRegistrationFormDocument = gql`
     query GetRegistrationForm($eventId: UUID!) {
   getRegistrationForm(eventId: $eventId) {
     name
+    theme
     amount
     formTitle
     instructions
     status
     paymentType
+    coverPhoto
     eventForms {
       id
       name
@@ -3047,6 +3090,57 @@ export type GetRegistrationFormQueryHookResult = ReturnType<typeof useGetRegistr
 export type GetRegistrationFormLazyQueryHookResult = ReturnType<typeof useGetRegistrationFormLazyQuery>;
 export type GetRegistrationFormSuspenseQueryHookResult = ReturnType<typeof useGetRegistrationFormSuspenseQuery>;
 export type GetRegistrationFormQueryResult = Apollo.QueryResult<GetRegistrationFormQuery, GetRegistrationFormQueryVariables>;
+export const GetRegistrationFormDetailsDocument = gql`
+    query GetRegistrationFormDetails($eventId: UUID!) {
+  getRegistrationForm(eventId: $eventId) {
+    id
+    name
+    theme
+    amount
+    status
+    paymentType
+    eventPlanPrices {
+      eventId
+      membershipTypeId
+      charge
+      tickets
+    }
+  }
+}
+    `;
+
+/**
+ * __useGetRegistrationFormDetailsQuery__
+ *
+ * To run a query within a React component, call `useGetRegistrationFormDetailsQuery` and pass it any options that fit your needs.
+ * When your component renders, `useGetRegistrationFormDetailsQuery` returns an object from Apollo Client that contains loading, error, and data properties
+ * you can use to render your UI.
+ *
+ * @param baseOptions options that will be passed into the query, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options;
+ *
+ * @example
+ * const { data, loading, error } = useGetRegistrationFormDetailsQuery({
+ *   variables: {
+ *      eventId: // value for 'eventId'
+ *   },
+ * });
+ */
+export function useGetRegistrationFormDetailsQuery(baseOptions: Apollo.QueryHookOptions<GetRegistrationFormDetailsQuery, GetRegistrationFormDetailsQueryVariables> & ({ variables: GetRegistrationFormDetailsQueryVariables; skip?: boolean; } | { skip: boolean; }) ) {
+        const options = {...defaultOptions, ...baseOptions}
+        return Apollo.useQuery<GetRegistrationFormDetailsQuery, GetRegistrationFormDetailsQueryVariables>(GetRegistrationFormDetailsDocument, options);
+      }
+export function useGetRegistrationFormDetailsLazyQuery(baseOptions?: Apollo.LazyQueryHookOptions<GetRegistrationFormDetailsQuery, GetRegistrationFormDetailsQueryVariables>) {
+          const options = {...defaultOptions, ...baseOptions}
+          return Apollo.useLazyQuery<GetRegistrationFormDetailsQuery, GetRegistrationFormDetailsQueryVariables>(GetRegistrationFormDetailsDocument, options);
+        }
+export function useGetRegistrationFormDetailsSuspenseQuery(baseOptions?: Apollo.SuspenseQueryHookOptions<GetRegistrationFormDetailsQuery, GetRegistrationFormDetailsQueryVariables>) {
+          const options = {...defaultOptions, ...baseOptions}
+          return Apollo.useSuspenseQuery<GetRegistrationFormDetailsQuery, GetRegistrationFormDetailsQueryVariables>(GetRegistrationFormDetailsDocument, options);
+        }
+export type GetRegistrationFormDetailsQueryHookResult = ReturnType<typeof useGetRegistrationFormDetailsQuery>;
+export type GetRegistrationFormDetailsLazyQueryHookResult = ReturnType<typeof useGetRegistrationFormDetailsLazyQuery>;
+export type GetRegistrationFormDetailsSuspenseQueryHookResult = ReturnType<typeof useGetRegistrationFormDetailsSuspenseQuery>;
+export type GetRegistrationFormDetailsQueryResult = Apollo.QueryResult<GetRegistrationFormDetailsQuery, GetRegistrationFormDetailsQueryVariables>;
 export const PostEventRegistrationDocument = gql`
     mutation PostEventRegistration($input: eventRegistrationInput!) {
   postEventRegistration(input: $input) {
@@ -3974,6 +4068,8 @@ export type ResolversTypes = ResolversObject<{
   Event: ResolverTypeWrapper<EventModel>;
   EventForm: ResolverTypeWrapper<Omit<EventForm, 'event'> & { event?: Maybe<ResolversTypes['Event']> }>;
   EventFormInput: EventFormInput;
+  EventPlanPrice: ResolverTypeWrapper<Omit<EventPlanPrice, 'event' | 'membershipType'> & { event?: Maybe<ResolversTypes['Event']>, membershipType?: Maybe<ResolversTypes['MembershipType']> }>;
+  EventPlanPriceInput: EventPlanPriceInput;
   EventRegistration: ResolverTypeWrapper<EventRegistrationModel>;
   EventResource: ResolverTypeWrapper<EventResourceModel>;
   EventResponse: ResolverTypeWrapper<Omit<EventResponse, 'event'> & { event?: Maybe<ResolversTypes['Event']> }>;
@@ -4034,6 +4130,8 @@ export type ResolversParentTypes = ResolversObject<{
   Event: EventModel;
   EventForm: Omit<EventForm, 'event'> & { event?: Maybe<ResolversParentTypes['Event']> };
   EventFormInput: EventFormInput;
+  EventPlanPrice: Omit<EventPlanPrice, 'event' | 'membershipType'> & { event?: Maybe<ResolversParentTypes['Event']>, membershipType?: Maybe<ResolversParentTypes['MembershipType']> };
+  EventPlanPriceInput: EventPlanPriceInput;
   EventRegistration: EventRegistrationModel;
   EventResource: EventResourceModel;
   EventResponse: Omit<EventResponse, 'event'> & { event?: Maybe<ResolversParentTypes['Event']> };
@@ -4202,6 +4300,7 @@ export type EventResolvers<ContextType = GraphQLContext, ParentType extends Reso
   ends_time?: Resolver<ResolversTypes['String'], ParentType, ContextType>;
   eventForms?: Resolver<Maybe<Array<Maybe<ResolversTypes['EventForm']>>>, ParentType, ContextType>;
   eventPayments?: Resolver<Maybe<Array<Maybe<ResolversTypes['Payment']>>>, ParentType, ContextType>;
+  eventPlanPrices?: Resolver<Maybe<Array<Maybe<ResolversTypes['EventPlanPrice']>>>, ParentType, ContextType>;
   eventRegistrations?: Resolver<Maybe<Array<Maybe<ResolversTypes['EventRegistration']>>>, ParentType, ContextType>;
   eventResources?: Resolver<Maybe<Array<Maybe<ResolversTypes['EventResource']>>>, ParentType, ContextType>;
   formTitle?: Resolver<ResolversTypes['String'], ParentType, ContextType>;
@@ -4219,6 +4318,7 @@ export type EventResolvers<ContextType = GraphQLContext, ParentType extends Reso
   starts_at?: Resolver<ResolversTypes['Time'], ParentType, ContextType>;
   starts_time?: Resolver<ResolversTypes['String'], ParentType, ContextType>;
   status?: Resolver<ResolversTypes['String'], ParentType, ContextType>;
+  theme?: Resolver<Maybe<ResolversTypes['String']>, ParentType, ContextType>;
   tickets?: Resolver<Maybe<ResolversTypes['Int']>, ParentType, ContextType>;
   type?: Resolver<ResolversTypes['String'], ParentType, ContextType>;
   updatedAt?: Resolver<Maybe<ResolversTypes['Time']>, ParentType, ContextType>;
@@ -4237,6 +4337,20 @@ export type EventFormResolvers<ContextType = GraphQLContext, ParentType extends 
   priority?: Resolver<Maybe<ResolversTypes['Int']>, ParentType, ContextType>;
   required?: Resolver<Maybe<ResolversTypes['Boolean']>, ParentType, ContextType>;
   type?: Resolver<ResolversTypes['String'], ParentType, ContextType>;
+  __isTypeOf?: IsTypeOfResolverFn<ParentType, ContextType>;
+}>;
+
+export type EventPlanPriceResolvers<ContextType = GraphQLContext, ParentType extends ResolversParentTypes['EventPlanPrice'] = ResolversParentTypes['EventPlanPrice']> = ResolversObject<{
+  charge?: Resolver<Maybe<ResolversTypes['Decimal']>, ParentType, ContextType>;
+  createdAt?: Resolver<Maybe<ResolversTypes['Time']>, ParentType, ContextType>;
+  event?: Resolver<Maybe<ResolversTypes['Event']>, ParentType, ContextType>;
+  eventId?: Resolver<ResolversTypes['String'], ParentType, ContextType>;
+  id?: Resolver<ResolversTypes['UUID'], ParentType, ContextType>;
+  membershipType?: Resolver<Maybe<ResolversTypes['MembershipType']>, ParentType, ContextType>;
+  membershipTypeId?: Resolver<ResolversTypes['UUID'], ParentType, ContextType>;
+  name?: Resolver<ResolversTypes['String'], ParentType, ContextType>;
+  tickets?: Resolver<Maybe<ResolversTypes['Int']>, ParentType, ContextType>;
+  updatedAt?: Resolver<Maybe<ResolversTypes['Time']>, ParentType, ContextType>;
   __isTypeOf?: IsTypeOfResolverFn<ParentType, ContextType>;
 }>;
 
@@ -4300,6 +4414,7 @@ export type MemberResolvers<ContextType = GraphQLContext, ParentType extends Res
   membershipTypeId?: Resolver<ResolversTypes['UUID'], ParentType, ContextType>;
   phoneNumber?: Resolver<ResolversTypes['String'], ParentType, ContextType>;
   photoURL?: Resolver<Maybe<ResolversTypes['String']>, ParentType, ContextType>;
+  proofDocument?: Resolver<Maybe<ResolversTypes['String']>, ParentType, ContextType>;
   regId?: Resolver<ResolversTypes['String'], ParentType, ContextType>;
   status?: Resolver<Maybe<ResolversTypes['String']>, ParentType, ContextType>;
   updatedAt?: Resolver<Maybe<ResolversTypes['Time']>, ParentType, ContextType>;
@@ -4538,6 +4653,7 @@ export type Resolvers<ContextType = GraphQLContext> = ResolversObject<{
   DueResponse?: DueResponseResolvers<ContextType>;
   Event?: EventResolvers<ContextType>;
   EventForm?: EventFormResolvers<ContextType>;
+  EventPlanPrice?: EventPlanPriceResolvers<ContextType>;
   EventRegistration?: EventRegistrationResolvers<ContextType>;
   EventResource?: EventResourceResolvers<ContextType>;
   EventResponse?: EventResponseResolvers<ContextType>;

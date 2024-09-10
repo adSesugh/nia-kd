@@ -205,6 +205,8 @@ async function generateNameTagHtml(data: any) {
 
 export async function sendEmail(to: string, subject: string, content: string, data: any) {
     console.log("Data sent => ", data)
+    console.log(subject)
+    console.log(content)
     console.log("to =>", to)
     const nameTagHtml = await generateNameTagHtml(data);
 
@@ -228,13 +230,17 @@ export async function sendEmail(to: string, subject: string, content: string, da
     });
     await browser.close();
 
+    const stringToBoolean = (value: string): boolean => {
+        return value.toLowerCase() === "true";
+      };
+
     let transporter = nodemailer.createTransport({
-        host: process.env.MAIL_HOST!,
-        port: parseInt(process.env.MAIL_PORT!),
-        secure: false,
+        host: process.env.NEXT_PUBLIC_MAIL_HOST!,
+        port: Number(process.env.NEXT_PUBLIC_MAIL_PORT!),
+        secure: stringToBoolean(process.env.NEXT_PUBLIC_MAIL_SECURE!),
         auth: {
-            user: process.env.MAIL_USERNAME!,
-            pass: process.env.MAIL_PASSWORD!,
+            user: process.env.NEXT_PUBLIC_MAIL_USERNAME!,
+            pass: process.env.NEXT_PUBLIC_MAIL_PASSWORD!,
         },
     });
 
@@ -242,10 +248,11 @@ export async function sendEmail(to: string, subject: string, content: string, da
 
     // Email options
     const mailOptions = {
-        from: process.env.MAILER_EMAIL!,
-        to: to, // Replace with recipient email
+        from: process.env.NEXT_PUBLIC_MAILER_EMAIL!,
+        to: to,
         subject: `Name Tag PDF - ${subject}`,
         html: emailContent,
+        text: "Thank you for registering for the event. \nKindly print you name tag below.",
         attachments: [
             {
                 filename: 'name_tag.pdf',

@@ -11,7 +11,7 @@ import TextAreaField from '@/components/textarea-field'
 import TextField from '@/components/textfield'
 import TimeField from '@/components/timefield'
 import TinyMCEField from '@/components/tinymce-field'
-import { FormDesign, useCreateEventMutation, useEventFormFieldsLazyQuery, useEventFormFieldsQuery } from '@/graphql/__generated__/graphql'
+import { FormDesign, useCreateEventMutation, useEventFormFieldsLazyQuery, useEventFormFieldsQuery, useGetMembershipTypesLazyQuery, useGetMembershipTypesQuery } from '@/graphql/__generated__/graphql'
 import { combineDateTime } from '@/lib/common'
 import { EventSchema } from '@/lib/validations'
 import { Avatar, AvatarGroup, Button, ButtonGroup, Spinner, Switch, Table, TableBody, TableCell, TableColumn, TableHeader, TableRow } from '@nextui-org/react'
@@ -21,7 +21,7 @@ import { Gift, MoneyTick, Video } from 'iconsax-react'
 import moment from 'moment'
 import Link from 'next/link'
 import { useRouter } from 'next/navigation'
-import React, { useEffect, useState } from 'react'
+import React, { ChangeEvent, useEffect, useState } from 'react'
 import { toast } from 'react-toastify'
 
 interface FileWithPreview extends File {
@@ -30,6 +30,7 @@ interface FileWithPreview extends File {
 
 interface EventType {
     name: string, 
+    theme: string,
     description: string,
     cpdpPoint: number,
     meetingType: string, 
@@ -50,6 +51,7 @@ interface EventType {
     hasCertificate: boolean,
     speakers: any,
     sponsors: any
+    eventPlanPrices: any
     sendTag: boolean,
     starts_at_time: string,
     ends_at_time: string
@@ -75,12 +77,15 @@ const CreateEvent = () => {
 
     const [formFields, setFormFields] = useState<any>()
     const [selectedFields, setSelectedFields] = useState<any>([])
+    const [membershipTypes, setMembershipTypes] = useState<any>([])
     const [registerEvent, {loading, error}] = useCreateEventMutation()
-
+    const [getMembershipTypes] = useGetMembershipTypesLazyQuery()
 
     const steps = ['details', 'speakers', 'form', 'resources', 'email']
+
     const EventProps: EventType = {
         name: '', 
+        theme: '',
         description: '',
         cpdpPoint: 0,
         meetingType: 'Physical', 
@@ -101,6 +106,7 @@ const CreateEvent = () => {
         hasCertificate: false,
         speakers: speakers,
         sponsors: [],
+        eventPlanPrices: [],
         sendTag: false,
         starts_at_time: '',
         ends_at_time: ''
@@ -116,9 +122,22 @@ const CreateEvent = () => {
         })()
     }, [getFormDesign])
 
-    const getFormFields = 
+    useEffect(() => {
+        (async () => {
+            const res = (await getMembershipTypes()).data
+            const typeArr: Record<string, any>[] = []
+            res?.getMembershipTypes?.forEach(el => {
+                typeArr.push({
+                    membershipTypeId: el.id,
+                    name: el.name,
+                    charge: 0,
+                    tickets: 0
+                })
+            })
 
-    console.log(selectedFields)
+            setMembershipTypes(typeArr)
+        })()
+    }, [])
 
     const handleResourceRemove = (columnKey: number, resources: any, setFieldValue: any) => {
         setFiles((prevFiles) => prevFiles.filter((file, index) =>  index !== columnKey));
@@ -280,13 +299,13 @@ const CreateEvent = () => {
                                 }
                             })
 
-                            console.log(regForm)
+                            console.log(values)
 
-                            console.log(selectedFields)
                             const res = await registerEvent({
                                 variables: {
                                     input: {
                                         name: values.name,
+                                        theme: values.theme,
                                         description: values.description,
                                         cpdpPoint: values.cpdpPoint,
                                         type: values.meetingType,
@@ -309,8 +328,9 @@ const CreateEvent = () => {
                                         certificate: values.certificate,
                                         hasCertificate: values.hasCertificate,
                                         speakers: speakers,
-                                        sponsors: values.sponsors,
-                                        sendTag: values.sendTag
+                                        sponsors: values.sponsors as any,
+                                        sendTag: values.sendTag,
+                                        eventPlanPrices: values.eventPlanPrices
                                     }
                                 }
                             })
@@ -325,7 +345,7 @@ const CreateEvent = () => {
                         }
                     }}
                 >
-                    {({setFieldValue, values, handleSubmit}) => (
+                    {({setFieldValue, values, handleSubmit, handleChange, touched, errors}) => (
                         <Form onSubmit={handleSubmit}>
                             {steps[currentIndex] === 'details' && (
                                 <>
@@ -352,7 +372,12 @@ const CreateEvent = () => {
                                             <TextField 
                                                 name='name' 
                                                 label='Event name'
-                                                placeholder='Give your blog post a suitable title' 
+                                                placeholder='Event name' 
+                                            />
+                                            <TextField 
+                                                name='theme' 
+                                                label='Event theme'
+                                                placeholder='Event theme' 
                                             />
                                             {/* <Field name='description' label="About event" as={CKEditorField} /> */}
                                             <Field name="description" label="About event" as={TinyMCEField} />
@@ -401,20 +426,6 @@ const CreateEvent = () => {
                                                         <span className={`text-sm ${values.meetingType === 'Online' ? 'text-[#161314]' : 'text-[#636363]'}`}>Online</span>
                                                     </Button>
                                                 </ButtonGroup>
-                                                {/* <button onClick={() => {
-                                                    setFieldValue('meetingType', 'Physical')
-                                                    setFieldValue('link', '')
-                                                }} className={`flex w-1/2 p-2 space-x-2 items-center justify-center ${values.meetingType === 'Physical' && 'bg-white shadow-lg'}`}>
-                                                    <Globe size={20} color={`${values.meetingType === 'Physical' ? '#161314': '#636363'}`} />
-                                                    <span className={`text-sm ${values.meetingType === 'Physical' ? 'text-[#161314]' : 'text-[#636363]'}`}>In person</span>
-                                                </button>
-                                                <button onClick={() => {
-                                                    setFieldValue('meetingType', 'Online')
-                                                    setFieldValue('address', '')
-                                                }} className={`flex w-1/2 p-2 h-full space-x-2 items-center justify-center ${values.meetingType === 'Online' && 'bg-white shadow-lg'}`}>
-                                                    <Video size={20} color={`${values.meetingType === 'Online' ? '#161314': '#636363'}`} />
-                                                    <span className={`text-sm ${values.meetingType === 'Online' ? 'text-[#161314]' : 'text-[#636363]'}`}>Online</span>
-                                                </button> */}
                                             </div>
                                             {values.meetingType === 'Physical' ? (
                                                 <GooglePlacesInput 
@@ -514,38 +525,57 @@ const CreateEvent = () => {
                                                             <span className={`text-sm ${values.paymentType === 'Paid' ? 'text-[#161314]' : 'text-[#636363]'}`}>Paid</span>
                                                         </Button>
                                                     </ButtonGroup>
-                                                    {/* <button onClick={() => {
-                                                        setFieldValue('paymentType', 'Free')
-                                                        setFieldValue('isInfinity', false)
-                                                    }} className={`flex w-1/2 p-2 space-x-2 items-center justify-center ${values.paymentType === 'Free' && 'bg-white shadow-lg'}`}>
-                                                        <Gift size={20} color={`${values.paymentType === 'Free' ? '#161314': '#636363'}`} />
-                                                        <span className={`text-sm ${values.paymentType === 'Free' ? 'text-[#161314]' : 'text-[#636363]'}`}>Free</span>
-                                                    </button>
-                                                    <button onClick={() => {
-                                                        setFieldValue('paymentType', 'Paid')
-                                                        setFieldValue('isInfinity', false)
-                                                    }} className={`flex w-1/2 p-2 h-full space-x-2 items-center justify-center ${values.paymentType === 'Paid' && 'bg-white shadow-lg'}`}>
-                                                        <MoneyTick size={20} color={`${values.paymentType === 'Paid' ? '#161314': '#636363'}`} />
-                                                        <span className={`text-sm ${values.paymentType === 'Paid' ? 'text-[#161314]' : 'text-[#636363]'}`}>Paid</span>
-                                                    </button> */}
                                                 </div>
                                             </div>
-                                            <div className='flex sm:flex-row xs:flex-col gap-4'>
-                                                <TextField 
-                                                    name='amount' 
-                                                    label={`Amount ${'\u20a6'}`}
-                                                    type='number'
-                                                    placeholder='Event amount'
-                                                    disabled={values.paymentType === 'Free' ? true : false} 
-                                                />
-                                                <TextField 
-                                                    name='tickets' 
-                                                    label='Set number of tickets'
-                                                    placeholder='Ticket capacity' 
-                                                    type='number'
-                                                    disabled={values.isInfinity}
-                                                />
+                                            <div className='px-4 py-2 mb-4 bg-slate-200'>
+                                                <label className='underline text-gray-600'>General price for non-registered members</label>
+                                                <div className='flex sm:flex-row xs:flex-col gap-4'>
+                                                    <TextField 
+                                                        name='amount' 
+                                                        label={`Amount ${'\u20a6'}`}
+                                                        type='number'
+                                                        placeholder='Event amount'
+                                                        disabled={values.paymentType === 'Free' ? true : false} 
+                                                    />
+                                                    <TextField 
+                                                        name='tickets' 
+                                                        label='Set number of tickets'
+                                                        placeholder='Ticket capacity' 
+                                                        type='number'
+                                                        disabled={values.isInfinity}
+                                                    />
+                                                </div>
                                             </div>
+                                            {values.paymentType !== 'Free' && membershipTypes.length > 0 && (
+                                                <div className='px-4'>
+                                                    {membershipTypes.map((memberType: any, index: number) => (
+                                                        <div key={index} className='flex sm:flex-row xs:flex-col gap-4'>
+                                                            <div className={`mb-2 text-[14px]`}>
+                                                                <div className='py-1'>
+                                                                    <h3>{`Amount ${memberType.name} (${'\u20a6'})`}</h3>
+                                                                </div>
+                                                                <Field 
+                                                                    type='number'
+                                                                    placeholder='Enter amount'
+                                                                    name={`eventPlanPrices[${index}].charge`} 
+                                                                    onChange={(event: any) => {
+                                                                        handleChange(event)
+                                                                        setFieldValue(`eventPlanPrices[${index}].membershipTypeId`, memberType.membershipTypeId)
+                                                                        setFieldValue(`eventPlanPrices[${index}].name`, memberType.name)
+                                                                    }}
+                                                                    className='block w-60 rounded-md h-11 border-0 focus:border focus:border-gray-400 py-1.5 pl-3 text-gray-900 ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-black sm:text-sm sm:leading-6'
+                                                                />
+                                                            </div>
+                                                            <TextField 
+                                                                name={`eventPlanPrices[${index}].tickets`} 
+                                                                label='Set number of tickets'
+                                                                placeholder='Ticket capacity' 
+                                                                type='number'
+                                                            />
+                                                        </div>
+                                                    ))}
+                                                </div>
+                                            )}
                                             <div>
                                                 <CheckBox name='isInfinity' label='Ticket is infinity' />
                                             </div>
@@ -894,7 +924,7 @@ const CreateEvent = () => {
                                     </div>
                                 </div>
                             )}
-                            <div className='flex pt-5 gap-4 float-end mb-8'>
+                            <div className='flex pt-8 gap-4 float-end mb-8'>
                                 {(currentIndex === 0 && nextIndex === 0) ? (
                                     <Link href={'/event/list'} className='px-4 py-2 border border-[#161314] rounded-xl'>
                                         <span className='text-[#161314] text-sm'>Cancel</span>

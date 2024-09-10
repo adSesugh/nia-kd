@@ -11,7 +11,7 @@
 }
 
 .loginRegister {
-    @apply sm:flex h-full sm:items-center sm:space-x-3 xs:hidden sm:block
+    @apply sm:flex h-full sm:items-center sm:space-x-3 xs:hidden
 }
 
 .loginButton {

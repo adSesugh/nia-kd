@@ -24,7 +24,7 @@ const Header = () => {
         <Link href={'/'}>
          <Image alt='NIA-Kd' src={'/assets/logo.png'} width={132} height={46.08} />
         </Link>
-        <div className='xs:hidden sm:block'>
+        <div className='xs:hidden sm:flex'>
           <ul className={styles.menubar}>
             <li>
               <div className={styles.menuitem}>
