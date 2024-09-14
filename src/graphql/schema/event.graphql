@@ -5,6 +5,7 @@ query EventFormFields {
     label
     type
     required
+    order
   }
 }
 
@@ -176,6 +177,9 @@ query GetEventForPublic($eventId: UUID!) {
     }
     eventPlanPrices {
       tickets
+      charge
+      name
+      membershipTypeId
     }
     status
     type

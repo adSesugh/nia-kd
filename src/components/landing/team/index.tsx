@@ -4,9 +4,9 @@ import TeamCard from './TeamCard'
 
 const members = [
     {
-        imageUrl: '/assets/team/3.jpeg',
-        name: 'Arc. Olulaja M. Balogun',
-        designation: 'Ex Officio Member, ECNIAK',
+        imageUrl: '/assets/team/9.jpeg',
+        name: 'Arc. S. J. Filiya',
+        designation: 'Chairman, NIA Kaduna',
         social_media: {
             twitter: '',
             linkedin: ''

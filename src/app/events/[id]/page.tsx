@@ -4,16 +4,20 @@
 
 import Badge from '@/components/badge'
 import NIAFooter from '@/components/footer'
+import { RootState } from '@/features/store'
 import { useGetEventForPublicQuery, useWatchEventViewsMutation } from '@/graphql/__generated__/graphql'
+import { membershipType } from '@/lib/common'
 import { ArrowLeft, DocumentUpload } from 'iconsax-react'
 import moment from 'moment'
 import Image from 'next/image'
 import Link from 'next/link'
 import { redirect, useParams } from 'next/navigation'
 import React, { useEffect } from 'react'
+import { useSelector } from 'react-redux'
 
 const EventDetail = () => {
     const { id } = useParams()
+    const user = useSelector((state: RootState) => state.auth.userData.user)
 
     const [eventView] = useWatchEventViewsMutation()
     const { data, loading } = useGetEventForPublicQuery({
@@ -33,6 +37,22 @@ const EventDetail = () => {
     }, [eventView, id])
 
     const registerForEvent = () =>  redirect(`/events/${id}/register`)
+
+    const checkMembershipType = () => {
+        const findMembership = data?.getEvent?.eventPlanPrices?.find((plan) => plan?.membershipTypeId  === user?.member?.membershipTypeId)
+        if(findMembership) {
+            return {
+                amount: findMembership.charge,
+                name: findMembership.name,
+                membershipTypeId: findMembership.membershipTypeId
+            }
+        }
+        return {
+            amount: data?.getEvent?.amount,
+            name: 'Non-member',
+            membershipTypeId: ''
+        }
+    }
     
     return (
         <div className='z-0'>
@@ -142,12 +162,12 @@ const EventDetail = () => {
                                 </div>
                             )}
                             <div className='flex flex-col items-center justify-center p-2 bg-[#F8F3ED] mx-3 rounded-xl'>
-                                <h6 className='text-[#65575D] text-[14px]'>Registration fee</h6>
-                                <span className='text-[32px] font-bold text-[#1E1A1C]'>{'\u20a6'}{Intl.NumberFormat('en-NG').format(Number(data?.getEvent?.amount) || 0)}</span>
+                                <h6 className='text-[#65575D] text-[14px]'>{checkMembershipType().name} fee</h6>
+                                <span className='text-[32px] font-bold text-[#1E1A1C]'>{'\u20a6'}{Intl.NumberFormat('en-NG').format(Number(checkMembershipType().amount) || 0)}</span>
                             </div>
                             {data?.getEvent?.status === 'Published' && (
                                 <div className='mx-3 mt-2'>
-                                    <button onClick={registerForEvent} className='py-2 bg-black text-white text-center w-full rounded-lg'>
+                                    <button onClick={registerForEvent} className='py-3 bg-black text-white text-center w-full rounded-lg'>
                                         <Link href={{pathname: `/events/${data?.getEvent?.id}/register`}}>Register Now</Link>
                                     </button>
                                 </div>

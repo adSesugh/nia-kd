@@ -411,7 +411,7 @@ class EventAPI extends RESTDataSource {
             });
         }
 
-        if(event !== null && totalRegistration < Number(event?.tickets)) {
+        if(event !== null && (totalRegistration < Number(event?.tickets) || Number(event.tickets) === 0)) {
             const member = await prisma.member.findFirst({
                 where: {
                     OR: [

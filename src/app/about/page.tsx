@@ -8,9 +8,9 @@ import TeamCardBlack from '@/components/landing/team/TeamCardBlack'
 
 const teams: TeamCardProps[] = [
   {
-    imageUrl: '/assets/team/avatar.jpeg',
+    imageUrl: '/assets/team/9.jpeg',
     name: 'Arc. S. J. Filiya',
-    designation: 'Chairman',
+    designation: 'Chairman, NIA Kaduna',
     social_media: {
       twitter: '',
       linkedin: ''
@@ -44,12 +44,12 @@ const teams: TeamCardProps[] = [
     }
   },
   {
-    imageUrl: '/assets/team/avatar.jpeg',
-    name: 'Arc. Micheal Okhumeode',
-    designation: 'Admin. Secretary',
+    imageUrl: '/assets/team/8.jpeg',
+    name: 'Arc Samuel Aliyu Obaje',
+    designation: 'Immediate Past Chairman',
     social_media: {
       twitter: '',
-      linkedin: ''
+      linkedin: 'https://www.linkedin.com/in/obaje-samuel-216829214'
     }
   },
   {

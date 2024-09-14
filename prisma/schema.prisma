@@ -220,11 +220,11 @@ model EventResource {
 
 model EventPlanPrice {
   id                String @id @default(uuid())
-  eventId           String
-  event             Event  @relation(fields: [eventId], references: [id])
+  eventId           String?
+  event             Event?  @relation(fields: [eventId], references: [id])
   name              String
-  membershipTypeId  String
-  membershipType    MembershipType  @relation(fields: [membershipTypeId], references: [id])
+  membershipTypeId  String?
+  membershipType    MembershipType?  @relation(fields: [membershipTypeId], references: [id])
   tickets           Int
   charge            Decimal
 

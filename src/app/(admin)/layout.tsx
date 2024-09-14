@@ -66,7 +66,7 @@ const DashboardLayout: React.FC<LayoutProps> = ({ children }) => {
               <div className='flex flex-col pl-7 text-white justify-center w-full h-28'>
                 <Image
                     alt='NIA-Kd'
-                    src={'/assets/logo.png'}
+                    src={user?.photoURL || '/assets/logo.png'}
                     sizes='100vw'
                     width={50}
                     height={60}
