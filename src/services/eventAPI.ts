@@ -460,7 +460,7 @@ class EventAPI extends RESTDataSource {
                   content: event.message as string,
                   data: {
                     eventId: event.id,
-                    fullname: `${input.registrantDetail.firstName} ${input.registrantDetail.lastName}`,
+                    fullName: `${input.registrantDetail.firstName} ${input.registrantDetail.lastName}`,
                     eventName: event.name,
                     eventTheme: event.theme,
                     startDate: moment(event.starts_at).format('LL'),

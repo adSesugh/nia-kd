@@ -14,8 +14,6 @@ export async function POST(request: NextRequest) {
     try {
         const body: EmailRequest = await request.json();
 
-        console.log(body)
-
         const client = new LambdaClient({
             region: `${process.env.AWS_REGION!}`,
             credentials: {

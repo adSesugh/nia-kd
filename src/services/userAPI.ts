@@ -215,6 +215,8 @@ class UserAPI extends RESTDataSource {
             }
         })
 
+        console.log(user)
+
         const response: ResetPasswordResponse = {
             code: 200,
             success: true,

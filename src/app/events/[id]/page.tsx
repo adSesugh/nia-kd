@@ -14,6 +14,7 @@ import Link from 'next/link'
 import { redirect, useParams } from 'next/navigation'
 import React, { useEffect } from 'react'
 import { useSelector } from 'react-redux'
+import { RWebShare } from "react-web-share";
 
 const EventDetail = () => {
     const { id } = useParams()
@@ -64,21 +65,31 @@ const EventDetail = () => {
                     </Link>
                 </div>
                 <div className=''>
-                    <div className='flex justify-between items-center'>
+                    <div className='flex sm:flex-row xs:flex-col justify-between items-center'>
                         <div className='pt-0 pb-3 px-5'>
                             <div className='flex space-x-2'>
                                 <Badge label={data?.getEvent?.type as string} className='flex justify-center items-center rounded-2xl bg-[#F3ECE2] px-3' labelStyle='text-[12px]' />
                                 <Badge label={data?.getEvent?.status === 'Published' ? 'Open': 'Closed'} className={`flex justify-center items-center rounded-2xl ${data?.getEvent?.status === 'Published' ? 'bg-[#E2F3E6]' : ' bg-[#F3E2E2]'} px-3`} labelStyle='text-[12px]' />
                             </div>
                             <div className='text-[20px] pt-2'>
-                                <h1 className=''>{data?.getEvent?.name}</h1>
+                                <h1 className='font-semibold'>{data?.getEvent?.name}</h1>
+                                <span className='text-sm font-medium'>{data?.getEvent?.theme}</span>
                             </div>
                         </div>
                         <div>
-                            <button className='flex space-x-2 py-2 items-center justify-center border rounded-xl px-3 bg-[#F3ECE2]'>
-                                <DocumentUpload variant='Outline' size={18} color='#52474B' />
-                                <span className='text-[14px] text-[#52474B]/70'>Share event</span>
-                            </button>
+                            <RWebShare
+                                data={{
+                                text: `${data?.getEvent?.description}`,
+                                url: `${process.env.NEXT_PUBLIC_APP_URL}/events/${id}`,
+                                title: data?.getEvent?.name,
+                                }}
+                                onClick={() => console.log("shared successfully!")}
+                            >
+                                <button className='flex space-x-2 py-2 items-center justify-center border rounded-xl px-3 bg-[#F3ECE2]'>
+                                    <DocumentUpload variant='Outline' size={18} color='#52474B' />
+                                    <span className='text-[14px] text-[#52474B]/70'>Share event</span>
+                                </button>
+                            </RWebShare>
                         </div>
                     </div>
                     <div className='h-[20%] w-full overflow-hidden'>
@@ -115,14 +126,14 @@ const EventDetail = () => {
                                 </div>
                             </div>
                         )}
-                        {data?.getEvent?.type === 'Physical' && (
+                        {/* {data?.getEvent?.type === 'Physical' && (
                             <div className='my-4 w-full'>
                                 <h1 className='font-semibold text-[18px] px-4 my-3'>Map Location</h1>
                                 <div className='mt-3'>
                                     <img src='/assets/map.svg' alt='Map location' className='w-full' />
                                 </div>
                             </div>
-                        )}
+                        )} */}
                         {!!data?.getEvent?.sponsors?.length && (
                             <div className='my-4 p-4 w-full'>
                                 <h1 className='font-semibold text-[18px]'>Event Partners</h1>

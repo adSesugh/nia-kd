@@ -428,16 +428,21 @@ const CreateEvent = () => {
                                                 </ButtonGroup>
                                             </div>
                                             {values.meetingType === 'Physical' ? (
-                                                <GooglePlacesInput 
+                                                // <GooglePlacesInput 
+                                                //     name='address' 
+                                                //     label='Event address'
+                                                //     type='search'
+                                                //     placeholder='Event Address' 
+                                                //     onPlaceSelected={(place: google.maps.places.PlaceResult) => {
+                                                //         setFieldValue('address', place.formatted_address)
+                                                //     }}
+                                                //     LeftIcon={<MapPinSimpleArea size={20} />}
+                                                //     className='mt-3'
+                                                // />
+                                                <TextField 
                                                     name='address' 
                                                     label='Event address'
-                                                    type='search'
-                                                    placeholder='Event Address' 
-                                                    onPlaceSelected={(place: google.maps.places.PlaceResult) => {
-                                                        setFieldValue('address', place.formatted_address)
-                                                    }}
-                                                    LeftIcon={<MapPinSimpleArea size={20} />}
-                                                    className='mt-3'
+                                                    placeholder='Event address' 
                                                 />
                                             ):(
                                                 <TextField 
