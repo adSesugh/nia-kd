@@ -9,7 +9,7 @@ import TeamCardBlack from '@/components/landing/team/TeamCardBlack'
 const teams: TeamCardProps[] = [
   {
     imageUrl: '/assets/team/9.png',
-    name: 'Arc. S. J. Filiya FNIA',
+    name: 'Arc. Stephen. J. Filiya FNIA',
     designation: 'Chairman, NIA Kaduna',
     social_media: {
         twitter: '',
