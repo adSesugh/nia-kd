@@ -1245,7 +1245,7 @@ export type GetUserQueryVariables = Exact<{
 }>;
 
 
-export type GetUserQuery = { __typename?: 'Query', getUser?: { __typename?: 'Member', id: any, regId: string, firstName: string, lastName: string, email: string, phoneNumber: string, photoURL?: string | null, workplace: string, userId: any, joined?: any | null, membershipId?: string | null, status?: string | null, createdAt?: any | null, updatedAt?: any | null, membershipType: { __typename?: 'MembershipType', id: any, name: string }, cpdpPoints?: { __typename?: 'CpdpPoint', id: any, points: number } | null } | null };
+export type GetUserQuery = { __typename?: 'Query', getUser?: { __typename?: 'Member', id: any, regId: string, firstName: string, lastName: string, email: string, phoneNumber: string, photoURL?: string | null, workplace: string, userId: any, joined?: any | null, membershipId?: string | null, status?: string | null, proofDocument?: string | null, createdAt?: any | null, updatedAt?: any | null, membershipType: { __typename?: 'MembershipType', id: any, name: string }, cpdpPoints?: { __typename?: 'CpdpPoint', id: any, points: number } | null } | null };
 
 export type ResetPasswordMutationVariables = Exact<{
   userId: Scalars['UUID']['input'];
@@ -3925,6 +3925,7 @@ export const GetUserDocument = gql`
       id
       points
     }
+    proofDocument
     createdAt
     updatedAt
   }

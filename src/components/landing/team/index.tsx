@@ -4,8 +4,8 @@ import TeamCard from './TeamCard'
 
 const members = [
     {
-        imageUrl: '/assets/team/9.jpeg',
-        name: 'Arc. S. J. Filiya',
+        imageUrl: '/assets/team/9.png',
+        name: 'Arc. S. J. Filiya FNIA',
         designation: 'Chairman, NIA Kaduna',
         social_media: {
             twitter: '',
@@ -13,27 +13,27 @@ const members = [
         }
     },
     {
-        imageUrl: '/assets/team/2.jpeg',
-        name: 'Danjuma Sokolayam Ageni',
-        designation: 'Chapter Secretary',
+        imageUrl: '/assets/team/avatar.jpeg',
+        name: 'Arc. Binta Danmaliki FNIA',
+        designation: 'Vice Chairman',
+        social_media: {
+            twitter: '',
+            linkedin: ''
+        }
+    },
+    {
+        imageUrl: '/assets/team/2.png',
+        name: 'Arc. Danjuma S. Ageni MNIA',
+        designation: 'General Secretary',
         social_media: {
             twitter: 'https://x.com/DanjAgeni',
             linkedin: 'https://www.linkedin.com/in/danjuma-ageni-mpm-mnia-173b7279'
         }
     },
     {
-        imageUrl: '/assets/team/1.jpeg',
-        name: 'Bawa Y. Chindo',
-        designation: 'Assistant Secretary',
-        social_media: {
-            twitter: 'https://x.com/bawa_chindo',
-            linkedin: ''
-        }
-    },
-    {
-        imageUrl: '/assets/team/4.jpg',
-        name: 'Gbenga Popoola',
-        designation: 'Financial Secretary',
+        imageUrl: '/assets/team/4.png',
+        name: 'Arc. Gbenga Popoola MNIA',
+        designation: 'Treasurer',
         social_media: {
             twitter: '',
             linkedin: ''

@@ -8,18 +8,45 @@ import TeamCardBlack from '@/components/landing/team/TeamCardBlack'
 
 const teams: TeamCardProps[] = [
   {
-    imageUrl: '/assets/team/9.jpeg',
-    name: 'Arc. S. J. Filiya',
+    imageUrl: '/assets/team/9.png',
+    name: 'Arc. S. J. Filiya FNIA',
     designation: 'Chairman, NIA Kaduna',
     social_media: {
-      twitter: '',
-      linkedin: ''
+        twitter: '',
+        linkedin: ''
     }
   },
   {
     imageUrl: '/assets/team/avatar.jpeg',
-    name: 'Arc. Binta Danmaliki',
+    name: 'Arc. Binta Danmaliki FNIA',
     designation: 'Vice Chairman',
+    social_media: {
+        twitter: '',
+        linkedin: ''
+    }
+  },
+  {
+    imageUrl: '/assets/team/2.png',
+    name: 'Arc. Danjuma S. Ageni MNIA',
+    designation: 'General Secretary',
+    social_media: {
+        twitter: 'https://x.com/DanjAgeni',
+        linkedin: 'https://www.linkedin.com/in/danjuma-ageni-mpm-mnia-173b7279'
+    }
+  },
+  {
+    imageUrl: '/assets/team/4.png',
+    name: 'Arc. Gbenga Popoola MNIA',
+    designation: 'Treasurer',
+    social_media: {
+        twitter: '',
+        linkedin: ''
+    }
+  },
+  {
+    imageUrl: '/assets/team/avatar.jpeg',
+    name: 'Arc. Deborah Sabo MNIA',
+    designation: 'Financial Secretary',
     social_media: {
       twitter: '',
       linkedin: ''
@@ -27,11 +54,92 @@ const teams: TeamCardProps[] = [
   },
   {
     imageUrl: '/assets/team/avatar.jpeg',
-    name: 'Arc. Dimeji Adene',
+    name: 'Arc. (Dr) Juliet A. Obaje MNIA',
+    designation: 'PRO',
+    social_media: {
+      twitter: '',
+      linkedin: ''
+    }
+  },
+  {
+    imageUrl: '/assets/team/7.png',
+    name: 'Arc Fatima  Baba  Ciroma MNIA',
+    designation: 'Students Affairs Officer',
+    social_media: {
+      linkedin: 'http://www.linkedin.com/in/fatima-baba-ciroma-88b961226',
+      twitter: '',
+    }
+  },
+  {
+    imageUrl: '/assets/team/avatar.jpeg',
+    name: 'Arc. (Dr.) K. S. Daroda MNIA',
+    designation: 'Chair Ethics',
+    social_media: {
+      twitter: '',
+      linkedin: ''
+    }
+  },
+  {
+    imageUrl: '/assets/team/avatar.jpeg',
+    name: 'Arc. Dr. Abbas Muazu MNIA',
+    designation: 'Chair Practice',
+    social_media: {
+      twitter: '',
+      linkedin: ''
+    }
+  },
+  {
+    imageUrl: '/assets/team/8.png',
+    name: 'Arc Samuel Aliyu Obaje FNIA',
+    designation: 'Past Chairman',
+    social_media: {
+      twitter: '',
+      linkedin: 'https://www.linkedin.com/in/obaje-samuel-216829214'
+    }
+  },
+  {
+    imageUrl: '/assets/team/avatar.jpeg',
+    name: 'Arc. Caleb M. Gaiya FNIA',
+    designation: 'ARCON Rep.',
+    social_media: {
+      twitter: '',
+      linkedin: ''
+    }
+  },
+  {
+    imageUrl: '/assets/team/avatar.jpeg',
+    name: 'Arc. Dimeji Adene FNIA',
     designation: 'Ex-Officio',
     social_media: {
       twitter: '',
       linkedin: ''
+    }
+  },
+  {
+    imageUrl: '/assets/team/3.png',
+    name: 'Arc. Olulaja M. Balogun FNIA',
+    designation: 'Ex Officio Member, ECNIAK',
+    social_media: {
+        twitter: '',
+        linkedin: ''
+    }
+  },
+  {
+    imageUrl: '/assets/team/1.png',
+    name: 'Bawa Y. Chindo',
+    designation: 'Assistant Secretary I',
+    social_media: {
+        twitter: 'https://x.com/bawa_chindo',
+        linkedin: ''
+    }
+  },
+  {
+    imageUrl: '/assets/team/5.png',
+    name: 'Lut Adinoyi Abdulazeez',
+    designation: 'Assistant PRO',
+    social_media: {
+      linkedin: 'https://www.linkedin.com/in/abdulazeez-lut-adinoyi-992210139',
+      twitter: 'https://x.com/Lut95566869',
     }
   },
   {
@@ -44,129 +152,12 @@ const teams: TeamCardProps[] = [
     }
   },
   {
-    imageUrl: '/assets/team/8.jpeg',
-    name: 'Arc Samuel Aliyu Obaje',
-    designation: 'Immediate Past Chairman',
-    social_media: {
-      twitter: '',
-      linkedin: 'https://www.linkedin.com/in/obaje-samuel-216829214'
-    }
-  },
-  {
-    imageUrl: '/assets/team/avatar.jpeg',
-    name: 'Arc. (Dr) Juliet A. Obaje',
-    designation: 'PRO',
-    social_media: {
-      twitter: '',
-      linkedin: ''
-    }
-  },
-  {
-    imageUrl: '/assets/team/avatar.jpeg',
-    name: 'Arc. Deborah Sabo',
-    designation: 'Fin Sec.',
-    social_media: {
-      twitter: '',
-      linkedin: ''
-    }
-  },
-  {
-    imageUrl: '/assets/team/avatar.jpeg',
-    name: 'Arc. (Dr.) K. S. Daroda',
-    designation: 'Chair Ethics',
-    social_media: {
-      twitter: '',
-      linkedin: ''
-    }
-  },
-  {
-    imageUrl: '/assets/team/avatar.jpeg',
-    name: 'Arc. Dr. Abbas Muazu',
-    designation: 'Chair Practice',
-    social_media: {
-      twitter: '',
-      linkedin: ''
-    }
-  },
-  {
-    imageUrl: '/assets/team/avatar.jpeg',
-    name: 'Arc. Samuel Obaje',
-    designation: 'Past Chairman',
-    social_media: {
-      twitter: '',
-      linkedin: ''
-    }
-  },
-  {
-    imageUrl: '/assets/team/avatar.jpeg',
-    name: 'Arc. Caleb M. Gaiya',
-    designation: 'ARCON Rep.',
-    social_media: {
-      twitter: '',
-      linkedin: ''
-    }
-  },
-  {
-    imageUrl: '/assets/team/3.jpeg',
-    name: 'Arc. Olulaja M. Balogun',
-    designation: 'Ex Officio Member, ECNIAK',
-    social_media: {
-        twitter: '',
-        linkedin: ''
-    }
-  },
-  {
-    imageUrl: '/assets/team/2.jpeg',
-    name: 'Danjuma Sokolayam Ageni',
-    designation: 'Chapter Secretary',
-    social_media: {
-      twitter: 'https://x.com/DanjAgeni',
-      linkedin: 'https://www.linkedin.com/in/danjuma-ageni-mpm-mnia-173b7279'
-    }
-  },
-  {
-      imageUrl: '/assets/team/1.jpeg',
-      name: 'Bawa Y. Chindo',
-      designation: 'Assistant Secretary',
-      social_media: {
-          twitter: 'https://x.com/bawa_chindo',
-          linkedin: ''
-      }
-  },
-  {
-      imageUrl: '/assets/team/4.jpg',
-      name: 'Gbenga Popoola',
-      designation: 'Financial Secretary',
-      social_media: {
-          twitter: '',
-          linkedin: ''
-      }
-  },
-  {
-    imageUrl: '/assets/team/5.jpg',
-    name: 'Lut Adinoyi Abdulazeez',
-    designation: 'Assistant PRO',
-    social_media: {
-      linkedin: 'https://www.linkedin.com/in/abdulazeez-lut-adinoyi-992210139',
-      twitter: 'https://x.com/Lut95566869',
-    }
-  },
-  {
-    imageUrl: '/assets/team/6.jpeg',
-    name: 'MICHAEL OKHUMEODE',
+    imageUrl: '/assets/team/6.png',
+    name: 'Arc. Michael Okhumeode',
     designation: 'Admin Secretary',
     social_media: {
       linkedin: 'https://www.linkedin.com/in/abdulazeez-lut-adinoyi-992210139',
       twitter: 'https://x.com/okhumeodemich1',
-    }
-  },
-  {
-    imageUrl: '/assets/team/7.jpeg',
-    name: 'Arc Fatima  Baba  Ciroma',
-    designation: 'Students Affairs Officer',
-    social_media: {
-      linkedin: 'http://www.linkedin.com/in/fatima-baba-ciroma-88b961226',
-      twitter: '',
     }
   }
 ]
@@ -184,7 +175,7 @@ const About = () => {
       <div className='flex justify-center py-12 xs:px-6 sm:px-0'>
         <div className='sm:w-6/12 xs:w-full'>
           <h1 className='pb-2 sm:text-[40px] xs:text-[20px] font-bold'>Brief History</h1>
-          <p className='pb-2'>{'The Nigeria Institute of Architects (NIA) Kaduna State Chapter was inaugurated on 11 of November 1972 as the then Northern Central State Chapter with a membership of 24, in line with the Vision of the Institute which is to attain excellence in the creative management of the physical environment and the Mission which is to mobilize informed membership for quickly service.'}</p>
+          <p className='pb-2'>{'The Nigeria Institute of Architects (NIA) Kaduna State Chapter was inaugurated on 11 of November 1960 as the then Northern Central State Chapter with a membership of 24, in line with the Vision of the Institute which is to attain excellence in the creative management of the physical environment and the Mission which is to mobilize informed membership for quickly service.'}</p>
           <p className='pb-2'>{"The first election of Executive took place on 2nd September of 1973 which saw late Arc. Adeyemi I. Bilewu of the then Ministry of Works and Transport as the Chairman and Arc. Fola Adeyemi of Niger Consultants as the Secretary. Shortly after the first Exco come on board, the Chapter went dormant for some few years, after co-opting active Architect into the Exco, the chapter was reactivated in 1983."}</p>
           <p className='pb-2'>{"On 23rd February 1984 a new Executive was elected with Arc. (Chief) Gabriel Yakubu Audu of Archon Nigeria Limited as the Chairman and Arc. Daniel Attah Agamba as the Secretary. The Chapter's Bye-law was formerly ratified in April 1984 and four standing Committees were constituted to undertake special assignments and to generate activities for the Chapter. The monthly general meetings then held in members' houses, guest houses or offices on rotational basis were now held bi-monthly in line with the provision of the bye-law."}</p>
           <p className='pb-2'>{"In 1988, Arc. (Obong) Victor Bassey Attah of Inter Design Partnership became the Chairman and in 1990 another election was held with late Arc. Samuel A. Alabi of Habitat Associates elected Chairman with Arc. D.A. Agamah of Archon Nigeria Limited as the Secretary."}</p>
@@ -203,7 +194,7 @@ const About = () => {
           <h1 className='text-[30px] text-white font-semibold'>Team</h1>
         </div>
         <div>
-          <div className='grid sm:grid-cols-3 xs:grid-cols-1 gap-8'>
+          <div className='grid sm:grid-cols-3 xs:grid-cols-1 gap-8 columns-auto row-auto w-full'>
             {teams.map((team: TeamCardProps, index: number) => (
               <TeamCardBlack
                 key={index}

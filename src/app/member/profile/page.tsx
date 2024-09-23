@@ -4,7 +4,7 @@ import React, { useEffect, useState } from 'react'
 // @ts-ignore
 import ProfileScreen from '@/components/profile'
 import { useSelector } from 'react-redux'
-import { Member, useGetUserLazyQuery, useGetUserQuery } from '@/graphql/__generated__/graphql'
+import { useGetUserLazyQuery } from '@/graphql/__generated__/graphql'
 import { RootState } from '@/features/store'
 
 const Profile = () => {

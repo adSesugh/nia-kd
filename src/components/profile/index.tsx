@@ -10,10 +10,10 @@ import { CopyToClipboard } from 'react-copy-to-clipboard'
 import { toast } from "react-toastify";
 import { Form, Formik } from "formik";
 import TextField from "../textfield";
+import Image from "next/image";
 import { PasswordSchema } from "@/lib/validations";
 import { Member, useProfilephotoUploadMutation, useResetPasswordMutation } from "@/graphql/__generated__/graphql";
 import { useRouter } from "next/navigation";
-import { useAppDispatch } from "@/features/hooks";
 import { Spinner } from "@nextui-org/react";
 
 type ProfilePropType = {
@@ -164,6 +164,15 @@ const ProfileScreen: React.FC<ProfilePropType> = ({ data, loading }) => {
                                             </tr>
                                         </tbody>
                                     </table>
+                                </div>
+                                <div>
+                                    <Image 
+                                        src={data?.proofDocument}
+                                        alt={data?.firstName}
+                                        width={357}
+                                        height={253}
+                                        className="w-full h-[15.815rem]"
+                                    />
                                 </div>
                             </div>
                             <div className="bg-white rounded-lg shadow-sm w-full border">

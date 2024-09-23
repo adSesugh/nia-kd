@@ -79,7 +79,7 @@ const EventDetail = () => {
                         <div>
                             <RWebShare
                                 data={{
-                                text: `${data?.getEvent?.description}`,
+                                text: `${data?.getEvent?.theme}`,
                                 url: `${process.env.NEXT_PUBLIC_APP_URL}/events/${id}`,
                                 title: data?.getEvent?.name,
                                 }}
