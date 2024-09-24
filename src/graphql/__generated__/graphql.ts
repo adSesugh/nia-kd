@@ -164,6 +164,7 @@ export type Event = {
   message: Scalars['String']['output'];
   name: Scalars['String']['output'];
   paymentType: Scalars['String']['output'];
+  payments?: Maybe<Array<Maybe<Payment>>>;
   sendTag?: Maybe<Scalars['Boolean']['output']>;
   speakers?: Maybe<Array<Maybe<Speaker>>>;
   sponsors?: Maybe<Array<Maybe<Sponsor>>>;
@@ -4333,6 +4334,7 @@ export type EventResolvers<ContextType = GraphQLContext, ParentType extends Reso
   message?: Resolver<ResolversTypes['String'], ParentType, ContextType>;
   name?: Resolver<ResolversTypes['String'], ParentType, ContextType>;
   paymentType?: Resolver<ResolversTypes['String'], ParentType, ContextType>;
+  payments?: Resolver<Maybe<Array<Maybe<ResolversTypes['Payment']>>>, ParentType, ContextType>;
   sendTag?: Resolver<Maybe<ResolversTypes['Boolean']>, ParentType, ContextType>;
   speakers?: Resolver<Maybe<Array<Maybe<ResolversTypes['Speaker']>>>, ParentType, ContextType>;
   sponsors?: Resolver<Maybe<Array<Maybe<ResolversTypes['Sponsor']>>>, ParentType, ContextType>;

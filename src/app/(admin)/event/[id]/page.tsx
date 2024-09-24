@@ -1,6 +1,6 @@
 'use client'
 
-import { useGetEventLazyQuery } from '@/graphql/__generated__/graphql'
+import { Payment, useGetEventLazyQuery } from '@/graphql/__generated__/graphql'
 import { useParams, useRouter } from 'next/navigation'
 import React, { useEffect, useState } from 'react'
 import { ArrowLeft, Eye, EyeSlash } from '@phosphor-icons/react'
@@ -32,6 +32,11 @@ const EventDetail = () => {
             return acc + Number(curr?.tickets);
         }, 0) ?? 0
         return Number(event?.tickets) + tickets
+    }
+
+    const computeEventTotalRevenue = () => {
+        const total = event?.payments?.reduce((acc: number, cur: Payment) => Number(cur.amount) + acc, 0)
+        return total
     }
 
     return (
@@ -77,7 +82,7 @@ const EventDetail = () => {
                         <div className='flex bg-white h-32 rounded-xl shadow-sm border'>
                             <div className='w-full h-full px-8 py-4'>
                                 <h1 className='pb-3 text-sm'>Net Sales</h1>
-                                <h1 className='text-xl font-medium'>{'\u20a6'}{Intl.NumberFormat().format((Number(event?.eventRegistrations.length) * event?.amount) || 0)}</h1>
+                                <h1 className='text-xl font-medium'>{'\u20a6'}{Intl.NumberFormat().format((computeEventTotalRevenue()) || 0)}</h1>
                             </div>
                         </div>
                     </div>

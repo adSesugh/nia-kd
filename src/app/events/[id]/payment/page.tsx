@@ -94,7 +94,7 @@ const Page = () => {
 						phoneNumber: regData?.phoneNumber as string,
 						paymentRef: reference as string,
 						amount: amount,
-						status: reference.status === 'success' ? 'Successful' : 'Unsuccessful',
+						status: 'Successful' //reference.status === 'success' ? 'Successful' : 'Unsuccessful',
 					}
 				}
 			}
