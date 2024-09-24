@@ -844,6 +844,8 @@ export type SendMailInput = {
   eventId: Scalars['String']['input'];
   firstName: Scalars['String']['input'];
   lastName: Scalars['String']['input'];
+  memberPhotoURL?: InputMaybe<Scalars['String']['input']>;
+  phone?: InputMaybe<Scalars['String']['input']>;
 };
 
 export type SignInUser = {

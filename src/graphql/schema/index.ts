@@ -390,6 +390,8 @@ export const typeDefs = `#graphql
     firstName: String!
     lastName: String!
     email: String!
+    phone: String
+    memberPhotoURL: String
   }
 
   input CompaignInput {

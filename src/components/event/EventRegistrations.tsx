@@ -34,7 +34,9 @@ const EventRegistrations = ({ eventId }: {eventId: string}) => {
                     email: registrant.registrantDetail.email,
                     firstName: registrant.registrantDetail.firstName,
                     lastName: registrant.registrantDetail.lastName,
-                    eventId: eventId
+                    eventId: eventId,
+                    phone: registrant.registrantDetail.phoneNumber,
+                    memberPhotoURL: registrant.member?.photoURL
                 }
             }
         })

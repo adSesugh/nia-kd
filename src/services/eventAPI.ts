@@ -642,20 +642,46 @@ class EventAPI extends RESTDataSource {
     }
 
     async resendEventMail(prisma: PrismaClient, input: SendMailInput) {
-        const event = await prisma.event.findFirst({where: {id: input.eventId}})
+        const event = await prisma.event.findFirst({
+            where: {id: input.eventId},
+            include: {
+                sponsors: true,
+            }
+        })
         try {
-            sendEmail(
-                input.email, 
-                'Event Registration', 
-                event?.message as string, {
-                    fullname: `${input.firstName} ${input.lastName}`,
+            const response = await fetch(`${process.env.NEXT_PUBLIC_APP_URL!}/api/send-email`, {
+                method: 'POST',
+                headers: {
+                  'Content-Type': 'application/json',
+                },
+                body: JSON.stringify({
+                  to: input.email,
+                  subject: 'Event Registration',
+                  content: event?.message as string,
+                  data: {
+                    eventId: event?.id,
+                    fullName: `${input.firstName} ${input.lastName}`,
+                    photoURL: input.memberPhotoURL ?? '',
                     eventName: event?.name,
+                    eventTheme: event?.theme,
                     startDate: moment(event?.starts_at).format('LL'),
                     endDate: moment(event?.ends_at).format('LL'),
                     startTime: moment(event?.starts_at).format('h:mm A'),
-                    endTime: moment(event?.ends_at).format('h:mm A')
-                }
-            )
+                    endTime: moment(event?.ends_at).format('h:mm A'),
+                    sponsors: event?.sponsors,
+                    address: event?.address || event?.link,
+                    email: input?.email,
+                    phone: input?.phone
+                  }
+                }),
+            });
+
+            const data = await response.json();
+            if (response.ok) {
+                console.log('Email sent:', data.message);
+            } else {
+                console.error('Error sending email:', data.error);
+            }
 
             return true
         } catch (error: any) {

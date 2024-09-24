@@ -7,6 +7,7 @@ import bcrypt from 'bcryptjs'
 import { GraphQLError } from "graphql/error";
 import { ApolloServerErrorCode } from "@apollo/server/errors"
 import { s3FileUpload } from "@/lib/s3Client";
+import { sendEmail } from "@/lib/mailer"
 
 class UserAPI extends RESTDataSource {
     async getUsers(prisma: PrismaClient) {
@@ -118,6 +119,8 @@ class UserAPI extends RESTDataSource {
                 }
             })
 
+            sendEmail(user?.email as string, {name: `${user.member?.firstName} ${user.member?.lastName}`})
+            
             return { user, nextCounter }
         });
 
@@ -137,6 +140,27 @@ class UserAPI extends RESTDataSource {
                     }
                 })
             }
+        }
+
+        const response = await fetch(`${process.env.NEXT_PUBLIC_APP_URL!}/api/welcome-email`, {
+            method: 'POST',
+            headers: {
+              'Content-Type': 'application/json',
+            },
+            body: JSON.stringify({
+              data: {
+                name: `${user.member?.firstName} ${user.member?.lastName}`,
+                to: user.email,
+                regId: user.regId
+              }
+            }),
+        });
+
+        const data = await response.json();
+        if (response.ok) {
+            console.log('Email sent:', data.message);
+        } else {
+            console.error('Error sending email:', data.error);
         }
 
         return {
