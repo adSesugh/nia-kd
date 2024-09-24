@@ -16,8 +16,7 @@ const Breadcrumb = () => {
                     </div>
                 </div>
                 <div className='flex sm:w-1/2 xs:w-full text-white h-full items-center'>
-                    <div className='sm:w-11/12 xs:w-full xs:text-sm sm:text-[16px] leading-6 font-normal' data-aos="fade-left">The Nigerian Institute of Architects Kaduna Chapter was founded on the 1st of April 1960, as an association of independent professional architects with the aim of fostering friendship amongst members, cater for their welfare and establish mutual support and cooperation amongst them.
-From a modest 13 members at inauguration.</div>
+                    <div className='sm:w-11/12 xs:w-full xs:text-sm sm:text-[16px] leading-6 font-normal' data-aos="fade-left">The Nigeria Institute of Architects (NIA) Kaduna State Chapter was inaugurated on 11th of November 1972 as the then Northern Central State Chapter with a membership of 24, in line with the Vision of the Institute which is to attain excellence in the creative management of the physical environment and the Mission which is to mobilize informed membership for quickly service.</div>
                 </div>
             </div>
         </div>
