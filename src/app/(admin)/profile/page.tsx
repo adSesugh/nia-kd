@@ -25,13 +25,13 @@ const AdminProfile = () => {
     })()
   }, [])
 
-  if(user?.role === Role.ADMINISTRATOR){
-    return (
-        <div className="flex px-40 justify-center items-center h-full">
-            <h1>Not allowed</h1>
-        </div>
-    )
-  }
+  // if(user?.role === Role.ADMINISTRATOR){
+  //   return (
+  //       <div className="flex px-40 justify-center items-center h-full">
+  //           <h1>Not allowed</h1>
+  //       </div>
+  //   )
+  // }
 
   return (
     <div className='w-full'>

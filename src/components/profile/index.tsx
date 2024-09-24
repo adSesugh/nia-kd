@@ -15,6 +15,8 @@ import { PasswordSchema } from "@/lib/validations";
 import { Member, useProfilephotoUploadMutation, useResetPasswordMutation } from "@/graphql/__generated__/graphql";
 import { useRouter } from "next/navigation";
 import { Spinner } from "@nextui-org/react";
+import { useAppDispatch } from "@/features/hooks";
+import { setProfilePhoto } from "@/features/slices/authSlice";
 
 type ProfilePropType = {
     data: any,
@@ -22,12 +24,14 @@ type ProfilePropType = {
 }
 
 const ProfileScreen: React.FC<ProfilePropType> = ({ data, loading }) => {
-    
+
     const router = useRouter()
     const user = useSelector((state: RootState) => state?.auth.userData.user)
     const [speakerImg, setSpeakerImg] = useState<string>()
     const [resetPassword, {loading: resetPasswordLoading}] = useResetPasswordMutation()
     const [profilePhotoUpload, {loading: profileLoading}] = useProfilephotoUploadMutation()
+    const dispatch = useAppDispatch()
+
 
     if(loading){
         return (
@@ -37,11 +41,11 @@ const ProfileScreen: React.FC<ProfilePropType> = ({ data, loading }) => {
         )
     }
 
-    console.log(data)
+    console.log(user)
 
     return (
-        <div className={'flex sm:px-40 xs:px-6 justify-center'}>
-            <div className={'w-full'}>
+        <div className={'flex sm:px-40 xs:px-6 justify-center xs:pb-20 sm:pb-8'}>
+            <div className={'w-full h-full'}>
                 <div className={'flex items-center space-x-3 pt-10 cursor-pointer'} onClick={() => user?.role === Role.ADMINISTRATOR ? router.back() : router.push('/member/dashboard')}>
                     <ArrowLeft size={20} color="gray" />
                     <h1>Back to {user?.role === Role.ADMINISTRATOR ? 'members' : 'previous page'} </h1>
@@ -49,7 +53,7 @@ const ProfileScreen: React.FC<ProfilePropType> = ({ data, loading }) => {
                 <div className="pt-8 pb-4">
                     <h1 className="text-lg font-semibold">Profile</h1>
                 </div>
-                <div className="flex sm:flex-row xs:flex-col sm:gap-6 xs:gap-0 xs:space-y-4">
+                <div className="flex sm:flex-row xs:flex-col sm:gap-6 xs:gap-0 xs:space-y-4 h-full">
                     <div className="sm:w-2/5 xs:w-full">
                         <div className="w-full">
                             <div className="flex justify-center items-center bg-white rounded-lg shadow-sm w-full border">
@@ -78,10 +82,12 @@ const ProfileScreen: React.FC<ProfilePropType> = ({ data, loading }) => {
                                                                 })).data?.profilephotoUpload?.url
                                                                 
                                                                 if(photoUrl) {
-                                                                    const newUrl = {
+                                                                    const newUserData = {
                                                                         photoURL: photoUrl
                                                                     }
+                                                                    console.log(newUserData)
                                                                     toast.success('Profile photo uploaded')
+                                                                    dispatch(setProfilePhoto(newUserData))
                                                                 }
                                                             } catch (error: any) {
                                                                 console.log(error)
@@ -95,7 +101,7 @@ const ProfileScreen: React.FC<ProfilePropType> = ({ data, loading }) => {
                                         <label aria-label='speakerPix' htmlFor="profilePix" className="flex flex-col items-center rounded-full cursor-pointer h-28 w-28">
                                             {speakerImg || user?.photoURL ? (
                                                 <div className="flex relative items-center justify-center h-24 w-24">
-                                                    <img src={user?.photoURL || speakerImg} className='rounded-full h-24 w-24' />
+                                                    <img src={speakerImg as string || user?.photoURL as string} alt="userPhoto" className='rounded-full h-24 w-24' />
                                                     <div className="absolute p-1 rounded-full bg-[#eae1df] bottom-3 -right-1">
                                                         <Camera size={16} />
                                                     </div>
@@ -112,8 +118,8 @@ const ProfileScreen: React.FC<ProfilePropType> = ({ data, loading }) => {
                                         <div className="space-y-1">
                                             <h1 className="font-semibold">{data?.lastName} {data?.firstName}</h1>
                                             <div className="flex space-x-2 items-center justify-center cursor-pointer">
-                                                <h3 className="text-sm">{data?.email}</h3>
-                                                <CopyToClipboard text="abdulrazaq290.aj@gmail.com" onCopy={() => toast.success('Copy!')}>
+                                                <h3 className="text-sm">{data?.email || user?.role}</h3>
+                                                <CopyToClipboard text={data?.email} onCopy={() => toast.success(`${data?.email} copied!`)}>
                                                     <Copy variant="Outline" size={16} />
                                                 </CopyToClipboard>
                                             </div>
@@ -124,57 +130,65 @@ const ProfileScreen: React.FC<ProfilePropType> = ({ data, loading }) => {
                             </div>
                         </div>
                     </div>
-                    <div className="sm:w-3/5 xs:w-full">
+                    <div className="sm:w-3/5 xs:w-full mb-10">
                         <div className="w-full space-y-4">
-                            <div className="bg-white rounded-lg shadow-sm w-full border">
-                                <div className="flex items-center py-3 px-4">
-                                    <h1 className="font-semibold">Basic Info</h1>
+                            {user?.role !== Role.ADMINISTRATOR && (
+                                 <div className="bg-white rounded-lg shadow-sm w-full border">
+                                    <div className="flex items-center py-3 px-4">
+                                        <h1 className="font-semibold">Basic Info</h1>
+                                    </div>
+                                    <hr />
+                                    <div className="px-4 py-3">
+                                        <table className="w-full">
+                                            <tbody>
+                                                <tr>
+                                                    <td className='text-sm w-1/3 py-2'>First name:</td>
+                                                    <td className='text-sm w-2/3'>{data?.firstName}</td>
+                                                </tr>
+                                                <tr>
+                                                    <td className='text-sm w-1/3 py-2'>Last name:</td>
+                                                    <td className='text-sm w-2/3'>{data?.lastName}</td>
+                                                </tr>
+                                                <tr>
+                                                    <td className='text-sm w-1/3 py-2'>NIA-Kd RegId:</td>
+                                                    <td className='text-sm w-2/3'>{data?.regId}</td>
+                                                </tr>
+                                                <tr>
+                                                    <td className='text-sm w-1/3 py-2'>Membership Type:</td>
+                                                    <td className='text-sm w-2/3'>{data?.membershipType?.name}</td>
+                                                </tr>
+                                                <tr>
+                                                    <td className='text-sm w-1/3 py-2'>Membership ID:</td>
+                                                    <td className='text-sm w-2/3'>{data?.membershipId || 'Not set'}</td>
+                                                </tr>
+                                                <tr>
+                                                    <td className='text-sm w-1/3 py-2'>Phone:</td>
+                                                    <td className='text-sm w-2/3'>{data?.phoneNumber}</td>
+                                                </tr>
+                                                <tr>
+                                                    <td className='text-sm w-1/3 py-2'>Workplace:</td>
+                                                    <td className='text-sm w-2/3'>{data?.workplace}</td>
+                                                </tr>
+                                                <tr>
+                                                    <td className='text-sm w-1/3 py-2'>Email:</td>
+                                                    <td className='text-sm w-2/3'>{data?.email}</td>
+                                                </tr>
+                                            </tbody>
+                                        </table>
+                                    </div>
+                                    {data?.proofDocument && (
+                                        <div className="w-full bg-white">
+                                            <Image 
+                                                src={data?.proofDocument}
+                                                alt={data?.firstName}
+                                                width={357}
+                                                height={253}
+                                                className="w-2/3 h-[15.815rem]"
+                                            />
+                                        </div>
+                                    )}
                                 </div>
-                                <hr />
-                                <div className="px-4 py-3">
-                                    <table className="w-full">
-                                        <tbody>
-                                            <tr>
-                                                <td className='text-sm w-1/3 py-2'>First name:</td>
-                                                <td className='text-sm'>{data?.firstName}</td>
-                                            </tr>
-                                            <tr>
-                                                <td className='text-sm w-1/3 py-2'>Last name:</td>
-                                                <td className='text-sm'>{data?.lastName}</td>
-                                            </tr>
-                                            <tr>
-                                                <td className='text-sm w-1/3 py-2'>Membership Type:</td>
-                                                <td className='text-sm'>{data?.membershipType?.name}</td>
-                                            </tr>
-                                            <tr>
-                                                <td className='text-sm w-1/3 py-2'>Membership ID:</td>
-                                                <td className='text-sm'>{data?.membershipId || 'Not set'}</td>
-                                            </tr>
-                                            <tr>
-                                                <td className='text-sm w-1/3 py-2'>Phone:</td>
-                                                <td className='text-sm'>{data?.phoneNumber}</td>
-                                            </tr>
-                                            <tr>
-                                                <td className='text-sm w-1/3 py-2'>Workplace:</td>
-                                                <td className='text-sm'>{data?.workplace}</td>
-                                            </tr>
-                                            <tr>
-                                                <td className='text-sm w-1/3 py-2'>Email:</td>
-                                                <td className='text-sm'>{data?.email}</td>
-                                            </tr>
-                                        </tbody>
-                                    </table>
-                                </div>
-                                <div>
-                                    <Image 
-                                        src={data?.proofDocument}
-                                        alt={data?.firstName}
-                                        width={357}
-                                        height={253}
-                                        className="w-full h-[15.815rem]"
-                                    />
-                                </div>
-                            </div>
+                            )}
                             <div className="bg-white rounded-lg shadow-sm w-full border">
                                 <div className="flex items-center py-3 px-4">
                                     <h1 className="font-semibold">Password</h1>
@@ -203,16 +217,18 @@ const ProfileScreen: React.FC<ProfilePropType> = ({ data, loading }) => {
                                     >
                                         {({handleSubmit, touched, errors}) => (
                                             <Form onSubmit={handleSubmit}>
-                                                <div className="flex py-3 items-center space-x-2">
-                                                    <TextField 
-                                                        label="Password"
-                                                        name="password"
-                                                        required={true}
-                                                        placeholder='New password'
-                                                        type="password"
-                                                        className={`${errors.password && touched.password ? 'ring-red-500': ''} h-9`}
-                                                    />
-                                                    <div className="pt-5">
+                                                <div className="flex sm:flex-row xs:flex-col py-3 items-center space-x-2">
+                                                    <div className="w-full">
+                                                        <TextField 
+                                                            label="Password"
+                                                            name="password"
+                                                            required={true}
+                                                            placeholder='New password'
+                                                            type="password"
+                                                            className={`${errors.password && touched.password ? 'ring-red-500': ''} h-9 w-full`}
+                                                        />
+                                                    </div>
+                                                    <div className="pt-5 w-full">
                                                         <button 
                                                             type="submit" 
                                                             className="flex py-2 px-4 justify-center items-center h-9 border rounded-lg text-sm"

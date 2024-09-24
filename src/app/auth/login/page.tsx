@@ -77,7 +77,7 @@ const LoginPage = () => {
          <Form onSubmit={handleSubmit} className='space-y-5'>
            <TextFieldWithIcon 
               name='regId' 
-              placeholder='NIA Membership ID' 
+              placeholder='NIA RegID/MembershipID/Email' 
               type='text' 
               LeftIcons={<Profile size={20} color={errors.regId && touched.regId ? 'red': 'gray'} variant="Outline" />}
               className={errors.regId && touched.regId ? 'ring-red-500': 'pr-3'}

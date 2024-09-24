@@ -190,7 +190,7 @@ const DashboardLayout: React.FC<LayoutProps> = ({ children }) => {
                     as="button"
                     avatarProps={{
                       isBordered: false,
-                      src: user?.photoURL || "/assets/profile.svg",
+                      src: user?.photoURL || "/assets/profile2.svg",
                       size: 'sm',
                     }}
                     className="transition-transform text-white"

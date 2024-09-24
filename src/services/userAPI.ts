@@ -152,7 +152,10 @@ class UserAPI extends RESTDataSource {
             where: {
                 OR: [
                     { regId: regId },
-                    { email: regId }
+                    { email: regId },
+                    {member: {
+                        membershipId: regId
+                    }}
                 ]
             }, include: { member: {
                 include: {membershipType: true}
