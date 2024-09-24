@@ -164,7 +164,6 @@ export type Event = {
   message: Scalars['String']['output'];
   name: Scalars['String']['output'];
   paymentType: Scalars['String']['output'];
-  payments?: Maybe<Array<Maybe<Payment>>>;
   sendTag?: Maybe<Scalars['Boolean']['output']>;
   speakers?: Maybe<Array<Maybe<Speaker>>>;
   sponsors?: Maybe<Array<Maybe<Sponsor>>>;
@@ -1050,7 +1049,7 @@ export type GetEventQueryVariables = Exact<{
 }>;
 
 
-export type GetEventQuery = { __typename?: 'Query', getEvent?: { __typename?: 'Event', id: any, name: string, theme?: string | null, amount: any, tickets?: number | null, isInfinity?: boolean | null, formTitle: string, message: string, views?: number | null, eventRegistrations?: Array<{ __typename?: 'EventRegistration', id: any } | null> | null, eventPlanPrices?: Array<{ __typename?: 'EventPlanPrice', tickets?: number | null, charge?: any | null } | null> | null } | null };
+export type GetEventQuery = { __typename?: 'Query', getEvent?: { __typename?: 'Event', id: any, name: string, theme?: string | null, amount: any, tickets?: number | null, isInfinity?: boolean | null, formTitle: string, message: string, views?: number | null, eventRegistrations?: Array<{ __typename?: 'EventRegistration', id: any } | null> | null, eventPayments?: Array<{ __typename?: 'Payment', amount: any } | null> | null, eventPlanPrices?: Array<{ __typename?: 'EventPlanPrice', tickets?: number | null, charge?: any | null } | null> | null } | null };
 
 export type CancelEventMutationVariables = Exact<{
   eventId: Scalars['UUID']['input'];
@@ -2608,6 +2607,9 @@ export const GetEventDocument = gql`
     views
     eventRegistrations {
       id
+    }
+    eventPayments {
+      amount
     }
     eventPlanPrices {
       tickets
@@ -4334,7 +4336,6 @@ export type EventResolvers<ContextType = GraphQLContext, ParentType extends Reso
   message?: Resolver<ResolversTypes['String'], ParentType, ContextType>;
   name?: Resolver<ResolversTypes['String'], ParentType, ContextType>;
   paymentType?: Resolver<ResolversTypes['String'], ParentType, ContextType>;
-  payments?: Resolver<Maybe<Array<Maybe<ResolversTypes['Payment']>>>, ParentType, ContextType>;
   sendTag?: Resolver<Maybe<ResolversTypes['Boolean']>, ParentType, ContextType>;
   speakers?: Resolver<Maybe<Array<Maybe<ResolversTypes['Speaker']>>>, ParentType, ContextType>;
   sponsors?: Resolver<Maybe<Array<Maybe<ResolversTypes['Sponsor']>>>, ParentType, ContextType>;

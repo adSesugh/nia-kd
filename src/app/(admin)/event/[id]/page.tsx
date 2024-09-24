@@ -35,7 +35,7 @@ const EventDetail = () => {
     }
 
     const computeEventTotalRevenue = () => {
-        const total = event?.payments?.reduce((acc: number, cur: Payment) => Number(cur.amount) + acc, 0)
+        const total = event?.eventPayments?.reduce((acc: number, cur: Payment) => Number(cur.amount) + acc, 0)
         return total
     }
 

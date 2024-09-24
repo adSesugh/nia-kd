@@ -86,7 +86,7 @@ query GetEvent($eventId: UUID!) {
     eventRegistrations {
       id
     }
-    payments {
+    eventPayments {
       amount
     }
     eventPlanPrices {

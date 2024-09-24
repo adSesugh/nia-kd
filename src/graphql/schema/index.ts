@@ -116,7 +116,6 @@ export const typeDefs = `#graphql
     eventRegistrations: [EventRegistration]
     eventResources: [EventResource]
     eventPlanPrices: [EventPlanPrice]
-    payments: [Payment]
     speakers: [Speaker]
     sponsors: [Sponsor]
     sendTag: Boolean

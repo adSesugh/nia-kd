@@ -338,7 +338,8 @@ class EventAPI extends RESTDataSource {
                 eventResources: true,
                 eventRegistrations: true,
                 sponsors: true,
-                eventPlanPrices: true
+                eventPlanPrices: true,
+                eventPayments: true
             },
         })
 
