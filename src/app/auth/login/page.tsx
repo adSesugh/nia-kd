@@ -27,7 +27,7 @@ const LoginSchema = Yup.object().shape({
 const LoginPage = () => {
   const initialValues: LoginForm = { regId: '', password: '' };
   const [show, setShow] = React.useState<boolean>(false)
-  const [login, {loading, error}] = useUserLoginMutation()
+  const [login, {loading, error}] = useUserLoginMutation({fetchPolicy: 'no-cache'})
   const dispatch = useAppDispatch()
   const isLoggedIn = useAppSelector((state:RootState) => state.auth.userData?.token)
   const user = useAppSelector((state:RootState) => state.auth.userData?.user)

@@ -28,8 +28,8 @@ const ProfileScreen: React.FC<ProfilePropType> = ({ data, loading }) => {
     const router = useRouter()
     const user = useSelector((state: RootState) => state?.auth.userData.user)
     const [speakerImg, setSpeakerImg] = useState<string>()
-    const [resetPassword, {loading: resetPasswordLoading}] = useResetPasswordMutation()
-    const [profilePhotoUpload, {loading: profileLoading}] = useProfilephotoUploadMutation()
+    const [resetPassword, {loading: resetPasswordLoading}] = useResetPasswordMutation({fetchPolicy: 'no-cache'})
+    const [profilePhotoUpload, {loading: profileLoading}] = useProfilephotoUploadMutation({fetchPolicy: 'no-cache'})
     const dispatch = useAppDispatch()
 
 

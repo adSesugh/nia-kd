@@ -32,7 +32,7 @@ const RegisterPage: React.FC<{}> = () => {
     membershipSlip: ''
   };
   const [show, setShow] = React.useState<boolean>(false)
-  const [createUser, {loading, error}] = useCreateUserMutation()
+  const [createUser, {loading, error}] = useCreateUserMutation({fetchPolicy: 'no-cache'})
   const router = useRouter()
 
   const {data: membershipType, loading: membershipLoader} = useGetMembershipTypesQuery({fetchPolicy: 'no-cache'})
