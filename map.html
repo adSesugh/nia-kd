@@ -1,0 +1,52 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Interactive Map</title>
+
+  <!-- Leaflet CSS -->
+  <link rel="stylesheet" href="https://unpkg.com/leaflet@1.7.1/dist/leaflet.css" />
+
+  <style>
+    #map {
+      height: 500px;
+      width: 100%;
+    }
+  </style>
+</head>
+<body>
+  <h1>Interactive Map</h1>
+  <div id="map"></div>
+
+  <!-- Leaflet JavaScript -->
+  <script src="https://unpkg.com/leaflet@1.7.1/dist/leaflet.js"></script>
+
+  <!-- JavaScript to handle the map -->
+  <script>
+    // Wait for the page to load
+    window.onload = function() {
+      // Create a map instance and set its view to a specific location and zoom level
+      const map = L.map('map').setView([51.505, -0.09], 50); // Coordinates for London, UK
+
+      // Set up the tile layer (the actual map)
+      L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
+        attribution: '&copy; OpenStreetMap contributors'
+      }).addTo(map);
+
+      // Add a marker at the initial view location
+      const marker = L.marker([51.505, -0.09]).addTo(map)
+        .bindPopup('This is a marker.')
+        .openPopup();
+
+      // Event listener for map clicks to add new markers
+      map.on('click', function(e) {
+        const { lat, lng } = e.latlng;  // Get latitude and longitude of the click
+        L.marker([lat, lng]).addTo(map)
+          .bindPopup(`Marker at: ${lat}, ${lng}`)
+          .openPopup();
+      });
+    };
+  </script>
+</body>
+</html>

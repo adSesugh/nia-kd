@@ -358,7 +358,10 @@ class EventAPI extends RESTDataSource {
                 _count: {
                     select: { eventRegistrations: true },
                 },
-                eventPlanPrices: true
+                eventPlanPrices: true,
+                eventRegistrations: {
+                    select: { id: true }
+                }
             },
             where: {
                 deletedAt: null
@@ -396,6 +399,9 @@ class EventAPI extends RESTDataSource {
         const registeredMembers = await prisma.eventRegistration.findMany({
             where: {
                 eventId
+            },
+            include: {
+                member: true
             }
         })
 
@@ -649,6 +655,7 @@ class EventAPI extends RESTDataSource {
                 sponsors: true,
             }
         })
+        console.log(input)
         try {
             const response = await fetch(`${process.env.NEXT_PUBLIC_APP_URL!}/api/send-email`, {
                 method: 'POST',

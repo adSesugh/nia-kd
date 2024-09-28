@@ -138,7 +138,7 @@ const AdvertPage = () => {
     }, []);
 
     return (
-        <div className='sm:px-12 xs:px-4'>
+        <div className='sm:px-12 xs:px-4 h-full overflow-x-scroll'>
             <div className='flex justify-between items-center'>
                 <TitleHeader title='Campaign' />
             </div>

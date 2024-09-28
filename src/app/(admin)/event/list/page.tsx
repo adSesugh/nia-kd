@@ -53,7 +53,6 @@ const Events = () => {
     })()
   }, [getEventList])
 
-
   const renderCell = React.useCallback((event: Event, columnKey: React.Key) => {
       const cellValue = event[columnKey as keyof Event];
       const state = event.address?.split(',')[event.address.split(',').length - 2]
@@ -78,26 +77,34 @@ const Events = () => {
             )
           case "event":
               return (
-                  <div className='flex gap-3'>
-                    <img 
-                      src={event.coverPhoto || '/assets/events/event.svg'} 
-                      alt={event.name} 
-                      className='h-16 w-16'
-                    />
-                    <div className='flex flex-col items-start justify-center'>
-                      <h1 className='font-medium text-sm'>{event.name}</h1>
-                      <div className='flex space-x-3 text-sm text-[#52474B]'>
-                        <span>{"9:00 AM"}</span>
-                        {(event.link || event.address) && <span>|</span> }
-                        {event.type === 'Physical' ? (
-                          <span>{state}, {country}</span>
-                        ): (
-                          <span>{event.link}</span>
-                        )}
+                  <div>
+                    <div className='flex gap-3'>
+                      <img 
+                        src={event.coverPhoto || '/assets/events/event.svg'} 
+                        alt={event.name} 
+                        className='h-16 w-16 xs:hidden sm:block'
+                      />
+                      <div className='flex flex-col items-start justify-center'>
+                        <h1 className='font-medium text-sm'>{event.name}</h1>
+                        <div className='flex space-x-3 text-sm text-[#52474B]'>
+                          <span>{moment(event.starts_at).format('h:mm A')}</span>
+                          {(event.link || event.address) && <span className='xs:hidden sm:flex'>|</span> }
+                         <div className='xs:hidden sm:block'>
+                          {event.type === 'Physical' ? (
+                              <span>{state}, {country}</span>
+                            ): (
+                              <span>{event.link}</span>
+                            )}
+                         </div>
+                        </div>
                       </div>
                     </div>
                   </div>
               )
+          case "type":
+            return (
+              <div>{event.type}</div>
+            )
           case "tickets":
             return (
               <span>{Number(event.eventRegistrations?.length) || 0}/{event.isInfinity || event.tickets === 0 ? '\u221E' : computeTickets(event)}</span>

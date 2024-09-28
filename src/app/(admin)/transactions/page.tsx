@@ -96,7 +96,7 @@ const Transaction = () => {
         <h1 className='text-2xl font-semibold'>Transactions</h1>
       </div>
       <div className='pt-6 pb-4'>
-        <div className='flex-1 items-center h-full w-1/3 mt-1'>
+        <div className='flex-1 items-center h-full sm:w-1/3 xs:w-full mt-1'>
           <div className='relative rounded-md shadow-sm'>
             <div className="pointer-events-none absolute inset-y-0 left-0 flex items-center pl-2">
               <SearchNormal variant='Outline' size={20} color='gray' />

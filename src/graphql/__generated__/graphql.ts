@@ -1078,7 +1078,7 @@ export type GetRegisteredMembersQueryVariables = Exact<{
 }>;
 
 
-export type GetRegisteredMembersQuery = { __typename?: 'Query', getRegisteredMembers?: Array<{ __typename?: 'EventRegistration', id: any, registrantDetail: any, createdAt?: any | null }> | null };
+export type GetRegisteredMembersQuery = { __typename?: 'Query', getRegisteredMembers?: Array<{ __typename?: 'EventRegistration', id: any, registrantDetail: any, createdAt?: any | null, member?: { __typename?: 'Member', photoURL?: string | null } | null }> | null };
 
 export type GetMembersAttendanceQueryVariables = Exact<{
   eventId: Scalars['UUID']['input'];
@@ -2750,6 +2750,9 @@ export const GetRegisteredMembersDocument = gql`
   getRegisteredMembers(eventId: $eventId) {
     id
     registrantDetail
+    member {
+      photoURL
+    }
     createdAt
   }
 }

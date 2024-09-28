@@ -112,6 +112,9 @@ query GetRegisteredMembers($eventId: UUID!) {
   getRegisteredMembers(eventId: $eventId) {
     id
     registrantDetail
+    member {
+      photoURL
+    }
     createdAt
   }
 }

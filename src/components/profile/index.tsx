@@ -41,8 +41,6 @@ const ProfileScreen: React.FC<ProfilePropType> = ({ data, loading }) => {
         )
     }
 
-    console.log(user)
-
     return (
         <div className={'flex sm:px-40 xs:px-6 justify-center xs:pb-20 sm:pb-8'}>
             <div className={'w-full h-full'}>
@@ -65,6 +63,7 @@ const ProfileScreen: React.FC<ProfilePropType> = ({ data, loading }) => {
                                             name='avatar'
                                             className="hidden"
                                             multiple
+                                            readOnly={user?.id !== data?.id}
                                             accept="image/png, image/jpeg, image/jpg"
                                             onChange={async (event: React.ChangeEvent<HTMLInputElement>) => {
                                                 if (event.target.files) {
@@ -85,7 +84,6 @@ const ProfileScreen: React.FC<ProfilePropType> = ({ data, loading }) => {
                                                                     const newUserData = {
                                                                         photoURL: photoUrl
                                                                     }
-                                                                    console.log(newUserData)
                                                                     toast.success('Profile photo uploaded')
                                                                     dispatch(setProfilePhoto(newUserData))
                                                                 }
@@ -99,9 +97,9 @@ const ProfileScreen: React.FC<ProfilePropType> = ({ data, loading }) => {
                                             }}
                                         />
                                         <label aria-label='speakerPix' htmlFor="profilePix" className="flex flex-col items-center rounded-full cursor-pointer h-28 w-28">
-                                            {speakerImg || user?.photoURL ? (
+                                            {speakerImg || data?.photoURL || user?.member?.photoURL ? (
                                                 <div className="flex relative items-center justify-center h-24 w-24">
-                                                    <img src={speakerImg as string || user?.photoURL as string} alt="userPhoto" className='rounded-full h-24 w-24' />
+                                                    <img src={speakerImg as string || data?.photoURL as string || user?.member?.photoURL as string} alt="userPhoto" className='rounded-full h-24 w-24' />
                                                     <div className="absolute p-1 rounded-full bg-[#eae1df] bottom-3 -right-1">
                                                         <Camera size={16} />
                                                     </div>
@@ -132,7 +130,7 @@ const ProfileScreen: React.FC<ProfilePropType> = ({ data, loading }) => {
                     </div>
                     <div className="sm:w-3/5 xs:w-full mb-10">
                         <div className="w-full space-y-4">
-                            {user?.role !== Role.ADMINISTRATOR && (
+                            {data?.firstName && (
                                  <div className="bg-white rounded-lg shadow-sm w-full border">
                                     <div className="flex items-center py-3 px-4">
                                         <h1 className="font-semibold">Basic Info</h1>
@@ -202,7 +200,7 @@ const ProfileScreen: React.FC<ProfilePropType> = ({ data, loading }) => {
                                             try {
                                                 const res = await resetPassword({
                                                     variables: {
-                                                        userId: user?.id,
+                                                        userId: data.id ?? user?.id,
                                                         password: values.password
                                                     }
                                                 })

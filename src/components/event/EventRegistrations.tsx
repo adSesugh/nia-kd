@@ -12,6 +12,7 @@ const EventRegistrations = ({ eventId }: {eventId: string}) => {
     const [registeredMembers, setRegisteredMembers] = useState<any>()
     const [getRegisteredMembers, {loading}] = useGetRegisteredMembersLazyQuery({fetchPolicy: 'no-cache'})
     const [resendEventMail, {loading: sendLoading}] = useResendEventMailMutation()
+    const [selectedMember, setSelectedMember] = useState<EventRegistration| null>(null)
 
     const loadingState = loading || registeredMembers === 0 ? "loading" : "idle";
 
@@ -28,6 +29,7 @@ const EventRegistrations = ({ eventId }: {eventId: string}) => {
     }, [getRegisteredMembers, eventId])
 
     const mailResend = async (registrant: EventRegistration) => {
+        console.log(registrant)
         const resMail = await resendEventMail({
             variables: {
                 input: {
@@ -43,10 +45,13 @@ const EventRegistrations = ({ eventId }: {eventId: string}) => {
 
         if(resMail.data?.resendEventMail){
             toast.success('Email sent!')
+            setSelectedMember(null)
         } else {
             toast.error('Email not sent!')
         }
     }
+
+    console.log("selected", selectedMember)
 
     const renderCell = React.useCallback((registeredMember: EventRegistration, columnKey: React.Key) => {
         const cellValue = registeredMember[columnKey as keyof EventRegistration];
@@ -73,20 +78,23 @@ const EventRegistrations = ({ eventId }: {eventId: string}) => {
             case "action":
                 return (
                     <div className="relative flex justify-end items-center gap-2">
-                        <Dropdown>
-                            <DropdownTrigger>
-                                <Button isIconOnly size="sm" variant="light">
-                                    {sendLoading && cellValue === registeredMember.id ? (
-                                        <Spinner color='default' />
-                                    ): (
+                        {sendLoading ? (
+                            <Spinner color='default' size={'sm'} />
+                        ): (
+                            <Dropdown>
+                                <DropdownTrigger>
+                                    <Button isIconOnly size="sm" variant="light">
                                         <DotsThreeVertical size={40} className="text-default-300" color='#161314' />
-                                    )}
-                                </Button>
-                            </DropdownTrigger>
-                            <DropdownMenu>
-                                <DropdownItem onClick={() => mailResend(registeredMember)}>Resend registration mail</DropdownItem>
-                            </DropdownMenu>
-                        </Dropdown>
+                                    </Button>
+                                </DropdownTrigger>
+                                <DropdownMenu>
+                                    <DropdownItem onClick={() => {
+                                        setSelectedMember(registeredMember)
+                                        mailResend(registeredMember)
+                                    }}>Resend registration mail</DropdownItem>
+                                </DropdownMenu>
+                            </Dropdown>
+                        )}
                     </div>
                 );
             default:

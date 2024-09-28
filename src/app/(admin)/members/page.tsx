@@ -111,11 +111,11 @@ const MemberList = () => {
         if(query === '') {
           setMembers(membersHolder)
         } else {
-          const filteredEvents = members?.filter((member: Member) => {
-            return member?.firstName?.toLowerCase().includes(query) 
-                || member?.lastName?.toLowerCase().includes(query) 
-                || member?.membershipType?.name?.toLowerCase().includes(query) 
-                || member?.phoneNumber?.toLowerCase().includes(query)
+          const filteredEvents = membersHolder?.filter((member: Member) => {
+            return member?.firstName?.toLowerCase().includes(query.toLowerCase()) 
+                || member?.lastName?.toLowerCase().includes(query.toLowerCase()) 
+                || member?.membershipType?.name?.toLowerCase().includes(query.toLowerCase()) 
+                || member?.phoneNumber?.toLowerCase().includes(query.toLowerCase())
           })
           setMembers(filteredEvents)
         }
@@ -127,18 +127,15 @@ const MemberList = () => {
         if(value.length === 0 || value === 'All') {
           setMembers(membersHolder)
         } else {
-          const filteredEvents = members?.filter((member: Member) => {
-            return member?.firstName?.toLowerCase().includes(value) 
-                || member?.lastName?.toLowerCase().includes(value) 
-                || member?.membershipType?.name?.toLowerCase().includes(value) 
-                || member?.phoneNumber?.toLowerCase().includes(value)
+          const filteredEvents = membersHolder?.filter((member: Member) => {
+            return member?.membershipType.name.toLowerCase() === value.toLowerCase()
           })
           setMembers(filteredEvents)
         }
     }
 
     return (
-        <div className='sm:px-12 xs:px-4'>
+        <div className='sm:px-12 xs:px-4 h-full overflow-y-scroll'>
             <TitleHeader title='Members' />
             <div className='flex pt-6 pb-4 w-full gap-4'>
                 <div className='relative rounded-md shadow-sm sm:w-2/5 xs:w-full'>
@@ -162,7 +159,7 @@ const MemberList = () => {
                     />
                 </div>
             </div>
-            <div>
+            <div className='pb-16'>
                 <Table aria-label="">
                     <TableHeader>
                         <TableColumn key="id">S/N</TableColumn>
