@@ -64,17 +64,17 @@ const LoginPage = () => {
             dispatch(setUserData(res.data.login))
            
             toast.success('Welcome!')
-            //setSubmitting(false)
+            setSubmitting(false)
           }
         } catch (error: any) {
-          //setSubmitting(false)
+          setSubmitting(false)
           toast.error(error.message)
           return error.message
         }
        }}
      >
        {({ values, errors, touched, handleChange, handleBlur, handleSubmit, isSubmitting, }) => (
-         <Form onSubmit={handleSubmit} className='space-y-5'>
+         <Form onSubmit={handleSubmit} className='space-y-5 w-full'>
            <TextFieldWithIcon 
               name='regId' 
               placeholder='NIA RegID/MembershipID/Email' 
@@ -90,7 +90,14 @@ const LoginPage = () => {
               LeftIcons={<Lock size={18} color={errors.regId && touched.regId ? 'red': 'gray'} variant="Outline"/>}
               RightIcon={show ? <Eye onClick={() => setShow(false)} size={20} color="gray" variant="Outline" /> : <EyeSlash size={20} onClick={() => setShow(true)} color="gray" variant="Outline" />}
             />
-            <CheckBox name='rememberMe' label='Remember me' />
+            <div className="flex sm:flex-row xs:flex-col justify-between items-center w-full">
+              <div className="">
+                <CheckBox name='rememberMe' label='Remember me' />
+              </div>
+              <div className=''>
+                <Link href={'/auth/forgot-password'} className='text-[14px] text-gray-400 w-full'>Forgot password</Link>
+              </div>
+            </div>
            <SubmitButton 
               name={isSubmitting || loading ? 'Please wait...' : 'Login'} 
               type='submit' 

@@ -3,6 +3,17 @@ export type LoginForm = {
     password: string
 }
 
+export type ForgotPasswordForm = {
+    email: string
+}
+
+export type ResetPasswordForm = {
+    code: any
+    email: string
+    password: string
+    confirm_password: string
+}
+
 export type RegisterForm = {
     firstName: string
     lastName: string

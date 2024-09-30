@@ -17,7 +17,7 @@ const CheckBox: React.FC<CheckboxProps> = ({name, label, defaultChecked}) => {
                     className="checkbox checkbox-sm" 
                     defaultChecked={defaultChecked}
                 />
-                <span className="label-text ml-2 w-full">{label}</span> 
+                <span className="label-text ml-2 w-full text-sm">{label}</span> 
             </label>
             <ErrorMessage name={name} />
         </div>

@@ -13,7 +13,7 @@ export const typeDefs = `#graphql
     id: UUID!
     regId: String!
     role: String! @uppercase
-    email: String
+    email: String!
     password: String! @skip
     rememberMe: Boolean @skip
     member: Member
@@ -495,6 +495,7 @@ export const typeDefs = `#graphql
   type ResetPasswordResponse {
     code: Int!
     success: Boolean!
+    userId: String
     message: String
   }
   
@@ -536,6 +537,9 @@ export const typeDefs = `#graphql
     deleteCompaign(compaignId: String!): Compaign
     updateCompaign(compaignId: String!, input: CompaignInput!): Compaign,
     stopCompaign(compaignId: String!, status: Boolean!): Compaign
+    sendForgotPasswordCode(email: String!): ResetPasswordResponse
+    codeConfirmation(code: Int!): ResetPasswordResponse
+    
   }
 
   ## ------------------------------------- Query ---------------------------------------------------##

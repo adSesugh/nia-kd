@@ -33,3 +33,20 @@ mutation ResetPassword($userId: UUID!, $password: String!) {
     message
   }
 }
+
+mutation SendForgotPasswordResetCode($email: String!) {
+  sendForgotPasswordCode(email: $email) {
+    code
+    success
+    message
+  }
+}
+
+mutation CodeConfirmation($code: Int!) {
+  codeConfirmation(code: $code) {
+    code
+    success
+    userId
+    message
+  }
+}

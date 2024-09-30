@@ -38,7 +38,7 @@ const RegisterPage: React.FC<{}> = () => {
   const {data: membershipType, loading: membershipLoader} = useGetMembershipTypesQuery({fetchPolicy: 'no-cache'})
 
   useEffect(()=> {
-    document.title = "Sign up | NIA-kd"
+    document.title = "Sign up | NIA-Kd"
   }, [])
 
   return (

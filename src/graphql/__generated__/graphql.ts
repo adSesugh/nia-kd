@@ -320,6 +320,7 @@ export type Mutation = {
   __typename?: 'Mutation';
   archiveDue?: Maybe<Scalars['Boolean']['output']>;
   cancelEvent?: Maybe<Scalars['Boolean']['output']>;
+  codeConfirmation?: Maybe<ResetPasswordResponse>;
   createBlog?: Maybe<BlogResponse>;
   createCompaign?: Maybe<Compaign>;
   createDue?: Maybe<DueResponse>;
@@ -339,6 +340,7 @@ export type Mutation = {
   publishedBlog?: Maybe<BlogResponse>;
   resendEventMail?: Maybe<Scalars['Boolean']['output']>;
   resetPassword?: Maybe<ResetPasswordResponse>;
+  sendForgotPasswordCode?: Maybe<ResetPasswordResponse>;
   stopCompaign?: Maybe<Compaign>;
   updateCompaign?: Maybe<Compaign>;
   updateDues?: Maybe<DueResponse>;
@@ -354,6 +356,11 @@ export type MutationArchiveDueArgs = {
 export type MutationCancelEventArgs = {
   eventId: Scalars['UUID']['input'];
   status: Scalars['String']['input'];
+};
+
+
+export type MutationCodeConfirmationArgs = {
+  code: Scalars['Int']['input'];
 };
 
 
@@ -453,6 +460,11 @@ export type MutationResendEventMailArgs = {
 export type MutationResetPasswordArgs = {
   password: Scalars['String']['input'];
   userId: Scalars['UUID']['input'];
+};
+
+
+export type MutationSendForgotPasswordCodeArgs = {
+  email: Scalars['String']['input'];
 };
 
 
@@ -641,6 +653,7 @@ export type ResetPasswordResponse = {
   code: Scalars['Int']['output'];
   message?: Maybe<Scalars['String']['output']>;
   success: Scalars['Boolean']['output'];
+  userId?: Maybe<Scalars['String']['output']>;
 };
 
 export type Resource = {
@@ -719,7 +732,7 @@ export type UploadResponse = {
 export type User = {
   __typename?: 'User';
   createdAt?: Maybe<Scalars['Time']['output']>;
-  email?: Maybe<Scalars['String']['output']>;
+  email: Scalars['String']['output'];
   id: Scalars['UUID']['output'];
   member?: Maybe<Member>;
   password: Scalars['String']['output'];
@@ -1256,6 +1269,20 @@ export type ResetPasswordMutationVariables = Exact<{
 
 
 export type ResetPasswordMutation = { __typename?: 'Mutation', resetPassword?: { __typename?: 'ResetPasswordResponse', code: number, success: boolean, message?: string | null } | null };
+
+export type SendForgotPasswordResetCodeMutationVariables = Exact<{
+  email: Scalars['String']['input'];
+}>;
+
+
+export type SendForgotPasswordResetCodeMutation = { __typename?: 'Mutation', sendForgotPasswordCode?: { __typename?: 'ResetPasswordResponse', code: number, success: boolean, message?: string | null } | null };
+
+export type CodeConfirmationMutationVariables = Exact<{
+  code: Scalars['Int']['input'];
+}>;
+
+
+export type CodeConfirmationMutation = { __typename?: 'Mutation', codeConfirmation?: { __typename?: 'ResetPasswordResponse', code: number, success: boolean, userId?: string | null, message?: string | null } | null };
 
 
 export const CreateUserDocument = gql`
@@ -4008,6 +4035,77 @@ export function useResetPasswordMutation(baseOptions?: Apollo.MutationHookOption
 export type ResetPasswordMutationHookResult = ReturnType<typeof useResetPasswordMutation>;
 export type ResetPasswordMutationResult = Apollo.MutationResult<ResetPasswordMutation>;
 export type ResetPasswordMutationOptions = Apollo.BaseMutationOptions<ResetPasswordMutation, ResetPasswordMutationVariables>;
+export const SendForgotPasswordResetCodeDocument = gql`
+    mutation SendForgotPasswordResetCode($email: String!) {
+  sendForgotPasswordCode(email: $email) {
+    code
+    success
+    message
+  }
+}
+    `;
+export type SendForgotPasswordResetCodeMutationFn = Apollo.MutationFunction<SendForgotPasswordResetCodeMutation, SendForgotPasswordResetCodeMutationVariables>;
+
+/**
+ * __useSendForgotPasswordResetCodeMutation__
+ *
+ * To run a mutation, you first call `useSendForgotPasswordResetCodeMutation` within a React component and pass it any options that fit your needs.
+ * When your component renders, `useSendForgotPasswordResetCodeMutation` returns a tuple that includes:
+ * - A mutate function that you can call at any time to execute the mutation
+ * - An object with fields that represent the current status of the mutation's execution
+ *
+ * @param baseOptions options that will be passed into the mutation, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options-2;
+ *
+ * @example
+ * const [sendForgotPasswordResetCodeMutation, { data, loading, error }] = useSendForgotPasswordResetCodeMutation({
+ *   variables: {
+ *      email: // value for 'email'
+ *   },
+ * });
+ */
+export function useSendForgotPasswordResetCodeMutation(baseOptions?: Apollo.MutationHookOptions<SendForgotPasswordResetCodeMutation, SendForgotPasswordResetCodeMutationVariables>) {
+        const options = {...defaultOptions, ...baseOptions}
+        return Apollo.useMutation<SendForgotPasswordResetCodeMutation, SendForgotPasswordResetCodeMutationVariables>(SendForgotPasswordResetCodeDocument, options);
+      }
+export type SendForgotPasswordResetCodeMutationHookResult = ReturnType<typeof useSendForgotPasswordResetCodeMutation>;
+export type SendForgotPasswordResetCodeMutationResult = Apollo.MutationResult<SendForgotPasswordResetCodeMutation>;
+export type SendForgotPasswordResetCodeMutationOptions = Apollo.BaseMutationOptions<SendForgotPasswordResetCodeMutation, SendForgotPasswordResetCodeMutationVariables>;
+export const CodeConfirmationDocument = gql`
+    mutation CodeConfirmation($code: Int!) {
+  codeConfirmation(code: $code) {
+    code
+    success
+    userId
+    message
+  }
+}
+    `;
+export type CodeConfirmationMutationFn = Apollo.MutationFunction<CodeConfirmationMutation, CodeConfirmationMutationVariables>;
+
+/**
+ * __useCodeConfirmationMutation__
+ *
+ * To run a mutation, you first call `useCodeConfirmationMutation` within a React component and pass it any options that fit your needs.
+ * When your component renders, `useCodeConfirmationMutation` returns a tuple that includes:
+ * - A mutate function that you can call at any time to execute the mutation
+ * - An object with fields that represent the current status of the mutation's execution
+ *
+ * @param baseOptions options that will be passed into the mutation, supported options are listed on: https://www.apollographql.com/docs/react/api/react-hooks/#options-2;
+ *
+ * @example
+ * const [codeConfirmationMutation, { data, loading, error }] = useCodeConfirmationMutation({
+ *   variables: {
+ *      code: // value for 'code'
+ *   },
+ * });
+ */
+export function useCodeConfirmationMutation(baseOptions?: Apollo.MutationHookOptions<CodeConfirmationMutation, CodeConfirmationMutationVariables>) {
+        const options = {...defaultOptions, ...baseOptions}
+        return Apollo.useMutation<CodeConfirmationMutation, CodeConfirmationMutationVariables>(CodeConfirmationDocument, options);
+      }
+export type CodeConfirmationMutationHookResult = ReturnType<typeof useCodeConfirmationMutation>;
+export type CodeConfirmationMutationResult = Apollo.MutationResult<CodeConfirmationMutation>;
+export type CodeConfirmationMutationOptions = Apollo.BaseMutationOptions<CodeConfirmationMutation, CodeConfirmationMutationVariables>;
 export type WithIndex<TObject> = TObject & Record<string, any>;
 export type ResolversObject<TObject> = WithIndex<TObject>;
 
@@ -4483,6 +4581,7 @@ export type MembershipTypeResolvers<ContextType = GraphQLContext, ParentType ext
 export type MutationResolvers<ContextType = GraphQLContext, ParentType extends ResolversParentTypes['Mutation'] = ResolversParentTypes['Mutation']> = ResolversObject<{
   archiveDue?: Resolver<Maybe<ResolversTypes['Boolean']>, ParentType, ContextType, RequireFields<MutationArchiveDueArgs, 'dueId'>>;
   cancelEvent?: Resolver<Maybe<ResolversTypes['Boolean']>, ParentType, ContextType, RequireFields<MutationCancelEventArgs, 'eventId' | 'status'>>;
+  codeConfirmation?: Resolver<Maybe<ResolversTypes['ResetPasswordResponse']>, ParentType, ContextType, RequireFields<MutationCodeConfirmationArgs, 'code'>>;
   createBlog?: Resolver<Maybe<ResolversTypes['BlogResponse']>, ParentType, ContextType, RequireFields<MutationCreateBlogArgs, 'input'>>;
   createCompaign?: Resolver<Maybe<ResolversTypes['Compaign']>, ParentType, ContextType, RequireFields<MutationCreateCompaignArgs, 'input'>>;
   createDue?: Resolver<Maybe<ResolversTypes['DueResponse']>, ParentType, ContextType, RequireFields<MutationCreateDueArgs, 'input'>>;
@@ -4502,6 +4601,7 @@ export type MutationResolvers<ContextType = GraphQLContext, ParentType extends R
   publishedBlog?: Resolver<Maybe<ResolversTypes['BlogResponse']>, ParentType, ContextType, RequireFields<MutationPublishedBlogArgs, 'blogId' | 'status'>>;
   resendEventMail?: Resolver<Maybe<ResolversTypes['Boolean']>, ParentType, ContextType, RequireFields<MutationResendEventMailArgs, 'input'>>;
   resetPassword?: Resolver<Maybe<ResolversTypes['ResetPasswordResponse']>, ParentType, ContextType, RequireFields<MutationResetPasswordArgs, 'password' | 'userId'>>;
+  sendForgotPasswordCode?: Resolver<Maybe<ResolversTypes['ResetPasswordResponse']>, ParentType, ContextType, RequireFields<MutationSendForgotPasswordCodeArgs, 'email'>>;
   stopCompaign?: Resolver<Maybe<ResolversTypes['Compaign']>, ParentType, ContextType, RequireFields<MutationStopCompaignArgs, 'compaignId' | 'status'>>;
   updateCompaign?: Resolver<Maybe<ResolversTypes['Compaign']>, ParentType, ContextType, RequireFields<MutationUpdateCompaignArgs, 'compaignId' | 'input'>>;
   updateDues?: Resolver<Maybe<ResolversTypes['DueResponse']>, ParentType, ContextType, RequireFields<MutationUpdateDuesArgs, 'dueId' | 'input'>>;
@@ -4568,6 +4668,7 @@ export type ResetPasswordResponseResolvers<ContextType = GraphQLContext, ParentT
   code?: Resolver<ResolversTypes['Int'], ParentType, ContextType>;
   message?: Resolver<Maybe<ResolversTypes['String']>, ParentType, ContextType>;
   success?: Resolver<ResolversTypes['Boolean'], ParentType, ContextType>;
+  userId?: Resolver<Maybe<ResolversTypes['String']>, ParentType, ContextType>;
   __isTypeOf?: IsTypeOfResolverFn<ParentType, ContextType>;
 }>;
 
@@ -4639,7 +4740,7 @@ export type UploadResponseResolvers<ContextType = GraphQLContext, ParentType ext
 
 export type UserResolvers<ContextType = GraphQLContext, ParentType extends ResolversParentTypes['User'] = ResolversParentTypes['User']> = ResolversObject<{
   createdAt?: Resolver<Maybe<ResolversTypes['Time']>, ParentType, ContextType>;
-  email?: Resolver<Maybe<ResolversTypes['String']>, ParentType, ContextType>;
+  email?: Resolver<ResolversTypes['String'], ParentType, ContextType>;
   id?: Resolver<ResolversTypes['UUID'], ParentType, ContextType>;
   member?: Resolver<Maybe<ResolversTypes['Member']>, ParentType, ContextType>;
   password?: Resolver<ResolversTypes['String'], ParentType, ContextType>;

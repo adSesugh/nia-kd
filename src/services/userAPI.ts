@@ -1,5 +1,5 @@
 import { NewMember, ResetPasswordResponse, SignInUser } from "@/graphql/__generated__/graphql";
-import { authenticateUser } from "@/lib/common";
+import { authenticateUser, generateRandomCode } from "@/lib/common";
 import { generateZerofillID } from "@/lib/helpers";
 import { RESTDataSource } from "@apollo/datasource-rest";
 import { PrismaClient } from "@prisma/client";
@@ -151,7 +151,8 @@ class UserAPI extends RESTDataSource {
               data: {
                 name: `${user.member?.firstName} ${user.member?.lastName}`,
                 to: user.email,
-                regId: user.regId
+                regId: user.regId,
+                type: 'welcome'
               }
             }),
         });
@@ -233,24 +234,107 @@ class UserAPI extends RESTDataSource {
         const salt = await bcrypt.genSalt(Number(process.env.NEXT_PUBLIC_HASH_SALT))
         const hashPassword = bcrypt.hashSync(password, salt)
 
-        const user = await prisma.user.update({
+        await prisma.user.update({
             where: {
                 id: userId
             },
             data: {
-                password: hashPassword
+                password: hashPassword,
+                code: null
             }
         })
-
-        console.log(user)
 
         const response: ResetPasswordResponse = {
             code: 200,
             success: true,
-            message: 'Password reset succesffuly'
+            message: 'Password reset successfully'
         }
 
         return response
+    }
+
+    async codeConfirmation(prisma: PrismaClient, code: number) {
+        const user = await prisma.user.findFirst({
+            where: {
+                code
+            }
+        })
+
+        if(!user) {
+            throw new GraphQLError("Code doesn't exist", {
+                extensions: {
+                    code: ApolloServerErrorCode.BAD_USER_INPUT,
+                    http: { status: 200 },
+                },
+            })
+        }
+
+        const res: ResetPasswordResponse = {
+            code: 200,
+            success: true,
+            userId: user.id
+        }
+
+        return res
+    }
+
+    async sendForgotPasswordCode(prisma: PrismaClient, email: string) {
+
+        const user = await prisma.user.findFirst({
+            where: {
+                email
+            },
+            include: {member: true}
+        })
+
+        if(!user) {
+            throw new GraphQLError("Account doesn't exist", {
+                extensions: {
+                    code: ApolloServerErrorCode.BAD_USER_INPUT,
+                    http: { status: 200 },
+                },
+            })
+        }
+
+        const response = await fetch(`${process.env.NEXT_PUBLIC_APP_URL!}/api/welcome-email`, {
+            method: 'POST',
+            headers: {
+              'Content-Type': 'application/json',
+            },
+            body: JSON.stringify({
+              data: {
+                name: `${user.member?.firstName} ${user.member?.lastName}`,
+                to: email,
+                type: 'code'
+              }
+            }),
+        });
+
+        const generateCode = generateRandomCode()
+        console.log(generateCode)
+
+        const data = await response.json();
+        if (response.ok) {
+            await prisma.user.update({
+                where: {
+                    id: user.id
+                },
+                data: {
+                    code: generateCode
+                }
+            })
+            console.log('Email sent:', data.message);
+        } else {
+            console.error('Error sending email:', data.error);
+        }
+
+        const res: ResetPasswordResponse = {
+            code: 200,
+            success: true,
+            message: 'Password reset code sent successfully'
+        }
+
+        return res
     }
 }
 

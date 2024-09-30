@@ -28,7 +28,9 @@ export const resolvers: Resolvers = {
         createCompaign: (_, {input}, {prisma, dataSources}) => dataSources.compaignAPI.createCompaign(prisma, input),
         deleteCompaign: (_, {compaignId}, {prisma, dataSources}) => dataSources.compaignAPI.deleteCompaign(prisma, compaignId),
         updateCompaign: (_, {compaignId, input}, {prisma, dataSources}) => dataSources.compaignAPI.updateCompaign(prisma, compaignId, input),
-        stopCompaign: (_, {compaignId, status}, {prisma, dataSources}) => dataSources.compaignAPI.stopCompaign(prisma, compaignId, status)
+        stopCompaign: (_, {compaignId, status}, {prisma, dataSources}) => dataSources.compaignAPI.stopCompaign(prisma, compaignId, status),
+        sendForgotPasswordCode: (_, {email}, {prisma, dataSources}) => dataSources.userAPI.sendForgotPasswordCode(prisma, email),
+        codeConfirmation: (_, {code}, { prisma, dataSources }) => dataSources.userAPI.codeConfirmation(prisma, code) 
     },
     Query: {
         members: (_, __, { prisma, dataSources, userId }) => dataSources.memberAPI.getMembers(prisma, userId),

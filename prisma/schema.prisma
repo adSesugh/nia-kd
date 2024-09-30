@@ -27,7 +27,7 @@ model User {
   regId            String?   @unique
   role             String    @default("MEMBER") @db.VarChar(191)
   password         String    @db.VarChar(191)
-  email            String?   @unique @db.VarChar(50)
+  email            String    @unique @db.VarChar(50)
   rememberMe       Boolean   @default(false)
   emailVerifiedAt  DateTime?
   emailVerifyToken String?   @db.VarChar(191)
@@ -37,6 +37,7 @@ model User {
   Blog             Blog[]
   Event            Event[]
   resources        Resource[]
+  code              Int?
 
   createdAt        DateTime  @default(now()) @map(name: "created_at")
   updatedAt        DateTime  @updatedAt @map(name: "updated_at")

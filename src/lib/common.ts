@@ -89,3 +89,8 @@ export function getRandomColor(): string {
     const a = (Math.random() * 0.8 + 0.2).toFixed(2);
     return `rgba(${r}, ${g}, ${b}, ${a})`;
 }
+
+
+export function generateRandomCode(): number {
+    return Math.floor(10000 + Math.random() * 90000);
+}
