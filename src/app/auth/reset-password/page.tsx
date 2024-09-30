@@ -9,7 +9,7 @@ import Link from 'next/link'
 import { EyeSlash, Eye } from 'iconsax-react'
 import TextFieldWithIcon from '@/components/textfield-withicon'
 import SubmitButton from '@/components/submit-button'
-import { useRouter } from 'next/navigation'
+import { useRouter, useSearchParams } from 'next/navigation'
 import { useCodeConfirmationMutation, useResetPasswordMutation } from '@/graphql/__generated__/graphql'
 import { toast } from 'react-toastify'
 import { Role } from '@/lib/common'
@@ -27,14 +27,15 @@ const ResetPasswordSchema = Yup.object().shape({
 });
 
 const Page = () => {
-  const initialValues: ResetPasswordForm = { code: '', email: '', password: '', confirm_password: '' };
   const [show, setShow] = React.useState<boolean>(false)
   const [confirmCode, {loading: confirmLoading}] = useCodeConfirmationMutation({fetchPolicy: 'no-cache'})
   const [resetPassword, {loading, error}] = useResetPasswordMutation({fetchPolicy: 'no-cache'})
-  const dispatch = useAppDispatch()
   const isLoggedIn = useAppSelector((state:RootState) => state.auth.userData?.token)
   const user = useAppSelector((state:RootState) => state.auth.userData?.user)
   const router = useRouter()
+  const params = useSearchParams()
+
+  const initialValues: ResetPasswordForm = { code: '', email: params.get('email') as string, password: '', confirm_password: '' };
 
   useEffect(() => {
     document.title = 'Reset Password | NIA-Kd'
@@ -97,6 +98,8 @@ const Page = () => {
               name='email' 
               placeholder='Email Address' 
               type='text' 
+              defaultValue={values.email?.toString()}
+              readOnly={true}
               LeftIcons={<Envelope size={20} color={errors.email && touched.email ? 'red': 'gray'} />}
               className={errors.email && touched.email ? 'ring-red-500': 'pr-3'}
             />

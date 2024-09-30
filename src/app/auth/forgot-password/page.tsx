@@ -56,7 +56,7 @@ const Page = () => {
           if(res.data?.sendForgotPasswordCode?.success) {
             toast.success(res.data.sendForgotPasswordCode.message)
             setSubmitting(false)
-            return router.push('/auth/reset-password')
+            return router.push(`/auth/reset-password?email=${values.email}`)
           }
         } catch (error: any) {
           setSubmitting(false)

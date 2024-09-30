@@ -234,7 +234,7 @@ class UserAPI extends RESTDataSource {
         const salt = await bcrypt.genSalt(Number(process.env.NEXT_PUBLIC_HASH_SALT))
         const hashPassword = bcrypt.hashSync(password, salt)
 
-        await prisma.user.update({
+        const user = await prisma.user.update({
             where: {
                 id: userId
             },
@@ -243,6 +243,15 @@ class UserAPI extends RESTDataSource {
                 code: null
             }
         })
+
+        if(!user) {
+            throw new GraphQLError("Account doesn't exist", {
+                extensions: {
+                    code: ApolloServerErrorCode.BAD_USER_INPUT,
+                    http: { status: 200 },
+                },
+            })
+        }
 
         const response: ResetPasswordResponse = {
             code: 200,
