@@ -305,6 +305,9 @@ class UserAPI extends RESTDataSource {
             })
         }
 
+        const generateCode = generateRandomCode()
+        console.log(generateCode)
+
         const response = await fetch(`${process.env.NEXT_PUBLIC_APP_URL!}/api/welcome-email`, {
             method: 'POST',
             headers: {
@@ -314,13 +317,11 @@ class UserAPI extends RESTDataSource {
               data: {
                 name: `${user.member?.firstName} ${user.member?.lastName}`,
                 to: email,
-                type: 'code'
+                type: 'code',
+                code: generateCode
               }
             }),
         });
-
-        const generateCode = generateRandomCode()
-        console.log(generateCode)
 
         const data = await response.json();
         if (response.ok) {
