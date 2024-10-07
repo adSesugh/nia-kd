@@ -17,7 +17,7 @@ const TeamCardBlack: React.FC<TeamCardProps> = ({imageUrl, name, designation, so
                     <Image src={'/assets/icons/linkedin-white.svg'} alt='linkedin' height={20} width={20} />
                 </Link>
                 <Link href={social_media.twitter} target='_blank'>
-                    <Image src={'/assets/icons/twitter-white.svg'} alt='linkedin' height={20} width={20} />
+                    <Image src={'/assets/icons/twitter-white.svg'} alt='twitter' height={20} width={20} />
                 </Link>
             </div>
         </div>

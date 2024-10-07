@@ -19,7 +19,7 @@
 }
 
 .joinButton {
-    @apply px-5 py-2 bg-[#D99A3F] text-[12px] text-white rounded-2xl
+    @apply px-5 py-2 bg-[#F3ECE2] text-[12px] text-black rounded-2xl
 }
 
 .menuActive {

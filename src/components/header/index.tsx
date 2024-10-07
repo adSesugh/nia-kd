@@ -40,14 +40,20 @@ const Header = () => {
             </li>
             <li>
               <div className={styles.menuitem}>
-                <Link href={'/blog'}>Blog</Link>
-                {pathname.includes('blog') && <div className={styles.menuActive}></div>}
+                <Link href={'/gallery'}>Gallery</Link>
+                {pathname.includes('gallery') && <div className={styles.menuActive}></div>}
               </div>
             </li>
             <li>
               <div className={styles.menuitem}>
                 <Link href={'/about'}>About Us</Link>
                 {pathname.includes('about') && <div className={styles.menuActive}></div>}
+              </div>
+            </li>
+            <li>
+              <div className={styles.menuitem}>
+                <Link href={'/blog'}>Blog</Link>
+                {pathname.includes('blog') && <div className={styles.menuActive}></div>}
               </div>
             </li>
             <li>

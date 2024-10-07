@@ -17,7 +17,7 @@ const teams: TeamCardProps[] = [
     }
   },
   {
-    imageUrl: '/assets/team/avatar.jpeg',
+    imageUrl: '/assets/team/10.png',
     name: 'Arc. Binta Danmaliki FNIA',
     designation: 'Vice Chairman',
     social_media: {
@@ -53,12 +53,12 @@ const teams: TeamCardProps[] = [
     }
   },
   {
-    imageUrl: '/assets/team/avatar.jpeg',
+    imageUrl: '/assets/team/11.png',
     name: 'Arc. (Dr) Juliet A. Obaje MNIA',
     designation: 'PRO',
     social_media: {
-      twitter: '',
-      linkedin: ''
+      twitter: 'https://x.com/JulietObaje?t=F82TtkeMl9HWbPs-9ybhqw&s=08',
+      linkedin: 'https://www.linkedin.com/in/arc-dr-juliet-obaje-02a73830'
     }
   },
   {
