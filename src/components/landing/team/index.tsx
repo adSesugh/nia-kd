@@ -13,7 +13,7 @@ const members = [
         }
     },
     {
-        imageUrl: '/assets/team/10.jpeg',
+        imageUrl: '/assets/team/10.png',
         name: 'Arc. Binta Danmaliki FNIA',
         designation: 'Vice Chairman',
         social_media: {
