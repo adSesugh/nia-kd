@@ -13,14 +13,14 @@ const Showcase = () => {
   
   return (
     <div className={styles.showcase}>
-        <p className='text-center text-lg'><span className={`text-[#D99A3F]`}>Gallery</span></p>
+        <p className='text-center text-lg'><span className={`text-[#D99A3F] font-medium`}>Gallery</span></p>
         <p className='text-center mb-8'><span className='text-white text-3xl text-center font-bold'>One platform to unite Us all.</span></p>
         <div className='gap-8 overflow-hidden'>
           <Swiper
             spaceBetween={30}
             slidesPerView={3}
             autoplay={true}
-            onSlideChange={() => console.log('slide change')}
+            //onSlideChange={() => console.log('slide change')}
             onSwiper={(swiper) => console.log(swiper)}
             modules={[Pagination, Autoplay, Navigation]}
             navigation={{

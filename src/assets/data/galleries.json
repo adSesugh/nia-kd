@@ -1,4 +1,58 @@
 {
-    "secretariat": [],
-    "gallries": []
+    "secretariats": [
+        {
+            "id": 1,
+            "imageUrl": "/assets/gallery/1.png"
+        },
+        {
+            "id": 2,
+            "imageUrl": "/assets/gallery/2.png"
+        },
+        {
+            "id": 3,
+            "imageUrl": "/assets/gallery/3.png"
+        }
+    ],
+    "galleries": [
+        {
+            "id": 1,
+            "imageUrl": "/assets/gallery/11.png"
+        },
+        {
+            "id": 2,
+            "imageUrl": "/assets/gallery/12.png"
+        },
+        {
+            "id": 3,
+            "imageUrl": "/assets/gallery/13.png"
+        },
+        {
+            "id": 4,
+            "imageUrl": "/assets/gallery/14.png"
+        },
+        {
+            "id": 5,
+            "imageUrl": "/assets/gallery/15.png"
+        },
+        {
+            "id": 6,
+            "imageUrl": "/assets/gallery/16.png"
+        },
+        {
+            "id": 7,
+            "imageUrl": "/assets/gallery/17.png"
+        },
+        {
+            "id": 8,
+            "imageUrl": "/assets/gallery/18.png"
+        },
+        {
+            "id": 9,
+            "imageUrl": "/assets/gallery/19.png"
+        },
+        {
+            "id": 10,
+            "imageUrl": "/assets/gallery/20.png"
+        }
+    ]
 }

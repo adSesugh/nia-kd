@@ -41,23 +41,21 @@ const HomeSlider = () => {
     }
   }, 10000)
 
-  console.log(selectedMessage.slider)
-
   return (
     <div className={`${styles.slideSection} transition-background ease-in-out delay-150`} style={{ backgroundImage: `url(${selectedMessage.slider})`}}>
       <div className='flex justify-between h-full w-full bg-gradient-to-tr from-transparent to-black/60'>
         <div className='flex sm:pl-28 xs:pl-6 sm:w-4/6 xs:w-full h-full justify-start items-center'>
           <div className='sm:w-3/5 xs:w-full sm:pt-16 xs:pt-24'>
-            <h1 className='sm:text-[48px] xs:text-[30px] font-bold text-white leading-[60px]' data-aos="fade-right">{selectedMessage?.title}</h1>
+            <h1 className='sm:text-[48px] xs:text-[30px] font-bold text-white sm:leading-[60px] xs:leading-[40px] sm:pb-0 xs:pb-4' data-aos="fade-right">{selectedMessage?.title}</h1>
             <span className='text-white font-normal' data-aos="fade-up">{selectedMessage?.subtitle}</span>
-            <div className='sm:pt-10 xs:pt-6'>
+            <div className='sm:pt-10 xs:pt-10'>
               <Link href={'/auth/register'} className={styles.discoverMore}>Join NIAKD</Link>
             </div>
           </div>
         </div>
         <div className='sm:w-2/6 xs:w-0 h-full'></div>
       </div>
-      <div className={`${styles.timerSection} -mt-16`}>
+      <div className={`${styles.timerSection} sm:-mt-16 xs:-mt-20`}>
               {/* <Play color='#FFFFFF' size={16} variant='Bold' className='cursor-pointer' /> */}
         <div className={`flex h-8 w-6 ${currentIndex === 0 && 'border-b-2 border-[#E08D14] w-6'} justify-center items-center select-none cursor-pointer`}>
           <span className={`text-[14px] ${currentIndex === 0 && 'text-[#E08D14]'}`}>01</span>

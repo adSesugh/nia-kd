@@ -23,3 +23,7 @@ textarea[id^="form-field_"] {
   text-align: left !important;
   direction: ltr !important;
 }
+
+p {
+  font-weight: lighter;
+}

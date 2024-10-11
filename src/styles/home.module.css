@@ -1,7 +1,7 @@
 /* @apply bg-[url('/assets/slider/1.jpg')] sm:h-[720px] xs:h-[440px] w-[100%]; */
 
 .slideSection {
-    @apply sm:h-[720px] xs:h-[440px] w-[100%];
+    @apply sm:h-[720px] xs:h-screen w-[100%];
     background-repeat: no-repeat;
     background-attachment: fixed;
     background-size: cover;
@@ -20,7 +20,7 @@
 }
 
 .breadcrumb {
-    @apply h-[354px] w-full bg-[#1E1A1C]
+    @apply sm:h-[354px] xs:h-full w-full bg-[#1E1A1C] py-8
 }
 
 .aboutMore {
@@ -28,7 +28,7 @@
 }
 
 .missionSection {
-    @apply flex h-[447px] sm:px-28 xs:px-6 justify-center items-center
+    @apply flex h-[447px] sm:px-28 xs:px-6 justify-center items-center py-10
 }
 
 .videoSection {

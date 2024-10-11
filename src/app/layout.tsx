@@ -4,7 +4,7 @@ import { ThemeModeScript } from "flowbite-react";
 import AppWrapper from "@/providers/AppWrapper";
 
 
-const inter = Inter({ subsets: ["latin"] });
+const inter = Inter({ subsets: ["vietnamese"] });
 
 export default function RootLayout({
   children,
