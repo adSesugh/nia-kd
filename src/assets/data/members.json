@@ -1,0 +1,155 @@
+[
+    {
+      "imageUrl": "/assets/team/9.png",
+      "name": "Arc. Stephen. J. Filiya FNIA",
+      "designation": "Chairman, NIA Kaduna",
+      "social_media": {
+          "twitter": "",
+          "linkedin": ""
+      }
+    },
+    {
+      "imageUrl": "/assets/team/10.png",
+      "name": "Arc. Binta Danmaliki FNIA",
+      "designation": "Vice Chairman",
+      "social_media": {
+          "twitter": "",
+          "linkedin": ""
+      }
+    },
+    {
+      "imageUrl": "/assets/team/2.png",
+      "name": "Arc. Danjuma S. Ageni MNIA",
+      "designation": "General Secretary",
+      "social_media": {
+          "twitter": "https://x.com/DanjAgeni",
+          "linkedin": "https://www.linkedin.com/in/danjuma-ageni-mpm-mnia-173b7279"
+      }
+    },
+    {
+      "imageUrl": "/assets/team/4.png",
+      "name": "Arc. Gbenga Popoola MNIA",
+      "designation": "Treasurer",
+      "social_media": {
+          "twitter": "",
+          "linkedin": ""
+      }
+    },
+    {
+      "imageUrl": "/assets/team/avatar.jpeg",
+      "name": "Arc. Deborah Sabo MNIA",
+      "designation": "Financial Secretary",
+      "social_media": {
+        "twitter": "",
+        "linkedin": ""
+      }
+    },
+    {
+      "imageUrl": "/assets/team/11.png",
+      "name": "Arc. (Dr) Juliet A. Obaje MNIA",
+      "designation": "PRO",
+      "social_media": {
+        "twitter": "https://x.com/JulietObaje?t=F82TtkeMl9HWbPs-9ybhqw&s=08",
+        "linkedin": "https://www.linkedin.com/in/arc-dr-juliet-obaje-02a73830"
+      }
+    },
+    {
+      "imageUrl": "/assets/team/7.png",
+      "name": "Arc Fatima  Baba  Ciroma MNIA",
+      "designation": "Students Affairs Officer",
+      "social_media": {
+        "linkedin": "http://www.linkedin.com/in/fatima-baba-ciroma-88b961226",
+        "twitter": ""
+      }
+    },
+    {
+      "imageUrl": "/assets/team/avatar.jpeg",
+      "name": "Arc. (Dr.) K. S. Daroda MNIA",
+      "designation": "Chair Ethics",
+      "social_media": {
+        "twitter": "",
+        "linkedin": ""
+      }
+    },
+    {
+      "imageUrl": "/assets/team/avatar.jpeg",
+      "name": "Arc. Dr. Abbas Muazu MNIA",
+      "designation": "Chair Practice",
+      "social_media": {
+        "twitter": "",
+        "linkedin": ""
+      }
+    },
+    {
+      "imageUrl": "/assets/team/8.png",
+      "name": "Arc Samuel Aliyu Obaje FNIA",
+      "designation": "Past Chairman",
+      "social_media": {
+        "twitter": "",
+        "linkedin": "https://www.linkedin.com/in/obaje-samuel-216829214"
+      }
+    },
+    {
+      "imageUrl": "/assets/team/avatar.jpeg",
+      "name": "Arc. Caleb M. Gaiya FNIA",
+      "designation": "ARCON Rep.",
+      "social_media": {
+        "twitter": "",
+        "linkedin": ""
+      }
+    },
+    {
+      "imageUrl": "/assets/team/avatar.jpeg",
+      "name": "Arc. Dimeji Adene FNIA",
+      "designation": "Ex-Officio",
+      "social_media": {
+        "twitter": "",
+        "linkedin": ""
+      }
+    },
+    {
+      "imageUrl": "/assets/team/3.png",
+      "name": "Arc. Olulaja M. Balogun FNIA",
+      "designation": "Ex Officio Member, ECNIAK",
+      "social_media": {
+          "twitter": "",
+          "linkedin": ""
+      }
+    },
+    {
+      "imageUrl": "/assets/team/1.png",
+      "name": "Bawa Y. Chindo",
+      "designation": "Assistant Secretary I",
+      "social_media": {
+          "twitter": "https://x.com/bawa_chindo",
+          "linkedin": ""
+      }
+    },
+    {
+      "imageUrl": "/assets/team/5.png",
+      "name": "Lut Adinoyi Abdulazeez",
+      "designation": "Assistant PRO",
+      "social_media": {
+        "linkedin": "https://www.linkedin.com/in/abdulazeez-lut-adinoyi-992210139",
+        "twitter": "https://x.com/Lut95566869"
+      }
+    },
+    {
+      "imageUrl": "/assets/team/avatar.jpeg",
+      "name": "Arc. Tech. Umar S. Fatika",
+      "designation": "Assistant Secretary II",
+      "social_media": {
+        "twitter": "",
+        "linkedin": ""
+      }
+    },
+    {
+      "imageUrl": "/assets/team/6.png",
+      "name": "Arc. Tech. Michael Okhumeode",
+      "designation": "Admin Secretary",
+      "social_media": {
+        "linkedin": "https://www.linkedin.com/in/abdulazeez-lut-adinoyi-992210139",
+        "twitter": "https://x.com/okhumeodemich1"
+      }
+    }
+  ]
