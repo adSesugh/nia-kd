@@ -13,6 +13,7 @@ import moment from 'moment'
 import DateField from '@/components/date-field'
 import TimeField from '@/components/timefield'
 import { combineDateTime } from '@/lib/common'
+import { adsSchema } from '@/lib/validations'
 
 const Page = () => {
     const router = useRouter()
@@ -37,6 +38,7 @@ const Page = () => {
                     mobilebanner: '',
                     link: ''
                 }}
+                validationSchema={adsSchema}
                 onSubmit={async(values) => {
                     try {
                         const res = await createAds({
@@ -64,34 +66,36 @@ const Page = () => {
                     }
                 }}
             >
-                {({values, handleSubmit, isSubmitting, setFieldValue}) => (
+                {({values, handleSubmit, isSubmitting, setFieldValue, errors, touched}) => (
                     <Form onSubmit={handleSubmit} className='mb-10'>
                         <div className='w-full bg-white py-6 border-t px-4 mt-4'>
                             <TextField 
                                 name='name' 
                                 label='Compaign name'
                                 placeholder='A suitable name for the ad' 
+                                className={`${errors.name && touched.name ? 'ring-red-500': ''}`}
                             />
                             <TextField 
                                 name='duration' 
                                 label='How long do you want the compaign to run? (days)'
                                 placeholder='Duration' 
                                 type='number'
+                                className={`${errors.duration && touched.duration ? 'ring-red-500': ''}`}
                             />
                             <div className='flex sm:flex-row xs:flex-col justify-between gap-4'>
                                 <div className='sm:w-1/2 xs:w-full'>
                                     <DateField 
                                         name='start_date'
                                         label='Start Date'
-                                        className='w-full'
                                         minDate={values.start_date}
+                                        className={`${errors.start_date && touched.start_date ? 'ring-red-500': ''} w-full`}
                                     />
                                 </div>
                                 <div className='sm:w-1/2 xs:w-full'>
                                     <TimeField
                                         name='start_time'
                                         label='Start Time'
-                                        className='w-full' 
+                                        className={`${errors.start_time && touched.start_time ? 'ring-red-500': ''} w-full`}
                                     />
                                 </div>
                             </div>
@@ -100,6 +104,7 @@ const Page = () => {
                             <NIAFileInput 
                                 name='webbanner' 
                                 id={'webbanner'}
+                                className={`${errors.webbanner && touched.webbanner ? 'ring-red-500': ''} w-full`}
                                 label='Upload image (for web display)' subtitle='Recommended image size is 5 : 1'
                                 handleFileChange={function (e: React.ChangeEvent<HTMLInputElement>): void {
                                 const file = e.currentTarget.files?.[0];
@@ -111,12 +116,13 @@ const Page = () => {
                                     };
                                     reader.readAsDataURL(file);
                                 }
-                            } } base64={base64} className='w-full' />
+                            } } base64={base64} />
                         </div>
                         <div className='flex px-6 py-4 bg-white my-6 w-full'>
                             <NIAFileInput 
                                 name='mobilebanner' 
                                 id={'mobilebanner'}
+                                className={`${errors.mobilebanner && touched.mobilebanner ? 'ring-red-500': ''} sm:!w-64 xs:!w-full`}
                                 label='Upload image (for mobile display)' subtitle='Recommended image size is 1 : 1'
                                 handleFileChange={function (e: React.ChangeEvent<HTMLInputElement>): void {
                                 const file = e.currentTarget.files?.[0];
@@ -128,13 +134,14 @@ const Page = () => {
                                     };
                                     reader.readAsDataURL(file);
                                 }
-                            } } base64={mobileBase64} className='sm:!w-64 xs:!w-full' />
+                            } } base64={mobileBase64} />
                         </div>
                         <div className='w-full bg-white py-6 border-t px-4 mt-4'>
                             <TextField 
                                 name='link' 
                                 label='Ads link'
                                 placeholder='Paste link' 
+                                className={`${errors.link && touched.link ? 'ring-red-500': ''}`}
                             />
                             <div className='flex pt-10 pb-4 gap-2 float-end mb-8'>
                                 <Link href={'/blogs/list'} className='border rounded-lg px-4 py-2 text-sm'>Cancel</Link>

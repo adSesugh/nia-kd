@@ -27,8 +27,8 @@ const Home = () => {
         <NIAVision />
       </div>
       <div className='w-full bg-[#F3ECE2]'>
-        <div className='pt-16 flex items-center justify-center w-full'>
-          <h1 className='font-semibold text-4xl'>Out Impact in numbers</h1>
+        <div className='sm:pt-16 xs:pt-10 flex items-center justify-center w-full'>
+          <h1 className='font-semibold sm:text-4xl xs:text-2xl text-center sm:w-full xs:w-2/3'>Out Impact in numbers</h1>
         </div>
         <div className='grid sm:grid-cols-4 xs:grid-cols-2 sm:h-48 xs:h-48 py-6 mb-16 divide divide-x-2'>
           <div className='flex flex-col items-center justify-center h-full'>

@@ -101,13 +101,17 @@ const Header = () => {
                                 <h1 className={`${pathname.includes('events') ? 'text-gray-50' : 'text-[#BFBFBF]'}`}>Events</h1>
                                 {pathname.includes('events') && <div className={'w-full h-1.5 bg-[#D99A3F] rounded-t-xl'}></div>}
                             </Sidebar.Item>
-                            <Sidebar.Item href="/blog">
-                                <h1 className={`${pathname.includes('blog') ? 'text-gray-50' : 'text-[#BFBFBF]'}`}>Blog</h1>
-                                {pathname.includes('blog') && <div className={'w-full h-1.5 bg-[#D99A3F] rounded-t-xl'}></div>}
+                            <Sidebar.Item href="/gallery">
+                                <h1 className={`${pathname.includes('gallery') ? 'text-gray-50' : 'text-[#BFBFBF]'}`}>Gallery</h1>
+                                {pathname.includes('gallery') && <div className={'w-full h-1.5 bg-[#D99A3F] rounded-t-xl'}></div>}
                             </Sidebar.Item>
                             <Sidebar.Item href="/about">
                                 <h1 className={`${pathname.includes('about') ? 'text-gray-50' : 'text-[#BFBFBF]'}`}>About Us</h1>
                                 {pathname.includes('about') && <div className={'w-full h-1.5 bg-[#D99A3F] rounded-t-xl'}></div>}
+                            </Sidebar.Item>
+                            <Sidebar.Item href="/blog">
+                                <h1 className={`${pathname.includes('blog') ? 'text-gray-50' : 'text-[#BFBFBF]'}`}>Blog</h1>
+                                {pathname.includes('blog') && <div className={'w-full h-1.5 bg-[#D99A3F] rounded-t-xl'}></div>}
                             </Sidebar.Item>
                             <Sidebar.Item href="/contact">
                                 <h1 className={`${pathname.includes('contact') ? 'text-gray-50' : 'text-[#BFBFBF]'}`}>Contact</h1>

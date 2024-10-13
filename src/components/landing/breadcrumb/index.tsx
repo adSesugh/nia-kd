@@ -21,7 +21,7 @@ const Breadcrumb = () => {
                     </div>
                 </div>
                 <div className='flex sm:w-1/2 xs:w-full sm:py-0 xs:py-6 text-white h-full items-center'>
-                    <div className='sm:w-11/12 xs:w-full leading-6 text-gray-200' data-aos="fade-left">The Nigerian Institute of Architects Kaduna Chapter was founded on the 1st of April 1960, as an association of independent professional architects with the aim of fostering friendship amongst members, cater for their welfare and establish mutual support and cooperation amongst them.
+                    <div className='sm:w-11/12 xs:w-full leading-6 text-gray-200 font-light' data-aos="fade-left">The Nigerian Institute of Architects Kaduna Chapter was founded on the 1st of April 1960, as an association of independent professional architects with the aim of fostering friendship amongst members, cater for their welfare and establish mutual support and cooperation amongst them.
                     From a modest 13 members at inauguration.</div>
                 </div>
                 <div className='space-x-2 items-center pb-8 sm:hidden xs:flex'>

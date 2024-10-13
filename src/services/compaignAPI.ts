@@ -13,8 +13,6 @@ class CompaignAPI extends RESTDataSource {
         const bufferWeb = input.web_banner ? Buffer.from(input.web_banner.split(',')[1], 'base64') : '';
         const bufferMobile = input.mobile_banner ? Buffer.from(input.mobile_banner.split(',')[1], 'base64') : '';
 
-        console.log(input)
-
         const compaign = await prisma.compaign.create({
             data: {
                 name: input.name,
@@ -26,13 +24,10 @@ class CompaignAPI extends RESTDataSource {
             }
         })
 
-
-        console.log(compaign)
-
         if (input.web_banner){
-            const url: string = bufferWeb ? `https://${process.env.NEXT_PUBLIC_AWS_BUCKET_NAME}.s3.${process.env.NEXT_PUBLIC_AWS_REGION}.amazonaws.com/events/${compaign.id}/${input.name.toLowerCase().replaceAll(' ', '-')}-web` : ''
+            const url: string = bufferWeb ? `https://${process.env.NEXT_PUBLIC_AWS_BUCKET_NAME}.s3.${process.env.NEXT_PUBLIC_AWS_REGION}.amazonaws.com/ads/web/${compaign.id}/${input.name.toLowerCase().replaceAll(' ', '-')}-web` : ''
 
-            const res =  await s3FileUpload(`events/${compaign.id}/${input.name.toLowerCase().replaceAll(' ', '-')}`, 'image/png', bufferWeb)
+            const res =  await s3FileUpload(`ads/web/${compaign.id}/${input.name.toLowerCase().replaceAll(' ', '-')}`, 'image/png', bufferWeb)
             if(res.httpStatusCode === 200){
                 await prisma.compaign.update({
                     where: {
@@ -46,9 +41,9 @@ class CompaignAPI extends RESTDataSource {
         }
 
         if (input.mobile_banner){
-            const url: string = bufferMobile ? `https://${process.env.NEXT_PUBLIC_AWS_BUCKET_NAME}.s3.${process.env.NEXT_PUBLIC_AWS_REGION}.amazonaws.com/events/${compaign.id}/${input.name.toLowerCase().replaceAll(' ', '-')}-mobile` : ''
+            const url: string = bufferMobile ? `https://${process.env.NEXT_PUBLIC_AWS_BUCKET_NAME}.s3.${process.env.NEXT_PUBLIC_AWS_REGION}.amazonaws.com/ads/mobile/${compaign.id}/${input.name.toLowerCase().replaceAll(' ', '-')}-mobile` : ''
 
-            const res =  await s3FileUpload(`events/${compaign.id}/${compaign.name.toLowerCase().replaceAll(' ', '-')}`, 'image/png', bufferMobile)
+            const res =  await s3FileUpload(`ads/mobile/${compaign.id}/${compaign.name.toLowerCase().replaceAll(' ', '-')}`, 'image/png', bufferMobile)
             if(res.httpStatusCode === 200){
                 await prisma.compaign.update({
                     where: {

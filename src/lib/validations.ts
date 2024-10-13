@@ -58,3 +58,53 @@ export const EventSchema = Yup.object().shape({
 export const PasswordSchema = Yup.object().shape({
     password: Yup.string().required('Password is required').min(6, 'Invalid password'),
 });
+
+export const adsSchema = Yup.object().shape({
+    name: Yup.string().required(),
+    duration: Yup.number().required(),
+    start_date: Yup.date().required(),
+    start_time: Yup.string().required(),
+    // webbanner: Yup.mixed()
+    // .required('Image is required')
+    // .test(
+    //   '.png',
+    //   'Invalid image dimensions. Please upload an image with 930 x 180 pixels.',
+    //   (value: any) =>
+    //     new Promise((resolve) => {
+    //       if (!value) {
+    //         resolve(false);
+    //         return;
+    //       }
+    //       const img = new Image();
+    //       img.onload = () => {
+    //         resolve(img.width <= 935 && img.height <= 185);
+    //       };
+    //       img.onerror = () => {
+    //         resolve(false);
+    //       };
+    //       //img.src = URL?.createObjectURL(value);
+    //     })
+    // ),
+    // mobilebanner: Yup.mixed()
+    // .required('Image is required')
+    // .test(
+    //   '.png',
+    //   'Invalid image dimensions. Please upload an image with 320 x 100 pixels.',
+    //   (value: any) =>
+    //     new Promise((resolve) => {
+    //       if (!value) {
+    //         resolve(false);
+    //         return;
+    //       }
+    //       const img = new Image();
+    //       img.onload = () => {
+    //         resolve(img.width <= 325 && img.height <= 105);
+    //       };
+    //       img.onerror = () => {
+    //         resolve(false);
+    //       };
+    //       //img.src = URL?.createObjectURL(value);
+    //     })
+    // ),
+    link: Yup.string().nullable()
+})
